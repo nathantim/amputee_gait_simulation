@@ -25,6 +25,19 @@ simbiconGainD     = Gains(21);
 simbiconGainV     = Gains(22);
 simbiconLegAngle0 = Gains(23);
 
+PosGainGGHAB    = Gains(24);
+PosGainGGHAD    = Gains(25);
+SpeedGainGGHAB  = Gains(26);
+SpeedGainGGHAD  = Gains(27);
+GainCHAB  = Gains(28);
+GainCHAD  = Gains(29);
+
+hipPGainAbd = Gains(30);
+hipDGainAbd = Gains(31);
+simbiconLegAngle0Abd = Gains(32);
+simbiconGainDAbd = Gains(33);
+simbiconGainVAbd = Gains(34);
+
 [groundX, groundZ, groundTheta] = generateGround('flat');
 % [groundX, groundZ, groundTheta] = generateGround('const', .05,1);
 %[groundX, groundZ, groundTheta] = generateGround('ramp');

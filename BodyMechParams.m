@@ -96,6 +96,9 @@ phiKneeUpLimit  = 5*pi/180; %[rad]
 
 phiHipUpLimit  = 50*pi/180; %[rad]
 
+phiHipAbdLowLimit  = -15*pi/180; %[rad]
+phiHipAbdUpLimit  = 50*pi/180; %[rad]
+
 % soft block reference joint stiffness
 c_jointstop     = 0.3 / (pi/180);  %[Nm/rad]
 
@@ -163,6 +166,16 @@ rHFL       =       0.10; % [m]   constant lever contribution
 phirefHFL  = 0*pi/180; % [rad] reference angle at which MTU length equals 
 rhoHFL     =        0.5; %       sum of lopt and lslack 
 
+% Hip abductor (HAB)
+rHAB      =      0.06; % [m]   constant lever contribution 
+phirefHAB = 10*pi/180; % [rad] reference angle at which MTU length equals 
+rhoHAB    =       0.7; %       sum of lopt and lslack 
+
+% Hip adductor (HAD)
+rHAD      =      0.03; % [m]   constant lever contribution 
+phirefHAD = 15*pi/180; % [rad] reference angle at which MTU length equals 
+rhoHAD    =         1; %       sum of lopt and lslack 
+
 % ************************* %
 % 3. BIPED MUSCLE MECHANICS %
 % ************************* %
@@ -191,6 +204,17 @@ eref =  0.04; %[lslack] tendon reference strain
 % ------------------------------
 % 3.2 Muscle-Specific Parameters
 % ------------------------------
+% hip abductor (HAB)
+FmaxHAB    =     3000; % maximum isometric force [N]
+loptHAB    =     0.09; % optimum fiber length CE [m]
+vmaxHAB    =       12; % maximum contraction velocity [lopt/s]
+lslackHAB  =     0.07; % tendon slack length [m]
+
+% hip adductor (HAD)
+FmaxHAD    =     4500; % maximum isometric force [N]
+loptHAD    =     0.10; % optimum fiber length CE [m]
+vmaxHAD    =       12; % maximum contraction velocity [lopt/s]
+lslackHAD  =     0.18; % tendon slack length [m]
 
 % soleus muscle
 FmaxSOL    = 4000; % maximum isometric force [N]
@@ -256,6 +280,10 @@ FT_HFL=50.8;%Psoas
 ST_HFL=49.2;%Psoas
 FT_HAM=65.6;%Bicep Femoris
 ST_HAM=35.4;%Bicep Femoris
+FT_HAB=85;
+ST_HAB=15;
+FT_HAD=58;
+ST_HAD=42;
 
 % *************************** %
 % 4. Ground Interaction Model %
@@ -293,3 +321,16 @@ v_gx_max = 0.03; %[m/s] 0.03
 
 % stiction to sliding transition coefficient
 mu_stick = 0.9;
+
+
+% --------------
+% for 3D contact
+% --------------
+
+n_Cnt = 8;
+d_fBall = 0.1;
+d_fHeel = 0.05;
+
+k_gn    = k_gn/2;
+k_gt    = k_gt/2;
+

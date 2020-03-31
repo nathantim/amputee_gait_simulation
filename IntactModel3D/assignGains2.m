@@ -1,5 +1,5 @@
 BodyMechParams;
-ControlParams;
+ControlParams2;
 
 GainGAS           = Gains( 1);
 GainGLU           = Gains( 2);
@@ -24,6 +24,8 @@ legLengthClr      = Gains(20);
 simbiconGainD     = Gains(21);
 simbiconGainV     = Gains(22);
 simbiconLegAngle0 = Gains(23);
+
+
 
 [groundX, groundZ, groundTheta] = generateGround('flat');
 % [groundX, groundZ, groundTheta] = generateGround('const', .05,1);

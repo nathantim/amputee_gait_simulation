@@ -12,7 +12,7 @@ function animPost(varargin) %animData, speed, snapShotFlag, intactFlag)
 persistent p
 if isempty(p)
     p = inputParser;
-    p.FunctionName = 'animPost';
+    p.FunctionName = 'animPost3D';
     addRequired(p,'animData');
 
     validFrameSkipFcn = @(i) isnumeric(i) && isscalar(i) && ~mod(i,1) && (i > 0);
@@ -105,7 +105,7 @@ view(25,25)
     yShift = rHJ; %[m]
 
     % create sphere objects (contact points and joints and HAT top)
-    SphereObjects = createSphereObjects(SphereRes, yShift, rCP, rAJ, rKJ, rHJ, intactFlag);
+    SphereObjects = createSphereObjects3D(SphereRes, yShift, rCP, rAJ, rKJ, rHJ, intactFlag);
 
 % 3D Cone Objects
 % ---------------
@@ -120,7 +120,7 @@ view(25,25)
     rHAT_Cone = [rHJ-0.02 rHJ-0.02 0.06 0.07 rHJ-0.01 rHJ-0.01 0]; %[m] male
 
     % create cone objects (bones)
-    ConeObjects = createConeObjects(ConeRes, yShift, rFoot, rShank, rThigh, rHAT_Cone, intactFlag);
+    ConeObjects = createConeObjects3D(ConeRes, yShift, rFoot, rShank, rThigh, rHAT_Cone, intactFlag);
 
 % 3D Prosthetic Objects
 % ---------------
@@ -159,9 +159,23 @@ end
 %%%%%%%%%%
 % Update %
 %%%%%%%%%%
+d_fBall = 0.1;
+d_fHeel = 0.05;
+
 x = zeros(animData.signals.dimensions,1);
 % x = animData.signals.values(1,:);
-x(5:3:32) = animData.signals.values(1,5:3:32);
+x(5:3:12) = animData.signals.values(1,5:3:12);
+x(14) = animData.signals.values(1,14) - d_fBall/2;
+x(17) = animData.signals.values(1,17) + d_fBall/2;
+x(20) = animData.signals.values(1,20) - d_fHeel/2;
+x(23) = animData.signals.values(1,23) + d_fHeel/2;
+
+x(26:3:32) = animData.signals.values(1,26:3:32);
+x(35) = animData.signals.values(1,35) - d_fBall/2;
+x(38) = animData.signals.values(1,38) + d_fBall/2;
+x(41) = animData.signals.values(1,41) - d_fHeel/2;
+x(44) = animData.signals.values(1,44) + d_fHeel/2;
+% x(5:3:end) = animData.signals.values(1,5:3:end);
 tframe = frameSkip/30/speed;
     for i = 1:frameSkip:length(animData.time)
         tic;
@@ -195,8 +209,8 @@ tframe = frameSkip/30/speed;
                 
                 % Update 3D-Objects Position and Orientation
                 % ------------------------------------------
-                updateSphereObjects( SphereObjects, u, x, yShift, intactFlag)
-                updateConeObjects( ConeObjects, u, x, t, intactFlag);
+                updateSphereObjects3D( SphereObjects, u, x, yShift, intactFlag)
+                updateConeObjects3D( ConeObjects, u, x, t, intactFlag);
                 if(~intactFlag)
                     updateProstheticObjects( ProstheticObjects, u, x);
                 end
