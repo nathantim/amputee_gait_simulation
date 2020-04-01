@@ -18,45 +18,45 @@ function updateConeObjects( ConeObjects, u, x, t, intactFlag)
     % at the initial time step t=0, scale cone objects to their actual length
     if t==0
         % set HAT length
-        HAT_Length = 2*sqrt( (u(1)-u(3))^2 + (u(2)-u(4))^2 );
+        HAT_Length = 2*sqrt( (u(1)-u(4))^2 + (u(2)-u(5))^2 + (u(3)-u(6))^2 );
         set(HAT_ConeObj, 'ZData', get(HAT_ConeObj, 'ZData') * HAT_Length);
 
         % set left thigh length
-        L_ThighLength = sqrt( (u(3)-u(5))^2 + (u(4)-u(6))^2 );
+        L_ThighLength = sqrt( (u(4)-u(7))^2 + (u(5)-u(8))^2 + (u(6)-u(9))^2 );
         set(L_ThighObj, 'ZData', get(L_ThighObj, 'ZData') * L_ThighLength);
 
         % set left shank length
-        L_ShankLength = sqrt( (u(5)-u(7))^2 + (u(6)-u(8))^2 );
+        L_ShankLength = sqrt( (u(7)-u(10))^2 + (u(8)-u(11))^2 + (u(9)-u(12))^2 );
         set(L_ShankObj, 'ZData', get(L_ShankObj, 'ZData') * L_ShankLength);
 
         % set left foot length
-        L_FootLength = sqrt( (u(9)-u(11))^2 + (u(10)-u(12))^2 );
+        L_FootLength = sqrt( (u(10)-u(13))^2 + (u(11)-u(14))^2 + (u(12)-u(15))^2 );
         set(L_FootObj, 'ZData', get(L_FootObj, 'ZData') * L_FootLength);
         
         % set right thigh length
-        R_ThighLength = sqrt( (u(13)-u(15))^2 + (u(14)-u(16))^2 );
+        R_ThighLength = sqrt( (u(19)-u(22))^2 + (u(20)-u(23))^2 + (u(21)-u(24))^2 );
         set(R_ThighObj, 'ZData', get(R_ThighObj, 'ZData') * R_ThighLength);
 
         if(intactFlag)
             % set right shank length
-            R_ShankLength = sqrt( (u(15)-u(17))^2 + (u(16)-u(18))^2 );
+            R_ShankLength = sqrt( (u(22)-u(25))^2 + (u(23)-u(26))^2 + (u(24)-u(27))^2 );
             set(R_ShankObj, 'ZData', get(R_ShankObj, 'ZData') * R_ShankLength);
 
             % set right foot length
-            R_FootLength = sqrt( (u(19)-u(21))^2 + (u(20)-u(22))^2 );
+            R_FootLength = sqrt( (u(25)-u(28))^2 + (u(26)-u(29))^2 + (u(27)-u(30))^2 );
             set(R_FootObj, 'ZData', get(R_FootObj, 'ZData') * R_FootLength);
         end
     end
 
     % rotate and shift cones to their new angles and positions
-    rotTransObj( HAT_ConeObj, u(3:4),   u(1:2),   x(3:4),   x(1:2))
-    rotTransObj(  L_ThighObj, u(5:6),   u(3:4),   x(5:6),   x(3:4))
-    rotTransObj(  L_ShankObj, u(7:8),   u(5:6),   x(7:8),   x(5:6)) 
-    rotTransObj(   L_FootObj, u(11:12), u(9:10),  x(11:12), x(9:10)) 
-    rotTransObj(  R_ThighObj, u(15:16), u(13:14), x(15:16), x(13:14))
+    rotTransObj( HAT_ConeObj, u(4:6),   u(1:3),   x(4:6),   x(1:3))
+    rotTransObj(  L_ThighObj, u(7:9),   u(4:6),   x(7:9),   x(4:6))
+    rotTransObj(  L_ShankObj, u(10:12),   u(7:9),   x(10:12),   x(7:9)) 
+    rotTransObj(   L_FootObj, u(13:15), u(10:12),  x(13:15), x(10:12)) 
+    rotTransObj(  R_ThighObj, u(22:24), u(19:21), x(22:24), x(19:21))
 
     if(intactFlag)
-        rotTransObj(  R_ShankObj, u(17:18),   u(15:16),   x(17:18),   x(15:16)) 
-        rotTransObj(   R_FootObj, u(21:22), u(19:20),  x(21:22), x(19:20)) 
+        rotTransObj(  R_ShankObj, u(25:27),   u(22:24),   x(25:27),   x(22:24)) 
+        rotTransObj(   R_FootObj, u(28:30), u(25:27),  x(28:30), x(25:27)) 
     end
 end

@@ -1,7 +1,7 @@
-function animPost(varargin) %animData, speed, snapShotFlag, intactFlag)
+function animPostImpulse(varargin) %animData, speed, snapShotFlag, intactFlag)
 
 %
-% animPost.m: animates the neuromechanical
+% animPostImpulse.m: animates the neuromechanical
 %   model form logged data
 %
 
@@ -12,8 +12,9 @@ function animPost(varargin) %animData, speed, snapShotFlag, intactFlag)
 persistent p
 if isempty(p)
     p = inputParser;
-    p.FunctionName = 'animPost';
+    p.FunctionName = 'animPostImpulse';
     addRequired(p,'animData');
+    addRequired(p,'impulseTime');
 
     validFrameSkipFcn = @(i) isnumeric(i) && isscalar(i) && ~mod(i,1) && (i > 0);
     addParamValue(p,'frameSkip',1,validFrameSkipFcn);
@@ -25,32 +26,34 @@ if isempty(p)
     addParamValue(p,'intact',false,validBoolFcn);
     addParamValue(p,'saveAllFrames',false,validBoolFcn);
     addParamValue(p,'showFrameNum',false,validBoolFcn);
-    addParamValue(p,'showTime',false,validBoolFcn);
-    addParamValue(p,'followModel',false,validBoolFcn);
 
-    validTimeRangeFcn = @(i) isnumeric(i) && length(i) == 2 && i(1) <= i(2);
-    addParamValue(p,'saveFramesInTimeRange',[],validTimeRangeFcn);
+    validFrameRangeFcn = @(i) isnumeric(i) && length(i) == 2 && i(1) <= i(2);
+    addParamValue(p,'saveFrames',[],validFrameRangeFcn);
 
-    validLabelFcn = @(i) ischar(i) && length(i)>0;
+    validLabelFcn = @(i) ischar(i) && ~isempty(i);
     addParamValue(p,'label','',validLabelFcn);
 
 end
 parse(p,varargin{:});
 animData = p.Results.animData;
-frameRate = animData.time(2) - animData.time(1);
+impulseTime = p.Results.impulseTime;
 frameSkip = p.Results.frameSkip;
 speed = p.Results.speed;
 intactFlag = p.Results.intact;
 txtLabel = p.Results.label;
 showFrameNum = p.Results.showFrameNum;
-showTime = p.Results.showTime;
-followModel = p.Results.followModel;
 
 snapShotFlag = p.Results.saveAllFrames;
-timeRangeToSave = p.Results.saveFramesInTimeRange;
-if isempty(timeRangeToSave)
-    timeRangeToSave = [nan, nan];
+if ~isempty(p.Results.saveFrames)
+    framesToSave = p.Results.saveFrames(1):p.Results.saveFrames(end);
+else 
+    framesToSave = [];
 end
+
+starti = find(animData.time > impulseTime);
+starti = starti(1);
+endi = find(animData.time > (impulseTime+0.05));
+endi = endi(1);
 
 %%%%%%%%%%%%%%%%%%
 % Initialization %
@@ -73,7 +76,8 @@ end
     FigHndl = findobj('Type', 'figure',  'Name', FigName);% store figure handle for repeated access
     figDim = get(FigHndl,'Position');
     winHeight = ViewWin*figDim(4)/figDim(3);
-    xlim([-3 ViewWin-3])
+    xinit = -3;
+    xlim([xinit ViewWin+xinit])
     ylim([-10 10])
     zlim([-winHeight/4 winHeight/4+1.5]);
     axis off
@@ -85,7 +89,7 @@ ViewShiftParams = [0 0 0];
 set(gca, 'YColor', [1 1 1], 'ZColor', [1 1 1])% switch off the y- and z-axis
 set(gca, 'XTick', -10:1:100)% set x-axis labels
 view(0,0)
-% view(25,25)
+%view(25,25)
 
 % Generate 3D Objects
 % -------------------
@@ -118,9 +122,23 @@ view(0,0)
     rShank    = [rAJ-0.02 rAJ-0.02 rAJ-0.02 rAJ-0.02 rAJ-0.01 rAJ]; %[m]
     rThigh    = [rKJ-0.01 rKJ-0.02 rKJ-0.02 rKJ-0.01 rKJ rKJ+0.01]; %[m]
     rHAT_Cone = [rHJ-0.02 rHJ-0.02 0.06 0.07 rHJ-0.01 rHJ-0.01 0]; %[m] male
+    impulseConeHead = linspace(0,0.1,10);
+    impulseConeTail = 0.03*ones(1,10);
 
     % create cone objects (bones)
     ConeObjects = createConeObjects(ConeRes, yShift, rFoot, rShank, rThigh, rHAT_Cone, intactFlag);
+
+    [impulseConeHeadPtsX, impulseConeHeadPtsY, impulseConeHeadPtsZ]= cylinder(impulseConeHead,10);
+    [impulseConeTailPtsX, impulseConeTailPtsY, impulseConeTailPtsZ]= cylinder(impulseConeTail,10);
+    impulseConeObj(1) = surf(impulseConeHeadPtsX, impulseConeHeadPtsY, impulseConeHeadPtsZ);
+    impulseConeObj(2) = surf(impulseConeTailPtsX, impulseConeTailPtsY, impulseConeTailPtsZ+1);
+    set(impulseConeObj, 'FaceColor','r', 'EdgeColor', 'None')
+    impulseTransformGroup = hgtransform();
+    set(impulseConeObj,'Parent',impulseTransformGroup);
+    tform = makehgtform('translate',[0.02, -yShift, 0])*makehgtform('yrotate',pi/2)...
+        *makehgtform('scale',[1, 1, 1/4]);
+    set(impulseTransformGroup, 'Matrix', tform);
+    set(impulseConeObj,'Visible','off')
 
 % 3D Prosthetic Objects
 % ---------------
@@ -140,17 +158,17 @@ view(0,0)
 
 % Create Text Labels
 % ------------------
-txt = text(0,0,txtLabel,'HorizontalAlignment','center');
+% Create Text Labels
+% ------------------
+txt    = text(0,0,txtLabel,'HorizontalAlignment','center','FontSize',20);
+%impulsetxt = text(0,0,'\leftarrow IMPULSE','HorizontalAlignment','left','Color','r');
 if showFrameNum
     frmtxt = text(0.05,0.05,'0','Units','normalized');
-end
-if showTime
-    timetxt = text(0.05,0.05,'0','Units','normalized');
 end
 
 % create snapshot directory
 % -------------------------
-if snapShotFlag || ~all(isnan(timeRangeToSave))
+if snapShotFlag || ~isempty(framesToSave)
     if ~exist('SnapShots','dir')
         mkdir('SnapShots');
     end
@@ -172,12 +190,8 @@ x = zeros(animData.signals.dimensions,1);
                 set(0, 'CurrentFigure', FigHndl); % set actual figure to handle
 
                 % Check if view window is out of sight. If so, shift it
-                if followModel
-                    viewFollowModel(u, ViewWin)
-                else
-                    ViewShiftParams = checkViewWin( u, t, ViewWin, TolFrac, ...
-                        ViewShiftParams, tShiftTot);
-                end
+                ViewShiftParams = checkViewWin( u, t, ViewWin, TolFrac, ...
+                    ViewShiftParams, tShiftTot);
                 camlight(camh);
                 
                 % Switch on all objects
@@ -201,12 +215,9 @@ x = zeros(animData.signals.dimensions,1);
                 
                 % Update Text objects
                 % -------------------
-                set(txt,'Position',[u(1), yShift, u(2)+0.75])
+                set(txt,'Position',[u(1), yShift, u(2)+0.5])
                 if showFrameNum
                     set(frmtxt,'String',num2str(i));
-                end
-                if showTime
-                    set(timetxt,'String',num2str(animData.time(i)));
                 end
 
                 % Update Figure
@@ -214,14 +225,22 @@ x = zeros(animData.signals.dimensions,1);
                 drawnow
             end
         end
-        x = u;
+
+        tform2 = makehgtform('translate',[u(17), 0, u(18)])*tform;
+        set(impulseTransformGroup, 'Matrix', tform2);
+        if (i >= starti && i <= endi)
+            set(impulseConeObj,'Visible','on')
+        else
+            set(impulseConeObj,'Visible','off')
+        end
 
         % Save snap shot
-        if snapShotFlag || (i*frameRate >= timeRangeToSave(1) && i*frameRate <= timeRangeToSave(2))
-            ImgName = fullfile('SnapShots',['Shot_', int2str(i), '.png']);
-            %export_fig(ImgName,'-nocrop',FigHndl)
-            export_fig(ImgName,'-transparent','-nocrop',FigHndl)
+        if snapShotFlag || any(i == framesToSave)
+            ImgName = fullfile('SnapShots',['Shot_', int2str(i-framesToSave(1)), '.png']);
+            export_fig(ImgName,'-nocrop',FigHndl)
+            %export_fig(ImgName,'-transparent','-nocrop',FigHndl)
         end
+        x = u;
 
         tpause = tframe - toc;
         pause(tpause)

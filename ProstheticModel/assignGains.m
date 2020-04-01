@@ -2,6 +2,8 @@ BodyMechParams;
 ControlParams;
 % prostheticParams;
 
+% load('Results/RoughDist/optimizedGains.mat');
+load('Results/RoughDist/optimizedGainsComb.mat');
 LGainGAS           = Gains( 1);
 LGainGLU           = Gains( 2);
 LGainHAM           = Gains( 3);
@@ -25,7 +27,8 @@ LlegLengthClr      = Gains(20);
 RGainGAS           = Gains(21);
 RGainGLU           = Gains(22);
 RGainHAM           = Gains(23);
-RGainHAMCut        = Gains(24);
+RGainHAMCut        = Gains(23);
+% RGainHAMCut        = Gains(24);
 RGainKneeOverExt   = Gains(25);
 RGainSOL           = Gains(26);
 RGainSOLTA         = Gains(27);

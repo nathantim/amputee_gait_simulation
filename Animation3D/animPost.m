@@ -84,8 +84,8 @@ ViewShiftParams = [0 0 0];
 
 set(gca, 'YColor', [1 1 1], 'ZColor', [1 1 1])% switch off the y- and z-axis
 set(gca, 'XTick', -10:1:100)% set x-axis labels
-view(0,0)
-% view(25,25)
+% view(0,0)
+view(25,25)
 
 % Generate 3D Objects
 % -------------------
@@ -160,7 +160,11 @@ end
 % Update %
 %%%%%%%%%%
 x = zeros(animData.signals.dimensions,1);
-    tframe = frameSkip/30/speed;
+% x = animData.signals.values(1,:);
+if (size(animData.signals.values,2) >=25)  
+    x(5:3:32) = animData.signals.values(1,5:3:32);
+end
+tframe = frameSkip/30/speed;
     for i = 1:frameSkip:length(animData.time)
         tic;
         u = animData.signals.values(i,:);
@@ -193,7 +197,7 @@ x = zeros(animData.signals.dimensions,1);
                 
                 % Update 3D-Objects Position and Orientation
                 % ------------------------------------------
-                updateSphereObjects( SphereObjects, u, x, intactFlag)
+                updateSphereObjects( SphereObjects, u, x, yShift, intactFlag)
                 updateConeObjects( ConeObjects, u, x, t, intactFlag);
                 if(~intactFlag)
                     updateProstheticObjects( ProstheticObjects, u, x);
@@ -201,7 +205,7 @@ x = zeros(animData.signals.dimensions,1);
                 
                 % Update Text objects
                 % -------------------
-                set(txt,'Position',[u(1), yShift, u(2)+0.75])
+                set(txt,'Position',[u(1), yShift, u(3)+0.75])
                 if showFrameNum
                     set(frmtxt,'String',num2str(i));
                 end
