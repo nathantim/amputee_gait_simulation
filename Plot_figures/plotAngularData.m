@@ -1,68 +1,86 @@
-function plotAngularData(angularData,StanceData,b_oneGaitPhase)
+function plotAngularData(angularData,plotInfo,oneGaitinfo,saveInfo)
 %%
-t = angularData.time;
-t_left = t;
-t_right = t;
-    
-if b_oneGaitPhase
-    StanceVal = StanceData.signals.values;
-    StanceChange = diff(StanceVal,1);
+t_left = oneGaitinfo.time.left;
+t_right = oneGaitinfo.time.right;
 
-    [changeSwing2StanceRow, changeSwing2StanceCol] = find(StanceChange == 1);
+%%
+
+HATAngle    = angularData.signals.values(oneGaitinfo.start.left:oneGaitinfo.end.left,1);
+HATAngleVel = angularData.signals.values(oneGaitinfo.start.left:oneGaitinfo.end.left,2);
+
+LhipAngles      = angularData.signals.values(oneGaitinfo.start.left:oneGaitinfo.end.left,3);
+LhipAnglesVel   = angularData.signals.values(oneGaitinfo.start.left:oneGaitinfo.end.left,4);
+RhipAngles      = angularData.signals.values(oneGaitinfo.start.right:oneGaitinfo.end.right,5);
+RhipAnglesVel   = angularData.signals.values(oneGaitinfo.start.right:oneGaitinfo.end.right,6);
+
+LkneeAngles     = angularData.signals.values(oneGaitinfo.start.left:oneGaitinfo.end.left,7);
+LkneeAnglesVel  = angularData.signals.values(oneGaitinfo.start.left:oneGaitinfo.end.left,8);
+RkneeAngles     = angularData.signals.values(oneGaitinfo.start.right:oneGaitinfo.end.right,9);
+RkneeAnglesVel  = angularData.signals.values(oneGaitinfo.start.right:oneGaitinfo.end.right,10);
+
+LankleAngles    = angularData.signals.values(oneGaitinfo.start.left:oneGaitinfo.end.left,11);
+LankleAnglesVel = angularData.signals.values(oneGaitinfo.start.left:oneGaitinfo.end.left,12);
+RankleAngles    = angularData.signals.values(oneGaitinfo.start.right:oneGaitinfo.end.right,13);
+RankleAnglesVel = angularData.signals.values(oneGaitinfo.start.right:oneGaitinfo.end.right,14);
+
+%%
+angularDataFig = figure();
+
+[timeWinter,hipAngleWinter, kneeAngleWinter, ankleAngleWinter, ~, ~] = getWinterData('normal');
+
+%%
+if true
+    subplot(4,1,1);
+    HATAnglePlot = plot(t_left,HATAngle);
+    title('HAT angle')
+    ylabel('rad');
     
-    leftGaitPhaseStart = changeSwing2StanceRow(changeSwing2StanceCol==1);
-    rightGaitPhaseStart = changeSwing2StanceRow(changeSwing2StanceCol==2);
+    plotHandlesLeft = plotAngularDataInFigure(t_left,LhipAngles,LkneeAngles,LankleAngles);
+    plotHandlesRight = plotAngularDataInFigure(t_right,RhipAngles,RkneeAngles,RankleAngles);
+    plotHandlesWinter = plotAngularDataInFigure(timeWinter,(-hipAngleWinter),kneeAngleWinter,ankleAngleWinter);
+end
+%%
+if false
+    subplot(4,2,1);
+    HATAnglePlot = plot(t_left,HATAngle);
+    title('HAT angle')
+    ylabel('rad');
+    subplot(4,2,2);
+    HATAngleVelPlot = plot(t_left,HATAngleVel);
+    title('HAT angular velocity')
+    ylabel('rad/s')
     
-    selectStart = 5;
-    leftGaitPhaseEnd = leftGaitPhaseStart(selectStart+1);
-    leftGaitPhaseStart = leftGaitPhaseStart(selectStart)+1;
+    set(HATAngleVelPlot,plotInfo.plotProp,plotInfo.plotProp_entries(1,:));
     
-    rightGaitPhaseEnd = rightGaitPhaseStart(selectStart+1);
-    rightGaitPhaseStart = rightGaitPhaseStart(selectStart)+1;
+    plotHandlesLeft = plotAngular_a_VelDataInFigure(t_left,LhipAngles,LhipAnglesVel,...
+        LkneeAngles,LkneeAnglesVel,LankleAngles,LankleAnglesVel);
     
-    t_left = (t_left(leftGaitPhaseStart:leftGaitPhaseEnd)-t_left(leftGaitPhaseStart))./(t_left(leftGaitPhaseEnd)-t_left(leftGaitPhaseStart))*100;
-    t_right = (t_right(rightGaitPhaseStart:rightGaitPhaseEnd)-t_right(rightGaitPhaseStart))./(t_right(rightGaitPhaseEnd)-t_right(rightGaitPhaseStart))*100;
-else   
-    leftGaitPhaseEnd = length(t);
-    leftGaitPhaseStart = 1;
+    plotHandlesRight = plotAngular_a_VelDataInFigure(t_right,RhipAngles,RhipAnglesVel...
+        ,RkneeAngles,RkneeAnglesVel,RankleAngles,RankleAnglesVel);
+
+    plotHandlesWinter = plotAngular_a_VelDataInFigure(timeWinter,(-hipAngleWinter),'',kneeAngleWinter,'',ankleAngleWinter,'');
     
-    rightGaitPhaseEnd = length(t);
-    rightGaitPhaseStart = 1;
 end
 
 %%
+set(HATAnglePlot,plotInfo.plotProp,plotInfo.plotProp_entries(1,:));
 
-HATAngle = angularData.signals.values(:,1);
-HATAngleVel = angularData.signals.values(:,2);
+for i= 1:length(plotHandlesLeft)
+    set(plotHandlesLeft(i),plotInfo.plotProp,plotInfo.plotProp_entries(1,:));
+    set(plotHandlesRight(i),plotInfo.plotProp,plotInfo.plotProp_entries(2,:));
+    if ~isnan(plotHandlesWinter(i))
+        set(plotHandlesWinter(i),plotInfo.plotProp,plotInfo.plotProp_entries(3,:));
+    end
+end
 
-hipAngles = [angularData.signals.values(:,3),angularData.signals.values(:,5)];
-hipAnglesVel = [angularData.signals.values(:,4),angularData.signals.values(:,6)];
+set(angularDataFig, 'Position',[10,40,1000,930]);
+leg = legend([plotHandlesLeft(2),plotHandlesRight(2),plotHandlesWinter(2)],'Left leg','Right leg', 'Winter data');
+% set(leg,'Location','northwest');
+set(leg,'FontSize',18);
+set(leg,'Location','best');
 
-kneeAngles = [angularData.signals.values(:,7),angularData.signals.values(:,9)];
-kneeAnglesVel = [angularData.signals.values(:,8),angularData.signals.values(:,10)];
-
-ankleAngles = [angularData.signals.values(:,11),angularData.signals.values(:,13)];
-ankleAnglesVel = [angularData.signals.values(:,12),angularData.signals.values(:,14)];
-
-
-
-figure();
-
-%%
-subplot(4,2,1);
-plot(t_left,HATAngle(leftGaitPhaseStart:leftGaitPhaseEnd,1));
-title('HAT angle')
-ylabel('rad');
-
-subplot(4,2,2);
-plot(t_left,HATAngleVel(leftGaitPhaseStart:leftGaitPhaseEnd,1));
-title('HAT angular velocity')
-ylabel('rad/s')
-
-plotAngularDataInFigure(t_left,hipAngles(leftGaitPhaseStart:leftGaitPhaseEnd,1),hipAnglesVel(leftGaitPhaseStart:leftGaitPhaseEnd,1),...
-                        kneeAngles(leftGaitPhaseStart:leftGaitPhaseEnd,1),kneeAnglesVel(leftGaitPhaseStart:leftGaitPhaseEnd,1),...
-                            ankleAngles(leftGaitPhaseStart:leftGaitPhaseEnd,1),ankleAnglesVel(leftGaitPhaseStart:leftGaitPhaseEnd,1));
-
-plotAngularDataInFigure(t_right,hipAngles(rightGaitPhaseStart:rightGaitPhaseEnd,2),hipAnglesVel(rightGaitPhaseStart:rightGaitPhaseEnd,2)...
-                        ,kneeAngles(rightGaitPhaseStart:rightGaitPhaseEnd,2),kneeAnglesVel(rightGaitPhaseStart:rightGaitPhaseEnd,2), ...
-                        ankleAngles(rightGaitPhaseStart:rightGaitPhaseEnd,2),ankleAnglesVel(rightGaitPhaseStart:rightGaitPhaseEnd,2))
+if saveInfo.b_saveFigure
+    for j = 1:length(saveInfo.type)
+        saveFigure(angularDataFig,'angularData',saveInfo.type{j},saveInfo.info)
+    end
+end
