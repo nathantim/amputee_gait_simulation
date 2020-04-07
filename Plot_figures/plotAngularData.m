@@ -1,7 +1,7 @@
-function plotAngularData(angularData,plotInfo,oneGaitinfo,saveInfo)
+function plotAngularData(angularData,GaitPhaseData,plotInfo,oneGaitinfo,saveInfo)
 %%
-t_left = oneGaitinfo.time.left;
-t_right = oneGaitinfo.time.right;
+t_left_perc = oneGaitinfo.time.left_perc;
+t_right_perc = oneGaitinfo.time.right_perc;
 
 %%
 
@@ -23,6 +23,9 @@ LankleAnglesVel = angularData.signals.values(oneGaitinfo.start.left:oneGaitinfo.
 RankleAngles    = angularData.signals.values(oneGaitinfo.start.right:oneGaitinfo.end.right,13);
 RankleAnglesVel = angularData.signals.values(oneGaitinfo.start.right:oneGaitinfo.end.right,14);
 
+leftLegState    = GaitPhaseData.signals.values(oneGaitinfo.start.left:oneGaitinfo.end.left,1);
+rightLegState   = GaitPhaseData.signals.values(oneGaitinfo.start.right:oneGaitinfo.end.right,2);
+
 %%
 angularDataFig = figure();
 
@@ -30,32 +33,37 @@ angularDataFig = figure();
 
 %%
 if true
-    subplot(4,1,1);
-    HATAnglePlot = plot(t_left,HATAngle);
+     
+    subplot(5,1,1);
+    legStatePlot = plot(t_left_perc,leftLegState,t_right_perc,rightLegState);
+    title('leg state')
+
+    subplot(5,1,2);
+    HATAnglePlot = plot(t_left_perc,HATAngle);
     title('HAT angle')
     ylabel('rad');
     
-    plotHandlesLeft = plotAngularDataInFigure(t_left,LhipAngles,LkneeAngles,LankleAngles);
-    plotHandlesRight = plotAngularDataInFigure(t_right,RhipAngles,RkneeAngles,RankleAngles);
+    plotHandlesLeft = plotAngularDataInFigure(t_left_perc,LhipAngles,LkneeAngles,LankleAngles);
+    plotHandlesRight = plotAngularDataInFigure(t_right_perc,RhipAngles,RkneeAngles,RankleAngles);
     plotHandlesWinter = plotAngularDataInFigure(timeWinter,(-hipAngleWinter),kneeAngleWinter,ankleAngleWinter);
 end
 %%
 if false
     subplot(4,2,1);
-    HATAnglePlot = plot(t_left,HATAngle);
+    HATAnglePlot = plot(t_left_perc,HATAngle);
     title('HAT angle')
     ylabel('rad');
     subplot(4,2,2);
-    HATAngleVelPlot = plot(t_left,HATAngleVel);
+    HATAngleVelPlot = plot(t_left_perc,HATAngleVel);
     title('HAT angular velocity')
     ylabel('rad/s')
     
     set(HATAngleVelPlot,plotInfo.plotProp,plotInfo.plotProp_entries(1,:));
     
-    plotHandlesLeft = plotAngular_a_VelDataInFigure(t_left,LhipAngles,LhipAnglesVel,...
+    plotHandlesLeft = plotAngular_a_VelDataInFigure(t_left_perc,LhipAngles,LhipAnglesVel,...
         LkneeAngles,LkneeAnglesVel,LankleAngles,LankleAnglesVel);
     
-    plotHandlesRight = plotAngular_a_VelDataInFigure(t_right,RhipAngles,RhipAnglesVel...
+    plotHandlesRight = plotAngular_a_VelDataInFigure(t_right_perc,RhipAngles,RhipAnglesVel...
         ,RkneeAngles,RkneeAnglesVel,RankleAngles,RankleAnglesVel);
 
     plotHandlesWinter = plotAngular_a_VelDataInFigure(timeWinter,(-hipAngleWinter),'',kneeAngleWinter,'',ankleAngleWinter,'');
@@ -63,6 +71,7 @@ if false
 end
 
 %%
+set(legStatePlot,plotInfo.plotProp,plotInfo.plotProp_entries(1:2,:));
 set(HATAnglePlot,plotInfo.plotProp,plotInfo.plotProp_entries(1,:));
 
 for i= 1:length(plotHandlesLeft)

@@ -1,16 +1,16 @@
-function plotData(angularData,musculoData,GRFData,StanceData,info,b_saveFigure,b_oneGaitPhase)
+function plotData(angularData,musculoData,GRFData,GaitPhaseData,info,b_saveFigure,b_oneGaitPhase)
 %%
 set(0, 'DefaultAxesTitleFontSizeMultiplier',1.5);
 set(0, 'DefaultAxesLabelFontSizeMultiplier',1.5);
 
 
 saveInfo = struct;
-if  nargin <= 5
+if  nargin <= 6
     saveInfo.b_saveFigure = 1;
 else
     saveInfo.b_saveFigure = b_saveFigure;
 end
-if  nargin <= 6
+if  nargin <= 7
     b_oneGaitPhase = 1;
 end
 if saveInfo.b_saveFigure
@@ -24,23 +24,33 @@ t_right = t;
 
 %%
 if (b_oneGaitPhase)
-    StanceVal = StanceData.signals.values;
-    StanceChange = diff(StanceVal,1);
+    leftLegState    = GaitPhaseData.signals.values(:,1);
+    rightLegState   = GaitPhaseData.signals.values(:,2);
+    leftLegStateChange = diff(leftLegState);
+    rightLegStateChange = diff(rightLegState);
+    
+    [L_changeSwing2StanceIdx] = find(leftLegStateChange == -4);
+    [R_changeSwing2StanceIdx] = find(rightLegStateChange == -4);
 
-    [changeSwing2StanceRow, changeSwing2StanceCol] = find(StanceChange == 1);
+%     StanceVal = StanceData.signals.values;
+%     StanceChange = diff(StanceVal,1);
+
+%     [changeSwing2StanceRow, changeSwing2StanceCol] = find(StanceChange == 1);
     
-    leftGaitPhaseStart = changeSwing2StanceRow(changeSwing2StanceCol==1);
-    rightGaitPhaseStart = changeSwing2StanceRow(changeSwing2StanceCol==2);
+%     leftGaitPhaseStart = changeSwing2StanceRow(changeSwing2StanceCol==1);
+%     rightGaitPhaseStart = changeSwing2StanceRow(changeSwing2StanceCol==2);
     
-    selectStart = 5;
-    leftGaitPhaseEnd = leftGaitPhaseStart(selectStart+1);
-    leftGaitPhaseStart = leftGaitPhaseStart(selectStart)+1;
+    selectStart = min(5,length(L_changeSwing2StanceIdx)-1);
+    leftGaitPhaseEnd = L_changeSwing2StanceIdx(selectStart+1);
+    leftGaitPhaseStart = L_changeSwing2StanceIdx(selectStart)+1;
     
-    rightGaitPhaseEnd = rightGaitPhaseStart(selectStart+1);
-    rightGaitPhaseStart = rightGaitPhaseStart(selectStart)+1;
+    rightGaitPhaseEnd = R_changeSwing2StanceIdx(selectStart+1);
+    rightGaitPhaseStart = R_changeSwing2StanceIdx(selectStart)+1;
     
-    t_left = (t_left(leftGaitPhaseStart:leftGaitPhaseEnd)-t_left(leftGaitPhaseStart))./(t_left(leftGaitPhaseEnd)-t_left(leftGaitPhaseStart))*100;
-    t_right = (t_right(rightGaitPhaseStart:rightGaitPhaseEnd)-t_right(rightGaitPhaseStart))./(t_right(rightGaitPhaseEnd)-t_right(rightGaitPhaseStart))*100;
+    t_left = t_left(leftGaitPhaseStart:leftGaitPhaseEnd);
+    t_right = t_right(rightGaitPhaseStart:rightGaitPhaseEnd);
+    t_left_perc = (t_left-t_left(1))./(t_left(end)-t_left(1))*100;
+    t_right_perc = (t_right-t_right(1))./(t_right(end)-t_right(1))*100;
 else   
     leftGaitPhaseEnd = length(t);
     leftGaitPhaseStart = 1;
@@ -57,6 +67,8 @@ oneGaitinfo.end.left = leftGaitPhaseEnd;
 oneGaitinfo.end.right = rightGaitPhaseEnd;
 oneGaitinfo.time.left = t_left;
 oneGaitinfo.time.right = t_right;
+oneGaitinfo.time.left_perc = t_left_perc;
+oneGaitinfo.time.right_perc = t_right_perc;
 
 %%
 plotInfo.plotProp = {'LineStyle','Color','LineWidth'};
@@ -68,7 +80,7 @@ plotInfo.lineWidthProp = {3;3;3};
 plotInfo.plotProp_entries = [plotInfo.lineVec(:),plotInfo.colorProp(:), plotInfo.lineWidthProp(:)];
 
 %%
-plotAngularData(angularData,plotInfo,oneGaitinfo,saveInfo);
+plotAngularData(angularData,GaitPhaseData,plotInfo,oneGaitinfo,saveInfo);
 plotMusculoData(musculoData,plotInfo,oneGaitinfo,saveInfo);
 plotGRF(GRFData,plotInfo,oneGaitinfo,saveInfo);
 
