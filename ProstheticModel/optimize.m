@@ -1,7 +1,7 @@
 global model rtp InitialGuess
 
 %specifiy model and intial parameters
-model = 'NeuromuscularModel';
+model = 'NeuromuscularModelwReflex2';
 optfunc = 'cmaesParallelSplit';
 InitialGuess = load('InitialGuess.mat');
 InitialGuess = InitialGuess.InitialGuess;

@@ -5,12 +5,12 @@ set(0, 'DefaultAxesLabelFontSizeMultiplier',1.5);
 
 
 saveInfo = struct;
-if  nargin <= 6
+if  nargin <= 5
     saveInfo.b_saveFigure = 1;
 else
     saveInfo.b_saveFigure = b_saveFigure;
 end
-if  nargin <= 7
+if  nargin <= 6
     b_oneGaitPhase = 1;
 end
 if saveInfo.b_saveFigure

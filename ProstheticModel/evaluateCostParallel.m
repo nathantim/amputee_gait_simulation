@@ -1,6 +1,6 @@
 function cost=evaluateCostParallel(paramStruct)
     try
-        simout = sim('NeuromuscularModel',...
+        simout = sim('NeuromuscularModelwReflex2',...
            'RapidAcceleratorParameterSets',paramStruct,...
            'RapidAcceleratorUpToDateCheck','off',...
            'TimeOut',10*60,...
@@ -65,4 +65,12 @@ function cost=evaluateCostParallel(paramStruct)
     %cost = -1*HATPos;
     %}
 %     cost = HATPos;
-    cost = -numSteps;% + metabolicEnergy;
+   tconst1 = 1e11;
+    timecost = tconst1/exp(time);
+
+    amputeeMass = 75.25;
+    costOfTransport = (metabolicEnergy + 0.1*sumOfIdealTorques + 0.01*sumOfStopTorques)/(HATPos*amputeeMass);
+%     cost = costOfTransport + timecost + statecost;
+    
+%     cost = -10*numSteps + 1*costOfTransport;% + metabolicEnergy;
+cost = costOfTransport;% + metabolicEnergy;

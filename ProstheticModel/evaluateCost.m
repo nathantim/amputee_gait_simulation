@@ -1,7 +1,7 @@
 assignGains
 
 tic;
-sim('NeuromuscularModel')
+sim('NeuromuscularModelwReflex2')
 toc;
 
 time 
