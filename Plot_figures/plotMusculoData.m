@@ -28,7 +28,11 @@ set(musculoDataFig, 'Position',[10,40,1200,930]);
 
 plotHandlesLeft = plotMusculoDataInFigure(t_left_perc,L_SOL,L_TA,L_GAS,L_VAS,L_HAM,L_GLU,L_HFL);
 plotHandlesRight = plotMusculoDataInFigure(t_right_perc,R_SOL,R_TA,R_GAS,R_VAS,R_HAM,R_GLU,R_HFL,R_HAMc);
-leg = legend('Left leg','Right leg');
+if contains(saveInfo.info,'prosthetic')
+    leg = legend('Intact leg','Prosthetic leg');
+else
+    leg = legend('Left leg','Right leg');
+end
 set(leg,'FontSize',18);
 
 for i= 1:length(plotHandlesLeft)

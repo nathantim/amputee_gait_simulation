@@ -59,7 +59,7 @@ end
 % -----------------------
         
     % view window size 
-    ViewWin   =   7;%12; %[m]
+    ViewWin   =   5;%12; %[m]
     TolFrac   = 1/50; %[ViewWin]
     tShiftTot =  0*1; %[s] total time of view window shift
 

@@ -83,7 +83,13 @@ for i= 1:length(plotHandlesLeft)
 end
 
 set(angularDataFig, 'Position',[10,40,1000,930]);
-leg = legend([plotHandlesLeft(2),plotHandlesRight(2),plotHandlesWinter(2)],'Left leg','Right leg', 'Winter data');
+
+if contains(saveInfo.info,'prosthetic')
+    leg = legend([plotHandlesLeft(2),plotHandlesRight(2),plotHandlesWinter(2)],'Intact leg','Prosthetic leg', 'Winter data');
+else
+    leg = legend([plotHandlesLeft(2),plotHandlesRight(2),plotHandlesWinter(2)],'Left leg','Right leg', 'Winter data');
+end
+
 % set(leg,'Location','northwest');
 set(leg,'FontSize',18);
 set(leg,'Location','best');

@@ -25,7 +25,11 @@ else
     plotHandlesRight = plotTotalGRFDataInFigure(t_right_perc,R_Total);
     set(GRFDataFig, 'Position',[10,50,600,400]);
 end
-leg = legend('Left leg','Right leg');
+if contains(saveInfo.info,'prosthetic')
+    leg = legend('Intact leg','Prosthetic leg');
+else
+    leg = legend('Left leg','Right leg');
+end
 set(leg,'FontSize',18);
 
 for i= 1:length(plotHandlesLeft)

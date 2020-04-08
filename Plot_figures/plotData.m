@@ -31,14 +31,6 @@ if (b_oneGaitPhase)
     
     [L_changeSwing2StanceIdx] = find(leftLegStateChange == -4);
     [R_changeSwing2StanceIdx] = find(rightLegStateChange == -4);
-
-%     StanceVal = StanceData.signals.values;
-%     StanceChange = diff(StanceVal,1);
-
-%     [changeSwing2StanceRow, changeSwing2StanceCol] = find(StanceChange == 1);
-    
-%     leftGaitPhaseStart = changeSwing2StanceRow(changeSwing2StanceCol==1);
-%     rightGaitPhaseStart = changeSwing2StanceRow(changeSwing2StanceCol==2);
     
     selectStart = min(5,length(L_changeSwing2StanceIdx)-1);
     leftGaitPhaseEnd = L_changeSwing2StanceIdx(selectStart+1);
