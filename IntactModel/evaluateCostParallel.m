@@ -1,4 +1,5 @@
 function cost=evaluateCostParallel(paramStruct)
+OptimParams;
     try
         simout = sim('NeuromuscularModel',...
             'RapidAcceleratorParameterSets',paramStruct,...
@@ -17,6 +18,8 @@ function cost=evaluateCostParallel(paramStruct)
     sumOfStopTorques = get(simout,'sumOfStopTorques');
     HATPos = get(simout,'HATPos');
     swingStateCounts = get(simout, 'swingStateCounts');
+    stepVelocities = get(simout, 'stepVelocities');
+    stepTimes = get(simout, 'stepTimes');
     
     if HATPos > 101
         cost = nan;
@@ -36,6 +39,13 @@ function cost=evaluateCostParallel(paramStruct)
         return
     end
 
+    if ( min(size(stepVelocities)) == 0 || min(size(stepTimes.signals.values)) == 0 || size(stepVelocities,2) ~= 2 || size(stepTimes.signals.values,2) ~= 2 || ...
+            min(size(stepVelocities(stepVelocities~=0))) == 0 ||  min(size(stepTimes.signals.values(stepTimes.signals.values~=0))) == 0) 
+        cost = nan;
+        disp('No steps')
+        return
+    end
+    
     %compute cost of not using all states
     statecost = 0;
     numSteps = swingStateCounts(1);
@@ -67,4 +77,7 @@ function cost=evaluateCostParallel(paramStruct)
     %}
     
     %cost = -1*HATPos;
-    cost = HATPos;
+    velCost = getVelMeasure(stepVelocities(:,1),stepTimes.signals.values(:,1),min_velocity,max_velocity,initiation_steps) + ...
+        getVelMeasure(stepVelocities(:,2),stepTimes.signals.values(:,2),min_velocity,max_velocity,initiation_steps);
+
+    cost = 100*velCost;

@@ -30,3 +30,5 @@ numSteps
 EnergyCost = costOfTransport + timecost + statecost
 RobustnessCost = -1*HATPos + 0.0005*sumOfStopTorques + 0.5*statecost
 HATPos
+
+

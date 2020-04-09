@@ -1,8 +1,9 @@
+clear all; clc;
 global model rtp InitialGuess
 
 %specifiy model and intial parameters
 model = 'NeuromuscularModel';
-optfunc = 'cmaesParallelSplitRough';
+optfunc = 'cmaesParallelSplit';
 InitialGuess = load('InitialGuess.mat');
 InitialGuess = InitialGuess.InitialGuess;
 
@@ -22,15 +23,15 @@ sigma0 = 1/8;
 
 opts = cmaes;
 %opts.PopSize = numvars;
-opts.Resume = 'yes';
-opts.MaxIter = 300;
+opts.Resume = 'no';
+opts.MaxIter = 50;
 opts.StopFitness = -inf;
 %opts.StopFitness = -20;
 opts.DispModulo = 1;
 opts.TolX = 1e-2;
 opts.TolFun = 1e-2;
 opts.EvalParallel = 'yes';
-opts.LogPlot = 'on';
+opts.LogPlot = 'off';
 
 %run cmaes
 [xmin, fmin, counteval, stopflag, out, bestever] = cmaes(optfunc, x0, sigma0, opts)

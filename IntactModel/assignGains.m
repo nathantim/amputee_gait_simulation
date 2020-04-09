@@ -1,5 +1,6 @@
 BodyMechParams;
 ControlParams;
+OptimParams;
 
 GainGAS           = Gains( 1);
 GainGLU           = Gains( 2);
