@@ -25,6 +25,7 @@ timecost = tconst1/exp(time);
 amputeeMass = 80;
 costOfTransport = (metabolicEnergy + 0.1*sumOfIdealTorques + .1*sumOfStopTorques)/(HATPos*amputeeMass);
 
+numSteps
 EnergyCost = costOfTransport + timecost + statecost
 RobustnessCost = -1*HATPos + 0.0005*sumOfStopTorques + 0.5*statecost
 HATPos

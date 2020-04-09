@@ -2,7 +2,7 @@ BodyMechParams;
 ControlParams;
 % prostheticParams;
 
-% load('Results/RoughDist/optimizedGains1.mat');
+load('Results/RoughDist/optimizedGains1.mat');
 % load('Results/RoughDist/optimizedGainsComb.mat');
 LGainGAS           = Gains( 1);
 LGainGLU           = Gains( 2);
