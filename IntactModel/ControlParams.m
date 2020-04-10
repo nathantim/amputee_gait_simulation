@@ -6,6 +6,7 @@
 % H.Geyer
 % 5 October 2006
 %
+termination_height = 0.6;
 
 
 % ************************************ %

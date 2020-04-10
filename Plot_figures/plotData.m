@@ -15,9 +15,8 @@ if  nargin <= 6
 end
 if saveInfo.b_saveFigure
     saveInfo.type = {'jpeg','eps'};
-    saveInfo.info = info;
 end
-
+saveInfo.info = info;
 t = angularData.time;
 t_left = t;
 t_right = t;

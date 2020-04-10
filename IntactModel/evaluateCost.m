@@ -1,4 +1,7 @@
-assignGains
+clc;
+Gains = InitialGuess.*exp(bestever.x);
+assignGains;
+OptimParams;
 
 %open('NeuromuscularModel');
 tic;
@@ -20,15 +23,32 @@ if sum(swingStatePercents < 0.75)
     statecost = range(swingStateCounts);
 end
 
+if ( min(size(stepVelocities)) == 0 || min(size(stepTimes.signals.values)) == 0 || size(stepVelocities,2) ~= 2 || size(stepTimes.signals.values,2) ~= 2 || ...
+        min(size(stepVelocities(stepVelocities~=0))) == 0 ||  min(size(stepTimes.signals.values(stepTimes.signals.values~=0))) == 0)
+    disp('No steps')
+end
+    
 %compute cost of transport
 tconst1 = 1e11;
 timecost = tconst1/exp(time);
 amputeeMass = 80;
 costOfTransport = (metabolicEnergy + 0.1*sumOfIdealTorques + .1*sumOfStopTorques)/(HATPos*amputeeMass);
 
-numSteps
-EnergyCost = costOfTransport + timecost + statecost
-RobustnessCost = -1*HATPos + 0.0005*sumOfStopTorques + 0.5*statecost
-HATPos
+numSteps;
+EnergyCost = costOfTransport + timecost + statecost;
+RobustnessCost = -1*HATPos + 0.0005*sumOfStopTorques + 0.5*statecost;
+HATPos;
 
+timeSetToRun = str2double(get_param('NeuromuscularModel','StopTime'));
+Tsim = stepTimes.time(end);
+timeCost = timeSetToRun/Tsim-1;
 
+ velCost = getVelMeasure(stepVelocities(:,1),stepTimes.signals.values(:,1),min_velocity,max_velocity,initiation_steps) + ...
+        getVelMeasure(stepVelocities(:,2),stepTimes.signals.values(:,2),min_velocity,max_velocity,initiation_steps);
+
+[distCost, dist_covered] = getDistMeasure(stepTimes.time(end),stepLengths,min_velocity,max_velocity,dist_slack);
+meanVel = 1/2*(mean(stepVelocities(stepVelocities(:,1)~=0,1)) + mean(stepVelocities(stepVelocities(:,2)~=0,2)));
+
+cost = 100000*timeCost  + 1000*(velCost + 0*distCost) + 0.1*costOfTransport;
+    fprintf('-- <strong> sim time: %2.2f</strong>, Cost: %2.2f, timeCost: %2.2f, velCost: %2.2f, distCost: %2.2f, distance covered: %2.2f, avg velocity: %2.2f, Cost of Transport: %6.2f --\n',...
+       Tsim, cost, timeCost, velCost, distCost, dist_covered, meanVel, costOfTransport);

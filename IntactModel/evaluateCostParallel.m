@@ -20,6 +20,7 @@ OptimParams;
     swingStateCounts = get(simout, 'swingStateCounts');
     stepVelocities = get(simout, 'stepVelocities');
     stepTimes = get(simout, 'stepTimes');
+    stepLengths = get(simout, 'stepLengths');
     
     if HATPos > 101
         cost = nan;
@@ -45,6 +46,12 @@ OptimParams;
         disp('No steps')
         return
     end
+   
+%     if ~bisProperDistCovered(stepTimes.time(end),stepLengths,min_velocity,max_velocity,dist_slack)
+%         cost = nan;
+%         disp('Not enough distance covered')
+%         return
+%     end
     
     %compute cost of not using all states
     statecost = 0;
@@ -54,18 +61,18 @@ OptimParams;
         statecost = range(swingStateCounts);
     end
     
-    if (max(swingStateCounts)+1)/HATPos < 0.7
-        cost = nan;
-    end
-    %{
+%     if (max(swingStateCounts)+1)/HATPos < 0.7
+%         cost = nan;
+%     end
+    
     %compute cost of transport
     tconst1 = 1e11;
     timecost = tconst1/exp(time);
 
     amputeeMass = 80;
     costOfTransport = (metabolicEnergy + 0.1*sumOfIdealTorques + .01*sumOfStopTorques)/(HATPos*amputeeMass);
-    cost = costOfTransport + timecost + statecost;
-    %}
+%     cost = costOfTransport + timecost + statecost;
+    
 
     %{
     cost = -1*HATPos + 0.0005*sumOfStopTorques + 0.5*statecost;
@@ -77,7 +84,21 @@ OptimParams;
     %}
     
     %cost = -1*HATPos;
+    
+    timeSetToRun = str2double(get_param('NeuromuscularModel','StopTime'));
+    Tsim = stepTimes.time(end);
+    
+    timeCost = round(timeSetToRun/Tsim,3)-1;
+    if timeCost < 0
+        timeCost = 0;
+    end
+    
     velCost = getVelMeasure(stepVelocities(:,1),stepTimes.signals.values(:,1),min_velocity,max_velocity,initiation_steps) + ...
         getVelMeasure(stepVelocities(:,2),stepTimes.signals.values(:,2),min_velocity,max_velocity,initiation_steps);
-
-    cost = 100*velCost;
+    meanVel = 1/2*(mean(stepVelocities(stepVelocities(:,1)~=0,1)) + mean(stepVelocities(stepVelocities(:,2)~=0,2)));
+    
+    [distCost, dist_covered] = getDistMeasure(timeSetToRun,stepLengths,min_velocity,max_velocity,dist_slack);
+    
+    cost = 100000*timeCost  + 1000*(velCost + 0*distCost) + 0.1*costOfTransport;
+    fprintf('-- <strong> sim time: %2.2f</strong>, Cost: %2.2f, timeCost: %2.2f, velCost: %2.2f, distCost: %2.2f, distance covered: %2.2f, avg velocity: %2.2f, Cost of Transport: %6.2f --\n',...
+       Tsim, cost, timeCost, velCost, distCost, dist_covered, meanVel, costOfTransport);

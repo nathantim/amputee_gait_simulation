@@ -1,5 +1,5 @@
 function step_measure = getVelMeasure_singlestep(est_velocity,diff_step_time,min_velocity,max_velocity)
-vel_violation = nan;
+% vel_violation = nan;
 
 
 if est_velocity < min_velocity

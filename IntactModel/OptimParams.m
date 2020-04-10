@@ -1,6 +1,5 @@
-termination_height = 0.5;
-
-min_velocity = 0.5;
-max_velocity = 1; % speed of light
+min_velocity = 1.4;
+max_velocity = 1.4; 
 % max_velocity = 299792458.0; % speed of light
 initiation_steps = 5;
+dist_slack = 0.4;
