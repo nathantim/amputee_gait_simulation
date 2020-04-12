@@ -7,7 +7,7 @@
 % 5 October 2006
 %
 
-
+termination_height = 0.5;
 % ************************************ %
 % 1. General Neural Control Parameters %
 % ************************************ %

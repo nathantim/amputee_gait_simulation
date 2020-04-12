@@ -1,8 +1,10 @@
+clear all;clc;
+%%
 global model rtp InitialGuess
 
 %specifiy model and intial parameters
 model = 'NeuromuscularModelwReflex2';
-optfunc = 'cmaesParallelSplit';
+optfunc = 'cmaesParallelSplit_novirtmuscle';
 InitialGuess = load('InitialGuess.mat');
 InitialGuess = InitialGuess.InitialGuess;
 
@@ -23,7 +25,7 @@ sigma0 = 1/8;
 opts = cmaes;
 %opts.PopSize = numvars;
 opts.Resume = 'no';
-opts.MaxIter = 50;
+opts.MaxIter = 300;
 opts.StopFitness = -inf;
 %opts.StopFitness = -20;
 opts.DispModulo = 1;
