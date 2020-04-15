@@ -1,7 +1,8 @@
 function cost=evaluateCostParallel(paramStruct)
 OptimParams;
+model = 'NeuromuscularModel';
     try
-        simout = sim('NeuromuscularModel',...
+        simout = sim(model,...
             'RapidAcceleratorParameterSets',paramStruct,...
             'RapidAcceleratorUpToDateCheck','off',...
             'TimeOut',2*60,...
@@ -84,8 +85,15 @@ OptimParams;
     %}
     
     %cost = -1*HATPos;
+    leftStrideLengths = stepLengths(stepLengths(:,1)~=0,1);
+    rightStrideLengths = stepLengths(stepLengths(:,2)~=0,2);
+    meanStrideLength = mean( [mean(leftStrideLengths(initiation_steps:end)), mean(rightStrideLengths(initiation_steps:end))]);
     
-    timeSetToRun = str2double(get_param('NeuromuscularModel','StopTime'));
+    leftStrideTimes = stepTimes.signals.values(stepTimes.signals.values(:,1)~=0,1);
+    rightStrideTimes = stepTimes.signals.values(stepTimes.signals.values(:,2)~=0,2);
+    meanStrideTime = mean( [mean(leftStrideTimes(initiation_steps:end)), mean(rightStrideTimes(initiation_steps:end))]);
+
+    timeSetToRun = str2double(get_param(model,'StopTime'));
     Tsim = stepTimes.time(end);
     
     timeCost = round(timeSetToRun/Tsim,3)-1;
@@ -97,8 +105,9 @@ OptimParams;
         getVelMeasure(stepVelocities(:,2),stepTimes.signals.values(:,2),min_velocity,max_velocity,initiation_steps);
     meanVel = 1/2*(mean(stepVelocities(stepVelocities(:,1)~=0,1)) + mean(stepVelocities(stepVelocities(:,2)~=0,2)));
     
-    [distCost, dist_covered] = getDistMeasure(timeSetToRun,stepLengths,min_velocity,max_velocity,dist_slack);
+%     [distCost, dist_covered] = getDistMeasure(timeSetToRun,stepLengths,min_velocity,max_velocity,dist_slack);
     
-    cost = 100000*timeCost  + 1000*(velCost + 0*distCost) + 0.1*costOfTransport;
-    fprintf('-- <strong> sim time: %2.2f</strong>, Cost: %2.2f, timeCost: %2.2f, velCost: %2.2f, distCost: %2.2f, distance covered: %2.2f, avg velocity: %2.2f, Cost of Transport: %6.2f --\n',...
-       Tsim, cost, timeCost, velCost, distCost, dist_covered, meanVel, costOfTransport);
+%     cost = 100000*timeCost  + 1000*(velCost + 0*distCost) + 0.1*costOfTransport;
+    cost = 100000*timeCost  + 1000*velCost + 100*costOfTransport;
+    fprintf('-- <strong> sim time: %2.2f</strong>, Cost: %2.2f, timeCost: %2.2f, velCost: %2.2f, avg velocity: %2.2f, Cost of Transport: %6.2f, avg stride time: %1.2f, , avg stride length: %1.2f --\n',...
+       Tsim, cost, timeCost, velCost, meanVel, costOfTransport, meanStrideTime, meanStrideLength);

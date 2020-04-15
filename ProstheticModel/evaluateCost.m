@@ -1,6 +1,8 @@
 Gains = InitialGuess.*exp(bestever.x);
+% assignGains;
 assignGains_novirtmuscle;
 OptimParams;
+% bdclose('all');
 model = 'NeuromuscularModelwReflex2';
 
 tic;
@@ -38,6 +40,14 @@ EnergyCost = costOfTransport + timecost + statecost;
 RobustnessCost = -1*HATPos + 0.0005*sumOfStopTorques + 0.5*statecost;
 HATPos;
 
+leftStepLengths = stepLengths(stepLengths(:,1)~=0,1);
+rightStepLengths = stepLengths(stepLengths(:,2)~=0,2);
+meanStepLength = mean( [mean(leftStepLengths(initiation_steps:end)), mean(rightStepLengths(initiation_steps:end))]);
+
+leftStepTimes = stepTimes.signals.values(stepTimes.signals.values(:,1)~=0,1);
+rightStepTimes = stepTimes.signals.values(stepTimes.signals.values(:,2)~=0,2);
+meanStepTime = mean( [mean(leftStepTimes(initiation_steps:end)), mean(rightStepTimes(initiation_steps:end))]);
+
 timeSetToRun = str2double(get_param(model,'StopTime'));
 Tsim = stepTimes.time(end);
 timeCost = timeSetToRun/Tsim-1;
@@ -48,6 +58,8 @@ timeCost = timeSetToRun/Tsim-1;
 [distCost, dist_covered] = getDistMeasure(stepTimes.time(end),stepLengths,min_velocity,max_velocity,dist_slack);
 meanVel = 1/2*(mean(stepVelocities(stepVelocities(:,1)~=0,1)) + mean(stepVelocities(stepVelocities(:,2)~=0,2)));
 
-cost = 100000*timeCost  + 1000*(velCost + 0*distCost) + 0.1*costOfTransport;
-    fprintf('-- <strong> sim time: %2.2f</strong>, Cost: %2.2f, timeCost: %2.2f, velCost: %2.2f, distCost: %2.2f, distance covered: %2.2f, avg velocity: %2.2f, Cost of Transport: %6.2f --\n',...
-       Tsim, cost, timeCost, velCost, distCost, dist_covered, meanVel, costOfTransport);
+% cost = 100000*timeCost  + 1000*(velCost + 0*distCost) + 0.1*costOfTransport;
+cost = 100000*timeCost  + 1000*(velCost) + 100*costOfTransport;
+
+fprintf('-- <strong> sim time: %2.2f</strong>, Cost: %2.2f, timeCost: %2.2f, velCost: %2.2f, avg velocity: %2.2f, Cost of Transport: %6.2f, avg step time: %1.2f, , avg step length: %1.2f --\n',...
+       Tsim, cost, timeCost, velCost, meanVel, costOfTransport, meanStepTime, meanStepLength);

@@ -1,17 +1,17 @@
-function plotData(angularData,musculoData,GRFData,GaitPhaseData,info,b_saveFigure,b_oneGaitPhase)
+function plotData(angularData,musculoData,GRFData,GaitPhaseData,stepTimes,info,b_saveFigure,b_oneGaitPhase)
 %%
 set(0, 'DefaultAxesTitleFontSizeMultiplier',1.5);
 set(0, 'DefaultAxesLabelFontSizeMultiplier',1.5);
 
 
 saveInfo = struct;
-if  nargin <= 5
+if  nargin <= 6
     saveInfo.b_saveFigure = 1;
 else
     saveInfo.b_saveFigure = b_saveFigure;
 end
-if  nargin <= 6
-    b_oneGaitPhase = 1;
+if  nargin <= 7
+    b_oneGaitPhase = true;
 end
 if saveInfo.b_saveFigure
     saveInfo.type = {'jpeg','eps'};
@@ -31,7 +31,7 @@ if (b_oneGaitPhase)
     [L_changeSwing2StanceIdx] = find(leftLegStateChange == -4);
     [R_changeSwing2StanceIdx] = find(rightLegStateChange == -4);
     
-    selectStart = min(5,length(L_changeSwing2StanceIdx)-1);
+    selectStart = max([ceil(1.5*(length(L_changeSwing2StanceIdx)/2)),min(1,length(L_changeSwing2StanceIdx)-1),min(1,length(R_changeSwing2StanceIdx)-1)])
     leftGaitPhaseEnd = L_changeSwing2StanceIdx(selectStart+1);
     leftGaitPhaseStart = L_changeSwing2StanceIdx(selectStart)+1;
     
@@ -45,21 +45,31 @@ if (b_oneGaitPhase)
 else   
     leftGaitPhaseEnd = length(t);
     leftGaitPhaseStart = 1;
-    
+    t_left_perc = t_left;
+    t_right_perc = t_right;
     rightGaitPhaseEnd = length(t);
     rightGaitPhaseStart = 1;
 end
 
 %%
+GaitInfo.b_oneGaitPhase = logical(b_oneGaitPhase);
+GaitInfo.start.left = leftGaitPhaseStart;
+GaitInfo.start.right = rightGaitPhaseStart;
+GaitInfo.end.left = leftGaitPhaseEnd;
+GaitInfo.end.right = rightGaitPhaseEnd;
+GaitInfo.time.left = t_left;
+GaitInfo.time.right = t_right;
+GaitInfo.time.left_perc = t_left_perc;
+GaitInfo.time.right_perc = t_right_perc;
 
-oneGaitinfo.start.left = leftGaitPhaseStart;
-oneGaitinfo.start.right = rightGaitPhaseStart;
-oneGaitinfo.end.left = leftGaitPhaseEnd;
-oneGaitinfo.end.right = rightGaitPhaseEnd;
-oneGaitinfo.time.left = t_left;
-oneGaitinfo.time.right = t_right;
-oneGaitinfo.time.left_perc = t_left_perc;
-oneGaitinfo.time.right_perc = t_right_perc;
+%%
+tWinter = [1.45,1.2,0.96];
+speedsWinter = {'slow','normal','fast'};
+leftLegSteptimes = stepTimes.signals.values(stepTimes.signals.values(:,1)~=0,1);
+rightLegSteptimes = stepTimes.signals.values(stepTimes.signals.values(:,2)~=0,2);
+meanStepTime = mean([mean(leftLegSteptimes),mean(rightLegSteptimes)]);
+% speed2select = find(abs(tWinter - meanStepTime) == min(abs(tWinter - meanStepTime)));
+GaitInfo.WinterDataSpeed = speedsWinter{abs(tWinter - meanStepTime) == min(abs(tWinter - meanStepTime))};
 
 %%
 plotInfo.plotProp = {'LineStyle','Color','LineWidth'};
@@ -71,9 +81,9 @@ plotInfo.lineWidthProp = {3;3;3};
 plotInfo.plotProp_entries = [plotInfo.lineVec(:),plotInfo.colorProp(:), plotInfo.lineWidthProp(:)];
 
 %%
-plotAngularData(angularData,GaitPhaseData,plotInfo,oneGaitinfo,saveInfo);
-plotMusculoData(musculoData,plotInfo,oneGaitinfo,saveInfo);
-plotGRF(GRFData,plotInfo,oneGaitinfo,saveInfo);
+plotAngularData(angularData,GaitPhaseData,plotInfo,GaitInfo,saveInfo);
+plotMusculoData(musculoData,plotInfo,GaitInfo,saveInfo);
+plotGRF(GRFData,plotInfo,GaitInfo,saveInfo);
 
 %
 set(0, 'DefaultAxesTitleFontSizeMultiplier',1);

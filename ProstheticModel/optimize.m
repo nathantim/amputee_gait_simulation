@@ -9,8 +9,9 @@ InitialGuess = load('InitialGuess.mat');
 InitialGuess = InitialGuess.InitialGuess;
 
 %initialze parameters
-BodyMechParams
-ControlParams
+BodyMechParams;
+ControlParams;
+OptimParams;
 [groundX, groundZ, groundTheta] = generateGround('flat');
 load_system(model)
 
@@ -24,15 +25,20 @@ sigma0 = 1/8;
 
 opts = cmaes;
 %opts.PopSize = numvars;
-opts.Resume = 'no';
+opts.Resume = 'yes';
 opts.MaxIter = 300;
-opts.StopFitness = -inf;
-%opts.StopFitness = -20;
+% opts.StopFitness = -inf;
+opts.StopFitness = 0;
 opts.DispModulo = 1;
 opts.TolX = 1e-2;
 opts.TolFun = 1e-2;
 opts.EvalParallel = 'yes';
 opts.LogPlot = 'off';
+if (min_velocity == target_velocity && max_velocity == target_velocity)
+    opts.TargetVel = target_velocity;
+end
+opts.ExtraInfo = 'Does this work?';
+opts.SaveFilename = 'variablescmaes.mat';
 
 %run cmaes
 [xmin, fmin, counteval, stopflag, out, bestever] = cmaes(optfunc, x0, sigma0, opts)

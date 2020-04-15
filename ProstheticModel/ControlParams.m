@@ -8,6 +8,8 @@
 %
 
 termination_height = 0.5;
+prostheticActivationThreshold = 0.05*pi/180;
+
 % ************************************ %
 % 1. General Neural Control Parameters %
 % ************************************ %

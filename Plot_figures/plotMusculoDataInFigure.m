@@ -1,6 +1,9 @@
-function plotHandles = plotMusculoDataInFigure(t,SOL,TA,GAS,VAS,HAM,GLU,HFL,HAMc)
-if  nargin <= 8
+function plotHandles = plotMusculoDataInFigure(t,SOL,TA,GAS,VAS,HAM,GLU,HFL,b_oneGaitPhase,HAMc)
+if  nargin <= 9
     HAMc = [];
+end
+if  nargin <= 8
+    b_oneGaitPhase = true;
 end
 
 plotHandles = nan(7,1);
@@ -9,14 +12,18 @@ subplot(4,2,1);
 plotHandles(1) = plot(t,SOL);
 title('SOL')
 % ylabel('rad');
-yaxis([0,1])
+if (max(SOL)<1)
+    yaxis([0,1])
+end
 hold on;
 
 
 subplot(4,2,2);
 plotHandles(2) = plot(t,TA);
 title('TA')
-yaxis([0,1])
+if (max(TA)<1)
+    yaxis([0,1])
+end
 % ylabel('rad/s')
 hold on;
 
@@ -24,14 +31,17 @@ hold on;
 subplot(4,2,3);
 plotHandles(3) = plot(t,GAS);
 title('GAS')
-yaxis([0,1])
-% ylabel('rad');
+if (max(GAS)<1)
+    yaxis([0,1])
+end% ylabel('rad');
 hold on;
 
 subplot(4,2,4);
 plotHandles(4) = plot(t,VAS);
 title('VAS')
-yaxis([0,1])
+if (max(VAS)<1)
+    yaxis([0,1])
+end
 % ylabel('rad/s')
 hold on;
 
@@ -45,7 +55,9 @@ else
 end
 
 title('HAM')
-yaxis([0,1])
+if (max(HAM)<1 && max(HAMc)<1)
+    yaxis([0,1])
+end
 % ylabel('rad');
 hold on;
 
@@ -53,16 +65,28 @@ hold on;
 subplot(4,2,6);
 plotHandles(6) = plot(t,GLU);
 title('GLU')
-yaxis([0,1])
+if (max(GLU)<1)
+    yaxis([0,1])
+end
 % ylabel('rad/s')
-xlabel('%_s_t_r_i_d_e')
+if b_oneGaitPhase
+    xlabel('%_s_t_r_i_d_e')
+else
+    xlabel('s')
+end
 hold on;
 
 
 subplot(4,2,7);
 plotHandles(7) = plot(t,HFL);
 title('HFL')
-yaxis([0,1])
+if (max(HFL)<1)
+    yaxis([0,1])
+end
 % ylabel('rad');
-xlabel('%_s_t_r_i_d_e')
+if b_oneGaitPhase
+    xlabel('%_s_t_r_i_d_e')
+else
+    xlabel('s')
+end
 hold on;

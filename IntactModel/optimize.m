@@ -1,4 +1,6 @@
+bdclose('all');
 clear all; clc;
+%%
 global model rtp InitialGuess
 
 %specifiy model and intial parameters
@@ -8,8 +10,9 @@ InitialGuess = load('InitialGuess.mat');
 InitialGuess = InitialGuess.InitialGuess;
 
 %initialze parameters
-BodyMechParams
-ControlParams
+BodyMechParams;
+ControlParams;
+OptimParams;
 [groundX, groundZ, groundTheta] = generateGround('flat');
 load_system(model)
 
@@ -32,6 +35,11 @@ opts.TolX = 1e-2;
 opts.TolFun = 1e-2;
 opts.EvalParallel = 'yes';
 opts.LogPlot = 'off';
+if (min_velocity == target_velocity && max_velocity == target_velocity)
+    opts.TargetVel = target_velocity;
+end
+% opts.ExtraInfo = 'Does this work?';
+opts.SaveFilename = 'variablescmaes_healthy_energy_Wang2012.mat';
 
 %run cmaes
 [xmin, fmin, counteval, stopflag, out, bestever] = cmaes(optfunc, x0, sigma0, opts)

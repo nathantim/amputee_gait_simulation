@@ -2,6 +2,11 @@ BodyMechParams;
 ControlParams;
 OptimParams;
 
+% load('Results/Flat/v_0.5m_s.mat');
+% load('Results/Flat/v_0.8m_s.mat');
+% load('Results/Flat/v_1.1m_s.mat');
+load('Results/Flat/v_1.4m_s.mat');
+
 GainGAS           = Gains( 1);
 GainGLU           = Gains( 2);
 GainHAM           = Gains( 3);
