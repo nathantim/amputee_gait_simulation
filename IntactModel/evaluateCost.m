@@ -1,5 +1,5 @@
 clc;
-% Gains = InitialGuess.*exp(bestever.x);
+Gains = InitialGuess.*exp(bestever.x);
 assignGains;
 OptimParams;
 model = 'NeuromuscularModel';

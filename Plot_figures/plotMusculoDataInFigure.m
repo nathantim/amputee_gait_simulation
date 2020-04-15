@@ -1,6 +1,6 @@
 function plotHandles = plotMusculoDataInFigure(t,SOL,TA,GAS,VAS,HAM,GLU,HFL,b_oneGaitPhase,HAMc)
 if  nargin <= 9
-    HAMc = [];
+    HAMc = [0];
 end
 if  nargin <= 8
     b_oneGaitPhase = true;
@@ -55,7 +55,7 @@ else
 end
 
 title('HAM')
-if (max(HAM)<1 && max(HAMc)<1)
+if (max(HAM)<1 && max(HAMc)<1 )
     yaxis([0,1])
 end
 % ylabel('rad');

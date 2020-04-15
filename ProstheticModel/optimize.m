@@ -25,7 +25,7 @@ sigma0 = 1/8;
 
 opts = cmaes;
 %opts.PopSize = numvars;
-opts.Resume = 'yes';
+opts.Resume = 'no';
 opts.MaxIter = 300;
 % opts.StopFitness = -inf;
 opts.StopFitness = 0;
@@ -37,8 +37,9 @@ opts.LogPlot = 'off';
 if (min_velocity == target_velocity && max_velocity == target_velocity)
     opts.TargetVel = target_velocity;
 end
-opts.ExtraInfo = 'Does this work?';
-opts.SaveFilename = 'variablescmaes.mat';
+% opts.ExtraInfo = 'Does this work?';
+% opts.SaveFilename = 'variablescmaes_healthy_energy_Umberger2003.mat';
+opts.SaveFilename = 'variablescmaes_healthy_energy_Wang2012.mat';
 
 %run cmaes
 [xmin, fmin, counteval, stopflag, out, bestever] = cmaes(optfunc, x0, sigma0, opts)
