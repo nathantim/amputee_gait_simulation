@@ -1,7 +1,7 @@
 bdclose('all');
 clear all; clc;
 %%
-global model rtp InitialGuess
+global model rtp InitialGuess 
 
 %specifiy model and intial parameters
 model = 'NeuromuscularModel';
@@ -27,7 +27,7 @@ sigma0 = 1/8;
 opts = cmaes;
 %opts.PopSize = numvars;
 opts.Resume = 'no';
-opts.MaxIter = 100;
+opts.MaxIter = 1000;
 % opts.StopFitness = -inf;
 opts.StopFitness = 0;
 opts.DispModulo = 1;
@@ -39,8 +39,8 @@ if (min_velocity == target_velocity && max_velocity == target_velocity)
     opts.TargetVel = target_velocity;
 end
 % opts.ExtraInfo = 'Does this work?';
-opts.SaveFilename = 'variablescmaes_healthy_energy_Umberger2003.mat';
-% opts.SaveFilename = 'variablescmaes_healthy_energy_Wang2012.mat';
+% opts.SaveFilename = 'variablescmaes_healthy_energy_cost_compare.mat';
+opts.SaveFilename = 'variablescmaes_healthy_energy_Wang2012.mat';
 
 %run cmaes
 [xmin, fmin, counteval, stopflag, out, bestever] = cmaes(optfunc, x0, sigma0, opts)
