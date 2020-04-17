@@ -67,6 +67,8 @@ Thumbs.db
 *.asv
 *.bak
 ~$*.xlsx
+*.slxc
+*.r2014b
 
 #Media#
 #####################
