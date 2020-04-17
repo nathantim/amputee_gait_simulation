@@ -25,7 +25,7 @@ sigma0 = 1/8;
 
 opts = cmaes;
 %opts.PopSize = numvars;
-opts.Resume = 'no';
+opts.Resume = 'yes';
 opts.MaxIter = 300;
 % opts.StopFitness = -inf;
 opts.StopFitness = 0;
