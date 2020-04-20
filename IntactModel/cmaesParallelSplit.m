@@ -36,5 +36,5 @@ function costs = cmaesParallelSplit(gainsPop)
 
     %simulate each sample and store cost
     parfor i = 1:popSize
-        costs(i) = evaluateCostParallel(paramSets{i})
+        costs(i) = evaluateCostParallel(paramSets{i},Gains)
     end

@@ -1,4 +1,4 @@
-function cost = getCost(model,time,metabolicEnergyWang,metabolicEnergyUmberg,sumOfIdealTorques,sumOfStopTorques,HATPos,swingStateCounts,stepVelocities,stepTimes,stepLengths, b_isParallel)
+function cost = getCost(model,Gains,time,metabolicEnergyWang,metabolicEnergyUmberg,sumOfIdealTorques,sumOfStopTorques,HATPos,swingStateCounts,stepVelocities,stepTimes,stepLengths, b_isParallel)
 if nargin < 12
     b_isParallel = 0;
 end
@@ -95,6 +95,10 @@ fprintf('-- <strong> sim time: %2.2f</strong>, Cost: %2.2f, timeCost: %2.2f, vel
 
 if b_isParallel && timeCost == 0
 %     try
+GainsSave = Gains;
+if size(GainsSave,1)>size(GainsSave,2)
+   GainsSave = GainsSave'; 
+end
         filename = char(strcat('compareEnergyCost',num2str(getCurrentWorker().ProcessId),'.mat'));
         if exist(filename,'file') == 2
             exist_vars = load(filename);
@@ -109,12 +113,13 @@ if b_isParallel && timeCost == 0
             sumOfIdealTorques       = [exist_vars.sumOfIdealTorques;sumOfIdealTorques];
             sumOfStopTorques        = [exist_vars.sumOfStopTorques;sumOfStopTorques];
             HATPos                  = [exist_vars.HATPos;HATPos];
+            GainsSave               = [exist_vars.GainsSave;GainsSave];
         else 
             costT = cost;
         end
         
         save(filename,'metabolicEnergyWang','metabolicEnergyUmberg','meanVel','meanStrideTime', 'meanStrideLength','costOfTransportWang','costOfTransportUmberg', ...
-            'costT','sumOfIdealTorques','sumOfStopTorques','HATPos')
+            'costT','sumOfIdealTorques','sumOfStopTorques','HATPos','GainsSave')
 %     catch
 %         fprintf('Something went wrong with opening or saving the file, parallel worker id: %d\n',(getCurrentWorker().ProcessId));
 %     end

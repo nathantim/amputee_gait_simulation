@@ -1,4 +1,4 @@
-function cost=evaluateCostParallel(paramStruct)
+function cost=evaluateCostParallel(paramStruct,Gains)
 % OptimParams;
 model = 'NeuromuscularModel';
 try
@@ -39,7 +39,7 @@ stepLengths = get(simout, 'stepLengths');
 %         cost = nan;
 %     end
 
-cost = getCost(model,time,metabolicEnergyWang,metabolicEnergyUmberg,sumOfIdealTorques,sumOfStopTorques,HATPos,swingStateCounts,stepVelocities,stepTimes,stepLengths,1);
+cost = getCost(model,Gains,time,metabolicEnergyWang,metabolicEnergyUmberg,sumOfIdealTorques,sumOfStopTorques,HATPos,swingStateCounts,stepVelocities,stepTimes,stepLengths,1);
 if isnan(cost)
     return
 end
