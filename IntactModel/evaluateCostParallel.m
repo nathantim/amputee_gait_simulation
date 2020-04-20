@@ -1,4 +1,7 @@
 function cost=evaluateCostParallel(paramStruct,Gains)
+if nargin < 2
+    Gains = nan(23,1);
+end
 % OptimParams;
 model = 'NeuromuscularModel';
 try

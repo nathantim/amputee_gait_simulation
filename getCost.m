@@ -1,5 +1,5 @@
 function cost = getCost(model,Gains,time,metabolicEnergyWang,metabolicEnergyUmberg,sumOfIdealTorques,sumOfStopTorques,HATPos,swingStateCounts,stepVelocities,stepTimes,stepLengths, b_isParallel)
-if nargin < 12
+if nargin < 13
     b_isParallel = 0;
 end
 OptimParams;
@@ -85,7 +85,7 @@ meanVel = 1/2*(mean(stepVelocities(stepVelocities(:,1)~=0,1)) + mean(stepVelocit
 %     [distCost, dist_covered] = getDistMeasure(timeSetToRun,stepLengths,min_velocity,max_velocity,dist_slack);
 
 %     cost = 100000*timeCost  + 1000*(velCost + 0*distCost) + 0.1*costOfTransport;
-cost = 100000*timeCost  + 1000*(velCost) + 100*costOfTransportWang;
+cost = 100000*timeCost  + 1000*(velCost) + 100*costOfTransportUmberg;
 if length(cost) ~= 1
     disp(cost);
     warning('Size cost is not 1');

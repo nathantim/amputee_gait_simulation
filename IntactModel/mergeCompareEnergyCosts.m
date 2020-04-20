@@ -43,5 +43,7 @@ end
 save('compareEnergyCostTotal.mat','metabolicEnergyWang','metabolicEnergyUmberg','meanVel','meanStrideTime', 'meanStrideLength','costOfTransportWang','costOfTransportUmberg', ...
     'costT','sumOfIdealTorques','sumOfStopTorques','HATPos','GainsSave');
 
-corrplot([metabolicEnergyUmberg,metabolicEnergyWang],'varnames',{'E_m Umb','E_m Wang'});
-% corrplot([metabolicEnergyUmberg,metabolicEnergyWang,sumOfIdealTorques,sumOfStopTorques,meanVel],'varnames',{'E Umb','E Wang','Sum id torques','Sum stop torques','avg Vel'});
+%%
+varnames = {'E_m Umb','E_m Wang','S t_i','S t_s','v_a_v_g'};
+% corrplot([metabolicEnergyUmberg,metabolicEnergyWang],'varnames',varnames(1:2));
+corrplot([metabolicEnergyUmberg,metabolicEnergyWang,sumOfIdealTorques,sumOfStopTorques,meanVel],'varnames',varnames);

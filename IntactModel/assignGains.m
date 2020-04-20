@@ -1,6 +1,6 @@
 BodyMechParams;
 ControlParams;
-OptimParams;
+% OptimParams;
 
 % load('Results/Flat/v_0.5m_s.mat');
 % load('Results/Flat/v_0.8m_s.mat');

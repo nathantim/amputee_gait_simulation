@@ -1,5 +1,6 @@
 bdclose('all');
 clear all; clc;
+
 %%
 global model rtp InitialGuess 
 
@@ -19,14 +20,14 @@ load_system(model)
 % Build the Rapid Accelerator target once
 rtp = Simulink.BlockDiagram.buildRapidAcceleratorTarget(model);
 
-%setup cmaes
+%% setup cmaes
 numvars = length(InitialGuess);
 x0 = zeros(numvars,1);
 sigma0 = 1/8;
 
 opts = cmaes;
 %opts.PopSize = numvars;
-opts.Resume = 'yes';
+opts.Resume = 'no';
 opts.MaxIter = 1000;
 % opts.StopFitness = -inf;
 opts.StopFitness = 0;
@@ -40,7 +41,8 @@ if (min_velocity == target_velocity && max_velocity == target_velocity)
 end
 % opts.ExtraInfo = 'Does this work?';
 % opts.SaveFilename = 'variablescmaes_healthy_energy_cost_compare.mat';
-opts.SaveFilename = 'variablescmaes_healthy_energy_Wang2012.mat';
+% opts.SaveFilename = 'variablescmaes_healthy_energy_Wang2012.mat';
+opts.SaveFilename = 'variablescmaes_healthy_energy_Umberger2003.mat';
 
-%run cmaes
+%% run cmaes
 [xmin, fmin, counteval, stopflag, out, bestever] = cmaes(optfunc, x0, sigma0, opts)
