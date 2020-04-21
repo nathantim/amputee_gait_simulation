@@ -1,3 +1,8 @@
+try 
+    save_system;
+catch
+    disp('No system loaded to be saved.');
+end
 bdclose('all');
 clear all; clc;
 
@@ -15,20 +20,20 @@ initial_gains_file = load(initial_gains_filename);
 %%
 global model rtp InitialGuess 
 
-%specifiy model and intial parameters
+%% specifiy model and intial parameters
 model = 'NeuromuscularModel';
 optfunc = 'cmaesParallelSplit';
 
 InitialGuess = initial_gains_file.Gains;
 
-%initialze parameters
+%% initialze parameters
 BodyMechParams;
 ControlParams;
 OptimParams;
 [groundX, groundZ, groundTheta] = generateGround('flat');
 load_system(model)
 
-% Build the Rapid Accelerator target once
+%% Build the Rapid Accelerator target once
 rtp = Simulink.BlockDiagram.buildRapidAcceleratorTarget(model);
 
 %% setup cmaes

@@ -1,7 +1,7 @@
 clc;
 %%
 % Gains = InitialGuess.*exp(bestever.x);
-% load('Results/Flat/v_1.4m_s.mat');
+load('Results/Flat/v_1.4m_s.mat');
 % compareenergies = load('compareEnergyCostTotal.mat');
 
 % idx_minUmb = find(compareenergies.metabolicEnergyUmberg==min(compareenergies.metabolicEnergyUmberg),1,'first');

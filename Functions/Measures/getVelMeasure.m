@@ -1,17 +1,20 @@
 function velMeasure = getVelMeasure(stepVelocity,stepTimes,min_velocity,max_velocity,initiation_steps)
 
-if ( min(size(stepVelocity)) == 0 || min(size(stepTimes)) == 0 ||  max(size(stepVelocity)) <= initiation_steps)
+if ( min(size(stepVelocity)) == 0 || min(size(stepTimes)) == 0 )
     velMeasure = 99999999;
 elseif min(size(stepVelocity(stepVelocity~=0))) == 0 || min(size(stepTimes(stepTimes~=0))) == 0
     velMeasure = 99999999;
+elseif max(size(stepVelocity(stepVelocity~=0))) <= initiation_steps || max(size(stepTimes(stepTimes~=0))) <= initiation_steps  
+    velMeasure = 9999999;
 elseif min((stepVelocity(stepVelocity~=0))) < 0
     velMeasure = 99999999*exp(-min((stepVelocity(stepVelocity~=0))));
 else
-    stepVelocity    = stepVelocity(stepVelocity~=0);
-    stepTimes      = stepTimes(stepTimes~=0);
+
+    stepVelocity    = stepVelocity(stepVelocity~=0,1);
+    stepTimes      = stepTimes(stepTimes~=0,1);
     
-    stepVelocity    = stepVelocity(initiation_steps:end);
-    stepTimes      = stepTimes(initiation_steps:end);
+    stepVelocity    = stepVelocity(initiation_steps:end,1);
+    stepTimes      = stepTimes(initiation_steps:end,1);
     
     if  (max(isnan(stepVelocity)) || max(isnan(stepTimes)) )
         velMeasure = 99999999;

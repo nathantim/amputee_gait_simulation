@@ -41,8 +41,11 @@ stepLengths = get(simout, 'stepLengths');
 %     if (max(swingStateCounts)+1)/HATPos < 0.7
 %         cost = nan;
 %     end
-
-cost = getCost(model,Gains,time,metabolicEnergyWang,metabolicEnergyUmberg,sumOfIdealTorques,sumOfStopTorques,HATPos,swingStateCounts,stepVelocities,stepTimes,stepLengths,1);
+try
+    cost = getCost(model,Gains,time,metabolicEnergyWang,metabolicEnergyUmberg,sumOfIdealTorques,sumOfStopTorques,HATPos,swingStateCounts,stepVelocities,stepTimes,stepLengths,1);
+catch
+    save('error_getCost.mat');
+end
 if isnan(cost)
     return
 end
