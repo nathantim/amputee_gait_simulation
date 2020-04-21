@@ -61,13 +61,6 @@ costOfTransportUmberg = (metabolicEnergyUmberg + 0.1*sumOfIdealTorques + .01*sum
 %}
 
 %cost = -1*HATPos;
-leftStrideLengths = stepLengths(stepLengths(:,1)~=0,1);
-rightStrideLengths = stepLengths(stepLengths(:,2)~=0,2);
-meanStrideLength = mean( [mean(leftStrideLengths(initiation_steps:end)), mean(rightStrideLengths(initiation_steps:end))]);
-
-leftStrideTimes = stepTimes.signals.values(stepTimes.signals.values(:,1)~=0,1);
-rightStrideTimes = stepTimes.signals.values(stepTimes.signals.values(:,2)~=0,2);
-meanStrideTime = mean( [mean(leftStrideTimes(initiation_steps:end)), mean(rightStrideTimes(initiation_steps:end))]);
 
 
 timeSetToRun = str2double(get_param(model,'StopTime'));
@@ -81,9 +74,11 @@ end
 velCost = getVelMeasure(stepVelocities(:,1),stepTimes.signals.values(:,1),min_velocity,max_velocity,initiation_steps) + ...
     getVelMeasure(stepVelocities(:,2),stepTimes.signals.values(:,2),min_velocity,max_velocity,initiation_steps);
 
-leftStepVelocity = stepVelocities(stepVelocities(:,1)~=0,1);
-rightStepVelocity = stepVelocities(stepVelocities(:,2)~=0,2);
-meanVel = mean( [mean(leftStepVelocity(initiation_steps:end)), mean(rightStepVelocity(initiation_steps:end))]);
+[meanStepLength, ASIStepLength] = getFilterdMean_and_ASI(stepLengths(:,1),stepLengths(:,2),initiation_steps);
+[meanStepTime, ASIStepTime] = getFilterdMean_and_ASI(stepTimes.signals.values(:,1),stepTimes.signals.values(:,2),initiation_steps);
+[meanVel, ASIVel] = getFilterdMean_and_ASI(stepVelocities(:,1),stepVelocities(:,2),initiation_steps);
+
+
 
 %     [distCost, dist_covered] = getDistMeasure(timeSetToRun,stepLengths,min_velocity,max_velocity,dist_slack);
 
@@ -93,8 +88,8 @@ if length(cost) ~= 1
     disp(cost);
     warning('Size cost is not 1');
 end
-fprintf('-- <strong> sim time: %2.2f</strong>, Cost: %2.2f, timeCost: %2.2f, velCost: %2.2f, avg velocity: %2.2f, Metabolic Energy (Wang): %6.2f, Metabolic Energy (Umberg): %6.2f, avg stride time: %1.2f, avg stride length: %1.2f --\n',...
-    Tsim, cost, timeCost, velCost, meanVel, metabolicEnergyWang, metabolicEnergyUmberg, meanStrideTime, meanStrideLength);
+fprintf('-- <strong> t_sim: %2.2f</strong>, Cost: %2.2f, E_m (Wang): %.0f, E_m(Umberg): %.0f, <strong>avg v_step: %2.2f</strong>, avg t_step: %1.2f, avg l_step: %1.2f, ASI l_step: %2.2f, ASI t_step: %2.2f, timeCost: %2.2f, velCost: %2.2f --\n',...
+    Tsim, cost, metabolicEnergyWang, metabolicEnergyUmberg, meanVel, meanStepTime, meanStepLength,round(ASIStepLength,2),round(ASIStepTime,2), timeCost, velCost);
 
 if b_isParallel && timeCost == 0
 %     try
@@ -108,8 +103,11 @@ end
             metabolicEnergyWang     = [exist_vars.metabolicEnergyWang;metabolicEnergyWang];
             metabolicEnergyUmberg   = [exist_vars.metabolicEnergyUmberg;metabolicEnergyUmberg];
             meanVel                 = [exist_vars.meanVel;meanVel];
-            meanStrideTime          = [exist_vars.meanStrideTime;meanStrideTime];
-            meanStrideLength        = [exist_vars.meanStrideLength;meanStrideLength];
+            meanStepTime            = [exist_vars.meanStepTime;meanStepTime];
+            meanStepLength          = [exist_vars.meanStepLength;meanStepLength];
+            ASIStepLength           = [exist_vars.ASIStepLength;ASIStepLength];
+            ASIStepTime             = [exist_vars.ASIStepTime;ASIStepTime];
+            ASIVel                  = [exist_vars.ASIVel;ASIVel];
             costOfTransportWang     = [exist_vars.costOfTransportWang;costOfTransportWang];
             costOfTransportUmberg   = [exist_vars.costOfTransportUmberg;costOfTransportUmberg];
             costT                   = [exist_vars.costT;cost];
@@ -121,8 +119,8 @@ end
             costT = cost;
         end
         
-        save(filename,'metabolicEnergyWang','metabolicEnergyUmberg','meanVel','meanStrideTime', 'meanStrideLength','costOfTransportWang','costOfTransportUmberg', ...
-            'costT','sumOfIdealTorques','sumOfStopTorques','HATPos','GainsSave')
+        save(filename,'metabolicEnergyWang','metabolicEnergyUmberg','meanVel','meanStepTime', 'meanStepLength','costOfTransportWang','costOfTransportUmberg', ...
+            'costT','sumOfIdealTorques','sumOfStopTorques','HATPos','GainsSave','ASIStepLength','ASIStepTime','ASIVel')
 %     catch
 %         fprintf('Something went wrong with opening or saving the file, parallel worker id: %d\n',(getCurrentWorker().ProcessId));
 %     end

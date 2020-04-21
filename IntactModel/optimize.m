@@ -2,13 +2,24 @@ bdclose('all');
 clear all; clc;
 
 %%
+initial_gains_filename = ('Results/RoughDist/optimizedGains.mat');
+% initial_gains_filename = ('Results/Flat/v_0.5m_s.mat');
+% initial_gains_filename = ('Results/Flat/v_0.8m_s.mat');
+% initial_gains_filename = ('Results/Flat/v_1.1m_s.mat');
+% initial_gains_filename = ('Results/Flat/v_1.4m_s.mat');
+% InitialGuess = load('InitialGuess.mat');
+% InitialGuess = InitialGuess.InitialGuess;
+
+initial_gains_file = load(initial_gains_filename);
+
+%%
 global model rtp InitialGuess 
 
 %specifiy model and intial parameters
 model = 'NeuromuscularModel';
 optfunc = 'cmaesParallelSplit';
-InitialGuess = load('InitialGuess.mat');
-InitialGuess = InitialGuess.InitialGuess;
+
+InitialGuess = initial_gains_file.Gains;
 
 %initialze parameters
 BodyMechParams;
@@ -39,7 +50,7 @@ opts.LogPlot = 'off';
 if (min_velocity == target_velocity && max_velocity == target_velocity)
     opts.TargetVel = target_velocity;
 end
-% opts.ExtraInfo = 'Does this work?';
+opts.UserData = char(strcat("Gains filename: ", initial_gains_filename));
 % opts.SaveFilename = 'variablescmaes_healthy_energy_cost_compare.mat';
 % opts.SaveFilename = 'variablescmaes_healthy_energy_Wang2012.mat';
 opts.SaveFilename = 'variablescmaes_healthy_energy_Umberger2003.mat';
