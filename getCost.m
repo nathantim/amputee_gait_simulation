@@ -80,7 +80,10 @@ end
 
 velCost = getVelMeasure(stepVelocities(:,1),stepTimes.signals.values(:,1),min_velocity,max_velocity,initiation_steps) + ...
     getVelMeasure(stepVelocities(:,2),stepTimes.signals.values(:,2),min_velocity,max_velocity,initiation_steps);
-meanVel = 1/2*(mean(stepVelocities(stepVelocities(:,1)~=0,1)) + mean(stepVelocities(stepVelocities(:,2)~=0,2)));
+
+leftStepVelocity = stepVelocities(stepVelocities(:,1)~=0,1);
+rightStepVelocity = stepVelocities(stepVelocities(:,2)~=0,2);
+meanVel = mean( [mean(leftStepVelocity(initiation_steps:end)), mean(rightStepVelocity(initiation_steps:end))]);
 
 %     [distCost, dist_covered] = getDistMeasure(timeSetToRun,stepLengths,min_velocity,max_velocity,dist_slack);
 
