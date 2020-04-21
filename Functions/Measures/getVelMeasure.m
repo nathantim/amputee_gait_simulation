@@ -1,6 +1,6 @@
 function velMeasure = getVelMeasure(stepVelocity,stepTimes,min_velocity,max_velocity,initiation_steps)
 
-if ( min(size(stepVelocity)) == 0 || min(size(stepTimes)) == 0 || max(isnan(stepVelocity)) || max(isnan(stepTimes)))
+if ( min(size(stepVelocity)) == 0 || min(size(stepTimes)) == 0 ||  max(size(stepVelocity)) <= initiation_steps)
     velMeasure = 99999999;
 elseif min(size(stepVelocity(stepVelocity~=0))) == 0 || min(size(stepTimes(stepTimes~=0))) == 0
     velMeasure = 99999999;
@@ -10,12 +10,17 @@ else
     stepVelocity    = stepVelocity(stepVelocity~=0);
     stepTimes      = stepTimes(stepTimes~=0);
     
-    stepVelocity    = stepVelocity(min( min(1,1+abs(length(stepVelocity)-5)) ,initiation_steps):end);
-    stepTimes      = stepTimes(min( min(1,1+abs(length(stepVelocity)-5)) ,initiation_steps):end);
+    stepVelocity    = stepVelocity(initiation_steps:end);
+    stepTimes      = stepTimes(initiation_steps:end);
+    
+    if  (max(isnan(stepVelocity)) || max(isnan(stepTimes)) )
+        velMeasure = 99999999;
+        return
+    end
     
     if length(stepVelocity)~= length(stepTimes)
-        disp(stepVelocity); disp(stepTimes);
-       error('No equal vector lengths, stepVelocity length: %d, stepTimes length: %d',length(stepVelocity),length(stepTimes)) 
+        disp([ [stepVelocity;inf(max(0,length(stepTimes)-length(stepVelocity)),1)], [stepTimes; inf(max(0,length(stepVelocity)-length(stepTimes)),1)]]);
+        error('No equal vector lengths, stepVelocity length: %d, stepTimes length: %d',length(stepVelocity),length(stepTimes))
     end
     
     step_measure    = nan(length(stepVelocity),1);
