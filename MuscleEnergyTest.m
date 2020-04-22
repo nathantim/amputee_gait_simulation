@@ -30,15 +30,16 @@ w = 1.039;
 muscle_movement_values = [-1;0;1];
 stimulations_val = [0.05;0.25;0.5;0.75;1];
 % stimulations_val = 0.05;
-
+v_simulations = -1*lopt:lopt:1*lopt;
 
 model = 'MuscleEnergyTestModel';
 tic;
-for j = 1:length(muscle_movement_values)
-    muscle_movement = muscle_movement_values(j);
+for j = 1:length(v_simulations)
+    v_set = v_simulations(j);
     for i = 1:length(stimulations_val)
+%         v_set = lopt; % one optimal muscle length per second
         stim_val = stimulations_val(i);
-        fprintf('--Muscle movement value: %d, Stimulation value: %.2f --\n',muscle_movement,stim_val)
+        fprintf('--Muscle velocity: %d, Stimulation value: %.2f --\n',v_set,stim_val)
         
         sim(model);
 %         
@@ -54,19 +55,23 @@ toc;
 
 %%
 figure();
-barPlots(1) = subplot(1,3,1);
-bar(powerValues(:,:,1)');
-title('shortening');
-yaxis([0 800]);
-barPlots(2) = subplot(1,3,2);
-bar(powerValues(:,:,2)');
-title('Isometric');
-yaxis([0 150]);
-barPlots(3) = subplot(1,3,3);
-bar(powerValues(:,:,3)');
-title('Lengthening');
-yaxis([-400 400]);
-
+barPlots = nan(size(v_simulations));
+for j = 1:length(v_simulations)
+barPlots(j) = subplot(1,length(v_simulations),j);
+bar(powerValues(:,:,j)');
+title(['v: ',num2str(v_simulations(j)/lopt), ' l_{opt}/s']);
+% bar(powerValues(:,:,1)');
+% title('shortening');
+% yaxis([0 800]);
+% barPlots(2) = subplot(1,3,2);
+% 
+% title('Isometric');
+% yaxis([0 150]);
+% barPlots(3) = subplot(1,3,3);
+% bar(powerValues(:,:,3)');
+% title('Lengthening');
+% yaxis([-400 400]);
+end
 
 legend(barPlots(1),'a = 0.05','a = 0.25','a = 0.50','a = 0.75','a = 1','Location','northwest');
 
