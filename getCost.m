@@ -3,7 +3,9 @@ if nargin < 12
     b_isParallel = 0;
 end
 OptimParams;
+global dataQueueD
 
+%%
 if HATPos > 101
     cost = nan;
     disp('HATPos > 101')
@@ -23,23 +25,11 @@ elseif ( min(size(stepVelocities)) == 0 || min(size(stepTimes)) == 0 || size(ste
     return
 end
 
-%%
-load_system(model);
-muscle_energy_contents = find_system([model,'/Optimization/Muscle Energy LSOL'],'LookUnderMasks','on','FollowLinks','on','SearchDepth',1);
-muscle_exp_models = cell(size(muscle_energy_contents));
-for k = 1:length(muscle_energy_contents)
-    tempString = strsplit(muscle_energy_contents{k},'/Muscle Energy ');
-    if ~contains(tempString{end},'LSOL')
-        muscle_exp_models{k} = tempString{end};
-    end
-end
-muscle_exp_models = muscle_exp_models(cellfun(@ischar,muscle_exp_models(:,1)),:);
-
-
 %% Calculate cost of transport
 amputeeMass = 80; % kg
 effort_costs = struct;
 
+muscle_exp_models = getExpenditureModels(model);
 for i = 1:length(muscle_exp_models)
    effort_costs(i).name = (muscle_exp_models{i});
    effort_costs(i).metabolicEnergy = metabolicEnergy(:,i);
@@ -79,6 +69,13 @@ fprintf('-- <strong> t_sim: %2.2f</strong>, Cost: %2.2f, E_m (Wang): %.0f, E_m(U
     time, cost, effort_costs(contains(muscle_exp_models,'Wang')).metabolicEnergy, effort_costs(contains(muscle_exp_models,'Umberger (2010)')).metabolicEnergy,...
     meanVel, meanStepTime, meanStepLength,round(ASIStepLength,2),round(ASIStepTime,2), timeCost, velCost);
 
+if ~isempty(dataQueueD)
+    data = struct('cost',cost,'time',time,'costOfTransport',[effort_costs(:).costOfTransport],'metabolicEnergy',[effort_costs(:).metabolicEnergy],'sumOfIdealTorques',sumOfIdealTorques,'sumOfStopTorques',sumOfStopTorques,...
+        'HATPos',HATPos,'meanVel',meanVel,'meanStepTime',meanStepTime,'meanStepLength',meanStepLength,'ASIStepLength',round(ASIStepLength,2),'ASIStepTime',round(ASIStepTime,2),...
+        'timeCost',timeCost,'velCost',velCost);
+    send(dataQueueD,data);
+    save('dataStruct.mat','data');
+end
 %% Save when optimizing
 if b_isParallel && timeCost == 0
 %     try
@@ -86,7 +83,12 @@ GainsSave = Gains;
 if size(GainsSave,1)>size(GainsSave,2)
    GainsSave = GainsSave'; 
 end
-        filename = char(strcat('compareEnergyCost',num2str(getCurrentWorker().ProcessId),'.mat'));
+try
+    workerID = getCurrentWorker().ProcessId;
+catch
+    workerID = [];
+end
+        filename = char(strcat('compareEnergyCost',num2str(workerID),'.mat'));
         if exist(filename,'file') == 2
             exist_vars = load(filename);
             metabolicEnergySave     = [exist_vars.metabolicEnergySave;metabolicEnergy];
@@ -96,7 +98,7 @@ end
             ASIStepLength           = [exist_vars.ASIStepLength;ASIStepLength];
             ASIStepTime             = [exist_vars.ASIStepTime;ASIStepTime];
             ASIVel                  = [exist_vars.ASIVel;ASIVel];
-            costOfTransportSave     = [exist_vars.costOfTransportSave;costOfTransport];
+            costOfTransportSave     = [exist_vars.costOfTransportSave; [effort_costs.costOfTransport] ];
             costT                   = [exist_vars.costT;cost];
             sumOfIdealTorques       = [exist_vars.sumOfIdealTorques;sumOfIdealTorques];
             sumOfStopTorques        = [exist_vars.sumOfStopTorques;sumOfStopTorques];
@@ -104,6 +106,8 @@ end
             GainsSave               = [exist_vars.GainsSave;GainsSave];
         else 
             costT = cost;
+            metabolicEnergySave = metabolicEnergy;
+            costOfTransportSave = [effort_costs.costOfTransport];
         end
         
         save(filename,'metabolicEnergySave','meanVel','meanStepTime', 'meanStepLength','costOfTransportSave', ...

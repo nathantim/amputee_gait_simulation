@@ -1,4 +1,4 @@
-function cost=evaluateCostParallel(paramStruct,Gains)
+function [cost dataStruct] =evaluateCostParallel(paramStruct,Gains)
 if nargin < 2
     Gains = nan(23,1);
 end
@@ -17,8 +17,7 @@ catch
 end
 
 time = get(simout,'time');
-metabolicEnergyWang = get(simout,'metabolicEnergyWang');
-metabolicEnergyUmberg = get(simout,'metabolicEnergyUmberg');
+metabolicEnergy = get(simout,'metabolicEnergy');
 sumOfIdealTorques = get(simout,'sumOfIdealTorques');
 sumOfStopTorques = get(simout,'sumOfStopTorques');
 HATPos = get(simout,'HATPos');
@@ -42,9 +41,10 @@ stepLengths = get(simout, 'stepLengths');
 %         cost = nan;
 %     end
 try
-    cost = getCost(model,Gains,time,metabolicEnergyWang,metabolicEnergyUmberg,sumOfIdealTorques,sumOfStopTorques,HATPos,swingStateCounts,stepVelocities,stepTimes,stepLengths,1);
+    cost = getCost(model,Gains,time,metabolicEnergy,sumOfIdealTorques,sumOfStopTorques,HATPos,swingStateCounts,stepVelocities,stepTimes,stepLengths,1);
 catch
     save('error_getCost.mat');
+    error('Not possible to evaluate getCost');
 end
 if isnan(cost)
     return
