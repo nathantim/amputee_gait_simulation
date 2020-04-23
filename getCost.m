@@ -24,7 +24,6 @@ elseif ( min(size(stepVelocities)) == 0 || min(size(stepTimes)) == 0 || size(ste
 end
 
 %%
-tic;
 load_system(model);
 muscle_energy_contents = find_system([model,'/Optimization/Muscle Energy LSOL'],'LookUnderMasks','on','FollowLinks','on','SearchDepth',1);
 muscle_exp_models = cell(size(muscle_energy_contents));
@@ -35,7 +34,7 @@ for k = 1:length(muscle_energy_contents)
     end
 end
 muscle_exp_models = muscle_exp_models(cellfun(@ischar,muscle_exp_models(:,1)),:);
-toc; 
+
 
 %% Calculate cost of transport
 amputeeMass = 80; % kg
