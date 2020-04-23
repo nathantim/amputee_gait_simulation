@@ -33,6 +33,20 @@ stimulations_val = [0.05;0.25;0.5;0.75;1];
 v_simulations = -1*lopt:lopt:1*lopt;
 
 model = 'MuscleEnergyTestModel';
+
+%% Get muscle expenditure models
+tic;
+load_system(model);
+muscle_energy_contents = find_system([model,'/Testsystem/Muscle Energy/'],'LookUnderMasks','on','FollowLinks','on','SearchDepth',1);
+muscle_energy_contents = muscle_energy_contents(contains(muscle_energy_contents, '/Muscle Energy '));
+muscle_exp_models = cell(size(muscle_energy_contents));
+for k = 1:length(muscle_energy_contents)
+    tempString = strsplit(muscle_energy_contents{k},'/Muscle Energy ');
+    muscle_exp_models{k} = tempString{end};
+end
+toc; 
+
+%%
 tic;
 for j = 1:length(v_simulations)
     v_set = v_simulations(j);
@@ -48,18 +62,24 @@ for j = 1:length(v_simulations)
 %         end
         
         powerValues(i,:,j) = powerData(end,:);
-        
+%         energyValues(i,:,j) = energyData(end,:);
     end
 end
 toc;
 
 %%
-figure();
-barPlots = nan(size(v_simulations));
+figure('Position',[202 425 1000 422]);
+sgtitle(' Metabolic rate of soleus muscle','fontsize',22)
+barPlots = nan(length(v_simulations),2);
 for j = 1:length(v_simulations)
-barPlots(j) = subplot(1,length(v_simulations),j);
+barPlots(j,1) = subplot(1,length(v_simulations),j);
 bar(powerValues(:,:,j)');
-title(['v: ',num2str(v_simulations(j)/lopt), ' l_{opt}/s']);
+title(['$v = ',num2str(v_simulations(j)/lopt), ' \cdot {l_{opt}/}{s}$']);
+ylabel('W');
+% barPlots(j,2) =
+% subplot(2,length(v_simulations),j+length(v_simulations));
+% bar(energyValues(:,:,j)');
+% title(['Energy for v: ',num2str(v_simulations(j)/lopt), ' l_{opt}/s']);
 % bar(powerValues(:,:,1)');
 % title('shortening');
 % yaxis([0 800]);
@@ -73,15 +93,16 @@ title(['v: ',num2str(v_simulations(j)/lopt), ' l_{opt}/s']);
 % yaxis([-400 400]);
 end
 
-legend(barPlots(1),'a = 0.05','a = 0.25','a = 0.50','a = 0.75','a = 1','Location','northwest');
+legend(barPlots(2,1),'$a = 0.05$','$a = 0.25$','$a = 0.50$','$a = 0.75$','$a = 1$','Location','northwest');
 
-str={'Wang 2012', 'Umberger 2003', 'Umberger 2010', 'Umberger 2003 T&G'};
-angle = 40;
+% str={'Wang 2012', 'Umberger 2003', 'Umberger 2010', 'Umberger 2003 T&G'};
+angle = 30;
 for k = 1:length(barPlots)
     
-set(barPlots(k), 'XTickLabel',str, 'XTick',1:numel(str))
-
-xtickangle(barPlots(k),angle)
+set(barPlots(k,1), 'XTickLabel',muscle_exp_models, 'XTick',1:numel(muscle_exp_models))
+% set(barPlots(k,1),'xtick',[])
+% set(barPlots(k,1),'xticklabel',[])
+xtickangle(barPlots(k,1),angle)
 
 end
 
