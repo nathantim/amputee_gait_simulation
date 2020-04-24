@@ -20,5 +20,5 @@ else
 end
 
 end
-pause(0.005);
+pause(0.0005);
 

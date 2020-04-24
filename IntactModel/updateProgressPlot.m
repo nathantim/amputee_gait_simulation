@@ -22,10 +22,12 @@ if size(data,2)> 1
         if ~isempty(ax.Children) && length(findall(ax.Children,'type','histogram')) == size(plotData,2)
             
             hold(ax,'off');
+            faceColor = get(ax.Children(i), 'facecolor');
             set(ax.Children(i),'Data',plotData(:,i));
-            set(ax.Children(i), 'facecolor',ax.ColorOrder(5-i,:));
+            set(ax.Children(i), 'facecolor',faceColor);
+            set(ax.Children(i), 'facealpha',1.0);
         else
-            histogram(ax,plotData(:,i),'facecolor',ax.ColorOrder(i,:),'facealpha',.5,'edgecolor','black','edgealpha',.5);
+            histogram(ax,plotData(:,i),'facecolor',ax.ColorOrder(i,:),'facealpha',1.0,'edgecolor','black','edgealpha',.5);
 %             ax.Children(i).Tag = char(num2str(i));
             hold(ax,'on');
             

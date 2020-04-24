@@ -1,6 +1,7 @@
 function costs = cmaesParallelSplit(gainsPop)
-    global rtp InitialGuess
+    global rtp InitialGuess 
     %% Data plotting during optimization
+%     global dataQueueD
     dataQueueD = parallel.pool.DataQueue;
     dataQueueD.afterEach(@plotProgressOptimization);
 
