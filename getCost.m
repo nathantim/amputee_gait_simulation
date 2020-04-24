@@ -1,9 +1,9 @@
-function cost = getCost(model,Gains,time,metabolicEnergy,sumOfIdealTorques,sumOfStopTorques,HATPos,swingStateCounts,stepVelocities,stepTimes,stepLengths, b_isParallel)
+function [cost, dataStruct] = getCost(model,Gains,time,metabolicEnergy,sumOfIdealTorques,sumOfStopTorques,HATPos,swingStateCounts,stepVelocities,stepTimes,stepLengths, b_isParallel)
 if nargin < 12
     b_isParallel = 0;
 end
 OptimParams;
-global dataQueueD
+dataStruct = struct;
 
 %%
 if HATPos > 101
@@ -69,15 +69,13 @@ fprintf('-- <strong> t_sim: %2.2f</strong>, Cost: %2.2f, E_m (Wang): %.0f, E_m(U
     time, cost, effort_costs(contains(muscle_exp_models,'Wang')).metabolicEnergy, effort_costs(contains(muscle_exp_models,'Umberger (2010)')).metabolicEnergy,...
     meanVel, meanStepTime, meanStepLength,round(ASIStepLength,2),round(ASIStepTime,2), timeCost, velCost);
 
-if ~isempty(dataQueueD)
-    data = struct('cost',cost,'time',time,'costOfTransport',[effort_costs(:).costOfTransport],'metabolicEnergy',[effort_costs(:).metabolicEnergy],'sumOfIdealTorques',sumOfIdealTorques,'sumOfStopTorques',sumOfStopTorques,...
-        'HATPos',HATPos,'meanVel',meanVel,'meanStepTime',meanStepTime,'meanStepLength',meanStepLength,'ASIStepLength',round(ASIStepLength,2),'ASIStepTime',round(ASIStepTime,2),...
-        'timeCost',timeCost,'velCost',velCost);
-    send(dataQueueD,data);
-    save('dataStruct.mat','data');
-end
 %% Save when optimizing
 if b_isParallel && timeCost == 0
+    dataStruct = struct('cost',struct('data',20,'minimize',1,'info',''),'costOfTransport',struct('data',[effort_costs(:).costOfTransport],'minimize',1,'info',{effort_costs(:).name}),...
+        'metabolicEnergy',struct('data',[effort_costs(:).metabolicEnergy],'minimize',1,'info',{effort_costs(:).name}),'sumOfStopTorques',struct('data',sumOfStopTorques,'minimize',1,'info',''),...
+        'HATPos',struct('data',HATPos,'minimize',0,'info',''),'vMean',struct('data',meanVel,'minimize',0,'info',''),'tStepMean',struct('data',meanStepTime,'minimize',2,'info',''),...
+        'lStepMean',struct('data',meanStepLength,'minimize',2,'info',''),'lStepASI',struct('data',round(ASIStepLength,2),'minimize',2,'info',''),...
+        'tStepASI',struct('data',round(ASIStepTime,2),'minimize',2,'info',''));
 %     try
 GainsSave = Gains;
 if size(GainsSave,1)>size(GainsSave,2)

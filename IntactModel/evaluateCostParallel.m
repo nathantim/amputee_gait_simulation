@@ -1,4 +1,5 @@
-function [cost dataStruct] =evaluateCostParallel(paramStruct,Gains)
+function [cost, dataStruct] =evaluateCostParallel(paramStruct,Gains)
+dataStruct = struct;
 if nargin < 2
     Gains = nan(23,1);
 end
@@ -41,7 +42,7 @@ stepLengths = get(simout, 'stepLengths');
 %         cost = nan;
 %     end
 try
-    cost = getCost(model,Gains,time,metabolicEnergy,sumOfIdealTorques,sumOfStopTorques,HATPos,swingStateCounts,stepVelocities,stepTimes,stepLengths,1);
+    [cost, dataStruct] = getCost(model,Gains,time,metabolicEnergy,sumOfIdealTorques,sumOfStopTorques,HATPos,swingStateCounts,stepVelocities,stepTimes,stepLengths,1);
 catch
     save('error_getCost.mat');
     error('Not possible to evaluate getCost');

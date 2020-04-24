@@ -1,6 +1,10 @@
 function costs = cmaesParallelSplit(gainsPop)
     global rtp InitialGuess
-    %allocate costs vector and paramsets the generation
+    %% Data plotting during optimization
+    dataQueueD = parallel.pool.DataQueue;
+    dataQueueD.afterEach(@plotProgressOptimization);
+
+    %% allocate costs vector and paramsets the generation
     popSize = size(gainsPop,2);
     costs = nan(1,popSize);
     paramSets = cell(popSize,1);
@@ -37,5 +41,6 @@ function costs = cmaesParallelSplit(gainsPop)
     %simulate each sample and store cost
     parfor i = 1:popSize
         localGains = InitialGuess.*exp(gainsPop(:,i));
-        costs(i) = evaluateCostParallel(paramSets{i},localGains)
+        [costs(i),dataStruct] = evaluateCostParallel(paramSets{i},localGains)
+        send(dataQueueD,dataStruct);
     end
