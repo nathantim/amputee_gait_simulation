@@ -70,7 +70,7 @@ if (max(GLU)<1)
 end
 % ylabel('rad/s')
 if b_oneGaitPhase
-    xlabel('%_s_t_r_i_d_e')
+    xlabel('%_{stride}','interpreter','tex')
 else
     xlabel('s')
 end
@@ -85,7 +85,7 @@ if (max(HFL)<1)
 end
 % ylabel('rad');
 if b_oneGaitPhase
-    xlabel('%_s_t_r_i_d_e')
+    xlabel('%_{stride}','interpreter','tex')
 else
     xlabel('s')
 end

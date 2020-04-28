@@ -14,7 +14,7 @@ if  nargin <= 7
     b_oneGaitPhase = true;
 end
 if saveInfo.b_saveFigure
-    saveInfo.type = {'jpeg','eps'};
+    saveInfo.type = {'jpeg','eps','emf'};
 end
 saveInfo.info = info;
 t = angularData.time;
@@ -65,8 +65,8 @@ GaitInfo.time.right_perc = t_right_perc;
 %%
 tWinter = [1.45,1.2,0.96];
 speedsWinter = {'slow','normal','fast'};
-leftLegSteptimes = stepTimes.signals.values(stepTimes.signals.values(:,1)~=0,1);
-rightLegSteptimes = stepTimes.signals.values(stepTimes.signals.values(:,2)~=0,2);
+leftLegSteptimes = stepTimes(stepTimes(:,1)~=0,1);
+rightLegSteptimes = stepTimes(stepTimes(:,2)~=0,2);
 meanStepTime = mean([mean(leftLegSteptimes),mean(rightLegSteptimes)]);
 % speed2select = find(abs(tWinter - meanStepTime) == min(abs(tWinter - meanStepTime)));
 GaitInfo.WinterDataSpeed = speedsWinter{abs(tWinter - meanStepTime) == min(abs(tWinter - meanStepTime))};
@@ -82,8 +82,8 @@ plotInfo.plotProp_entries = [plotInfo.lineVec(:),plotInfo.colorProp(:), plotInfo
 
 %%
 plotAngularData(angularData,GaitPhaseData,plotInfo,GaitInfo,saveInfo);
-plotMusculoData(musculoData,plotInfo,GaitInfo,saveInfo);
-plotGRF(GRFData,plotInfo,GaitInfo,saveInfo);
+% plotMusculoData(musculoData,plotInfo,GaitInfo,saveInfo);
+% plotGRF(GRFData,plotInfo,GaitInfo,saveInfo);
 
 %
 set(0, 'DefaultAxesTitleFontSizeMultiplier',1);

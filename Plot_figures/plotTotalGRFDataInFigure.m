@@ -18,7 +18,7 @@ plotHandles(2) = plot(t,Total(:,2));
 title('Total z')
 ylabel('N/kg');
 if b_oneGaitPhase
-    xlabel('%_s_t_r_i_d_e')
+    xlabel('%_{stride}','interpreter','tex')
 else
     xlabel('s')
 end
