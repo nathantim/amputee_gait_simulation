@@ -1,22 +1,26 @@
 clc;
 %%
-% Gains = InitialGuess.*exp(bestever.x);
+tempstring = strsplit(opts.UserData,' ');
+dataFile = tempstring{end};
+InitialGuessFile = load(dataFile); 
+
+Gains = InitialGuessFile.Gains.*exp(bestever.x);
 % load('Results/Flat/v_0.5m_s.mat');
 % load('Results/Flat/v_0.8m_s.mat');
 % load('Results/Flat/v_1.1m_s.mat');
-load('Results/Flat/v_1.4m_s.mat');
+% load('Results/Flat/v_1.4m_s.mat');
 % compareenergies = load('compareEnergyCostTotal.mat');
 
-% idx_minUmb = find(compareenergies.metabolicEnergyUmberg==min(compareenergies.metabolicEnergyUmberg),1,'first');
-% disp([compareenergies.costT(idx_minUmb),compareenergies.metabolicEnergyUmberg(idx_minUmb),compareenergies.metabolicEnergyWang(idx_minUmb)]);
-% Gains = compareenergies.GainsSave(idx_minUmb,:)';
+% 
+% idx_minCost = find(compareenergies.cost==min(compareenergies.cost),1,'first');
+% Gains2 = compareenergies.Gains(idx_minCost,:)';
+% 
+% [Gains,Gains2]
 
-% idx_minWang = find(compareenergies.metabolicEnergyWang==min(compareenergies.metabolicEnergyWang),1,'first');
-% Gains = compareenergies.GainsSave(idx_minWang,:)';
-% disp([compareenergies.costT(idx_minWang),compareenergies.metabolicEnergyUmberg(idx_minWang),compareenergies.metabolicEnergyWang(idx_minWang)]);
 
 %%
 assignGains;
+dt_visual = 1/50;
 model = 'NeuromuscularModel';
 %open('NeuromuscularModel');
 

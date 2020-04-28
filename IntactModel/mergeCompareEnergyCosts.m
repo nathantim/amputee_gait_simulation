@@ -3,47 +3,50 @@ clear all; clc;
 P = pwd;
 S = dir(fullfile(P,'*.mat'));
 N = {S.name};
-X = ~cellfun('isempty',strfind(N,'compareEnergyCost'));
+X = contains(N,'compareEnergyCost') .* ~contains(N,'total') .* ~contains(N,'Total');
 filesIDX = find(X~=0);
 
 %%
 for i = 1:length(filesIDX)
     filename = fullfile(P,N{filesIDX(i)});
     exist_vars = load(filename);
-    if exist('metabolicEnergyWang','var') == 1
-        metabolicEnergyWang     = [metabolicEnergyWang;exist_vars.metabolicEnergyWang];
-        metabolicEnergyUmberg   = [metabolicEnergyUmberg;exist_vars.metabolicEnergyUmberg];
+    if exist('metabolicEnergy','var') == 1
+        metabolicEnergy         = [metabolicEnergy;exist_vars.metabolicEnergySave];
         meanVel                 = [meanVel;exist_vars.meanVel];
-        meanStrideTime          = [meanStrideTime;exist_vars.meanStrideTime];
-        meanStrideLength        = [meanStrideLength;exist_vars.meanStrideLength];
-        costOfTransportWang     = [costOfTransportWang;exist_vars.costOfTransportWang];
-        costOfTransportUmberg   = [costOfTransportUmberg;exist_vars.costOfTransportUmberg];
-        costT                   = [costT;exist_vars.costT];
+        meanStepTime            = [meanStepTime;exist_vars.meanStepTime];
+        meanStepLength          = [meanStepLength;exist_vars.meanStepLength];
+        costOfTransport         = [costOfTransport;exist_vars.costOfTransportSave];
+        cost                    = [cost;exist_vars.costT];
         sumOfIdealTorques       = [sumOfIdealTorques;exist_vars.sumOfIdealTorques];
         sumOfStopTorques        = [sumOfStopTorques;exist_vars.sumOfStopTorques];
         HATPos                  = [HATPos;exist_vars.HATPos];
-        GainsSave               = [GainsSave;exist_vars.GainsSave];
+        Gains                   = [Gains;exist_vars.GainsSave];
+        ASIStepLength           = [ASIStepLength; exist_vars.ASIStepLength]; 
+        ASIStepTime             = [ASIStepTime; exist_vars.ASIStepTime];
+        ASIVel                  = [ASIVel; exist_vars.ASIVel];
+
     else
-        metabolicEnergyWang     = [exist_vars.metabolicEnergyWang];
-        metabolicEnergyUmberg   = [exist_vars.metabolicEnergyUmberg];
+        metabolicEnergy         = [exist_vars.metabolicEnergySave];
         meanVel                 = [exist_vars.meanVel];
-        meanStrideTime          = [exist_vars.meanStrideTime];
-        meanStrideLength        = [exist_vars.meanStrideLength];
-        costOfTransportWang     = [exist_vars.costOfTransportWang];
-        costOfTransportUmberg   = [exist_vars.costOfTransportUmberg];
-        costT                   = [exist_vars.costT];
+        meanStepTime            = [exist_vars.meanStepTime];
+        meanStepLength          = [exist_vars.meanStepLength];
+        costOfTransport         = [exist_vars.costOfTransportSave];
+        cost                    = [exist_vars.costT];
         sumOfIdealTorques       = [exist_vars.sumOfIdealTorques];
         sumOfStopTorques        = [exist_vars.sumOfStopTorques];
         HATPos                  = [exist_vars.HATPos];
-        GainsSave               = [exist_vars.GainsSave];
+        Gains                   = [exist_vars.GainsSave];
+        ASIStepLength           = [exist_vars.ASIStepLength];
+        ASIStepTime             = [exist_vars.ASIStepTime];
+        ASIVel                  = [exist_vars.ASIVel];
     end
     
 end
 
-save('compareEnergyCostTotal.mat','metabolicEnergyWang','metabolicEnergyUmberg','meanVel','meanStrideTime', 'meanStrideLength','costOfTransportWang','costOfTransportUmberg', ...
-    'costT','sumOfIdealTorques','sumOfStopTorques','HATPos','GainsSave');
+save('compareEnergyCostTotal.mat','metabolicEnergy','meanVel','meanStepTime', 'meanStepLength','costOfTransport', ...
+    'cost','sumOfIdealTorques','sumOfStopTorques','HATPos','Gains','ASIStepLength','ASIStepTime','ASIVel');
 
 %%
-varnames = {'E_m Umb','E_m Wang','S t_i','S t_s','v_a_v_g'};
-% corrplot([metabolicEnergyUmberg,metabolicEnergyWang],'varnames',varnames(1:2));
-corrplot([metabolicEnergyUmberg,metabolicEnergyWang,sumOfIdealTorques,sumOfStopTorques,meanVel],'varnames',varnames);
+% varnames = {'E_m Umb','E_m Wang','S t_i','S t_s','v_a_v_g'};
+% % corrplot([metabolicEnergyUmberg,metabolicEnergyWang],'varnames',varnames(1:2));
+% corrplot([metabolicEnergyUmberg,metabolicEnergyWang,sumOfIdealTorques,sumOfStopTorques,meanVel],'varnames',varnames);

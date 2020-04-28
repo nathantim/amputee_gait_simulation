@@ -30,6 +30,7 @@ InitialGuess = initial_gains_file.Gains;
 BodyMechParams;
 ControlParams;
 OptimParams;
+dt_visual = 1/30;
 [groundX, groundZ, groundTheta] = generateGround('flat');
 load_system(model)
 
@@ -45,8 +46,8 @@ sigma0 = 1/8;
 
 opts = cmaes;
 %opts.PopSize = numvars;
-opts.Resume = 'no';
-opts.MaxIter = 1000;
+opts.Resume = 'yes';
+opts.MaxIter = 2000;
 % opts.StopFitness = -inf;
 opts.StopFitness = 0;
 opts.DispModulo = 1;
