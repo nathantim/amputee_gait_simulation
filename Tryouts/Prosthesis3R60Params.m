@@ -15,6 +15,11 @@ c_stance_comp_a1 = 2.1443;      % (Ns/m)^2
 c_stance_ext_a0 = 65579;        % Ns/m
 c_stance_ext_a1 = 7.0819;       % (Ns/m)^2
 
+% c_stance_ext_a0 = 885.0653;    % Ns/m
+% c_stance_ext_a1 = 2.1443;      % (Ns/m)^2
+% c_stance_comp_a0 = 65579;        % Ns/m
+% c_stance_comp_a1 = 7.0819;       % (Ns/m)^2
+
 L3 = 0.0885;
 L4 = 0.0017;
 L6 = 0.0403;
