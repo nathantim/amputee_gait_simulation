@@ -38,7 +38,10 @@ for i = 1:length(muscle_exp_models)
 end
 
 % Decide which to use for optimization
-costOfTransportForOpt =  effort_costs(contains(muscle_exp_models,'Umberger (2010)')).costOfTransport; 
+costOfTransportForOpt =  effort_costs(contains(muscle_exp_models,'Wang (2012)')).costOfTransport; 
+if isempty(costOfTransportForOpt)
+    error('Empty cost of transport')
+end
 
 %% Calculate time cost
 timeSetToRun = str2double(get_param(model,'StopTime'));

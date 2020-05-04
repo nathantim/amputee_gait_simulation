@@ -18,7 +18,7 @@ initial_gains_filename = ('Results/RoughDist/optimizedGains.mat');
 initial_gains_file = load(initial_gains_filename);
 
 %%
-global model rtp InitialGuess dataQueueD
+global model rtp InitialGuess
 
 %% specifiy model and intial parameters
 model = 'NeuromuscularModel';
@@ -60,8 +60,8 @@ if (min_velocity == target_velocity && max_velocity == target_velocity)
 end
 opts.UserData = char(strcat("Gains filename: ", initial_gains_filename));
 % opts.SaveFilename = 'variablescmaes_healthy_energy_cost_compare.mat';
-% opts.SaveFilename = 'variablescmaes_healthy_energy_Wang2012.mat';
-opts.SaveFilename = 'variablescmaes_healthy_energy_Umberger2010.mat';
+opts.SaveFilename = 'variablescmaes_healthy_energy_Wang2012.mat';
+% opts.SaveFilename = 'variablescmaes_healthy_energy_Umberger2003TG.mat';
 
 %% run cmaes
 [xmin, fmin, counteval, stopflag, out, bestever] = cmaes(optfunc, x0, sigma0, opts)

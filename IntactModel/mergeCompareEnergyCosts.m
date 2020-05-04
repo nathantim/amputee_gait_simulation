@@ -43,7 +43,7 @@ for i = 1:length(filesIDX)
     
 end
 
-save('compareEnergyCostTotal.mat','metabolicEnergy','meanVel','meanStepTime', 'meanStepLength','costOfTransport', ...
+save('compareEnergyCostTotalUMB2003TG.mat','metabolicEnergy','meanVel','meanStepTime', 'meanStepLength','costOfTransport', ...
     'cost','sumOfIdealTorques','sumOfStopTorques','HATPos','Gains','ASIStepLength','ASIStepTime','ASIVel');
 
 %%
