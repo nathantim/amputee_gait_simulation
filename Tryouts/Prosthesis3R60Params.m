@@ -1,4 +1,4 @@
-c_fric = 0.0023;                  % Ns/m
+c_fric = 0.002423;                  % Ns/m
 
 L0_swing = 0.0896;              % m
 L0_stance =  0.0892;            % m
