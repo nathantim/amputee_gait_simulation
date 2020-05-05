@@ -30,7 +30,7 @@ rightLegState   = GaitPhaseData.signals.values(GaitInfo.start.right:GaitInfo.end
 %%
 angularDataFig = figure();
 
-[timeWinter,hipAngleWinter, kneeAngleWinter, ankleAngleWinter, ~, ~] = getWinterData(GaitInfo.WinterDataSpeed);
+[timeWinter,hipAngleWinter_avg,hipAngleWinter_sd, kneeAngleWinter_avg,kneeAngleWinter_sd, ankleAngleWinter_avg,ankleAngleWinter_sd, ~, ~] = getWinterData(GaitInfo.WinterDataSpeed,"deg");
 
 %%
 if true
@@ -49,10 +49,11 @@ if true
 %     ylabel('rad');
     
     subplotStart = 412;
-    plotHandlesLeft = plotAngularDataInFigure(t_left_perc,LhipAngles,LkneeAngles,LankleAngles,subplotStart,GaitInfo.b_oneGaitPhase);
-    plotHandlesRight = plotAngularDataInFigure(t_right_perc,RhipAngles,RkneeAngles,RankleAngles,subplotStart,GaitInfo.b_oneGaitPhase);
+    plotHandlesLeft = plotAngularDataInFigure(t_left_perc,LhipAngles,[],LkneeAngles,[],LankleAngles,[],subplotStart,GaitInfo.b_oneGaitPhase);
+    plotHandlesRight = plotAngularDataInFigure(t_right_perc,RhipAngles,[],RkneeAngles,[],RankleAngles,[],subplotStart,GaitInfo.b_oneGaitPhase);
     if GaitInfo.b_oneGaitPhase
-        plotHandlesWinter = plotAngularDataInFigure(timeWinter,180/pi*(hipAngleWinter),180/pi*kneeAngleWinter,180/pi*(ankleAngleWinter),subplotStart);
+        plotHandlesWinter = plotAngularDataInFigure(timeWinter,hipAngleWinter_avg,hipAngleWinter_sd,kneeAngleWinter_avg,kneeAngleWinter_sd, ...
+                                                    ankleAngleWinter_avg,ankleAngleWinter_sd,subplotStart);
     end
 end
 %%
@@ -75,7 +76,7 @@ if false
         ,RkneeAngles,RkneeAnglesVel,RankleAngles,RankleAnglesVel,GaitInfo.b_oneGaitPhase);
 
     if oneGaitInfo.b_oneGaitPhase
-        plotHandlesWinter = plotAngular_a_VelDataInFigure(timeWinter,180/pi*(hipAngleWinter),'',180/pi*kneeAngleWinter,'',180/pi*(ankleAngleWinter),'');
+        plotHandlesWinter = plotAngular_a_VelDataInFigure(timeWinter,hipAngleWinter_avg,'',kneeAngleWinter_avg,'',(ankleAngleWinter_avg),'');
     end
 end
 
@@ -86,11 +87,12 @@ if exist('HATAnglePlot','var') == 1
     set(HATAnglePlot,plotInfo.plotProp,plotInfo.plotProp_entries(1,:));
 end
 
-for i= 1:length(plotHandlesLeft)
-    set(plotHandlesLeft(i),plotInfo.plotProp,plotInfo.plotProp_entries(1,:));
-    set(plotHandlesRight(i),plotInfo.plotProp,plotInfo.plotProp_entries(2,:));
+for i= 1:size(plotHandlesLeft,1)
+    set(plotHandlesLeft(i,1),plotInfo.plotProp,plotInfo.plotProp_entries(1,:));
+    set(plotHandlesRight(i,1),plotInfo.plotProp,plotInfo.plotProp_entries(2,:));
     if GaitInfo.b_oneGaitPhase && ~isnan(plotHandlesWinter(i))
-        set(plotHandlesWinter(i),plotInfo.plotProp,plotInfo.plotProp_entries(3,:));
+        set(plotHandlesWinter(i,1),plotInfo.plotProp,plotInfo.plotProp_entries(3,:));
+        set(plotHandlesWinter(i,2),plotInfo.fillProp,plotInfo.fillVal)
     end
 end
 

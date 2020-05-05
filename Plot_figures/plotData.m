@@ -75,6 +75,8 @@ GaitInfo.WinterDataSpeed = speedsWinter{abs(tWinter - meanStepTime) == min(abs(t
 plotInfo.plotProp = {'LineStyle','Color','LineWidth'};
 plotInfo.lineVec = {'-'; '--';':'};
 plotInfo.colorProp = {	'#0072BD';	'#D95319';'#7E2F8E'};
+plotInfo.fillProp = {'FaceColor','FaceAlpha','EdgeColor'};
+plotInfo.fillVal = {[0.8 0.8 0.8],0.9,'none'};
 plotInfo.lineVec = plotInfo.lineVec(1:3,:);
 plotInfo.colorProp = plotInfo.colorProp(1:3,:);
 plotInfo.lineWidthProp = {3;3;3};

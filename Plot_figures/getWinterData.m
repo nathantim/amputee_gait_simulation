@@ -1,4 +1,4 @@
-function [time,hipAngle, kneeAngle, ankleAngle, vertGRF, horGRF] = getWinterData(speed)
+function [time,hipAngle_avg,hipAngle_sd, kneeAngle_avg,kneeAngle_sd, ankleAngle_avg,ankleAngle_sd, vertGRF_avg,vertGRF_sd, horGRF_avg,horGRF_sd] = getWinterData(speed,angleUnit)
 % close all;
 % clear all
 % Note that angles and moments do not have concisten signs in Winter's excel(so Jpower=dAng/dt*-Mom)
@@ -30,24 +30,49 @@ end
     
 % select_gait = [2];
 
-hip_entry=[2 9 16];
-knee_entry=hip_entry+2;
-ankle_entry=hip_entry+4;
-vertGRF_entry = [2 9 16];
-horGRF_entry = vertGRF_entry + 2;
+hip_entry_avg       =[2 9 16];
+hip_entry_sd        = hip_entry_avg+1;
+knee_entry_avg      = hip_entry_avg+2;
+knee_entry_sd       = knee_entry_avg + 1;
+ankle_entry_avg     = hip_entry_avg+4;
+ankle_entry_sd      = ankle_entry_avg + 1;
+vertGRF_entry_avg   = [2 9 16];
+vertGRF_entry_sd    = vertGRF_entry_avg + 1;
+horGRF_entry_avg    = vertGRF_entry_avg + 2;
+horGRF_entry_sd      = horGRF_entry_avg + 1;
 
-hip_entry = hip_entry(select_gait);
-knee_entry = knee_entry(select_gait);
-ankle_entry = ankle_entry(select_gait);
-vertGRF_entry = vertGRF_entry(select_gait);
-horGRF_entry = horGRF_entry(select_gait);
+hip_entry_avg       = hip_entry_avg(select_gait);
+hip_entry_sd        = hip_entry_sd(select_gait);
+knee_entry_avg      = knee_entry_avg(select_gait);
+knee_entry_sd       = knee_entry_sd(select_gait);
+ankle_entry_avg     = ankle_entry_avg(select_gait);
+ankle_entry_sd      = ankle_entry_sd(select_gait);
+vertGRF_entry_avg   = vertGRF_entry_avg(select_gait);
+vertGRF_entry_sd 	= vertGRF_entry_sd(select_gait);
+horGRF_entry_avg    = horGRF_entry_avg(select_gait);
+horGRF_entry_sd     = horGRF_entry_sd(select_gait);
 
-hipAngle = Jang(:,hip_entry);
-kneeAngle = Jang(:,knee_entry);
-ankleAngle = Jang(:,ankle_entry);
-vertGRF = Fgt(1:max(size(hipAngle)),vertGRF_entry);
-horGRF = Fgt(1:max(size(hipAngle)),horGRF_entry);
+hipAngle_avg        = Jang(:,hip_entry_avg);
+hipAngle_sd         = Jang(:,hip_entry_sd);
+kneeAngle_avg       = Jang(:,knee_entry_avg);
+kneeAngle_sd        = Jang(:,knee_entry_sd);
+ankleAngle_avg      = Jang(:,ankle_entry_avg);
+ankleAngle_sd       = Jang(:,ankle_entry_sd);
+vertGRF_avg         = Fgt(1:max(size(hipAngle_avg)),vertGRF_entry_avg);
+vertGRF_sd          = Fgt(1:max(size(hipAngle_avg)),vertGRF_entry_sd);
+horGRF_avg          = Fgt(1:max(size(hipAngle_avg)),horGRF_entry_avg);
+horGRF_sd          = Fgt(1:max(size(hipAngle_avg)),horGRF_entry_sd);
 
+
+if exist('angleUnit','var') && strcmp(angleUnit,"deg")
+   hipAngle_avg     = 180/pi*hipAngle_avg;
+   hipAngle_sd      = 180/pi*hipAngle_sd;
+   kneeAngle_avg    = 180/pi*kneeAngle_avg;
+   kneeAngle_sd     = 180/pi*kneeAngle_sd; 
+   ankleAngle_avg   = 180/pi*ankleAngle_avg;
+   ankleAngle_sd    = 180/pi*ankleAngle_sd;
+   
+end
 
 % figure(1);
 
