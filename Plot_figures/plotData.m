@@ -85,7 +85,7 @@ plotInfo.plotProp_entries = [plotInfo.lineVec(:),plotInfo.colorProp(:), plotInfo
 %%
 plotAngularData(angularData,GaitPhaseData,plotInfo,GaitInfo,saveInfo);
 % plotMusculoData(musculoData,plotInfo,GaitInfo,saveInfo);
-% plotGRF(GRFData,plotInfo,GaitInfo,saveInfo);
+plotGRF(GRFData,plotInfo,GaitInfo,saveInfo);
 
 %
 set(0, 'DefaultAxesTitleFontSizeMultiplier',1);

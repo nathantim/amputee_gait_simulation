@@ -13,9 +13,9 @@ R_Total_x = GRFData.signals.values(GaitInfo.start.right:GaitInfo.end.right,9);
 R_Total_z = GRFData.signals.values(GaitInfo.start.right:GaitInfo.end.right,10);
 R_Heel  = GRFData.signals.values(GaitInfo.start.right:GaitInfo.end.right,11:12);
 
-L_Total_x = -1*L_Total_x;
-R_Total_x = -1*R_Total_x;
-warning('Unreasoned factor -1');
+% L_Total_x = -1*L_Total_x;
+% R_Total_x = -1*R_Total_x;
+% warning('Unreasoned factor -1');
 
 [tWinter,~, ~, ~,~,~,~, vGRF_winter_avg,vGRF_winter_sd, hGRF_winter_avg,hGRF_winter_sd] = getWinterData(GaitInfo.WinterDataSpeed);
 if size(vGRF_winter_avg,2) > size(vGRF_winter_avg,2)
@@ -37,26 +37,31 @@ else
     if GaitInfo.b_oneGaitPhase
         plotHandlesWinter = plotTotalGRFDataInFigure(tWinter,hGRF_winter_avg,hGRF_winter_sd,vGRF_winter_avg,vGRF_winter_sd);
     end
-    set(GRFDataFig, 'Position',[10,50,800,600]);
+
 end
 
+set(GRFDataFig, 'Position',[10,50,800,600]);
 if GaitInfo.b_oneGaitPhase && contains(saveInfo.info,'prosthetic')
-    leg = legend('Intact leg','Prosthetic leg',char(strcat(string(GaitInfo.WinterDataSpeed), ' gait Winter')) );
+    leg = legend([plotHandlesLeft(2,1),plotHandlesRight(2,1),plotHandlesWinter(2,1)],'Intact leg','Prosthetic leg', 'Winter data');
+%     leg = legend('Intact leg','Prosthetic leg',char(strcat(string(GaitInfo.WinterDataSpeed), ' gait Winter')) );
 elseif GaitInfo.b_oneGaitPhase
-    leg = legend('Left leg','Right leg',char(strcat(string(GaitInfo.WinterDataSpeed), ' gait Winter')) );
+    leg = legend([plotHandlesLeft(2,1),plotHandlesRight(2,1),plotHandlesWinter(2,1)],'Left leg','Right leg', 'Winter data');
+%     leg = legend('Left leg','Right leg',char(strcat(string(GaitInfo.WinterDataSpeed), ' gait Winter')));
 elseif contains(saveInfo.info,'prosthetic')
-    leg = legend('Intact leg','Prosthetic leg');
+    leg = legend([plotHandlesLeft(2),plotHandlesRight(2)],'Intact leg','Prosthetic leg');
+%     leg = legend('Intact leg','Prosthetic leg');
 else
-    leg = legend('Left leg','Right leg');
+    leg = legend([plotHandlesLeft(2),plotHandlesRight(2)],'Left leg','Right leg');
+%     leg = legend('Left leg','Right leg');
 end
 set(leg,'FontSize',18);
 
 for i= 1:size(plotHandlesLeft,1)
     set(plotHandlesLeft(i,1),plotInfo.plotProp,plotInfo.plotProp_entries(1,:));
     set(plotHandlesRight(i,1),plotInfo.plotProp,plotInfo.plotProp_entries(2,:));
-    if GaitInfo.b_oneGaitPhase
-        set(plotHandlesWinter(i),plotInfo.plotProp,plotInfo.plotProp_entries(3,:));
-        set(plotHandlesWinter(i,2),plotInfo.fillProp,plotInfo.fillVal)
+    if GaitInfo.b_oneGaitPhase && ~isnan(plotHandlesWinter(i,1))
+        set(plotHandlesWinter(i,1),plotInfo.plotProp,plotInfo.plotProp_entries(3,:));
+        set(plotHandlesWinter(i,2),plotInfo.fillProp,plotInfo.fillVal);
     end
 end
 

@@ -90,9 +90,9 @@ end
 for i= 1:size(plotHandlesLeft,1)
     set(plotHandlesLeft(i,1),plotInfo.plotProp,plotInfo.plotProp_entries(1,:));
     set(plotHandlesRight(i,1),plotInfo.plotProp,plotInfo.plotProp_entries(2,:));
-    if GaitInfo.b_oneGaitPhase && ~isnan(plotHandlesWinter(i))
+    if GaitInfo.b_oneGaitPhase && ~isnan(plotHandlesWinter(i,1))
         set(plotHandlesWinter(i,1),plotInfo.plotProp,plotInfo.plotProp_entries(3,:));
-        set(plotHandlesWinter(i,2),plotInfo.fillProp,plotInfo.fillVal)
+        set(plotHandlesWinter(i,2),plotInfo.fillProp,plotInfo.fillVal);
     end
 end
 
@@ -100,10 +100,10 @@ set(angularDataFig, 'Position',[10,0,1000,1530]);
 % set(angularDataFig, 'Position',[10,40,1000,930]);
 
 if GaitInfo.b_oneGaitPhase && contains(saveInfo.info,'prosthetic')
-    leg = legend([plotHandlesLeft(2),plotHandlesRight(2),plotHandlesWinter(2)],'Intact leg','Prosthetic leg', 'Winter data');
+    leg = legend([plotHandlesLeft(2,1),plotHandlesRight(2,1),plotHandlesWinter(2,1)],'Intact leg','Prosthetic leg', 'Winter data');
 %     leg = legend('Intact leg','Prosthetic leg',char(strcat(string(GaitInfo.WinterDataSpeed), ' gait Winter')) );
 elseif GaitInfo.b_oneGaitPhase
-    leg = legend([plotHandlesLeft(2),plotHandlesRight(2),plotHandlesWinter(2)],'Left leg','Right leg', 'Winter data');
+    leg = legend([plotHandlesLeft(2,1),plotHandlesRight(2,1),plotHandlesWinter(2,1)],'Left leg','Right leg', 'Winter data');
 %     leg = legend('Left leg','Right leg',char(strcat(string(GaitInfo.WinterDataSpeed), ' gait Winter')));
 elseif contains(saveInfo.info,'prosthetic')
     leg = legend([plotHandlesLeft(2),plotHandlesRight(2)],'Intact leg','Prosthetic leg');
