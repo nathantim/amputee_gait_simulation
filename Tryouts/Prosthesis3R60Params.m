@@ -1,7 +1,9 @@
 c_fric = 0.002423;                  % Ns/m
 % c_fric = 0.07;                  % Ns/m
 velThreshold = 20/(60*1000)-0.000001;
-
+t_step = 1.2;
+mass = 80;
+mass
 L0_swing = 0.0896;              % m
 L0_stance =  0.0892;            % m
 k_bumper = 130000;              % N/m
@@ -81,11 +83,11 @@ J2526 = (3.59*1e4)*1e-9;
 
 %% init param
 % (almost) zero knee angle:
-% j10_i = -25.4597;
-% j13_i = -42.8862;
-% j15_i = 115.697;
+j10_i = -25.4597;
+j13_i = -42.8862;
+j15_i = 115.697;
 
 % % swing phase test
-j10_i = 7.5;
-j13_i = -4.07996;
-j15_i = 129.2;
+% j10_i = 7.5;
+% j13_i = -4.07996;
+% j15_i = 129.2;
