@@ -34,19 +34,19 @@ c_stance = [c_stance_comp(dx_comp) c_stance_ext(dx_ext)];
 % j15_i = 129.2;
 
 % L0_swing = 0.0869;              % m
-j10_i = -12.4166;
-j13_i = -27.3459;
-j15_i = 116.46;
+% j10_i = -12.4166;
+% j13_i = -27.3459;
+% j15_i = 116.46;
 
 % swing phase test
-% j10_i = 7.5;
-% j13_i = 9.68277;
-% j15_i = 116.46;
+j10_i = 7.5;
+j13_i = 9.68277;
+j15_i = 116.46;
 
 
 %%
-% c_fric = 0.00165;                  % Ns/m
-c_fric = 0.002423;                  % Ns/m
+c_fric = 0.00165;                  % Ns/m
+% c_fric = 0.002423;                  % Ns/m
 % c_fric = 0.07;                  % Ns/m
 velThreshold = 20/(60*1000)-0.000001;
 t_step = 1.2;
