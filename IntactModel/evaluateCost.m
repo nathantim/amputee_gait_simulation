@@ -1,4 +1,4 @@
-clc;
+% clc;
 %%
 tempstring = strsplit(opts.UserData,' ');
 dataFile = tempstring{end};
