@@ -1,10 +1,59 @@
+c_swing_comp     = @(dx)(213.5932*(1./abs(dx))-4927.5);      % Ns/m
+c_swing_ext      = @(dx)(146.3288*(1./abs(dx))-8808.5);      % Ns/m
+c_stance_comp   = @(dx)(2.1443*(1./abs(dx)) + 885.0653);    % Ns/m
+c_stance_ext    = @(dx)(7.0819*(1./abs(dx)) + 65579);       % Ns/m
+
+dx_comp = fliplr(-1*[5 10 20 35 50 70 100 200 300 400 500 600 1000]./(60*1000));
+dx_ext  =    [5 10 20 35 50 70 100 200 300 400 500 600 1000]./(60*1000);
+% dx = [fliplr(dx_comp) -0.00005 0 0.00005 dx_ext];
+dx = [(dx_comp)  dx_ext];
+
+c_swing_comp_tab  = ([58000 124000 178000 251000 363000 635000]);
+c_swing_ext_tab   = fliplr([33700 79000 117000 167000 244000 429000]);
+
+c_stance_comp_tab  = ([1340 2110 2600 3720 4910 7080]);
+c_stance_ext_tab   = fliplr([61300 70000 74500 77500 81300 83200]);
+
+% c_swing = [c_swing_comp_tab 705000 0 529000 c_swing_ext_tab];
+% c_stance = [c_stance_comp_tab 8080 0 93200 c_stance_ext_tab];
+% c_swing = [c_swing_comp_tab c_swing_ext_tab];
+% c_stance = [c_stance_comp_tab  c_stance_ext_tab];
+c_swing = [c_swing_comp(dx_comp) c_swing_ext(dx_ext)];
+c_stance = [c_stance_comp(dx_comp) c_stance_ext(dx_ext)];
+
+%% init param
+% (almost) zero knee angle:
+% L0_swing = 0.0896;              % m
+% j10_i = -25.4597;
+% j13_i = -42.8862;
+% j15_i = 115.697;
+
+% swing phase test
+% j10_i = 7.5;
+% j13_i = -4.07996;
+% j15_i = 129.2;
+
+% L0_swing = 0.0869;              % m
+j10_i = -12.4166;
+j13_i = -27.3459;
+j15_i = 116.46;
+
+% swing phase test
+% j10_i = 7.5;
+% j13_i = 9.68277;
+% j15_i = 116.46;
+
+
+%%
+% c_fric = 0.00165;                  % Ns/m
 c_fric = 0.002423;                  % Ns/m
 % c_fric = 0.07;                  % Ns/m
 velThreshold = 20/(60*1000)-0.000001;
 t_step = 1.2;
-mass = 80;
-mass
-L0_swing = 0.0896;              % m
+mass = 70;
+
+% L0_swing = 0.0896;              % m
+L0_swing = 0.0869;              % m
 L0_stance =  0.0892;            % m
 k_bumper = 130000;              % N/m
 k_swing = 18750;                % N/m
@@ -63,7 +112,9 @@ a_14_15 = 90;
 a_18_19 = 116;
 a_18_20 = 122;
 a_18_21 = 34;
+a_18_23 = -10;
 a_25_26 = -90;
+
 
 m3467 = 253.3*1e-3;
 m8 = 143.8*1e-3;
@@ -81,13 +132,3 @@ J18192021 = (6.86*1e4)*1e-9;
 J30 = (6.36*1e4)*1e-9;
 J2526 = (3.59*1e4)*1e-9;
 
-%% init param
-% (almost) zero knee angle:
-j10_i = -25.4597;
-j13_i = -42.8862;
-j15_i = 115.697;
-
-% % swing phase test
-% j10_i = 7.5;
-% j13_i = -4.07996;
-% j15_i = 129.2;

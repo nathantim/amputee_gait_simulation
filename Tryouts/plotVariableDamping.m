@@ -8,7 +8,7 @@ c_swing_ext_poly  = polyfit(1./abs(dx_ext),c_swing_ext_tab,1);
 % c_swing_between_poly = polyfit(1./[dx_comp(1) dx_ext(1)],[635000 429000],1);
 
 c_stance_comp_tab  = fliplr([1340 2110 2600 3720 4910 7080]);
-c_stance_ext_tab   = fliplr([6130 70000 74500 77500 81300 83200]);
+c_stance_ext_tab   = fliplr([61300 70000 74500 77500 81300 83200]);
 c_stance_comp_poly = polyfit(1./abs(dx_comp),c_stance_comp_tab,1);
 c_stance_ext_poly  = polyfit(1./abs(dx_ext),c_stance_ext_tab,1);
 
