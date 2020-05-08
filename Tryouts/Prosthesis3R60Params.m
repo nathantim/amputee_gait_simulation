@@ -19,15 +19,15 @@ c_stance_ext_tab   = fliplr([61300 70000 74500 77500 81300 83200]);
 % c_swing = [c_swing_comp_tab c_swing_ext_tab];
 % c_stance = [c_stance_comp_tab  c_stance_ext_tab];
 c_swing = [c_swing_comp(dx_comp) c_swing_ext(dx_ext)];
-% c_stance = [c_stance_comp(dx_comp) c_stance_ext(dx_ext)];
-c_stance = [c_stance_ext(dx_comp) c_stance_comp(dx_ext)];
+c_stance = [c_stance_comp(dx_comp) c_stance_ext(dx_ext)];
+% c_stance = [c_stance_ext(dx_comp) c_stance_comp(dx_ext)];
 
 %% init param
 % (almost) zero knee angle:
-L0_swing = 0.0896;              % m
-% j10_i = -25.4597;
-% j13_i = -42.8862;
-% j15_i = 115.697;
+% L0_swing = 0.0896;              % m
+j10_i = -25.4597;
+j13_i = -42.8862;
+j15_i = 115.697;
 
 % swing phase test
 % j10_i = 7.5;
@@ -35,9 +35,9 @@ L0_swing = 0.0896;              % m
 % j15_i = 129.2;
 
 % L0_swing = 0.0869;              % m
-j10_i = -12.4166;
-j13_i = -27.3459;
-j15_i = 116.46;
+% j10_i = 77.49-90;
+% j13_i = -27.4019;
+% j15_i = 116.46;
 
 % swing phase test
 % j10_i = 7.5;
@@ -54,8 +54,9 @@ t_step = 1.2;
 mass = 70;
 
 % L0_swing = 0.0896;              % m
-% L0_swing = 0.0869;              % m
+L0_swing = 0.0869;              % m
 L0_stance =  0.0892;            % m
+% L0_stance =  0.0902;            % m
 k_bumper = 130000;              % N/m
 k_swing = 18750;                % N/m
 
@@ -86,7 +87,9 @@ L18 = 25.1*1e-3;
 L19 = 17.7*1e-3;
 L20 = 26*1e-3;
 L21 = 1.7*1e-3;
-L25 = 76.95*1e-3;
+% L25 = 76.95*1e-3;
+L25 = 76.45*1e-3;
+
 L26 = 2.8*1e-3;
 
 cg3 = (3.6/10.4)*L3;
