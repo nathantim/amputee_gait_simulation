@@ -107,10 +107,10 @@ bar14 = plot(icraxes,[y_14_1(1);y_14_2(1)],[z_14_1(1);z_14_2(1)],'Color',[197 90
 bar25 = plot(icraxes,[y_25_1(1);y_25_2(1)],[z_25_1(1);z_25_2(1)],'Color',[191 144 0]./255);
 ottoplotswingline= plot(icraxes,ICRoswing_y_interp,ICRoswing_z_interp,'r'); 
 plot(icraxes,ICRoswing_y,ICRoswing_z,'ro');
-
-axis equal
+text(icraxes,ICRoswing_y+5,ICRoswing_z+2,strcat(num2str(knee_angle_swing_o),'$^o $'))
 plot(icraxes,icraxes.XLim,[ 0 0],'Color',[0.8 0.8 0.8])
 plot(icraxes,[ 0 0], icraxes.YLim,'Color',[0.8 0.8 0.8]);
+axis equal
 set(icraxes,'YLimMode','manual');
 
 bar_workline = @(y_1,y_2,z_1,z_2,xlim)(interp1([y_1(1);y_2(1)],[z_1(1);z_2(1)],xlim','linear','extrap'));
@@ -120,33 +120,37 @@ bar25_worklineplot = plot(icraxes,icraxes.XLim,bar_workline(y_25_1(1),y_25_2(1),
 
 h = get(icraxes,'Children');
 set(icraxes,'Children',flipud(h));
-text(icraxes,ICRoswing_y+5,ICRoswing_z+2,strcat(num2str(knee_angle_swing_o),'$^o $'))
+set(icraxes,'XLimMode','manual');
+
 
 % barandicr = subplot(2,1,2);
 % set(barandicr,'NextPlot','Add');
 % axis(barandicr,2.*[-200 200 -100 100])
 ylabel(icraxes,'z in mm');
 xlabel(icraxes,'y in mm')
+title(icraxes,'Location instantenous center of rotation')
 
 % set(icraxes,'NextPlot','Add');
 icrmark = plot(icraxes,ICR_y(1),ICR_z(1),'o');
 icrline = plot(icraxes,ICR_y(1),ICR_z(1));
 % axis(icraxes,[-50 300, -100 550]);
-ylabel(icraxes,'z in mm');
-xlabel(icraxes,'y in mm')
+% ylabel(icraxes,'z in mm');
+% xlabel(icraxes,'y in mm')
 % set(icraxes,'DataAspectRatio',[1 1 1]);
 
 kneeangleplot = subplot(1,3,3);
 kneeline = plot(kneeangleplot,t(1),angle_knee(1));
 axis(kneeangleplot,[0 max(t), min(angle_knee) max(angle_knee)]);
-ylabel(kneeangleplot,'knee angle in deg');
+ylabel(kneeangleplot,'deg');
 xlabel(kneeangleplot,'time in s');
+title(kneeangleplot,'knee angle');
 
 %%
 % idx_length = length(ICR_y);
 clear icrpoint;
 latest_angle = nan;
 addpoint = false;
+input('Press a key to continue')
 for i = 2:3:idx_length
     set(bar14,'XData',[y_14_1(i);y_14_2(i)],'YData',[z_14_1(i);z_14_2(i)]);
     set(bar25,'XData',[y_25_1(i);y_25_2(i)],'YData',[z_25_1(i);z_25_2(i)]);
