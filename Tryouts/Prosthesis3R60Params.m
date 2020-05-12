@@ -3,8 +3,8 @@ c_swing_ext      = @(dx)(146.3288*(1./abs(dx))-8808.5);      % Ns/m
 c_stance_comp   = @(dx)(2.1443*(1./abs(dx)) + 885.0653);    % Ns/m
 c_stance_ext    = @(dx)(7.0819*(1./abs(dx)) + 65579);       % Ns/m
 
-dx_comp = fliplr(-1*[5 10 20 35 50 70 100 200 300 400 500 600 1000]./(60*1000));
-dx_ext  =    [10 20 35 50 70 100 200 300 400 500 600 1000]./(60*1000);
+dx_comp = fliplr(-1*[0.5 1 2 5 10 20 35 50 70 100 200 300 400 500 600 1000]./(60*1000));
+dx_ext  =    [0.5 1 2 5 10 20 35 50 70 100 200 300 400 500 600 1000]./(60*1000);
 % dx = [fliplr(dx_comp) -0.00005 0 0.00005 dx_ext];
 dx = [(dx_comp)  dx_ext];
 
@@ -59,7 +59,8 @@ j9_i = -99.5;
 target_angle = 0;
 angle_offset = 3.4272; % deg
 dt_visual = 0.001;
-c_fric = 0.05*0.00165;                  % Ns/m nice plot ICR
+
+% c_fric = 0.05*0.00165;                  % Ns/m nice plot ICR
 
 % c_fric = 0.002423;                  % Ns/m
 % c_fric = 0.07;                  % Ns/m
@@ -73,9 +74,14 @@ mass = 70;
 k_bumper = 130000;              % N/mu
 k_swing = 18750;                % N/m
 
-L0_swing = 0.0875; % nice plot ICR
-L0_stance = 0.0894; % nice plot ICR
+% L0_swing = 0.0875; % nice plot ICR
+% L0_stance = 0.0894; % nice plot ICR
 
+% from opt
+L0_swing = 0.0894;
+L0_stance = 0.0888;
+c_fric = Simulink.Parameter(0.0055);
+c_fric.CoderInfo.StorageClass = 'SimulinkGlobal';
 
 c_swing_comp_a1 = 213.5932;     % Ns/m
 c_swing_comp_a0 = -4927.5;      % (Ns/m)^2
