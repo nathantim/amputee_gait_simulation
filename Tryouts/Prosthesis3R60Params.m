@@ -56,8 +56,10 @@ j9_i = -99.5;
 
 
 %%
+target_angle = 0;
+angle_offset = 3.4272; % deg
 dt_visual = 0.001;
-c_fric = 0.05*0.00165;                  % Ns/m
+c_fric = 0.05*0.00165;                  % Ns/m nice plot ICR
 
 % c_fric = 0.002423;                  % Ns/m
 % c_fric = 0.07;                  % Ns/m
@@ -68,11 +70,13 @@ mass = 70;
 % L0_swing = 0.0896;              % m
 % L0_swing = 0.0869;              % m
 % L0_stance =  0.0892;            % m
-k_bumper = 130000;              % N/m
+k_bumper = 130000;              % N/mu
 k_swing = 18750;                % N/m
 
-L0_swing = 0.0875;
-L0_stance = 0.0894;
+L0_swing = 0.0875; % nice plot ICR
+L0_stance = 0.0894; % nice plot ICR
+
+
 c_swing_comp_a1 = 213.5932;     % Ns/m
 c_swing_comp_a0 = -4927.5;      % (Ns/m)^2
 c_swing_ext_a1 = 146.3288;      % Ns/m

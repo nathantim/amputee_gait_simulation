@@ -14,6 +14,7 @@ warning('off')
 disp(EXITFLAG);
 warning('on');
 costFunction(x,target_angle,gait_phase,model,rtp)
+
 %%
 function cost = costFunction(x,target_angle,gait_phase,model,rtp)
 paramSets = Simulink.BlockDiagram.modifyTunableParameters(rtp, ...

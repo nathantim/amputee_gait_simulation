@@ -1,4 +1,7 @@
 close all;
+%%
+gait_phase = input("Which phase of the gait are we looking at? (swing/stance)",'s');
+
 %% Otto-bock 'data'
 
 knee_angle_swing_to_plot = (0:0.5:140)';
@@ -53,7 +56,7 @@ alpha14_o = atan(ICRoswing_z_interp./ICRoswing_y_interp).*180/pi ;
 % % plot3(ICR.data(:,1)*1000,ICR.data(:,2)*1000,knee_angle.data)
 % xlabel('x');ylabel('z'); zlabel('knee angle')
 %%
-gait_phase = "swing";
+idx_length = [];
 ICR_y = ICR(:,1)*1000; % mm
 ICR_z = ICR(:,2)*1000; % mm
 
@@ -66,11 +69,6 @@ z_25_1 = pos25_1(:,3)*1000;
 y_25_2 = pos25_2(:,2)*1000;
 z_25_2 = pos25_2(:,3)*1000;
 angle_knee = knee_angle; % deg
-idx_length = find(angle_knee>140,1,'first')+1;
-if isempty(idx_length)
-    idx_length = length(angle_knee);
-end
-t = time(1:idx_length);
 
 origin_swing_y = y_14_2;
 origin_swing_z = z_14_2;
@@ -78,14 +76,32 @@ origin_stance_y = y_14_1;
 origin_stance_z = z_14_1;
 
 if strcmp(gait_phase,"swing")
+    idx_length = find(angle_knee>140,1,'first')+1;
     origin_y = origin_swing_y;
     origin_z = origin_swing_z;
+    ICRo_y_interp = ICRoswing_y_interp;
+    ICRo_z_interp = ICRoswing_z_interp;
+    ICRo_y = ICRoswing_y;
+    ICRo_z = ICRoswing_z;
+    knee_angle_o = knee_angle_swing_o;
 elseif strcmp(gait_phase,"stance")
+    idx_length = find(angle_knee==max([angle_knee;15]),1,'first')+1;
     origin_y = origin_stance_y;
     origin_z = origin_stance_z;
+    ICRo_y_interp = ICRostance_y_interp;
+    ICRo_z_interp = ICRostance_z_interp;
+    ICRo_y = ICRostance_y;
+    ICRo_z = ICRostance_z;
+    knee_angle_o = knee_angle_stance_o;
 else
     error("Unknown gait phase");
 end
+
+if isempty(idx_length)
+    idx_length = length(knee_angle);
+end
+angle_knee = knee_angle(1:idx_length);
+t = time(1:idx_length);
 
 ICR_y = ICR_y - origin_y;
 ICR_z = ICR_z - origin_z;
@@ -105,9 +121,9 @@ icrplot = plot(icraxes,ICR_y(1),ICR_z(1),'g*');
 hold on;
 bar14 = plot(icraxes,[y_14_1(1);y_14_2(1)],[z_14_1(1);z_14_2(1)],'Color',[197 90 17]./255);
 bar25 = plot(icraxes,[y_25_1(1);y_25_2(1)],[z_25_1(1);z_25_2(1)],'Color',[191 144 0]./255);
-ottoplotswingline= plot(icraxes,ICRoswing_y_interp,ICRoswing_z_interp,'r'); 
-plot(icraxes,ICRoswing_y,ICRoswing_z,'ro');
-text(icraxes,ICRoswing_y+5,ICRoswing_z+2,strcat(num2str(knee_angle_swing_o),'$^o $'))
+ottoplotswingline= plot(icraxes,ICRo_y_interp,ICRo_z_interp,'r'); 
+plot(icraxes,ICRo_y,ICRo_z,'ro');
+text(icraxes,ICRo_y+5,ICRo_z+2,strcat(num2str(knee_angle_o),'$^o $'))
 plot(icraxes,icraxes.XLim,[ 0 0],'Color',[0.8 0.8 0.8])
 plot(icraxes,[ 0 0], icraxes.YLim,'Color',[0.8 0.8 0.8]);
 axis equal
@@ -160,13 +176,24 @@ for i = 2:3:idx_length
     set(bar14_worklineplot,'YData',bar_workline(y_14_1(i),y_14_2(i),z_14_1(i),z_14_2(i),xlimits_workline));
     set(bar25_worklineplot,'YData',bar_workline(y_25_1(i),y_25_2(i),z_25_1(i),z_25_2(i),xlimits_workline));
     
-    
-    if exist('icrpoint','var')==0 || (angle_knee(i) < 10 && mod(angle_knee(i),5) < 1 && abs(latest_angle-angle_knee(i))>1 )
-       addpoint = true;
-    elseif (angle_knee(i) <= 55 && mod(angle_knee(i),10) < 1 && abs(latest_angle-angle_knee(i))>1 )
-        addpoint = true;
-    elseif (angle_knee(i) >= 70 && mod(angle_knee(i),20) < 1 && abs(latest_angle-angle_knee(i))>1 )
-        addpoint = true;
+    if strcmp(gait_phase,"swing")
+        if exist('icrpoint','var')==0 || (angle_knee(i) < 10 && mod(angle_knee(i),5) < 1 && abs(latest_angle-angle_knee(i))>1 )
+            addpoint = true;
+        elseif (angle_knee(i) <= 55 && mod(angle_knee(i),10) < 1 && abs(latest_angle-angle_knee(i))>1 )
+            addpoint = true;
+        elseif (angle_knee(i) >= 70 && mod(angle_knee(i),20) < 1 && abs(latest_angle-angle_knee(i))>1 )
+            addpoint = true;
+        end
+    elseif strcmp(gait_phase,"stance")
+        if exist('icrpoint','var')==0 || (angle_knee(i) < 4 && mod(angle_knee(i),2) < 1 && abs(latest_angle-angle_knee(i))>1 )
+            addpoint = true;
+        elseif (angle_knee(i) <= 12 && mod(angle_knee(i),6) < 1 && abs(latest_angle-angle_knee(i))>1 )
+            addpoint = true;
+        elseif (angle_knee(i) >= 12 && mod(angle_knee(i),15) < 1 && abs(latest_angle-angle_knee(i))>1 )
+            addpoint = true;
+        end
+    else
+        error("Unknown gait phase");
     end
     if addpoint
        icrpoint = plot(icraxes,ICR_y(i),ICR_z(i),'o');
