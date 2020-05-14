@@ -31,7 +31,7 @@ if strcmp(gait_phase,"swing")
     origin_y = origin_swing_y;
     origin_z = origin_swing_z;
 elseif strcmp(gait_phase,"stance")
-    idx_length = find(knee_angle>=15,1,'first')+1;
+    idx_length = find(knee_angle>=max(knee_angle),1,'first')+1;
     origin_y = origin_stance_y;
     origin_z = origin_stance_z;
 else

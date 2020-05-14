@@ -1,6 +1,8 @@
 %%
-dx_comp = -1*[20 35 50 70 100 200]./(60*1000);
-dx_ext  =    [20 35 50 70 100 200]./(60*1000);
+dx_comp_e = -1*[20 35 50 70 100 200]./(60*1000);
+dx_ext_e  =    [20 35 50 70 100 200]./(60*1000);
+dx_comp = -1*[0.1 1 5 10 15 20 35 50 70 100 200 300 400]./(60*1000);
+dx_ext  =    [0.1 1 5 10 15 20 35 50 70 100 200 300 400]./(60*1000);
 c_swing_comp_tab  = fliplr([58000 124000 178000 251000 363000 635000]);
 c_swing_ext_tab   = fliplr([33700 79000 117000 167000 244000 429000]);
 c_swing_comp_poly = polyfit(1./abs(dx_comp),c_swing_comp_tab,1);
@@ -41,7 +43,8 @@ plot([-fliplr(dx_comp),dx_ext],[fliplr(c_stance_comp_tab),c_stance_ext_tab])
 % dx_comp = -1*[0 1 5 10 20 35 50 70 100 200 400]./(60*1000);
 % dx_ext  =    [0 1 5 10 20 35 50 70 100 200 400]./(60*1000);
 
-dx = [fliplr(dx_comp) 0 dx_ext];
+dx_e = [fliplr(dx_comp_e) dx_ext_e];
+dx = [fliplr(dx_comp) dx_ext];
 threshold = 0;%1e-3;
 c_swing_comp     = @(dx)(213.5932*(1./abs(dx))-4927.5);      % Ns/m
 c_swing_ext      = @(dx)(146.3288*(1./abs(dx))-8808.5);      % Ns/m
@@ -59,7 +62,13 @@ c_stance        = [c_stance_comp(dx_comp), c_stance_ext(dx_ext)];
 
 %%
 for i = 1:length(dx)
-
+    val2set = 0;
+    in_dx_e = find(dx_e == dx(i));
+    if ~isempty(in_dx_e)
+        val2set = 1;       
+    end
+    bool_vect_e(i) = val2set;
+        
 if dx(i) < -threshold
 %     if dx(i) < -19.999/(60*1000)
         c_swing(i) = c_swing_comp(dx(i));
@@ -84,10 +93,15 @@ end
 figure();
 Fswing = c_swing.*dx;
 Fstance = c_stance.*dx;
-lineP = plot(dx,Fswing,'-o',dx,Fstance,'--*','MarkerSize',12);
+
+lineP = plot(dx,Fswing,dx,Fstance,'--');
+hold on;
+axis([dx(1) dx(end) (min([Fswing Fstance])-20) (max([Fswing Fstance])+20)])
+
+plot(dx_e,Fswing(bool_vect_e~=0),'bo',dx_e,Fstance((bool_vect_e~=0)),'r*','MarkerSize',12)
 set(lineP, 'LineWidth', 4);
 xlabel('m/s','FontSize',26)
 ylabel('N','FontSize',26)
-legend('$F_{sw}$','$F_{st}$','Location','northwest','FontSize',26)
-title('Forces of hydraulic elements','FontSize',26)
+legend('ploynomial of $F_{sw}$','polynomial of  $F_{st}$','Measured  $F_{sw}$','Measured  $F_{st}$','Location','northwest','FontSize',26)
+title('Hydraulic damping forces','FontSize',26)
 

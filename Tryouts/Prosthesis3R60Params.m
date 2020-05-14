@@ -3,8 +3,8 @@ c_swing_ext      = @(dx)(146.3288*(1./abs(dx))-8808.5);      % Ns/m
 c_stance_comp   = @(dx)(2.1443*(1./abs(dx)) + 885.0653);    % Ns/m
 c_stance_ext    = @(dx)(7.0819*(1./abs(dx)) + 65579);       % Ns/m
 
-dx_comp = fliplr(-1*[0.5 1 2 5 10 20 35 50 70 100 200 300 400 500 600 1000]./(60*1000));
-dx_ext  =    [0.5 1 2 5 10 20 35 50 70 100 200 300 400 500 600 1000]./(60*1000);
+dx_comp = fliplr(-1*[20 35 50 70 100 200]./(60*1000)); % 0.5 1 2 5 10  300 400 500 600 1000
+dx_ext  =    [20 35 50 70 100 200 ]./(60*1000);
 % dx = [fliplr(dx_comp) -0.00005 0 0.00005 dx_ext];
 dx = [(dx_comp)  dx_ext];
 
@@ -35,11 +35,11 @@ c_stance = [c_stance_comp(dx_comp) c_stance_ext(dx_ext)];
 % j15_i = 129.2;
 
 % L0_swing = 0.0869;              % m
-j10_i = -14.8;%77.49-90;
-j12_i = 73.55;
-j13_i = 10;%-27.4019;
-j15_i = 90;%6.46;
-j9_i = -99.5;
+% j10_i = -14.8;%77.49-90;
+j12_i_0 = 73.55;
+% j13_i = 10;%-27.4019;
+j15_i_0 = 90;%6.46;
+j9_i_0 = -99.5;
 % j9_1 = (-77.49-(a_18_20-90+a_18_23))+5.5;
 
 % j9_1 = (-77.49-(a_18_20-90+a_18_23))+5.3;
@@ -49,28 +49,32 @@ j9_i = -99.5;
 % j13_i = -5;
 % j15_i = 116.46;
 
-% swing phase test
-% j10_i = 7.5;
-% j13_i = 9.68277;
-% j15_i = 116.46;
+% Friction phase test
+j10_i_f = 7.5;
+j9_i_f = -169.052;
+j12_i_f = -12.6727;
+j13_i_f = -4.07996;
+% j15_i_f = 117.546;
 
+j15_i_f = 129.2;
 
 %%
 target_angle = 0;
-angle_offset = 3.4272; % deg
+angle_offset = 2.7424;%0;%3.4272; % deg
 dt_visual = 0.001;
 
-% c_fric = 0.05*0.00165;                  % Ns/m nice plot ICR
+% c_fric = 0.00165;                  % Ns/m nice plot ICR
+c_fric = 0.00235;                  % Ns/m   nice plot Friction test
 
-% c_fric = 0.002423;                  % Ns/m
+% c_fric = 0.003523;                  % Ns/m
 % c_fric = 0.07;                  % Ns/m
 velThreshold = 20/(60*1000)-0.000001;
 t_step = 1.2;
 mass = 70;
 
-% L0_swing = 0.0896;              % m
-% L0_swing = 0.0869;              % m
-% L0_stance =  0.0892;            % m
+L0_swing = 0.0896;              % m     nice plot Friction test
+% L0_swing = 0.0869;              % m 
+L0_stance =  0.0892;            % m    nice plot Friction test
 k_bumper = 130000;              % N/mu
 k_swing = 18750;                % N/m
 
@@ -78,10 +82,10 @@ k_swing = 18750;                % N/m
 % L0_stance = 0.0894; % nice plot ICR
 
 % from opt
-L0_swing = 0.0894;
-L0_stance = 0.0888;
-c_fric = Simulink.Parameter(0.0055);
-c_fric.CoderInfo.StorageClass = 'SimulinkGlobal';
+% L0_stance = 0.0878;
+% L0_swing = 0.1483;
+% c_fric = Simulink.Parameter(0.1855);
+% c_fric.CoderInfo.StorageClass = 'SimulinkGlobal';
 
 c_swing_comp_a1 = 213.5932;     % Ns/m
 c_swing_comp_a0 = -4927.5;      % (Ns/m)^2
@@ -110,8 +114,8 @@ L18 = 25.1*1e-3;
 L19 = 17.7*1e-3;
 L20 = 26*1e-3;
 L21 = 1.7*1e-3;
-% L25 = 76.95*1e-3;
-L25 = 76.45*1e-3;
+L25 = 76.95*1e-3;
+% L25 = 76.45*1e-3;
 L26 = 2.8*1e-3;
 
 L_shank = 0.3;

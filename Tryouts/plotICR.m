@@ -95,8 +95,8 @@ else
     
     bar_workline = @(y_1,y_2,z_1,z_2,xlim)(interp1([y_1(1);y_2(1)],[z_1(1);z_2(1)],xlim','linear','extrap'));
     xlimits_workline = icraxes(j).XLim;
-    bar14_worklineplot(j) = plot(icraxes(j),icraxes(j).XLim,bar_workline(y_14_1(1),y_14_2(1),z_14_1(1),z_14_2(1),xlimits_workline),'--','Color',[0.3 0.3 0.3],'LineWidth',1);
-    bar25_worklineplot(j) = plot(icraxes(j),icraxes(j).XLim,bar_workline(y_25_1(1),y_25_2(1),z_25_1(1),z_25_2(1),xlimits_workline),'--','Color',[0.3 0.3 0.3],'LineWidth',1);
+    bar14_worklineplot(j) = plot(icraxes(j),xlimits_workline,bar_workline(y_14_1(1),y_14_2(1),z_14_1(1),z_14_2(1),xlimits_workline),'--','Color',[0.3 0.3 0.3],'LineWidth',1);
+    bar25_worklineplot(j) = plot(icraxes(j),xlimits_workline,bar_workline(y_25_1(1),y_25_2(1),z_25_1(1),z_25_2(1),xlimits_workline),'--','Color',[0.3 0.3 0.3],'LineWidth',1);
     
     h = get(icraxes(j),'Children');
     set(icraxes(j),'Children',flipud(h));
