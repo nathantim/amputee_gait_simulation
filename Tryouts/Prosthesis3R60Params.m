@@ -1,12 +1,19 @@
-c_swing_comp     = @(dx)(213.5932*(1./abs(dx))-4927.5);      % Ns/m
-c_swing_ext      = @(dx)(146.3288*(1./abs(dx))-8808.5);      % Ns/m
-c_stance_comp   = @(dx)(2.1443*(1./abs(dx)) + 885.0653);    % Ns/m
-c_stance_ext    = @(dx)(7.0819*(1./abs(dx)) + 65579);       % Ns/m
+g1 = 1; 
+g2 = 1;
+c_swing_comp     = @(dx)(g1*213.5932*(1./abs(dx))-g1*4927.5);      % Ns/m
+c_swing_ext      = @(dx)(g2*146.3288*(1./abs(dx))-g2*8808.5);      % Ns/m
+c_stance_comp   = @(dx)(g1*2.1443*(1./abs(dx)) + g1*885.0653);    % Ns/m
+c_stance_ext    = @(dx)(g2*7.0819*(1./abs(dx)) + g2*65579);       % Ns/m
 
-dx_comp = fliplr(-1*[20 35 50 70 100 200]./(60*1000)); % 0.5 1 2 5 10  300 400 500 600 1000
-dx_ext  =    [20 35 50 70 100 200 ]./(60*1000);
+% nice friction test plot
+% dx_comp = fliplr(-1*[20 35 50 70 100 200]./(60*1000)); % 0.001:0.001:1 5 10  300 400 500 600 1000
+% dx_ext  =    [20 35 50 70 100 200]./(60*1000);
+
+dx_comp = fliplr(-1*[1e-3 1 5 10 20 35 50 70 100 200 300 400 1000]./(60*1000)); % 0.001:0.001:1 5 10  300 400 500 600 1000
+dx_ext  =    [1e-3 1 5 10 20 35 50 70 100 200 300 400 1000]./(60*1000);
+
 % dx = [fliplr(dx_comp) -0.00005 0 0.00005 dx_ext];
-dx = [(dx_comp)  dx_ext];
+dx = [(dx_comp) 0 dx_ext];
 
 c_swing_comp_tab  = ([58000 124000 178000 251000 363000 635000]);
 c_swing_ext_tab   = fliplr([33700 79000 117000 167000 244000 429000]);
@@ -18,8 +25,11 @@ c_stance_ext_tab   = fliplr([61300 70000 74500 77500 81300 83200]);
 % c_stance = [c_stance_comp_tab 8080 0 93200 c_stance_ext_tab];
 % c_swing = [c_swing_comp_tab c_swing_ext_tab];
 % c_stance = [c_stance_comp_tab  c_stance_ext_tab];
-c_swing = [c_swing_comp(dx_comp) c_swing_ext(dx_ext)];
-c_stance = [c_stance_comp(dx_comp) c_stance_ext(dx_ext)];
+c_swing = [c_swing_comp(dx_comp) 0 c_swing_ext(dx_ext)];
+c_stance = [c_stance_comp(dx_comp) 0 c_stance_ext(dx_ext)];
+F_swing = [c_swing_comp(dx_comp).*dx_comp 0 c_swing_ext(dx_ext).*dx_ext];
+F_stance = [c_stance_comp(dx_comp).*dx_comp 0 c_stance_ext(dx_ext).*dx_ext];
+
 % c_stance = [c_stance_ext(dx_comp) c_stance_comp(dx_ext)];
 
 %% init param
@@ -35,15 +45,24 @@ c_stance = [c_stance_comp(dx_comp) c_stance_ext(dx_ext)];
 % j15_i = 129.2;
 
 % L0_swing = 0.0869;              % m
-% j10_i = -14.8;%77.49-90;
+% zero angle 
+j10_i = -14.8;%77.49-90;
+j13_i = 10;%-27.4019;
+
 j12_i_0 = 73.55;
-% j13_i = 10;%-27.4019;
 j15_i_0 = 90;%6.46;
 j9_i_0 = -99.5;
-% j9_1 = (-77.49-(a_18_20-90+a_18_23))+5.5;
 
-% j9_1 = (-77.49-(a_18_20-90+a_18_23))+5.3;
-% 
+
+% % distance 0.0869 for knee angle 0 for swing element
+% % j10_i = -14.8;%77.49-90;
+% % j13_i = 10;%-27.4019;
+% % 
+% % j12_i_0 = 58.3873;
+% % j15_i_0 = 94.0079;%6.46;
+% % j9_i_0 = -110.541;
+% j9_i_0 = -99.5;
+
 % j10_i = 77.49-90;
 % j12_i = 79;
 % j13_i = -5;
@@ -60,21 +79,23 @@ j15_i_f = 129.2;
 
 %%
 target_angle = 0;
-angle_offset = 2.7424;%0;%3.4272; % deg
+angle_offset = 0;%2.7424;%0;%3.4272; % deg
 dt_visual = 0.001;
 
-% c_fric = 0.00165;                  % Ns/m nice plot ICR
-c_fric = 0.00235;                  % Ns/m   nice plot Friction test
+% c_fric = 0.00165;                  % Nms/deg nice plot ICR
+c_fric = 0.00235;                  % Nms/deg   nice plot Friction test 
+% c_fric = 0.00435;                  % Nms/deg  
 
-% c_fric = 0.003523;                  % Ns/m
-% c_fric = 0.07;                  % Ns/m
+% c_fric = 0.003523;                  % Nms/deg
+% c_fric = 0.07;                  % Nms/rad
+% c_fric = 2*0.07*pi/180;                  % Nms/deg (probably as by Vandael
 velThreshold = 20/(60*1000)-0.000001;
 t_step = 1.2;
 mass = 70;
 
 L0_swing = 0.0896;              % m     nice plot Friction test
-% L0_swing = 0.0869;              % m 
-L0_stance =  0.0892;            % m    nice plot Friction test
+% L0_swing = 0.0869;              % m  length used for 0 position
+L0_stance =  0.08925;            % m    nice plot Friction test
 k_bumper = 130000;              % N/mu
 k_swing = 18750;                % N/m
 
