@@ -5,7 +5,7 @@ stoptime = {'0.32','2','3'};
 % phases = ["swing";"stance"];
 
 
-for i = 2%1:length(models)
+for i = 1%1:length(models)
     warning('off');
     simout = sim(models{i},'TimeOut',2*60,...
         'SaveOutput','on','StopTime',stoptime{i});
@@ -36,23 +36,30 @@ for i = 2%1:length(models)
     title('Length of hydraulic elements');
     
     figure();
-    subplot(2,2,1);
+    subplot(2,4,1);
     plot(time,stance_unit(:,1),time,swing_unit(:,1))
     title('Spring force')
     ylabel('N')
-    subplot(2,2,2);
+    subplot(2,4,2);
     plot(time,stance_unit(:,2),time,swing_unit(:,2))
     title('Damping force')
     ylabel('N')
-    subplot(2,2,3);
+    subplot(2,4,5);
     plot(time,stance_unit(:,3),time,swing_unit(:,3))
     title('$x$');
     ylabel('m')
     xlabel('time in s');
-    subplot(2,2,4);
+    subplot(2,4,6);
     plot(time,stance_unit(:,4),time,swing_unit(:,4))
     title('$\dot{x}$');
     ylabel('m/s')
+    xlabel('time in s');
+%     legend('Stance phase element','Swing phase element');
+    
+    subplot(2,4,[3 4 7 8]);
+    plot(time,sum(stance_unit(:,1:2),2),time,sum(swing_unit(:,1:2),2))
+    title('Total element force');
+    ylabel('N')
     xlabel('time in s');
     legend('Stance phase element','Swing phase element');
     

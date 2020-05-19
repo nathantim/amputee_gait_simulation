@@ -9,8 +9,8 @@ c_stance_ext    = @(dx)(g2*7.0819*(1./abs(dx)) + g2*65579);       % Ns/m
 % dx_comp = fliplr(-1*[20 35 50 70 100 200]./(60*1000)); % 0.001:0.001:1 5 10  300 400 500 600 1000
 % dx_ext  =    [20 35 50 70 100 200]./(60*1000);
 
-dx_comp = fliplr(-1*[1e-3 1 5 10 20 35 50 70 100 200 300 400 1000]./(60*1000)); % 0.001:0.001:1 5 10  300 400 500 600 1000
-dx_ext  =    [1e-3 1 5 10 20 35 50 70 100 200 300 400 1000]./(60*1000);
+dx_comp = fliplr(-1*[2 5 10 20 35 50 70 100 200 400]./(60*1000)); % 0.001:0.001:1 5 10  300 400 500 600 1000
+dx_ext  =    [2 5 10 20 35 50 70 100 200 400]./(60*1000);
 
 % dx = [fliplr(dx_comp) -0.00005 0 0.00005 dx_ext];
 dx = [(dx_comp) 0 dx_ext];
@@ -96,7 +96,7 @@ mass = 70;
 L0_swing = 0.0896;              % m     nice plot Friction test
 % L0_swing = 0.0869;              % m  length used for 0 position
 L0_stance =  0.08925;            % m    nice plot Friction test
-k_bumper = 130000;              % N/mu
+k_stance = 130000;              % N/mu
 k_swing = 18750;                % N/m
 
 % L0_swing = 0.0875; % nice plot ICR
