@@ -4,14 +4,14 @@ idx_length = [];
 ICR_y = ICR(:,1)*1000; % mm
 ICR_z = ICR(:,2)*1000; % mm
 
-y_14_1 = pos14_1(:,2)*1000;
+y_14_1 = pos14_1(:,1)*1000;
 z_14_1 = pos14_1(:,3)*1000;
-y_14_2 = pos14_2(:,2)*1000;
+y_14_2 = pos14_2(:,1)*1000;
 z_14_2 = pos14_2(:,3)*1000;
 if ~isempty(pos25_1) && ~isempty(pos25_2)
-    y_25_1 = pos25_1(:,2)*1000;
+    y_25_1 = pos25_1(:,1)*1000;
     z_25_1 = pos25_1(:,3)*1000;
-    y_25_2 = pos25_2(:,2)*1000;
+    y_25_2 = pos25_2(:,1)*1000;
     z_25_2 = pos25_2(:,3)*1000;
 else
     y_25_1 = [];
@@ -48,16 +48,16 @@ else
     t = [];
 end
 
-ICR_y = ICR_y(1:idx_length) - origin_y(1:idx_length);
+ICR_y = -(ICR_y(1:idx_length) - origin_y(1:idx_length));
 ICR_z = ICR_z(1:idx_length) - origin_z(1:idx_length);
-y_14_1 = y_14_1(1:idx_length) - origin_y(1:idx_length);
+y_14_1 = -(y_14_1(1:idx_length) - origin_y(1:idx_length));
 z_14_1 = z_14_1(1:idx_length) - origin_z(1:idx_length);
-y_14_2 = y_14_2(1:idx_length) - origin_y(1:idx_length);
+y_14_2 = -(y_14_2(1:idx_length) - origin_y(1:idx_length));
 z_14_2 = z_14_2(1:idx_length) - origin_z(1:idx_length);
 if ~isempty(pos25_1) && ~isempty(pos25_2)
-    y_25_1 = y_25_1(1:idx_length) - origin_y(1:idx_length);
+    y_25_1 = -(y_25_1(1:idx_length) - origin_y(1:idx_length));
     z_25_1 = z_25_1(1:idx_length) - origin_z(1:idx_length);
-    y_25_2 = y_25_2(1:idx_length) - origin_y(1:idx_length);
+    y_25_2 = -(y_25_2(1:idx_length) - origin_y(1:idx_length));
     z_25_2 =z_25_2(1:idx_length) - origin_z(1:idx_length);
 end
 

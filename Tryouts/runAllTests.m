@@ -5,7 +5,8 @@ stoptime = {'0.32','2','3'};
 % phases = ["swing";"stance"];
 
 
-for i = 1%1:length(models)
+for i = 2%1:length(models)
+    %%
     warning('off');
     simout = sim(models{i},'TimeOut',2*60,...
         'SaveOutput','on','StopTime',stoptime{i});
@@ -16,19 +17,24 @@ for i = 1%1:length(models)
     % ICR = get(simout,'ICR');
     % pos14_1 = get(simout,'pos14_1');
     % pos14_2 = get(simout,'pos14_2');
-    l_stance_elem = get(simout,'l_stance_elem');
-    l_swing_elem = get(simout,'l_swing_elem');
     stance_unit = get(simout,'stance_unit');
     swing_unit = get(simout,'swing_unit');
     theta = get(simout,'theta');
-    
+    l_stance_elem = get(simout,'l_stance_elem');
+    l_swing_elem = get(simout,'l_swing_elem');
+    if isempty(l_stance_elem)
+        l_stance_elem = stance_unit(:,end);
+        l_swing_elem = swing_unit(:,end);
+    end
+    %%
     figure();
-    warning('off')
-    sgtitle(models{i});     warning('on');
+%     warning('off')
+%     sgtitle(models{i});     warning('on');
     subplot(2,1,1)
     plot(time,knee_angle);
     title('Knee angle');
     ylabel('deg');
+    yaxis([0 100]);
     subplot(2,1,2);
     plot(time,l_stance_elem,time,l_swing_elem)
     legend('Stance phase element','Swing phase element')
@@ -70,4 +76,5 @@ for i = 1%1:length(models)
        ylabel('deg');
        xlabel('time in s');
     end
+    %%
 end

@@ -19,11 +19,11 @@ elseif any(metabolicEnergy < 0)
     cost = nan;
     disp('Metabolic Energy < 0')
     return
-elseif ( min(size(stepVelocities)) == 0 || min(size(stepTimes)) == 0 || size(stepVelocities,2) ~= 2 || size(stepTimes,2) ~= 2 || ...
-        min(size(stepVelocities(stepVelocities~=0))) == 0 ||  min(size(stepTimes(stepTimes~=0))) == 0)
-    cost = nan;
-    disp('No steps')
-    return
+% elseif ( min(size(stepVelocities)) == 0 || min(size(stepTimes)) == 0 || size(stepVelocities,2) ~= 2 || size(stepTimes,2) ~= 2 || ...
+%         min(size(stepVelocities(stepVelocities~=0))) == 0 ||  min(size(stepTimes(stepTimes~=0))) == 0)
+%     cost = nan;
+%     disp('No steps')
+%     return
 end
 
 %% Calculate cost of transport
@@ -45,7 +45,7 @@ end
 
 %% Calculate time cost
 timeSetToRun = str2double(get_param(model,'StopTime'));
-timeCost = round(timeSetToRun/time,3)-1;
+timeCost = round(timeSetToRun/time(end),3)-1;
 if timeCost < 0
     timeCost = 0;
 end
@@ -70,7 +70,7 @@ if length(cost) ~= 1
     warning('Size cost is not 1');
 end
 fprintf('-- <strong> t_sim: %2.2f</strong>, Cost: %2.2f, E_m (Wang): %.0f, E_m(Umb10): %.0f, <strong>avg v_step: %2.2f</strong>, avg t_step: %1.2f, avg l_step: %1.2f, ASI l_step: %2.2f, ASI t_step: %2.2f, timeCost: %2.2f, velCost: %2.2f --\n',...
-    time, cost, effort_costs(contains(muscle_exp_models,'Wang')).metabolicEnergy, effort_costs(contains(muscle_exp_models,'Umberger (2010)')).metabolicEnergy,...
+    time(end), cost, effort_costs(contains(muscle_exp_models,'Wang')).metabolicEnergy, effort_costs(contains(muscle_exp_models,'Umberger (2010)')).metabolicEnergy,...
     meanVel, meanStepTime, meanStepLength,round(ASIStepLength,2),round(ASIStepTime,2), timeCost, velCost);
 
 %% Save when optimizing
