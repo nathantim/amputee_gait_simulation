@@ -13,7 +13,7 @@ for i = 2%1:length(models)
     warning('on');
     
     time = get(simout,'time');
-    knee_angle = get(simout,'knee_angle');
+    knee_angle_plot = 180/pi*get(simout,'knee_angle');
     % ICR = get(simout,'ICR');
     % pos14_1 = get(simout,'pos14_1');
     % pos14_2 = get(simout,'pos14_2');
@@ -31,10 +31,10 @@ for i = 2%1:length(models)
 %     warning('off')
 %     sgtitle(models{i});     warning('on');
     subplot(2,1,1)
-    plot(time,knee_angle);
+    plot(time,knee_angle_plot);
     title('Knee angle');
     ylabel('deg');
-    yaxis([0 100]);
+    yaxis([0 (max(knee_angle_plot)+10)]);
     subplot(2,1,2);
     plot(time,l_stance_elem,time,l_swing_elem)
     legend('Stance phase element','Swing phase element')

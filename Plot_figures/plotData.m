@@ -5,12 +5,12 @@ set(0, 'DefaultAxesLabelFontSizeMultiplier',1.5);
 
 
 saveInfo = struct;
-if  nargin <= 6
+if  nargin < 7
     saveInfo.b_saveFigure = 1;
 else
     saveInfo.b_saveFigure = b_saveFigure;
 end
-if  nargin <= 7
+if  nargin < 8
     b_oneGaitPhase = true;
 end
 if saveInfo.b_saveFigure
@@ -31,7 +31,7 @@ if (b_oneGaitPhase)
     [L_changeSwing2StanceIdx] = find(leftLegStateChange == -4);
     [R_changeSwing2StanceIdx] = find(rightLegStateChange == -4);
     
-    selectStart = max([ceil(1.5*(length(L_changeSwing2StanceIdx)/2)),min(1,length(L_changeSwing2StanceIdx)-1),min(1,length(R_changeSwing2StanceIdx)-1)])
+    selectStart = max([ceil(1.75*(length(L_changeSwing2StanceIdx)/2)),min(1,length(L_changeSwing2StanceIdx)-1),min(1,length(R_changeSwing2StanceIdx)-1)])
     leftGaitPhaseEnd = L_changeSwing2StanceIdx(selectStart+1);
     leftGaitPhaseStart = L_changeSwing2StanceIdx(selectStart)+1;
     
@@ -84,8 +84,8 @@ plotInfo.plotProp_entries = [plotInfo.lineVec(:),plotInfo.colorProp(:), plotInfo
 
 %%
 plotAngularData(angularData,GaitPhaseData,plotInfo,GaitInfo,saveInfo);
-plotMusculoData(musculoData,plotInfo,GaitInfo,saveInfo);
-plotGRF(GRFData,plotInfo,GaitInfo,saveInfo);
+% plotMusculoData(musculoData,plotInfo,GaitInfo,saveInfo);
+% plotGRF(GRFData,plotInfo,GaitInfo,saveInfo);
 
 %
 set(0, 'DefaultAxesTitleFontSizeMultiplier',1);

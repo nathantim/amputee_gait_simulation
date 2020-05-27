@@ -28,9 +28,11 @@ OptimParams;
 Prosthesis3R60Params;
 dt_visual = 1/30;
 [groundX, groundZ, groundTheta] = generateGround('flat');
-load_system(model)
 
 %% Build the Rapid Accelerator target once
+load_system(model)
+set_param(model,'SimulationMode','rapid');
+set_param(model,'StopTime','30');
 rtp = Simulink.BlockDiagram.buildRapidAcceleratorTarget(model);
 
 %% setup cmaes
@@ -53,7 +55,7 @@ if (min_velocity == target_velocity && max_velocity == target_velocity)
     opts.TargetVel = target_velocity;
 end
 opts.UserData = char(strcat("Gains filename: ", initial_gains_filename));
-opts.SaveFilename = 'variablescmaes_healthy_energy_Umberger2010_wang.mat';
+opts.SaveFilename = 'variablescmaes_healthy_energy_Umb10_no_stiff_ankle.mat';
 
 %% run cmaes
 [xmin, fmin, counteval, stopflag, out, bestever] = cmaes(optfunc, x0, sigma0, opts)

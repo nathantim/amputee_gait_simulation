@@ -1,5 +1,6 @@
 clear all; clc;
 %%
+data_info = 'Umb10_prost';
 P = pwd;
 S = dir(fullfile(P,'*.mat'));
 N = {S.name};
@@ -43,7 +44,7 @@ for i = 1:length(filesIDX)
     
 end
 
-save('compareEnergyCostTotalWang2012.mat','metabolicEnergy','meanVel','meanStepTime', 'meanStepLength','costOfTransport', ...
+save(strcat('compareEnergyCostTotal_',data_info,'.mat'),'metabolicEnergy','meanVel','meanStepTime', 'meanStepLength','costOfTransport', ...
     'cost','sumOfIdealTorques','sumOfStopTorques','HATPos','Gains','ASIStepLength','ASIStepTime','ASIVel');
 
 %%
