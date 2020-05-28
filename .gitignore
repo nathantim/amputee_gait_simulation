@@ -1,3 +1,7 @@
+# Folders #
+###########
+Plot_figures/Figures/
+
 # Compiled source #
 ###################
 *.mexa64
@@ -82,6 +86,8 @@ Thumbs.db
 *.mov
 *.mpg
 *.wlmp
+*.eps
+*.emf
 
 # Data #
 ########
