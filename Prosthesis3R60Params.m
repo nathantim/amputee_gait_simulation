@@ -1,17 +1,17 @@
-g1 = 1;%3.5; 
-g2 = 1;%0.1;
-g3 = 1;
-c_swing_comp     = @(dx)(g2*213.5932*(1./abs(dx))-g2*4927.5);      % Ns/m
-c_swing_ext      = @(dx)(g1*146.3288*(1./abs(dx))-g1*8808.5);      % Ns/m
-c_stance_comp   = @(dx)(1*2.1443*(1./abs(dx)) + 1*885.0653);    % Ns/m
-c_stance_ext    = @(dx)(g2*7.0819*(1./abs(dx)) + g2*65579);       % Ns/m
+% g1 = 1;%3.5; 
+% g2 = 1;%0.1;
+% g3 = 1;
+c_swing_comp     = @(dx)(213.5932*(1./abs(dx))-4927.5);      % Ns/m
+c_swing_ext      = @(dx)(146.3288*(1./abs(dx))-8808.5);      % Ns/m
+c_stance_comp   = @(dx)(2.1443*(1./abs(dx)) + 885.0653);    % Ns/m
+c_stance_ext    = @(dx)(7.0819*(1./abs(dx)) + 65579);       % Ns/m
 
 % nice friction test plot
 % dx_comp = fliplr(-1*[20 35 50 70 100 200]./(60*1000)); % 0.001:0.001:1 5 10  300 400 500 600 1000
 % dx_ext  =    [20 35 50 70 100 200]./(60*1000);
-
-dx_comp = fliplr(-1*[5 10 20 35 50 70 100 200 ]./(60*1000)); % 0.001:0.001:1 5 10  300 400 500 600 1000
-dx_ext  =    [5 10 20 35 50 70 100 200]./(60*1000);
+vel_vect = [20 35 50 70 100 200];
+dx_comp = fliplr(-1*vel_vect./(60*1000)); % 0.001:0.001:1 5 10  300 400 500 600 1000
+dx_ext  =    vel_vect./(60*1000);
 
 % dx = [fliplr(dx_comp) -0.00005 0 0.00005 dx_ext];
 dx = [(dx_comp) 0 dx_ext];
@@ -24,12 +24,15 @@ c_stance_ext_tab   = fliplr([61300 70000 74500 77500 81300 83200]);
 
 % c_swing = [c_swing_comp_tab 705000 0 529000 c_swing_ext_tab];
 % c_stance = [c_stance_comp_tab 8080 0 93200 c_stance_ext_tab];
-% c_swing = [c_swing_comp_tab c_swing_ext_tab];
-% c_stance = [c_stance_comp_tab  c_stance_ext_tab];
-c_swing = [c_swing_comp(dx_comp) 0 c_swing_ext(dx_ext)];
-c_stance = [c_stance_comp(dx_comp) 0 c_stance_ext(dx_ext)];
-F_swing = [c_swing_comp(dx_comp).*dx_comp 0 c_swing_ext(dx_ext).*dx_ext];
-F_stance = [c_stance_comp(dx_comp).*dx_comp 0 c_stance_ext(dx_ext).*dx_ext];
+c_swing = [c_swing_comp_tab 0 c_swing_ext_tab];
+c_stance = [c_stance_comp_tab 0 c_stance_ext_tab];
+F_swing = [c_swing_comp_tab.*dx_comp 0 c_swing_ext_tab.*dx_ext];
+F_stance = [c_stance_comp_tab.*dx_comp 0 c_stance_ext_tab.*dx_ext];
+
+% c_swing = [c_swing_comp(dx_comp) 0 c_swing_ext(dx_ext)];
+% c_stance = [c_stance_comp(dx_comp) 0 c_stance_ext(dx_ext)];
+% F_swing = [c_swing_comp(dx_comp).*dx_comp 0 c_swing_ext(dx_ext).*dx_ext];
+% F_stance = [c_stance_comp(dx_comp).*dx_comp 0 c_stance_ext(dx_ext).*dx_ext];
 
 % c_stance = [c_stance_ext(dx_comp) c_stance_comp(dx_ext)];
 
@@ -54,8 +57,15 @@ j12_i_0 = 73.55;
 j15_i_0 = 90;%6.46;
 j9_i_0 = -99.5;
 
+%% VANDAEL zero angle 
+j10_i_V = -9.2557;%-9;%
+j13_i_V = -21.697 - 0.3796;%-27.4019;
 
-% % distance 0.0869 for knee angle 0 for swing element
+j12_i_V = 73.55;
+j15_i_V = 112-18+21.697;%115.697;
+j9_i_V = 10;%-108.945;%-122+10-j10_i_V;
+
+%% % distance 0.0869 for knee angle 0 for swing element
 % % j10_i = -14.8;%77.49-90;
 % % j13_i = 10;%-27.4019;
 % % 
@@ -70,13 +80,13 @@ j9_i_0 = -99.5;
 % j15_i = 116.46;
 
 % Friction phase test
-j10_i_f = 7.5;
-j9_i_f = -169.052;
-j12_i_f = -12.6727;
-j13_i_f = -4.07996;
+j10_i_f = 7.5; % high
+j9_i_f = -169.052; % none
+j12_i_f = -12.6727; % low
+j13_i_f = -4.07996; % none
 % j15_i_f = 117.546;
 
-j15_i_f = 129.2;
+j15_i_f = 129.2; % none
 
 %%
 j10_i = -14.8;%77.49-90;
@@ -97,7 +107,7 @@ c_fric = 0.00235;                  % Nms/deg   nice plot Friction test
 
 % c_fric = 0.003523;                  % Nms/deg
 % c_fric = 0.07;                  % Nms/rad
-% c_fric = 2*0.07*pi/180;                  % Nms/deg (probably as by Vandael
+% c_fric = 0.07*pi/180;                  % Nms/deg (probably as by Vandael
 velThreshold = 20/(60*1000)-0.000001;
 t_step = 1.2;
 mass = 70;
@@ -105,8 +115,8 @@ mass = 70;
 L0_swing = 0.0896;              % m     nice plot Friction test
 % L0_swing = 0.0869;              % m  length used for 0 position
 L0_stance =  0.08925;            % m    nice plot Friction test
-k_stance = g3*130000;              % N/mu
-k_swing = g3*18750;                % N/m
+k_stance = 130000;              % N/mu
+k_swing = 18750;                % N/m
 
 % L0_swing = 0.0875; % nice plot ICR
 % L0_stance = 0.0894; % nice plot ICR

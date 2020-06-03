@@ -5,7 +5,7 @@ stoptime = {'0.32','2','3'};
 % phases = ["swing";"stance"];
 
 
-for i = 2%1:length(models)
+for i = 1%:2%1:length(models)
     %%
     warning('off');
     simout = sim(models{i},'TimeOut',2*60,...
