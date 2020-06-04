@@ -48,16 +48,16 @@ else
     t = [];
 end
 
-ICR_y = -(ICR_y(1:idx_length) - origin_y(1:idx_length));
+ICR_y = (ICR_y(1:idx_length) - origin_y(1:idx_length));
 ICR_z = ICR_z(1:idx_length) - origin_z(1:idx_length);
-y_14_1 = -(y_14_1(1:idx_length) - origin_y(1:idx_length));
+y_14_1 = (y_14_1(1:idx_length) - origin_y(1:idx_length));
 z_14_1 = z_14_1(1:idx_length) - origin_z(1:idx_length);
-y_14_2 = -(y_14_2(1:idx_length) - origin_y(1:idx_length));
+y_14_2 = (y_14_2(1:idx_length) - origin_y(1:idx_length));
 z_14_2 = z_14_2(1:idx_length) - origin_z(1:idx_length);
 if ~isempty(pos25_1) && ~isempty(pos25_2)
-    y_25_1 = -(y_25_1(1:idx_length) - origin_y(1:idx_length));
+    y_25_1 = (y_25_1(1:idx_length) - origin_y(1:idx_length));
     z_25_1 = z_25_1(1:idx_length) - origin_z(1:idx_length);
-    y_25_2 = -(y_25_2(1:idx_length) - origin_y(1:idx_length));
+    y_25_2 = (y_25_2(1:idx_length) - origin_y(1:idx_length));
     z_25_2 =z_25_2(1:idx_length) - origin_z(1:idx_length);
 end
 

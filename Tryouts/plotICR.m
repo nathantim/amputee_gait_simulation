@@ -61,7 +61,7 @@ phases = "stance";
 for j = 1%:length(phases)
     gait_phase = phases(j);
     
-    [angle_knee,t,ICR_y,ICR_z,y_14_1,z_14_1,y_14_2,z_14_2,y_25_1,z_25_1,y_25_2,z_25_2] = getICR_model(knee_angle(:,j),gait_phase,time,ICR(:,j*2-1:j*2),pos14_1(:,j*3-2:j*3),pos14_2(:,j*3-2:j*3),pos25_1(:,j*3-2:j*3),pos25_2(:,j*3-2:j*3));
+    [angle_knee,t,ICR_y,ICR_z,y_14_1,z_14_1,y_14_2,z_14_2,y_25_1,z_25_1,y_25_2,z_25_2] = getICR_model(180/pi*knee_angle(:,j),gait_phase,time,ICR(:,j*2-1:j*2),pos14_1(:,j*3-2:j*3),pos14_2(:,j*3-2:j*3),pos25_1(:,j*3-2:j*3),pos25_2(:,j*3-2:j*3));
     
     if strcmp(gait_phase,"swing")
     ICRo_y_interp = ICRoswing_y_interp;

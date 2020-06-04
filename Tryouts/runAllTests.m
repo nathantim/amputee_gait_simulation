@@ -1,11 +1,13 @@
-close all;
+close all; 
+% clearvars; 
+clc;
 %%
 models = {'friction_test','stance_flexion_test','swing_flexion_test'};
 stoptime = {'0.32','2','3'};
 % phases = ["swing";"stance"];
 
 
-for i = 1%:2%1:length(models)
+for i = 2%:2%1:length(models)
     %%
     warning('off');
     simout = sim(models{i},'TimeOut',2*60,...
@@ -14,9 +16,12 @@ for i = 1%:2%1:length(models)
     
     time = get(simout,'time');
     knee_angle_plot = 180/pi*get(simout,'knee_angle');
-    % ICR = get(simout,'ICR');
-    % pos14_1 = get(simout,'pos14_1');
-    % pos14_2 = get(simout,'pos14_2');
+    ICR = get(simout,'ICR');
+    pos14_1 = get(simout,'pos14_1');
+    pos14_2 = get(simout,'pos14_2');
+    pos25_1 = get(simout,'pos25_1');
+    pos25_2 = get(simout,'pos25_2');
+    hingeangles = get(simout,'hingeangles');
     stance_unit = get(simout,'stance_unit');
     swing_unit = get(simout,'swing_unit');
     theta = get(simout,'theta');
@@ -68,6 +73,21 @@ for i = 1%:2%1:length(models)
     ylabel('N')
     xlabel('time in s');
     legend('Stance phase element','Swing phase element');
+    
+    
+    figure();
+    [j9_ll, j9_ul, j10_ll, j10_ul, j12_ll, j12_ul, j13_ll, j13_ul, j15_ll, j15_ul] = getBounds3R60Hinges(models{i});
+    plot(time,hingeangles)
+    title('3R60 Hinge joint angles with their limits');
+    hold on;
+    colororder = get(gca,'colororder');
+    plot([time(1) time(end)],[j9_ll,j9_ul;j9_ll j9_ul],'--','Color',colororder(1,:)) 
+    plot([time(1) time(end)],[j10_ll,j10_ul;j10_ll j10_ul],'--','Color',colororder(2,:)) 
+    plot([time(1) time(end)],[j12_ll,j12_ul;j12_ll j12_ul],'--','Color',colororder(3,:))
+    plot([time(1) time(end)],[j13_ll,j13_ul;j13_ll j13_ul],'--','Color',colororder(4,:)) 
+    plot([time(1) time(end)],[j15_ll,j15_ul;j15_ll j15_ul],'--','Color',colororder(5,:)) 
+    legend('Joint 9', 'Joint 10', 'Joint 12', 'Joint 13', 'Joint 15');
+
     
     if contains(models{i},'friction')
        figure();
