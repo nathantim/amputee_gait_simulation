@@ -9,7 +9,7 @@ c_stance_ext    = @(dx)(7.0819*(1./abs(dx)) + 65579);       % Ns/m
 % nice friction test plot
 % dx_comp = fliplr(-1*[20 35 50 70 100 200]./(60*1000)); % 0.001:0.001:1 5 10  300 400 500 600 1000
 % dx_ext  =    [20 35 50 70 100 200]./(60*1000);
-vel_vect = [20 35 50 70 100 200];
+vel_vect = [1e-1 1 5 10 20 35 50 70 100 200 300 400 500 700 900];
 dx_comp = fliplr(-1*vel_vect./(60*1000)); % 0.001:0.001:1 5 10  300 400 500 600 1000
 dx_ext  =    vel_vect./(60*1000);
 
@@ -24,15 +24,15 @@ c_stance_ext_tab   = fliplr([61300 70000 74500 77500 81300 83200]);
 
 % c_swing = [c_swing_comp_tab 705000 0 529000 c_swing_ext_tab];
 % c_stance = [c_stance_comp_tab 8080 0 93200 c_stance_ext_tab];
-c_swing = [c_swing_comp_tab 0 c_swing_ext_tab];
-c_stance = [c_stance_comp_tab 0 c_stance_ext_tab];
-F_swing = [c_swing_comp_tab.*dx_comp 0 c_swing_ext_tab.*dx_ext];
-F_stance = [c_stance_comp_tab.*dx_comp 0 c_stance_ext_tab.*dx_ext];
+% c_swing = [c_swing_comp_tab 0 c_swing_ext_tab];
+% c_stance = [c_stance_comp_tab 0 c_stance_ext_tab];
+% F_swing = [c_swing_comp_tab.*dx_comp 0 c_swing_ext_tab.*dx_ext];
+% F_stance = [c_stance_comp_tab.*dx_comp 0 c_stance_ext_tab.*dx_ext];
 
-% c_swing = [c_swing_comp(dx_comp) 0 c_swing_ext(dx_ext)];
-% c_stance = [c_stance_comp(dx_comp) 0 c_stance_ext(dx_ext)];
-% F_swing = [c_swing_comp(dx_comp).*dx_comp 0 c_swing_ext(dx_ext).*dx_ext];
-% F_stance = [c_stance_comp(dx_comp).*dx_comp 0 c_stance_ext(dx_ext).*dx_ext];
+c_swing = [c_swing_comp(dx_comp) 0 c_swing_ext(dx_ext)];
+c_stance = [c_stance_comp(dx_comp) 0 c_stance_ext(dx_ext)];
+F_swing = [c_swing_comp(dx_comp).*dx_comp 0 c_swing_ext(dx_ext).*dx_ext];
+F_stance = [c_stance_comp(dx_comp).*dx_comp 0 c_stance_ext(dx_ext).*dx_ext];
 
 % c_stance = [c_stance_ext(dx_comp) c_stance_comp(dx_ext)];
 
