@@ -252,13 +252,13 @@ loptHAMCut   = (34.87/46)*0.10; % optimum fiber length CE [m]
 vmaxHAMCut   = 12; % maximum contraction velocity [lopt/s]
 lslackHAMCut = (34.87/46)*0.31; % tendon slack length [m]
 
-% glutei Cscles
+% glutei muscles
 FmaxGLU   = 1500; % maximum isometric force [N]
 loptGLU   = 0.11; % optimum fiber length CE [m]
 vmaxGLU   =   12; % maximum contraction velocity [lopt/s]
 lslackGLU = 0.13; % tendon slack length [m]
 
-% glutei muscles
+% hip flexor muscles
 FmaxHFL   = 2000; % maximum isometric force [N]
 loptHFL   = 0.11; % optimum fiber length CE [m]
 vmaxHFL   =   12; % maximum contraction velocity [lopt/s]
