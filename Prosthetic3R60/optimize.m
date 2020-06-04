@@ -31,6 +31,8 @@ dt_visual = 1/30;
 
 %% Build the Rapid Accelerator target once
 load_system(model)
+set_param(strcat(model,'/Prosthetic Body Mechanics Layer/Right Ankle'),'SpringStiffness','300','DampingCoefficient','100');
+% set_param(strcat(model,'/Prosthetic Body Mechanics Layer/Right Ankle'),'SpringStiffness','20','DampingCoefficient','4');
 set_param(model,'SimulationMode','rapid');
 set_param(model,'StopTime','30');
 rtp = Simulink.BlockDiagram.buildRapidAcceleratorTarget(model);
@@ -55,7 +57,7 @@ if (min_velocity == target_velocity && max_velocity == target_velocity)
     opts.TargetVel = target_velocity;
 end
 opts.UserData = char(strcat("Gains filename: ", initial_gains_filename));
-opts.SaveFilename = 'variablescmaes_healthy_energy_Umb10_no_stiff_ankle.mat';
-
+opts.SaveFilename = 'variablescmaes_healthy_energy_Umb10.mat';
+% opts.SaveFilename = 'variablescmaes_healthy_energy_Umb10_no_stiff_ankle.mat';
 %% run cmaes
 [xmin, fmin, counteval, stopflag, out, bestever] = cmaes(optfunc, x0, sigma0, opts)

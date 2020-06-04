@@ -24,7 +24,7 @@ dt_visual = 1/30;
 model = 'NeuromuscularModelwReflex2';
 load_system(model)
 %open('NeuromuscularModelwReflex2');
-set_param(model,'SimulationMode','Normal');
+set_param(model,'SimulationMode','rapid');
 set_param(model,'StopTime','30');
 
 tic;
