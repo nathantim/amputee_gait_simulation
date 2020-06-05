@@ -26,9 +26,20 @@ ShortDelay = 0.005; % hip joint muscles [s]
 % 2.1 Stance-Leg Feedback Control 
 % -------------------------------
 
+% hip flexors group (self, L+)
+GainHFL    = 0.35/FmaxHFL; %[1/N]
+PreStimHFL = 0.01; %[]
+LceOffsetHFL = 1-0.5*w; %[loptTA]
+
+% hip flexors group on hamstring (self, L+)
+GainHAMHFL    = 0.35/FmaxHFL; %[1/N]
+LceOffsetHFL = 1-0.5*w; %[loptTA]
+
 % hamstring group (self, F+)
 GainHAM    = 0.30/FmaxHAM; %[1/N]
 PreStimHAM = 0.01; %[]
+LceOffsetHAM = 0.85; %[loptTA]
+
 
 % gluteus group (self, F+)
 GainGLU    = 0.5/FmaxGLU; %[1/N]
