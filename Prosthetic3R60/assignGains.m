@@ -47,10 +47,10 @@ RkneeHoldGain2     = Gains(38);
 RkneeStopGain      = Gains(39);
 RlegAngleFilter    = Gains(40);
 RlegLengthClr      = Gains(41);
-simbiconGainD      = Gains(42);
-simbiconGainV      = Gains(43);
-simbiconLegAngle0  = Gains(44);
-legAngleTgt        = Gains(45);
+simbiconGainD      = 0*Gains(42);
+simbiconGainV      = 0*Gains(43);
+simbiconLegAngle0  = 0*Gains(44);
+legAngleTgt        = 0*Gains(45);
 
 %[groundX, groundZ, groundTheta] = generateGround('const',0.08,1);
 [groundX, groundZ, groundTheta] = generateGround('flat');
