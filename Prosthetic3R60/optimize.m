@@ -44,7 +44,7 @@ sigma0 = 1/8;
 
 opts = cmaes;
 %opts.PopSize = numvars;
-opts.Resume = 'yes';
+opts.Resume = 'no';
 opts.MaxIter = 2000;
 % opts.StopFitness = -inf;
 opts.StopFitness = 0;
@@ -57,7 +57,7 @@ if (min_velocity == target_velocity && max_velocity == target_velocity)
     opts.TargetVel = target_velocity;
 end
 opts.UserData = char(strcat("Gains filename: ", initial_gains_filename));
-opts.SaveFilename = 'variablescmaes_healthy_energy_Umb10.mat';
+opts.SaveFilename = 'variablescmaes_healthy_energy_Umb10_less_fmax_no_targetangle.mat';
 % opts.SaveFilename = 'variablescmaes_healthy_energy_Umb10_no_stiff_ankle.mat';
 %% run cmaes
 [xmin, fmin, counteval, stopflag, out, bestever] = cmaes(optfunc, x0, sigma0, opts)
