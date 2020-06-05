@@ -1,4 +1,4 @@
-function plotAngularData(angularData,GaitPhaseData,plotInfo,GaitInfo,saveInfo)
+function plotAngularData(angularData,GaitPhaseData,plotInfo,GaitInfo,saveInfo,angularDataFigure)
 %%
 t_left_perc = GaitInfo.time.left_perc;
 t_right_perc = GaitInfo.time.right_perc;
@@ -28,7 +28,12 @@ leftLegState    = GaitPhaseData.signals.values(GaitInfo.start.left:GaitInfo.end.
 rightLegState   = GaitPhaseData.signals.values(GaitInfo.start.right:GaitInfo.end.right,2);
 
 %%
-angularDataFig = figure();
+if isempty(angularDataFigure)
+    angularDataFig = figure();
+    set(angularDataFig, 'Position',[10,0,1000,1530]);
+else
+   angularDataFig = angularDataFigure; 
+end
 
 [timeWinter,hipAngleWinter_avg,hipAngleWinter_sd, kneeAngleWinter_avg,kneeAngleWinter_sd, ankleAngleWinter_avg,ankleAngleWinter_sd, ~, ~] = getWinterData(GaitInfo.WinterDataSpeed,"deg");
 
@@ -96,7 +101,7 @@ for i= 1:size(plotHandlesLeft,1)
     end
 end
 
-set(angularDataFig, 'Position',[10,0,1000,1530]);
+
 % set(angularDataFig, 'Position',[10,40,1000,930]);
 
 if GaitInfo.b_oneGaitPhase && contains(saveInfo.info,'prosthetic')

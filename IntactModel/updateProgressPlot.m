@@ -26,6 +26,7 @@ if size(data,2)> 1
             set(ax.Children(i),'Data',plotData(:,i));
             set(ax.Children(i), 'facecolor',faceColor);
             set(ax.Children(i), 'facealpha',1.0);
+            drawnow;
         else
             histogram(ax,plotData(:,i),'facecolor',ax.ColorOrder(i,:),'facealpha',1.0,'edgecolor','black','edgealpha',.5);
 %             ax.Children(i).Tag = char(num2str(i));

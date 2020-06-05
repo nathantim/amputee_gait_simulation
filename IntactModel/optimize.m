@@ -7,7 +7,8 @@ bdclose('all');
 clear all; clc;
 
 %%
-initial_gains_filename = ('Results/Flat/Wang12Opt.mat');
+% initial_gains_filename = ('Results/Flat/SCONE.mat');
+initial_gains_filename = ('Results/Flat/optandGeyerHerrInit.mat');
 
 initial_gains_file = load(initial_gains_filename);
 
@@ -31,8 +32,6 @@ load_system(model)
 %% Build the Rapid Accelerator target once
 rtp = Simulink.BlockDiagram.buildRapidAcceleratorTarget(model);
 
-
-
 %% setup cmaes
 numvars = length(InitialGuess);
 x0 = zeros(numvars,1);
@@ -53,7 +52,7 @@ if (min_velocity == target_velocity && max_velocity == target_velocity)
     opts.TargetVel = target_velocity;
 end
 opts.UserData = char(strcat("Gains filename: ", initial_gains_filename));
-opts.SaveFilename = 'variablescmaes_healthy_energy_Umberger2010_wang.mat';
+opts.SaveFilename = 'variablescmaes_healthy_energy_Umb10_notargetangle.mat';
 
 %% run cmaes
 [xmin, fmin, counteval, stopflag, out, bestever] = cmaes(optfunc, x0, sigma0, opts)

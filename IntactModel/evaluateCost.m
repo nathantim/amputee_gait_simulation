@@ -1,10 +1,10 @@
 % clc;
 %%
-tempstring = strsplit(opts.UserData,' ');
-dataFile = tempstring{end};
-InitialGuessFile = load(dataFile); 
+% tempstring = strsplit(opts.UserData,' ');
+% dataFile = tempstring{end};
+% InitialGuessFile = load(dataFile); 
 
-Gains = InitialGuessFile.Gains.*exp(bestever.x);
+% Gains = InitialGuessFile.Gains.*exp(bestever.x);
 % load('Results/Flat/v_0.5m_s.mat');
 % load('Results/Flat/v_0.8m_s.mat');
 % load('Results/Flat/v_1.1m_s.mat');
@@ -24,10 +24,11 @@ dt_visual = 1/50;
 model = 'NeuromuscularModel';
 %open('NeuromuscularModel');
 
+warning('off');
 tic;
 sim(model)
 toc;
-
+warning('on');
 
 %%
 cost = getCost(model,Gains,time,metabolicEnergy,sumOfIdealTorques,sumOfStopTorques,HATPos,swingStateCounts,stepVelocities,stepTimes,stepLengths,1);

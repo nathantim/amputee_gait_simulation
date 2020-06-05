@@ -2,6 +2,9 @@ BodyMechParams;
 ControlParams;
 OptimParams;
 
+% load('Results/Flat/GeyerHerrInit.mat');
+% load('Results/Flat/optandGeyerHerrInit.mat');
+load('Results/Flat/SCONE.mat');
 % load('Results/Flat/v_0.5m_s.mat');
 % load('Results/Flat/v_0.8m_s.mat');
 % load('Results/Flat/v_1.1m_s.mat');

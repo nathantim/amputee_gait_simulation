@@ -161,7 +161,7 @@ end
 %%%%%%%%%%
 x = zeros(animData.signals.dimensions,1);
     tframe = frameSkip/30/speed;
-    input('Press key to continue...')
+%     input('Press key to continue...')
     for i = 1:frameSkip:length(animData.time)
         tic;
         u = animData.signals.values(i,:);

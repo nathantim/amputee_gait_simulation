@@ -75,7 +75,7 @@ try
         meanVel, meanStepTime, meanStepLength,round(ASIStepLength,2),round(ASIStepTime,2), timeCost, velCost);
     
     %% Save when optimizing
-    if b_isParallel && timeCost == 0
+    if  b_isParallel && timeCost == 0
         dataStruct = struct('cost',struct('data',cost,'minimize',1,'info',''),'costOfTransport',struct('data',[effort_costs(:).costOfTransport],'minimize',1,'info',{effort_costs(:).name}),...
             'metabolicEnergy',struct('data',[effort_costs(:).metabolicEnergy],'minimize',1,'info',{effort_costs(:).name}),'sumOfStopTorques',struct('data',sumOfStopTorques,'minimize',1,'info',''),...
             'HATPos',struct('data',HATPos,'minimize',0,'info',''),'vMean',struct('data',meanVel,'minimize',0,'info',''),'tStepMean',struct('data',meanStepTime,'minimize',2,'info',''),...
@@ -90,6 +90,7 @@ try
         %         send(dataQueueD,dataStruct);
         %     end
         %     try
+%         save('dataStruct.mat','dataStruct');
         GainsSave = Gains;
         if size(GainsSave,1)>size(GainsSave,2)
             GainsSave = GainsSave';
@@ -98,7 +99,7 @@ try
             workerID = getCurrentWorker().ProcessId;
         catch ME
             workerID = [];
-            warning(ME.message);
+            warning(strcat(char(ME.message)," In ", mfilename, " line ", num2str(ME.stack(1).line)));
         end
         filename = char(strcat('compareEnergyCost',num2str(workerID),'.mat'));
         if exist(filename,'file') == 2
