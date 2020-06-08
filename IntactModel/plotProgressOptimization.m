@@ -15,7 +15,7 @@ end
 try
     dataFieldnames = fieldnames(data);
     numOfData = length(dataFieldnames)-1;
-    if ~isempty(dataFieldnames)
+    if ~isempty(dataFieldnames) && length(dataFieldnames)>4
         
         %%
         plotInfo.plotProp = {'LineStyle','Color','LineWidth'};
@@ -60,7 +60,7 @@ try
         end
         drawnow;
     else
-        disp('empty data struct');
+%         disp('empty data struct');
     end
 catch ME
     warning(strcat(char(ME.message)," In ", ME.stack(1).name, " line ", num2str(ME.stack(1).line)));

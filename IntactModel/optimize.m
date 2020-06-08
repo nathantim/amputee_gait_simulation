@@ -7,8 +7,9 @@ bdclose('all');
 clear all; clc;
 
 %%
-% initial_gains_filename = ('Results/Flat/SCONE.mat');
-initial_gains_filename = ('Results/Flat/optandGeyerHerrInit.mat');
+initial_gains_filename = ('Results/Flat/SCONE.mat');
+% initial_gains_filename = ('Results/Flat/Wang12Opt.mat');
+% initial_gains_filename = ('Results/Flat/optandGeyerHerrInit.mat');
 
 initial_gains_file = load(initial_gains_filename);
 
@@ -52,7 +53,7 @@ if (min_velocity == target_velocity && max_velocity == target_velocity)
     opts.TargetVel = target_velocity;
 end
 opts.UserData = char(strcat("Gains filename: ", initial_gains_filename));
-opts.SaveFilename = 'variablescmaes_healthy_energy_Umb10_notargetangle.mat';
+opts.SaveFilename = 'variablescmaes_healthy_energy_UMB10_notargetangle_diffinit.mat';
 
 %% run cmaes
 [xmin, fmin, counteval, stopflag, out, bestever] = cmaes(optfunc, x0, sigma0, opts)

@@ -1,10 +1,13 @@
 % clc;
 %%
-% tempstring = strsplit(opts.UserData,' ');
-% dataFile = tempstring{end};
-% InitialGuessFile = load(dataFile); 
+tempstring = strsplit(opts.UserData,' ');
+dataFile = tempstring{end};
+InitialGuessFile = load(dataFile); 
 
-% Gains = InitialGuessFile.Gains.*exp(bestever.x);
+Gains = InitialGuessFile.Gains.*exp(bestever.x);
+% load('Results/Flat/GeyerHerrInit.mat');
+% load('Results/Flat/optandGeyerHerrInit.mat');
+% load('Results/Flat/SCONE.mat');
 % load('Results/Flat/v_0.5m_s.mat');
 % load('Results/Flat/v_0.8m_s.mat');
 % load('Results/Flat/v_1.1m_s.mat');
@@ -20,7 +23,7 @@
 
 %%
 assignGains;
-dt_visual = 1/50;
+dt_visual = 1/30;
 model = 'NeuromuscularModel';
 %open('NeuromuscularModel');
 
@@ -31,4 +34,4 @@ toc;
 warning('on');
 
 %%
-cost = getCost(model,Gains,time,metabolicEnergy,sumOfIdealTorques,sumOfStopTorques,HATPos,swingStateCounts,stepVelocities,stepTimes,stepLengths,1);
+cost = getCost(model,Gains,time,metabolicEnergy,sumOfIdealTorques,sumOfStopTorques,HATPos,swingStateCounts,stepVelocities,stepTimes,stepLengths,0);

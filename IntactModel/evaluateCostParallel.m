@@ -48,9 +48,9 @@ kinematics.stepTimes = stepTimes;
 try
     [cost, dataStruct] = getCost(model,Gains,time,metabolicEnergy,sumOfIdealTorques,sumOfStopTorques,HATPos,swingStateCounts,stepVelocities,stepTimes,stepLengths,1);
     dataStruct.kinematics = kinematics;
-catch
+catch ME
     save('error_getCost.mat');
-    error('Not possible to evaluate getCost');
+    error('Error not possible to evaluate getCost: %s\nIn %s.m line %d',ME.message,mfilename,ME.stack(1).line);
 end
 if isnan(cost)
     return
