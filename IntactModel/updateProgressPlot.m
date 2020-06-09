@@ -1,8 +1,11 @@
-function updateProgressPlot(ax,dataStruct,tagName)
-if nargin == 3
+function updateProgressPlot(ax,dataStruct,tagName,b_minimumCost)
+if ~isempty(tagName)
     tagToSave = tagName;
 else
     tagToSave = ax.Tag;
+end
+if nargin < 4
+    b_minimumCost = true;
 end
 data = dataStruct.data;
 % tagToSaveC = cell(size(data));%cellfun(@num2str,cell(size(data)),'UniformOutput',false);
@@ -47,14 +50,17 @@ if mod(size(plotData,1),2) == 0
 else
     medianPlotData = median(plotData,'all');
 end
-
-if max([dataStruct.minimize]) == 0
-    title(ax,[ax.Tag, '$_{max} = ',num2str(round(maxPlotData,3)),'$']);
-elseif max([dataStruct.minimize]) == 1
-    title(ax,[ax.Tag, '$_{min} = ',num2str(round(minPlotData,3)),'$']);
-else
-    title(ax,[ax.Tag, ': $(',num2str(round(minPlotData,3)),', ',num2str(round(maxPlotData,3)), ')$']);
+if b_minimumCost
+    title(ax,[ax.Tag, '$_{opt} = ',num2str(round(data(end),1)),' - (',num2str(round(minPlotData,1)),', ',num2str(round(maxPlotData,1)), ')$']);
 end
+
+% if max([dataStruct.minimize]) == 0
+%     title(ax,[ax.Tag, '$_{max} = ',num2str(round(maxPlotData,3)),'$']);
+% elseif max([dataStruct.minimize]) == 1
+%     title(ax,[ax.Tag, '$_{min} = ',num2str(round(minPlotData,3)),'$']);
+% else
+%     title(ax,[ax.Tag, ': $(',num2str(round(minPlotData,3)),', ',num2str(round(maxPlotData,3)), ')$']);
+% end
 
 for j = 1:length(findall(ax.Children,'type','histogram'))
     histChildren = findall(ax.Children,'type','histogram');

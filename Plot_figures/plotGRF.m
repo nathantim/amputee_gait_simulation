@@ -1,4 +1,7 @@
-function plotGRF(GRFData,plotInfo,GaitInfo,saveInfo)
+function plotGRF(GRFData,plotInfo,GaitInfo,saveInfo,GRFDataFigure)
+if nargin < 5
+    GRFDataFigure = [];
+end
 %%
 t_left_perc = GaitInfo.time.left_perc;
 t_right_perc = GaitInfo.time.right_perc;
@@ -23,7 +26,13 @@ if size(vGRF_winter_avg,2) > size(vGRF_winter_avg,2)
     hGRF_winter_avg = hGRF_winter_avg';
 end
 %%
-GRFDataFig = figure();
+if isempty(GRFDataFigure)
+    GRFDataFig = figure();
+    set(GRFDataFig, 'Position',[10,50,800,600]);
+else
+   GRFDataFig = GRFDataFigure; 
+   clf(GRFDataFig);
+end
 
 % sgtitle('Ground Reaction Forces')
 
@@ -32,15 +41,14 @@ if false
 %     plotHandlesRight = plotGRFDataInFigure(t_right_perc,R_Ball,R_Total,R_Heel);
 %     set(GRFDataFig, 'Position',[10,50,1600,900]);
 else
-    plotHandlesLeft = plotTotalGRFDataInFigure(t_left_perc,L_Total_x,[],L_Total_z,[],GaitInfo.b_oneGaitPhase);
-    plotHandlesRight = plotTotalGRFDataInFigure(t_right_perc,R_Total_x,[],R_Total_z,[],GaitInfo.b_oneGaitPhase);
+    [plotHandlesLeft,axesHandles] = plotTotalGRFDataInFigure(GRFDataFig,[],t_left_perc,L_Total_x,[],L_Total_z,[],GaitInfo.b_oneGaitPhase);
+    [plotHandlesRight,axesHandles] = plotTotalGRFDataInFigure(GRFDataFig,axesHandles,t_right_perc,R_Total_x,[],R_Total_z,[],GaitInfo.b_oneGaitPhase);
     if GaitInfo.b_oneGaitPhase
-        plotHandlesWinter = plotTotalGRFDataInFigure(tWinter,hGRF_winter_avg,hGRF_winter_sd,vGRF_winter_avg,vGRF_winter_sd);
+        [plotHandlesWinter,axesHandles] = plotTotalGRFDataInFigure(GRFDataFig,axesHandles,tWinter,hGRF_winter_avg,hGRF_winter_sd,vGRF_winter_avg,vGRF_winter_sd);
     end
 
 end
 
-set(GRFDataFig, 'Position',[10,50,800,600]);
 if GaitInfo.b_oneGaitPhase && contains(saveInfo.info,'prosthetic')
     leg = legend([plotHandlesLeft(2,1),plotHandlesRight(2,1),plotHandlesWinter(2,1)],'Intact leg','Prosthetic leg', 'Winter data');
 %     leg = legend('Intact leg','Prosthetic leg',char(strcat(string(GaitInfo.WinterDataSpeed), ' gait Winter')) );

@@ -1,92 +1,98 @@
-function plotHandles = plotMusculoDataInFigure(t,SOL,TA,GAS,VAS,HAM,GLU,HFL,b_oneGaitPhase,HAMc)
-if  nargin <= 9
+function [plotHandles, axesHandles] = plotMusculoDataInFigure(musculoDataFigure,axesHandles,t,SOL,TA,GAS,VAS,HAM,GLU,HFL,b_oneGaitPhase,HAMc)
+plotHandles = nan(7,1);
+if isempty(axesHandles)
+    for i = 1:length(plotHandles)
+        axesHandles(i) = axes(musculoDataFigure);
+    end
+end
+if  nargin <= 11
     HAMc = [0];
 end
-if  nargin <= 8
+if  nargin <= 10
     b_oneGaitPhase = true;
 end
 
-plotHandles = nan(7,1);
+
 %%
-subplot(4,2,1);
-plotHandles(1) = plot(t,SOL);
-title('SOL')
+axesHandles(1) = subplot(4,2,1,axesHandles(1));
+plotHandles(1) = plot(axesHandles(1),t,SOL);
+title(axesHandles(1),'SOL')
 % ylabel('rad');
 if (max(SOL)<1)
-    yaxis([0,1])
+    ylim(axesHandles(1),[0,1])
 end
-hold on;
+hold(axesHandles(1),'on');
 
 
-subplot(4,2,2);
-plotHandles(2) = plot(t,TA);
-title('TA')
+axesHandles(2) = subplot(4,2,2,axesHandles(2));
+plotHandles(2) = plot(axesHandles(2),t,TA);
+title(axesHandles(2),'TA')
 if (max(TA)<1)
-    yaxis([0,1])
+    ylim(axesHandles(2),[0,1])
 end
 % ylabel('rad/s')
-hold on;
+hold(axesHandles(2),'on');
 
 %%
-subplot(4,2,3);
-plotHandles(3) = plot(t,GAS);
-title('GAS')
+axesHandles(3) = subplot(4,2,3,axesHandles(3));
+plotHandles(3) = plot(axesHandles(3),t,GAS);
+title(axesHandles(3),'GAS')
 if (max(GAS)<1)
-    yaxis([0,1])
+    ylim(axesHandles(3),[0,1])
 end% ylabel('rad');
-hold on;
+hold(axesHandles(3),'on');
 
-subplot(4,2,4);
-plotHandles(4) = plot(t,VAS);
-title('VAS')
+axesHandles(4) = subplot(4,2,4,axesHandles(4));
+plotHandles(4) = plot(axesHandles(4),t,VAS);
+title(axesHandles(4),'VAS')
 if (max(VAS)<1)
-    yaxis([0,1])
+    ylim(axesHandles(4),[0,1])
 end
 % ylabel('rad/s')
-hold on;
+hold(axesHandles(4),'on');
 
 
 %%
-subplot(4,2,5);
+axesHandles(5) = subplot(4,2,5,axesHandles(5));
 if (~isempty(HAMc) && sum(HAMc)~=0)
-    plotHandles(5) = plot(t,HAMc);
+    plotHandles(5) = plot(axesHandles(5),t,HAMc);
 else
-    plotHandles(5) = plot(t,HAM);
+    plotHandles(5) = plot(axesHandles(5),t,HAM);
 end
 
-title('HAM')
+title(axesHandles(5),'HAM')
 if (max(HAM)<1 && max(HAMc)<1 )
-    yaxis([0,1])
+    ylim(axesHandles(5),[0,1])
 end
 % ylabel('rad');
-hold on;
+hold(axesHandles(5),'on');
 
 
-subplot(4,2,6);
-plotHandles(6) = plot(t,GLU);
-title('GLU')
+axesHandles(6) = subplot(4,2,6,axesHandles(6));
+plotHandles(6) = plot(axesHandles(6),t,GLU);
+title(axesHandles(6),'GLU')
 if (max(GLU)<1)
-    yaxis([0,1])
+    ylim(axesHandles(6),[0,1])
 end
 % ylabel('rad/s')
 if b_oneGaitPhase
-    xlabel('%_{stride}','interpreter','tex')
+    xlabel(axesHandles(6),'%_{stride}','interpreter','tex')
 else
-    xlabel('s')
+    xlabel(axesHandles(6),'s')
 end
-hold on;
+hold(axesHandles(6),'on');
 
 
-subplot(4,2,7);
-plotHandles(7) = plot(t,HFL);
-title('HFL')
+axesHandles(7) = subplot(4,2,7,axesHandles(7));
+plotHandles(7) = plot(axesHandles(7),t,HFL);
+title(axesHandles(7),'HFL')
 if (max(HFL)<1)
-    yaxis([0,1])
+    ylim(axesHandles(7),[0,1])
 end
 % ylabel('rad');
 if b_oneGaitPhase
-    xlabel('%_{stride}','interpreter','tex')
+    xlabel(axesHandles(7),'%_{stride}','interpreter','tex')
 else
-    xlabel('s')
+    xlabel(axesHandles(7),'s')
 end
-hold on;
+hold(axesHandles(7),'on');

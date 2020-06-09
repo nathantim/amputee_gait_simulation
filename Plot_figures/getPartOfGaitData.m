@@ -11,12 +11,13 @@ if (b_oneGaitPhase) && min(sum(stepTimes(:,1)),sum(stepTimes(:,2))) > 1
     
     [L_changeSwing2StanceIdx] = find(leftLegStateChange == -4);
     [R_changeSwing2StanceIdx] = find(rightLegStateChange == -4);
-    if length(L_changeSwing2StanceIdx) >= 8
-        selectStart = max([1, ceil(1.75*(length(L_changeSwing2StanceIdx)/2)),min(1,length(L_changeSwing2StanceIdx)-1),min(1,length(R_changeSwing2StanceIdx)-1)]);
-    elseif  length(L_changeSwing2StanceIdx) >= 5
-        selectStart = length(L_changeSwing2StanceIdx) - 3;
-    elseif  length(L_changeSwing2StanceIdx) > 1
-        selectStart = length(L_changeSwing2StanceIdx) - 1;
+    minSwing2StanceChange = min(length(L_changeSwing2StanceIdx),length(R_changeSwing2StanceIdx));
+    if minSwing2StanceChange >= 8
+        selectStart = max([1, ceil(1.75*(minSwing2StanceChange/2)),min(1,minSwing2StanceChange-1)]);
+    elseif  minSwing2StanceChange >= 5
+        selectStart = minSwing2StanceChange - 3;
+    elseif  minSwing2StanceChange > 1
+        selectStart = minSwing2StanceChange - 1;
     end
     leftGaitPhaseEnd = L_changeSwing2StanceIdx(selectStart+1);
     leftGaitPhaseStart = L_changeSwing2StanceIdx(selectStart)+1;

@@ -19,7 +19,7 @@ end
 saveInfo.info = info;
 t = angularData.time;
 
-GaitInfo = getPartOfGaitData(b_oneGaitPhase,GaitPhaseData,t);
+GaitInfo = getPartOfGaitData(b_oneGaitPhase,GaitPhaseData,t,stepTimes);
 
 %%
 plotInfo.plotProp = {'LineStyle','Color','LineWidth'};
