@@ -35,7 +35,7 @@ try
     for i = 1:length(muscle_exp_models)
         effort_costs(i).name = (muscle_exp_models{i});
         effort_costs(i).metabolicEnergy = metabolicEnergy(:,i);
-        effort_costs(i).costOfTransport = (metabolicEnergy(:,i) + .01*sumOfStopTorques)/(HATPos*amputeeMass);
+        effort_costs(i).costOfTransport = (metabolicEnergy(:,i) + .1*sumOfStopTorques)/(HATPos*amputeeMass);
     end
     
     % Decide which to use for optimization
@@ -76,8 +76,8 @@ try
     
     %% Save when optimizing
     if  b_isParallel && timeCost == 0
-        dataStruct = struct('cost',struct('data',cost,'minimize',1,'info',''),'costOfTransport',struct('data',[effort_costs(:).costOfTransport],'minimize',1,'info',{effort_costs(:).name}),...
-            'metabolicEnergy',struct('data',[effort_costs(:).metabolicEnergy],'minimize',1,'info',{effort_costs(:).name}),'sumOfStopTorques',struct('data',sumOfStopTorques,'minimize',1,'info',''),...
+        dataStruct = struct('cost',struct('data',cost,'minimize',1,'info',''),'CoT',struct('data',[effort_costs(:).costOfTransport],'minimize',1,'info',{effort_costs(:).name}),...
+            'E',struct('data',[effort_costs(:).metabolicEnergy],'minimize',1,'info',{effort_costs(:).name}),'sumTstop',struct('data',sumOfStopTorques,'minimize',1,'info',''),...
             'HATPos',struct('data',HATPos,'minimize',0,'info',''),'vMean',struct('data',meanVel,'minimize',0,'info',''),'tStepMean',struct('data',meanStepTime,'minimize',2,'info',''),...
             'lStepMean',struct('data',meanStepLength,'minimize',2,'info',''),'lStepASI',struct('data',round(ASIStepLength,2),'minimize',2,'info',''),...
             'tStepASI',struct('data',round(ASIStepTime,2),'minimize',2,'info',''));

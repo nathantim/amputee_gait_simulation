@@ -52,6 +52,21 @@ else
 end
 if b_minimumCost
     title(ax,[ax.Tag, '$_{opt} = ',num2str(round(data(end),1)),' - (',num2str(round(minPlotData,1)),', ',num2str(round(maxPlotData,1)), ')$']);
+else
+    axTitlesplit = strsplit(ax.Title.String,' ');
+    
+    if isempty([axTitlesplit{:}])
+       if dataStruct.minimize == 0
+           prevOptVal = num2str(maxPlotData);
+       elseif dataStruct.minimize == 1
+           prevOptVal = num2str(minPlotData);
+       else 
+           prevOptVal = num2str(mean(mean(plotData)));
+       end
+    else
+        prevOptVal = axTitlesplit{3};
+    end
+    title(ax,[ax.Tag, '$_{opt} = ',prevOptVal,' - (',num2str(round(minPlotData,1)),', ',num2str(round(maxPlotData,1)), ')$']);
 end
 
 % if max([dataStruct.minimize]) == 0

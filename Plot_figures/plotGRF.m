@@ -31,7 +31,7 @@ if isempty(GRFDataFigure)
     set(GRFDataFig, 'Position',[10,50,800,600]);
 else
    GRFDataFig = GRFDataFigure; 
-   clf(GRFDataFig);
+%    clf(GRFDataFig);
 end
 
 % sgtitle('Ground Reaction Forces')

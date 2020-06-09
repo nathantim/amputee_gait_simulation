@@ -30,7 +30,7 @@ if isempty(musculoDataFigure)
     set(musculoDataFig, 'Position',[10,40,1200,930]);
 else
     musculoDataFig = musculoDataFigure;
-    clf(musculoDataFig);
+%     clf(musculoDataFig);
 end
 
 % sgtitle('Muscle stimulations')

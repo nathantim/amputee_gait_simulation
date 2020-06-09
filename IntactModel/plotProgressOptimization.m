@@ -80,13 +80,17 @@ try
         if minimumCost
 
             warning('off');
-            sgtitle(gaitKinematics,['Gait kinematics for cost of ',num2str(data.cost.data)]);
+               
+            clf(gaitKinematics);
+            sgtitle(gaitKinematics,['Gait kinematics for cost of ',num2str(round(data.cost.data,1)),', with $v_{mean}$ = ', num2str(round(data.vMean.data,1)),'m/s']);
             plotAngularData(data.kinematics.angularData,data.kinematics.GaitPhaseData,plotInfo,GaitInfo,saveInfo,gaitKinematics);
-            
-            sgtitle(musclesStimulation,['Muscle stimulations for cost of ',num2str(data.cost.data)]);
+                           
+            clf(musclesStimulation);
+            sgtitle(musclesStimulation,['Muscle stimulation levels for cost of ',num2str(round(data.cost.data,1)),', with $v_{mean}$ = ', num2str(round(data.vMean.data,1)),'m/s']);
             plotMusculoData(data.kinematics.musculoData,plotInfo,GaitInfo,saveInfo,musclesStimulation);
-            
-            sgtitle(GRFData,['Ground reaction forces for cost of ',num2str(data.cost.data)]);
+                            
+            clf(GRFData);
+            sgtitle(GRFData,['Ground reaction forces for cost of ',num2str(round(data.cost.data,1)),', with $v_{mean}$ = ', num2str(round(data.vMean.data,1)),'m/s']);
             plotGRF(data.kinematics.GRFData,plotInfo,GaitInfo,saveInfo,GRFData);
             warning('on');
         end

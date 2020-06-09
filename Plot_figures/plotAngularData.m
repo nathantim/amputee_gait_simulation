@@ -37,7 +37,6 @@ if isempty(angularDataFigure)
 else
    
     angularDataFig = angularDataFigure; 
-    clf(angularDataFig);
 end
 
 [timeWinter,hipAngleWinter_avg,hipAngleWinter_sd, kneeAngleWinter_avg,kneeAngleWinter_sd, ankleAngleWinter_avg,ankleAngleWinter_sd, ~, ~] = getWinterData(GaitInfo.WinterDataSpeed,"deg");

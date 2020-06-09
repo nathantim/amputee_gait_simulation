@@ -32,17 +32,18 @@ PreStimHFL = 0.05; %[]
 LceOffsetHFL = 0.6; %[loptTA]
 
 % hip flexors group on hamstring (self, L+)
-GainHAMHFL    = 0.35/FmaxHFL; %[1/N]
+GainHAMHFL    = 4/FmaxHFL; %[1/N]
 
 % hamstring group (self, F+)
 GainHAM    = 0.30/FmaxHAM; %[1/N]
 PreStimHAM = 0.01; %[]
 LceOffsetHAM = 0.85; %[loptTA]
-
+GainHAMswing = GainHAM;
 
 % gluteus group (self, F+)
 GainGLU    = 0.5/FmaxGLU; %[1/N]
 PreStimGLU = 0.01; %[]
+GainGLUswing = GainGLU;
 
 % soleus (self, F+)
 GainSOL    = 1.2/FmaxSOL; %[1/N]
@@ -55,6 +56,7 @@ PreStimTA = 0.01; %[]
 % tibialis (self, L+, stance and swing)
 GainTA      = 1.1; %[]
 LceOffsetTA = 1-0.5*w; %[loptTA]
+GainTAswing      = 1.1; %[]
 
 % gastrocnemius (self, F+)
 GainGAS     = 1.1/FmaxGAS; %[1/N] 
@@ -86,9 +88,18 @@ phiHATref      = 6*pi/180; %[rad]
 
 % gluteus stance gain
 Kglu = 0.7;
+Khfl = 1;
+Kham = 1;
 
 % HFL lean gain
 Klean = 1.15;
+
+% Body weight gain
+Kbw = 1.2;
+
+DeltaS = 0.25;
+DeltaSGLU = DeltaS;
+DeltaSHFL = DeltaS;
 % ------------------------------
 % 2.2 Swing-leg Feedback Control 
 % ------------------------------

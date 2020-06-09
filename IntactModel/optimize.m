@@ -1,16 +1,17 @@
 try 
     save_system;
+    disp('Saved loaded system');
 catch
     disp('No system loaded to be saved.');
 end
 bdclose('all');
-clear all; clc;
+clear all; close all; clc;
 
 %%
-initial_gains_filename = ('Results/Flat/SCONE.mat');
-% initial_gains_filename = ('Results/Flat/Wang12Opt.mat');
+% initial_gains_filename = ('Results/Flat/optandGH_diffswing.mat');
+initial_gains_filename = ('Results/Flat/optdiffswing.mat');
 % initial_gains_filename = ('Results/Flat/optandGeyerHerrInit.mat');
-
+% initial_gains_filename = 'Results/Flat/optandSCONEInit.mat';
 initial_gains_file = load(initial_gains_filename);
 
 %%
@@ -53,7 +54,7 @@ if (min_velocity == target_velocity && max_velocity == target_velocity)
     opts.TargetVel = target_velocity;
 end
 opts.UserData = char(strcat("Gains filename: ", initial_gains_filename));
-opts.SaveFilename = 'variablescmaes_healthy_energy_UMB10_notargetangle_diffinit.mat';
+opts.SaveFilename = 'vcmaes_energy_ha_swing_Wang12_notargetangle.mat';
 
 %% run cmaes
 [xmin, fmin, counteval, stopflag, out, bestever] = cmaes(optfunc, x0, sigma0, opts)

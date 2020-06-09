@@ -12,6 +12,8 @@ Gains = InitialGuessFile.Gains.*exp(bestever.x);
 % load('Results/Flat/v_0.8m_s.mat');
 % load('Results/Flat/v_1.1m_s.mat');
 % load('Results/Flat/v_1.4m_s.mat');
+% load('Results/RoughDist/optimizedGains.mat');
+
 % compareenergies = load('compareEnergyCostTotal.mat');
 
 % 
@@ -34,4 +36,21 @@ toc;
 warning('on');
 
 %%
-cost = getCost(model,Gains,time,metabolicEnergy,sumOfIdealTorques,sumOfStopTorques,HATPos,swingStateCounts,stepVelocities,stepTimes,stepLengths,0);
+[cost, dataStruct] = getCost(model,Gains,time,metabolicEnergy,sumOfIdealTorques,sumOfStopTorques,HATPos,swingStateCounts,stepVelocities,stepTimes,stepLengths,1);
+%%
+kinematics.angularData = angularData;
+kinematics.GaitPhaseData = GaitPhaseData;
+kinematics.time = time;
+kinematics.stepTimes = stepTimes;
+kinematics.musculoData = musculoData;
+kinematics.GRFData = GRFData;
+dataStruct.kinematics = kinematics;
+save('dataStruct.mat','dataStruct')
+
+%%
+set(0, 'DefaultFigureHitTest','on');
+set(0, 'DefaultAxesHitTest','on','DefaultAxesPickableParts','all');
+set(0, 'DefaultLineHitTest','on','DefaultLinePickableParts','all');
+set(0, 'DefaultPatchHitTest','on','DefaultPatchPickableParts','all');
+set(0, 'DefaultStairHitTest','on','DefaultStairPickableParts','all');
+set(0, 'DefaultLegendHitTest','on','DefaultLegendPickableParts','all');

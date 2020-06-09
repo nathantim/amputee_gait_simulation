@@ -1,7 +1,7 @@
 function [cost, dataStruct] =evaluateCostParallel(paramStruct,Gains)
 dataStruct = struct;
 if nargin < 2
-    Gains = nan(14,1);
+    Gains = nan(17,1);
 end
 % OptimParams;
 model = 'NeuromuscularModel';
@@ -29,10 +29,15 @@ stepTimes = get(simout, 'stepTimes');
 stepLengths = get(simout, 'stepLengths');
 angularData = get(simout, 'angularData');
 GaitPhaseData = get(simout,'GaitPhaseData');
+musculoData = get(simout, 'musculoData');
+GRFData = get(simout, 'GRFData');
+
 kinematics.angularData = angularData;
 kinematics.GaitPhaseData = GaitPhaseData;
 kinematics.time = time;
 kinematics.stepTimes = stepTimes;
+kinematics.musculoData = musculoData;
+kinematics.GRFData = GRFData;
 %     if ~bisProperDistCovered(stepTimes.time(end),stepLengths,min_velocity,max_velocity,dist_slack)
 %         cost = nan;
 %         disp('Not enough distance covered')
