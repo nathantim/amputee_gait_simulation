@@ -35,7 +35,7 @@ try
     for i = 1:length(muscle_exp_models)
         effort_costs(i).name = (muscle_exp_models{i});
         effort_costs(i).metabolicEnergy = metabolicEnergy(:,i);
-        effort_costs(i).costOfTransport = (metabolicEnergy(:,i) + .1*sumOfStopTorques)/(HATPos*amputeeMass);
+        effort_costs(i).costOfTransport = (metabolicEnergy(:,i) + .01*sumOfStopTorques)/(HATPos*amputeeMass);
     end
     
     % Decide which to use for optimization

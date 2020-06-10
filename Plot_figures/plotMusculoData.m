@@ -35,8 +35,8 @@ end
 
 % sgtitle('Muscle stimulations')
 
-[plotHandlesLeft,axesHandles] = plotMusculoDataInFigure(musculoDataFigure,[],t_left_perc,L_SOL,L_TA,L_GAS,L_VAS,L_HAM,L_GLU,L_HFL,GaitInfo.b_oneGaitPhase);
-[plotHandlesRight,axesHandles] = plotMusculoDataInFigure(musculoDataFigure,axesHandles,t_right_perc,R_SOL,R_TA,R_GAS,R_VAS,R_HAM,R_GLU,R_HFL,GaitInfo.b_oneGaitPhase,R_HAMc);
+[plotHandlesLeft,axesHandles] = plotMusculoDataInFigure(musculoDataFig,[],t_left_perc,L_SOL,L_TA,L_GAS,L_VAS,L_HAM,L_GLU,L_HFL,GaitInfo.b_oneGaitPhase);
+[plotHandlesRight,axesHandles] = plotMusculoDataInFigure(musculoDataFig,axesHandles,t_right_perc,R_SOL,R_TA,R_GAS,R_VAS,R_HAM,R_GLU,R_HFL,GaitInfo.b_oneGaitPhase,R_HAMc);
 if contains(saveInfo.info,'prosthetic')
     leg = legend([plotHandlesLeft(end),plotHandlesRight(end)],'Intact leg','Prosthetic leg');
 else
