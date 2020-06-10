@@ -21,8 +21,11 @@ Gains = InitialGuessFile.Gains.*exp(bestever.x);
 % Gains2 = compareenergies.Gains(idx_minCost,:)';
 % 
 % [Gains,Gains2]
-
-
+% Gains(1) = 0.8*Gains(1);
+% Gains(5) = 0.8*Gains(5);
+% Gains(4) = 2*Gains(4);
+% Gains(8) = 0.3*Gains(8);
+% Gains(3) = 2*Gains(3);
 %%
 assignGains;
 dt_visual = 1/30;
