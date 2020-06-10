@@ -5,8 +5,8 @@ OptimParams;
 % load('Results/Flat/v_0.5m_s.mat');
 % load('Results/Flat/v_0.8m_s.mat');
 % load('Results/Flat/v_1.1m_s.mat');
-% load('Results/Flat/optimizedGains');
-
+% load('Results/Flat/v_1.4m_s.mat');
+load('Results/RoughDist/optimizedGains.mat');
 
 GainGAS           = Gains( 1);
 GainGLU           = Gains( 2);
@@ -19,26 +19,25 @@ GainVAS           = Gains( 8);
 Kglu              = Gains( 9);
 PosGainGG         = Gains(10);
 SpeedGainGG       = Gains(11);
-
-
-hipDGain          = Gains(12);
-hipPGain          = Gains(13);
-kneeExtendGain    = Gains(14);
-kneeFlexGain      = Gains(15);
-kneeHoldGain1     = Gains(16);
-kneeHoldGain2     = Gains(17);
-kneeStopGain      = Gains(18);
-legAngleFilter    = Gains(19);
-legLengthClr      = Gains(20);
-simbiconGainD     = Gains(21);
-simbiconGainV     = Gains(22);
-simbiconLegAngle0 = Gains(23);
 % GainTAswing       = Gains(12);
-GainGLUswing      = Gains(24);
-GainHAMswing      = Gains(25);
-GainHFL           = Gains(26);
-GainHAMHFL        = Gains(27);
-Klean             = Gains(28);
+% GainGLUswing      = Gains(13);
+% GainHAMswing      = Gains(14);
+% GainHFL           = Gains(15);
+% GainHAMHFL        = Gains(16);
+% Klean             = Gains(17);
+
+% hipDGain          = Gains(12);
+% hipPGain          = Gains(13);
+% kneeExtendGain    = Gains(14);
+% kneeFlexGain      = Gains(15);
+% kneeHoldGain1     = Gains(16);
+% kneeHoldGain2     = Gains(17);
+% kneeStopGain      = Gains(18);
+% legAngleFilter    = Gains(19);
+% legLengthClr      = Gains(20);
+% simbiconGainD     = Gains(21);
+% simbiconGainV     = Gains(22);
+% simbiconLegAngle0 = Gains(23);
 
 [groundX, groundZ, groundTheta] = generateGround('flat');
 % [groundX, groundZ, groundTheta] = generateGround('const', .05,1);
