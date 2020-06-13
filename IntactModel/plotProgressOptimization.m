@@ -1,4 +1,6 @@
 function plotProgressOptimization(data)
+global minCost;
+
 %%
 set(0, 'DefaultFigureHitTest','off');
 set(0, 'DefaultAxesHitTest','off','DefaultAxesPickableParts','none');
@@ -8,20 +10,21 @@ set(0, 'DefaultStairHitTest','off','DefaultStairPickableParts','none');
 set(0, 'DefaultLegendHitTest','off','DefaultLegendPickableParts','none');
 
 %%
-updateFigure = findobj('type','figure','Name','Optimization Parameters');
+% updateFigure = findobj('type','figure','Name','Optimization Parameters');
 gaitKinematics = findobj('type','figure','Name','Gait Kinematics');
 musclesStimulation = findobj('type','figure','Name','Muscle stimulation levels');
 GRFData = findobj('type','figure','Name','Ground reaction forces');
 
-if isempty(updateFigure) || ~isvalid(updateFigure)
-    updateFigure = figure();
-%     updateFigure.HitTest = 'off';
-    updateFigure.Name = 'Optimization Parameters';
-end
+% if isempty(updateFigure) || ~isvalid(updateFigure)
+%     updateFigure = figure();
+% %     updateFigure.HitTest = 'off';
+%     updateFigure.Name = 'Optimization Parameters';
+% end
 if isempty(gaitKinematics) || ~isvalid(gaitKinematics)
     gaitKinematics = figure();
 %     gaitKinematics.HitTest = 'off';
     gaitKinematics.Name = 'Gait Kinematics';
+    minCost = inf;
 end
 if isempty(musclesStimulation) || ~isvalid(musclesStimulation)
     musclesStimulation = figure();
@@ -34,11 +37,18 @@ if isempty(GRFData) || ~isvalid(GRFData)
     GRFData.Name = 'Ground reaction forces';
 end
 
+if isempty(minCost) || data.cost.data < minCost
+    minCost = data.cost.data;
+    b_minCost = true;
+else
+    b_minCost = false;
+end
+
 try
     dataFieldnames = fieldnames(data);
-    numOfData = length(dataFieldnames)-1;
+%     numOfData = length(dataFieldnames)-1;
+    
     if ~isempty(dataFieldnames) && length(dataFieldnames)>4
-        
         %%
         plotInfo.plotProp = {'LineStyle','Color','LineWidth'};
         plotInfo.lineVec = {'-'; '--';':'};
@@ -57,40 +67,33 @@ try
         saveInfo.info = 'healthy';
         
         %%
-        if isempty(updateFigure.Children) || (~isempty((get(get(findall(updateFigure,'type','axes','Tag','cost'),'Children'),'Data'))) ...
-               && min(get(get(findall(updateFigure,'type','axes','Tag','cost'),'Children'),'Data')) >= data.cost.data  )
-            minimumCost = true;
-        else 
-            minimumCost = false;
-        end
-            
-        for i = 1:numOfData
-            %     fieldnameSelect = structnames(contains(structnames,updateFigure.Children(i).Tag));
-            %     set(updateFigure, 'currentaxes', updateFigure.Children(i));
-            if ~isempty(updateFigure.Children) && length(findall(updateFigure,'type','axes')) == numOfData
-                axesChildren = findall(updateFigure,'type','axes');
-                updateProgressPlot(axesChildren(i),data.(axesChildren(i).Tag),[],minimumCost)
-            else
-                ax = subplot(ceil(numOfData/4),4,i,axes(updateFigure)); % Select correct axis
-                updateProgressPlot(ax,data.(dataFieldnames{i}),dataFieldnames{i},minimumCost) % update axis with new data
-            end
-            
-        end
+%         for i = 1:numOfData
+%             %     fieldnameSelect = structnames(contains(structnames,updateFigure.Children(i).Tag));
+%             %     set(updateFigure, 'currentaxes', updateFigure.Children(i));
+%             if ~isempty(updateFigure.Children) && length(findall(updateFigure,'type','axes')) == numOfData
+%                 axesChildren = findall(updateFigure,'type','axes');
+%                 updateProgressPlot(axesChildren(i),data.(axesChildren(i).Tag),[],b_minCost)
+%             else
+%                 ax = subplot(ceil(numOfData/4),4,i,axes(updateFigure)); % Select correct axis
+%                 updateProgressPlot(ax,data.(dataFieldnames{i}),dataFieldnames{i},b_minCost) % update axis with new data
+%             end
+%             
+%         end
         %         drawnow;
-        if minimumCost
+        if b_minCost
 
             warning('off');
                
             clf(gaitKinematics);
-            sgtitle(gaitKinematics,['Gait kinematics for cost of ',num2str(round(data.cost.data,1)),', with $v_{mean}$ = ', num2str(round(data.vMean.data,1)),'m/s']);
+            sgtitle(gaitKinematics,['Gait kinematics for cost of ',num2str(round(data.cost.data,1)),', with $v_{mean}$ = ', num2str(round(data.vMean.data,1)),'m/s','. $\tau_{stop}$ = ', num2str(data.sumTstop.data)]);
             plotAngularData(data.kinematics.angularData,data.kinematics.GaitPhaseData,plotInfo,GaitInfo,saveInfo,gaitKinematics);
                            
             clf(musclesStimulation);
-            sgtitle(musclesStimulation,['Muscle stimulation levels for cost of ',num2str(round(data.cost.data,1)),', with $v_{mean}$ = ', num2str(round(data.vMean.data,1)),'m/s']);
+            sgtitle(musclesStimulation,['Muscle stimulation levels for cost of ',num2str(round(data.cost.data,1)),', with $v_{mean}$ = ', num2str(round(data.vMean.data,1)),'m/s','. $\tau_{stop}$ = ', num2str(data.sumTstop.data)]);
             plotMusculoData(data.kinematics.musculoData,plotInfo,GaitInfo,saveInfo,musclesStimulation);
                             
             clf(GRFData);
-            sgtitle(GRFData,['Ground reaction forces for cost of ',num2str(round(data.cost.data,1)),', with $v_{mean}$ = ', num2str(round(data.vMean.data,1)),'m/s']);
+            sgtitle(GRFData,['Ground reaction forces for cost of ',num2str(round(data.cost.data,1)),', with $v_{mean}$ = ', num2str(round(data.vMean.data,1)),'m/s','. $\tau_{stop}$ = ', num2str(data.sumTstop.data)]);
             plotGRF(data.kinematics.GRFData,plotInfo,GaitInfo,saveInfo,GRFData);
             warning('on');
         end

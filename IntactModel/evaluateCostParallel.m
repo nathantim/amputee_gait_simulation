@@ -1,7 +1,7 @@
 function [cost, dataStruct] =evaluateCostParallel(paramStruct,Gains)
 dataStruct = struct;
 if nargin < 2
-    Gains = nan(17,1);
+    Gains = nan(30,1);
 end
 % OptimParams;
 model = 'NeuromuscularModel';

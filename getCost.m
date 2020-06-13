@@ -35,7 +35,7 @@ try
     for i = 1:length(muscle_exp_models)
         effort_costs(i).name = (muscle_exp_models{i});
         effort_costs(i).metabolicEnergy = metabolicEnergy(:,i);
-        effort_costs(i).costOfTransport = (metabolicEnergy(:,i) + .01*sumOfStopTorques)/(HATPos*amputeeMass);
+        effort_costs(i).costOfTransport = (metabolicEnergy(:,i))/(HATPos*amputeeMass);
     end
     
     % Decide which to use for optimization
@@ -64,8 +64,10 @@ try
     
     %%
     %     cost = 100000*timeCost  + 1000*(velCost + 0*distCost) + 0.1*costOfTransport;
-    cost = 100000*timeCost  + 1000*(velCost) + 100*costOfTransportForOpt;
-    
+%     cost = 100000*timeCost  + 1000*(velCost) + 100*costOfTransportForOpt + .01*sumOfStopTorques;
+%11-6-2020_19:49
+        cost = 100000*timeCost  + 100*(velCost) + 10*costOfTransportForOpt + 100000*sumOfStopTorques;
+
     if length(cost) ~= 1
         disp(cost);
         warning('Size cost is not 1');

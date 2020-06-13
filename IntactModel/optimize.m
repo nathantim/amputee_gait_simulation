@@ -11,7 +11,8 @@ clear all; close all; clc;
 % initial_gains_filename = ('Results/Flat/optandGH_diffswing.mat');
 % initial_gains_filename = ('Results/Flat/optdiffswing.mat');
 % initial_gains_filename = ('Results/Flat/optandGeyerHerrInit.mat');
-initial_gains_filename = 'Results/Flat/optUmbstanceswing_nosymm_wmanualtweek.mat';
+% initial_gains_filename = 'Results/Flat/optUmb10stanceswing1_3ms_prestim.mat';
+initial_gains_filename = 'Results/Flat/optUmb10stanceswing1_3ms_prestim_lesshyper.mat';
 initial_gains_file = load(initial_gains_filename);
 
 %%
@@ -41,7 +42,7 @@ sigma0 = 1/8;
 
 opts = cmaes;
 %opts.PopSize = numvars;
-opts.Resume = 'yes';
+opts.Resume = 'no';
 opts.MaxIter = 2000;
 % opts.StopFitness = -inf;
 opts.StopFitness = 0;
@@ -54,7 +55,7 @@ if (min_velocity == target_velocity && max_velocity == target_velocity)
     opts.TargetVel = target_velocity;
 end
 opts.UserData = char(strcat("Gains filename: ", initial_gains_filename));
-opts.SaveFilename = 'vcmaes_energy_ha_swing_Umb10_notargetangle_1_3ms.mat';
+opts.SaveFilename = 'vcmaes_energy_ha_swing_Umb10_notargetangle_1_3ms_prestim_diffcostf_morenhyper_dS.mat';
 
 %% run cmaes
 [xmin, fmin, counteval, stopflag, out, bestever] = cmaes(optfunc, x0, sigma0, opts)

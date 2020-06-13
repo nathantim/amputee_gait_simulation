@@ -29,6 +29,7 @@ ShortDelay = 0.005; % hip joint muscles [s]
 % hip flexors group (self, L+)
 GainHFL    = 0.35/FmaxHFL; %[1/N]
 PreStimHFL = 0.05; %[]
+PreStimHFLswing = 0.05; %[]
 LceOffsetHFL = 0.6; %[loptTA]
 
 % hip flexors group on hamstring (self, L+)
@@ -36,22 +37,28 @@ GainHAMHFL    = 4/FmaxHFL; %[1/N]
 
 % hamstring group (self, F+)
 GainHAM    = 0.30/FmaxHAM; %[1/N]
-PreStimHAM = 0.01; %[]
-LceOffsetHAM = 0.85; %[loptTA]
 GainHAMswing = GainHAM;
+PreStimHAM = 0.01; %[]
+PreStimHAMswing = 0.01; %[]
+LceOffsetHAM = 0.85; %[loptTA]
+
 
 % gluteus group (self, F+)
 GainGLU    = 0.5/FmaxGLU; %[1/N]
-PreStimGLU = 0.01; %[]
 GainGLUswing = GainGLU;
+PreStimGLU = 0.01; %[]
+PreStimGLUswing = 0.01; %[]
 
 % soleus (self, F+)
 GainSOL    = 1.2/FmaxSOL; %[1/N]
 PreStimSOL = 0.01; %[]
+PreStimSOLswing = 0.01; %[]
+
 
 % soleus on tibialis anterior (F-)
 GainSOLTA = 0.4/FmaxSOL; %[1/N]
 PreStimTA = 0.01; %[]
+PreStimTAswing = 0.01; %[]
 
 % tibialis (self, L+, stance and swing)
 GainTA      = 1.1; %[]
@@ -61,10 +68,12 @@ GainTAswing      = 1.1; %[]
 % gastrocnemius (self, F+)
 GainGAS     = 1.1/FmaxGAS; %[1/N] 
 PreStimGAS  = 0.01;  %[]
+PreStimGASswing  = 0.01;  %[]
 
 % vasti group (self, F+)
 GainVAS    = 1.5/FmaxVAS; %[1/N]
 PreStimVAS = 0.08; %[]
+PreStimVASswing = 0.08; %[]
 
 % knee overextension on vasti (Phi-, directional)
 GainKneeOverExt = 2;%
