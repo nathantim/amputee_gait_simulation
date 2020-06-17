@@ -43,16 +43,16 @@ warning('on');
 %%
 [cost, dataStruct] = getCost(model,Gains,time,metabolicEnergy,sumOfIdealTorques,sumOfStopTorques,HATPos,swingStateCounts,stepVelocities,stepTimes,stepLengths,1);
 %%
-kinematics.angularData = angularData;
-kinematics.GaitPhaseData = GaitPhaseData;
-kinematics.time = time;
-kinematics.stepTimes = stepTimes;
-kinematics.musculoData = musculoData;
-kinematics.GRFData = GRFData;
-dataStruct.kinematics = kinematics;
-save('dataStruct.mat','dataStruct')
-
-%%
+% kinematics.angularData = angularData;
+% kinematics.GaitPhaseData = GaitPhaseData;
+% kinematics.time = time;
+% kinematics.stepTimes = stepTimes;
+% kinematics.musculoData = musculoData;
+% kinematics.GRFData = GRFData;
+% dataStruct.kinematics = kinematics;
+% save('dataStruct.mat','dataStruct')
+% 
+% %%
 set(0, 'DefaultFigureHitTest','on');
 set(0, 'DefaultAxesHitTest','on','DefaultAxesPickableParts','all');
 set(0, 'DefaultLineHitTest','on','DefaultLinePickableParts','all');

@@ -38,6 +38,7 @@ PreStimGLUswing   = Gains(27);
 PreStimHAM        = Gains(28);
 PreStimHAMswing   = Gains(29);
 PreStimHFLswing   = Gains(30);
+DeltaS            = Gains(31);
 % hipDGain          = Gains(12);
 % hipPGain          = Gains(13);
 % kneeExtendGain    = Gains(14);

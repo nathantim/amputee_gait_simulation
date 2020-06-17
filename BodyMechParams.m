@@ -92,7 +92,7 @@ v_max_pressure = 0.5; %[m/s]
 phiAnkleLowLimit =  -20*pi/180; %[rad]
 phiAnkleUpLimit  = 40*pi/180; %[rad]
 
-phiKneeUpLimit  = 5*pi/180; %[rad]
+phiKneeUpLimit  = 3*pi/180; %[rad]
 
 phiHipUpLimit  = 50*pi/180; %[rad]
 

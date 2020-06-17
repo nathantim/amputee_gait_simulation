@@ -66,7 +66,7 @@ try
     %     cost = 100000*timeCost  + 1000*(velCost + 0*distCost) + 0.1*costOfTransport;
 %     cost = 100000*timeCost  + 1000*(velCost) + 100*costOfTransportForOpt + .01*sumOfStopTorques;
 %11-6-2020_19:49
-        cost = 100000*timeCost  + 100*(velCost) + 10*costOfTransportForOpt + 100000*sumOfStopTorques;
+        cost = 100000*timeCost  + 100*(velCost) + 10*costOfTransportForOpt + 1E7*sumOfStopTorques;
 
     if length(cost) ~= 1
         disp(cost);

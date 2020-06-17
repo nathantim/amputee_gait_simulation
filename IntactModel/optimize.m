@@ -12,7 +12,11 @@ clear all; close all; clc;
 % initial_gains_filename = ('Results/Flat/optdiffswing.mat');
 % initial_gains_filename = ('Results/Flat/optandGeyerHerrInit.mat');
 % initial_gains_filename = 'Results/Flat/optUmb10stanceswing1_3ms_prestim.mat';
-initial_gains_filename = 'Results/Flat/optUmb10stanceswing1_3ms_prestim_lesshyper.mat';
+% initial_gains_filename = 'Results/Flat/optUmb10stanceswing1_3ms_prestim_lesshyper_dSopt.mat';
+% initial_gains_filename = 'Results/Flat/optUmb10kneelim3.mat';
+% initial_gains_filename = 'Results/Flat/optwoptUmb10_1_3ms.mat';
+% initial_gains_filename = 'Results/Flat/optwoptUmb10_swingstancesame_1_3ms.mat';
+initial_gains_filename = 'Results/Flat/Umb10_notgtangle_1_3ms_kneelim3.mat';
 initial_gains_file = load(initial_gains_filename);
 
 %%
@@ -39,6 +43,7 @@ rtp = Simulink.BlockDiagram.buildRapidAcceleratorTarget(model);
 numvars = length(InitialGuess);
 x0 = zeros(numvars,1);
 sigma0 = 1/8;
+% sigma0 = 1/3;
 
 opts = cmaes;
 %opts.PopSize = numvars;
@@ -47,7 +52,7 @@ opts.MaxIter = 2000;
 % opts.StopFitness = -inf;
 opts.StopFitness = 0;
 opts.DispModulo = 1;
-opts.TolX = 1e-2;
+opts.TolX = 1e-3;
 opts.TolFun = 1e-2;
 opts.EvalParallel = 'yes';
 opts.LogPlot = 'off';
@@ -55,7 +60,7 @@ if (min_velocity == target_velocity && max_velocity == target_velocity)
     opts.TargetVel = target_velocity;
 end
 opts.UserData = char(strcat("Gains filename: ", initial_gains_filename));
-opts.SaveFilename = 'vcmaes_energy_ha_swing_Umb10_notargetangle_1_3ms_prestim_diffcostf_morenhyper_dS.mat';
+opts.SaveFilename = 'vcmaes_Umb10_notgtangle_1_3ms_prestim_kneelim3_real.mat';
 
 %% run cmaes
 [xmin, fmin, counteval, stopflag, out, bestever] = cmaes(optfunc, x0, sigma0, opts)

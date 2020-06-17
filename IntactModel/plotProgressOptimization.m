@@ -37,18 +37,19 @@ if isempty(GRFData) || ~isvalid(GRFData)
     GRFData.Name = 'Ground reaction forces';
 end
 
-if isempty(minCost) || data.cost.data < minCost
-    minCost = data.cost.data;
-    b_minCost = true;
-else
-    b_minCost = false;
-end
+
 
 try
     dataFieldnames = fieldnames(data);
 %     numOfData = length(dataFieldnames)-1;
     
     if ~isempty(dataFieldnames) && length(dataFieldnames)>4
+        if isempty(minCost) || data.cost.data < minCost
+            minCost = data.cost.data;
+            b_minCost = true;
+        else
+            b_minCost = false;
+        end
         %%
         plotInfo.plotProp = {'LineStyle','Color','LineWidth'};
         plotInfo.lineVec = {'-'; '--';':'};
