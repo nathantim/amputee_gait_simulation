@@ -31,6 +31,8 @@ footBallToHeelDist = footLength; %[m]
 footMass  = 1.25; %[kg] 1.25
 footInertia = 0.005; %[kg*m^2] foot inertia about y-axis with (harmut's value)
 %footInertia = 0.0112; %[kg*m^2] foot inertia about y-axis from Winter Data
+footInertia_x   = 0.0007;
+footInertia_y   = 0.005;
 
 % -------------------------
 % 1.2 General Shank Segment
@@ -42,19 +44,22 @@ shankCenterToCGDist = 0.3 - shankAnkleToCenterDist; %[m]
 shankAnkleToKneeDist = shankLength; %[m]
 shankMass = 3.5; %[kg]
 shankInertia = 0.05; %[kg*m^2] shank inertia with respect to axis ankle-CG-knee (scaled from other papers)
-
+shankInertia_x   = 0.003;
+shankInertia_y   = 0.05;
 % -------------------------
 % 1.3 General Thigh Segment
 % -------------------------
 
 % total thigh length
 thighLength = 0.5; %[m]
+thighLateralOffset = 0.1;   %[m]
 thighKneeToCenterDist = thighLength/2; %[m]
 thighCenterToCGDist = 0.3 - thighKneeToCenterDist; %[m] 
 thighKneeToHipDist = thighLength; %[m]
 thighMass  = 8.5; %[kg]
 thighInertia = 0.15; %[kg*m^2]
-
+thighInertia_x   = 0.03;
+thighInertia_y   = 0.15;
 % -----------------------------------------
 % 1.4 General Head-Arms-Trunk (HAT) Segment
 % -----------------------------------------
@@ -68,6 +73,8 @@ hatLeftHipToCenterDistWidth = .15; %[m]
 hatCenterToCGDist = 0.35 - hatHipToCenterDistLen; %[m]
 hatMass = 53.5; %[kg]
 hatInertia = 3; %[kg*m^2] 
+hatInertia_x = 1.0;
+hatInertia_y = 4.0;
 
 totalMass = 2*(footMass+shankMass+thighMass)+hatMass;
 % --------------------------------
@@ -75,14 +82,33 @@ totalMass = 2*(footMass+shankMass+thighMass)+hatMass;
 % --------------------------------
 
 % reference compression corresponding to steady-state with HAT mass
-DeltaThRef = 2e-3; %[m]
-%DeltaThRef = 5e-3; %[m]
+% DeltaThRef = 2e-3; %[m]
+DeltaThRef = 5e-3; %[m]
 
 % interaction stiffness
 k_pressure = hatMass * g / DeltaThRef; %[N/m]
 
 % max relaxation speed (one side)
 v_max_pressure = 0.5; %[m/s]
+
+% -------------------------------------
+% modifications for adding ankle height
+% -------------------------------------
+ankle_height = 0.08;
+D1Gy_F = ankle_height*(footCenterToCGDist + footBallToCenterDist)/footBallToAnkleDist;
+
+% shank
+shankLength = shankLength - ankle_height/2;
+D1G_S = D1G_S - ankle_height/4;
+(shankCenterToCGDist + shankAnkleToCenterDist) = 0.3 - shankAnkleToCenterDist; %[m]
+
+% thigh
+D12_T = D12_T - ankle_height/2; %[m]
+D1G_T = D1G_T - ankle_height/4; %[m]
+
+leg_l = [(thighLength - ankle_height/2) (shankLength - ankle_height/2)];
+leg_0 = sum(leg_l); % [m] full leg length (from hip to ankle)
+
 
 % ---------------------
 % 1.6 Joint Soft Limits
@@ -92,7 +118,7 @@ v_max_pressure = 0.5; %[m/s]
 phiAnkleLowLimit =  -20*pi/180; %[rad]
 phiAnkleUpLimit  = 40*pi/180; %[rad]
 
-phiKneeUpLimit  = 3*pi/180; %[rad]
+phiKneeUpLimit  = 5*pi/180; %[rad]
 
 phiHipUpLimit  = 50*pi/180; %[rad]
 
@@ -116,54 +142,109 @@ w_max_jointstop = 1 * pi/180; %[rad/s]
 
 %%% ankle joint%%%
 % SOLeus attachement
-rSOL       =       0.05; % [m] radius 
-phimaxSOL  = 20*pi/180; % [rad] angle of maximum lever contribution
-phirefSOL  =  -10*pi/180; % [rad] reference angle at which MTU length equals sum of lopt and lslack
-rhoSOL     =        0.5; %        
+% rSOL       =       0.05; % [m] radius 
+% phimaxSOL  = 20*pi/180; % [rad] angle of maximum lever contribution
+% phirefSOL  =  -10*pi/180; % [rad] reference angle at which MTU length equals sum of lopt and lslack
+% rhoSOL     =        0.5; %        
+
+rSOLmax     = 0.06;         % [m]   maximum lever contribution
+rSOLmin     = 0.02;         % [m]   minimum lever contribution
+phimaxSOL   = 10*pi/180;   % [rad] angle of maximum lever contribution
+phiminSOL   = 90*pi/180;   % [rad] angle of minimum lever contribution
+phirefSOL   =  0*pi/180;   % [rad] reference angle at which MTU length equals 
+rhoSOL      = 0.5;          %       sum of lopt and lslack 
+phiScaleSOL = acos(rSOLmin/rSOLmax)/(phiminSOL-phimaxSOL);
+
 
 % Tibialis Anterior attachement
-rTA       =        0.04; % [m]   constant lever contribution 
-phimaxTA   =  -10*pi/180; % [rad] angle of maximum lever contribution
-phirefTA   = 20*pi/180; % [rad] reference angle at which MTU length equals 
-rhoTA      =        0.7; 
+% rTA       =        0.04; % [m]   constant lever contribution 
+% phimaxTA   =  -10*pi/180; % [rad] angle of maximum lever contribution
+% phirefTA   = 20*pi/180; % [rad] reference angle at which MTU length equals 
+% rhoTA      =        0.7; 
 
-% GAStrocnemius attachement 
-rGASa      =       0.05; % [m]   constant lever contribution 
-phimaxGASa = 20*pi/180; % [rad] angle of maximum lever contribution
-phirefGASa =  -10*pi/180; % [rad] reference angle at which MTU length equals 
-rhoGASa    =        0.7; %       sum of lopt and lslack 
+rTAmax      = 0.04;         % [m]   maximum lever contribution
+rTAmin      = 0.01;         % [m]   minimum lever contribution
+phimaxTA    =  -10*pi/180;   % [rad] angle of maximum lever contribution
+phiminTA    = 90*pi/180;   % [rad] angle of minimum lever contribution
+phirefTA    = 20*pi/180;   % [rad] reference angle at which MTU length equals 
+phiScaleTA  = acos(rTAmin/rTAmax)/(phiminTA-phimaxTA);
+rhoTA       = 0.7; 
+
+% GAStrocnemius attachement  (ankle joint)
+% rGASa      =       0.05; % [m]   constant lever contribution 
+% phimaxGASa = 20*pi/180; % [rad] angle of maximum lever contribution
+% phirefGASa =  -10*pi/180; % [rad] reference angle at which MTU length equals 
+% rhoGASa    =        0.7; %       sum of lopt and lslack 
+
+rGASamax    = 0.06;         % [m]   maximum lever contribution
+rGASamin    = 0.02;         % [m]   minimum lever contribution
+phimaxGASa  = 10*pi/180;  	% [rad] angle of maximum lever contribution
+phiminGASa  = 90*pi/180; 	% [rad] angle of minimum lever contribution
+phirefGASa  =  -10*pi/180;  	% [rad] reference angle at which MTU length equals 
+rhoGASa     =        0.7; 	%       sum of lopt and lslack 
+phiScaleGASa  = acos(rGASamin/rGASamax)/(phiminGASa-phimaxGASa);
 
 % GAStrocnemius attachement (knee joint)
-rGASk      =       0.05; % [m]   constant lever contribution 
-phimaxGASk = 40*pi/180; % [rad] angle of maximum lever contribution
-phirefGASk = 15*pi/180; % [rad] reference angle at which MTU length equals 
-rhoGASk    =        0.7; %       sum of lopt and lslack 
+% rGASk      =       0.05; % [m]   constant lever contribution 
+% phimaxGASk = 40*pi/180; % [rad] angle of maximum lever contribution
+% phirefGASk = 15*pi/180; % [rad] reference angle at which MTU length equals 
+% rhoGASk    =        0.7; %       sum of lopt and lslack 
+
+rGASkmax    = 0.05;         % [m]   maximum lever contribution
+rGASkmin    = 0.02;         % [m]   minimum lever contribution
+phimaxGASk  = 40*pi/180;   % [rad] angle of maximum lever contribution
+phiminGASk  =  135*pi/180;   % [rad] angle of minimum lever contribution
+phirefGASk  = 15*pi/180;   % [rad] reference angle at which MTU length equals 
+rhoGASk     = 0.7;          %       sum of lopt and lslack 
+phiScaleGASk = acos(rGASkmin/rGASkmax)/(phiminGASk-phimaxGASk);
 
 % VAStus group attachement
-rVAS       =       0.06; % [m]   constant lever contribution 
-phimaxVAS  = 15*pi/180; % [rad] angle of maximum lever contribution
-phirefVAS  = 55*pi/180; % [rad] reference angle at which MTU length equals 
-rhoVAS     =        0.7; %       sum of lopt and lslack 
-                       
+% rVAS       =       0.06; % [m]   constant lever contribution 
+% phimaxVAS  = 15*pi/180; % [rad] angle of maximum lever contribution
+% phirefVAS  = 55*pi/180; % [rad] reference angle at which MTU length equals 
+% rhoVAS     =        0.7; %       sum of lopt and lslack 
+
+rVASmax     = 0.06;         % [m]   maximum lever contribution
+rVASmin     = 0.04;         % [m]   minimum lever contribution
+phimaxVAS   = 15*pi/180;   % [rad] angle of maximum lever contribution
+phiminVAS   = 135*pi/180;   % [rad] angle of minimum lever contribution
+phirefVAS   = 60*pi/180;   % [rad] reference angle at which MTU length equals 
+rhoVAS      = 0.6;          %       sum of lopt and lslack
+phiScaleVAS = acos(rVASmin/rVASmax)/(phiminVAS-phimaxVAS);
+
 % HAMstring group attachement (knee)
 rHAMk      =       0.05; % [m]   constant lever contribution 
 phimaxHAMk = 0*pi/180; % [rad] angle of maximum lever contribution
 phirefHAMk = 0*pi/180; % [rad] reference angle at which MTU length equals 
-rhoHAMk    =        0.7; %       sum of lopt and lslack 
+rhoHAMk    =        0.5; %       sum of lopt and lslack 
                          
 % HAMstring group attachement (hip)
 rHAMh      =       0.08; % [m]   constant lever contribution 
-phirefHAMh = -25*pi/180; % [rad] reference angle at which MTU length equals 
-rhoHAMh    =        0.7; %       sum of lopt and lslack 
+phirefHAMh = -30*pi/180; % [rad] reference angle at which MTU length equals 
+rhoHAMh    =        0.5; %       sum of lopt and lslack 
+
+% RF group attachement (hip)
+rRFh      =       0.08; % [m]   constant lever contribution 
+phirefRFh = 10*pi/180; % [rad] reference angle at which MTU length equals 
+rhoRFh    =        0.3; %       sum of lopt and lslack 
+
+% RF group attachement (knee)
+rRFkmax     = 0.06;         % [m]   maximum lever contribution
+rRFkmin     = 0.04;         % [m]   minimum lever contribution
+phimaxRFk   = 15*pi/180;   % [rad] angle of maximum lever contribution
+phiminRFk   =  135*pi/180;   % [rad] angle of minimum lever contribution
+phirefRFk   = 55*pi/180;   % [rad] reference angle at which MTU length equals 
+rhoRFk      = 0.5;          %       sum of lopt and lslack 
+phiScaleRFk = acos(rRFkmin/rRFkmax)/(phiminRFk-phimaxRFk);
 
 % GLUtei group attachement
-rGLU       =       0.10; % [m]   constant lever contribution 
-phirefGLU  = -30*pi/180; % [rad] reference angle at which MTU length equals 
+rGLU       =       0.08; % [m]   constant lever contribution 
+phirefGLU  = -60*pi/180; % [rad] reference angle at which MTU length equals 
 rhoGLU     =        0.5; %       sum of lopt and lslack 
                          
-% Hip FLexor group attachement
-rHFL       =       0.10; % [m]   constant lever contribution 
-phirefHFL  = 0*pi/180; % [rad] reference angle at which MTU length equals 
+% Hip Flexor group attachement
+rHFL       =       0.08; % [m]   constant lever contribution 
+phirefHFL  = -20*pi/180; % [rad] reference angle at which MTU length equals 
 rhoHFL     =        0.5; %       sum of lopt and lslack 
 
 % Hip abductor (HAB)
@@ -175,6 +256,12 @@ rhoHAB    =       0.7; %       sum of lopt and lslack
 rHAD      =      0.03; % [m]   constant lever contribution 
 phirefHAD = 15*pi/180; % [rad] reference angle at which MTU length equals 
 rhoHAD    =         1; %       sum of lopt and lslack 
+
+% BFSH group attachement
+rBFSH    	= 0.04;         % [m]   constant lever contribution 
+phirefBFSH 	= 20*pi/180;   % [rad] reference angle at which MTU length equals 
+rhoBFSH    	= 0.7;          %       sum of lopt and lslack
+
 
 % ************************* %
 % 3. BIPED MUSCLE MECHANICS %
@@ -263,6 +350,19 @@ FmaxHFL   = 2000; % maximum isometric force [N]
 loptHFL   = 0.11; % optimum fiber length CE [m]
 vmaxHFL   =   12; % maximum contraction velocity [lopt/s]
 lslackHFL = 0.10; % tendon slack length [m]
+
+% rectus femoris muscles
+FmaxRF   = 1200; % %850 maximum isometric force [N]
+loptRF   = 0.08; % optimum fiber length CE [m]
+vmaxRF   =   12; % maximum contraction velocity [lopt/s]
+lslackRF = 0.35; % tendon slack length [m]
+
+
+% BFSH
+FmaxBFSH	=  350; % maximum isometric force [N]
+loptBFSH    = 0.12; % optimum fiber length CE [m]
+vmaxBFSH    =   12; %6 % maximum contraction velocity [lopt/s]
+lslackBFSH  = 0.10; % tendon slack length [m]
 
 %Muscle type Percentages 
 %(http://sikhinspiredfitness.forums-free.com/muscle-fibre-ratios-t156.html)
