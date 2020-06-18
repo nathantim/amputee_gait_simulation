@@ -24,10 +24,14 @@ Gains = InitialGuessFile.Gains.*exp(bestever.x);
 % Gains(1) = 0.8*Gains(1);
 % Gains(5) = 0.8*Gains(5);
 % Gains(4) = 4*Gains(4);
-% Gains(8) = 0.3*Gains(8);
+% Gains(8) = 2*Gains(8);
 % Gains(3) = 2*Gains(3);
 % Gains(3) = 20*Gains(3);
-% Gains(25) = 0.04;
+% Gains(15) = 0.9*Gains(15);
+Gains(10) = 0.75*Gains(10);
+% Gains(13) = 5*Gains(13);
+Gains(15) = 0.75*Gains(15);
+Gains(16) = 0.75*Gains(16);
 %%
 assignGains;
 dt_visual = 1/30;

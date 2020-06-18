@@ -16,7 +16,7 @@ clear all; close all; clc;
 % initial_gains_filename = 'Results/Flat/optUmb10kneelim3.mat';
 % initial_gains_filename = 'Results/Flat/optwoptUmb10_1_3ms.mat';
 % initial_gains_filename = 'Results/Flat/optwoptUmb10_swingstancesame_1_3ms.mat';
-initial_gains_filename = 'Results/Flat/Umb10_notgtangle_1_3ms_kneelim3.mat';
+initial_gains_filename = 'Results/Flat/Umb10_notgtangle_1_3ms_kneelim3_real.mat';
 initial_gains_file = load(initial_gains_filename);
 
 %%
