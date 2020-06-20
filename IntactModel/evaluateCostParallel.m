@@ -20,10 +20,10 @@ end
 
 time = get(simout,'time');
 metabolicEnergy = get(simout,'metabolicEnergy');
-sumOfIdealTorques = get(simout,'sumOfIdealTorques');
+% sumOfIdealTorques = get(simout,'sumOfIdealTorques');
 sumOfStopTorques = get(simout,'sumOfStopTorques');
 HATPos = get(simout,'HATPos');
-swingStateCounts = get(simout, 'swingStateCounts');
+% swingStateCounts = get(simout, 'swingStateCounts');
 stepVelocities = get(simout, 'stepVelocities');
 stepTimes = get(simout, 'stepTimes');
 stepLengths = get(simout, 'stepLengths');
@@ -51,7 +51,7 @@ kinematics.GRFData = GRFData;
 %         cost = nan;
 %     end
 try
-    [cost, dataStruct] = getCost(model,Gains,time,metabolicEnergy,sumOfIdealTorques,sumOfStopTorques,HATPos,swingStateCounts,stepVelocities,stepTimes,stepLengths,1);
+    [cost, dataStruct] = getCost(model,Gains,time,metabolicEnergy,sumOfStopTorques,HATPos,stepVelocities,stepTimes,stepLengths,1);
     dataStruct.kinematics = kinematics;
 catch ME
     save('error_getCost.mat');

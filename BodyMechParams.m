@@ -95,16 +95,6 @@ v_max_pressure = 0.5; %[m/s]
 % modifications for adding ankle height
 % -------------------------------------
 ankle_height = 0.08;
-D1Gy_F = ankle_height*(footCenterToCGDist + footBallToCenterDist)/footBallToAnkleDist;
-
-% shank
-shankLength = shankLength - ankle_height/2;
-D1G_S = D1G_S - ankle_height/4;
-(shankCenterToCGDist + shankAnkleToCenterDist) = 0.3 - shankAnkleToCenterDist; %[m]
-
-% thigh
-D12_T = D12_T - ankle_height/2; %[m]
-D1G_T = D1G_T - ankle_height/4; %[m]
 
 leg_l = [(thighLength - ankle_height/2) (shankLength - ankle_height/2)];
 leg_0 = sum(leg_l); % [m] full leg length (from hip to ankle)
@@ -385,6 +375,11 @@ ST_HAB=15;
 FT_HAD=58;
 ST_HAD=42;
 
+FT_BFSH=65.6;
+ST_BFSH=35.4;
+FT_RF=60.6;
+ST_RF=39.4;
+warning('Unknown muscle composition BFSH, RF');
 % *************************** %
 % 4. Ground Interaction Model %
 % *************************** %

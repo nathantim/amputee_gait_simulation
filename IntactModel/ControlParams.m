@@ -9,23 +9,25 @@
 termination_height = 0.5;
 
 %% %
-deltaLegAngleThr = 8*pi/180; %[rad]
-legLengthClr = 0.8328; %[m]
-legAngleSpeedMax = 10; %[rad/s]
 
-hipPGain = 110; %[Nm/rad]
-hipDGain = 8.5; %[Nms/rad]
-legAngleFilter = 100; %[1/s]
-kneeFlexGain   = 13; %[Nms/rad]
-kneeHoldGain1  = 5.5; %[Nms/rad]
-kneeHoldGain   = 5.5; %[Nms/rad]
-kneeHoldGain2  = 5.5; %[Nms/rad]
-kneeStopGain   = 250; %[Nm/rad]
-kneeExtendGain = 200; %[Nm/rad]
+% legAngleSpeedMax = 10; %[rad/s]
 
-simbiconLegAngle0 = 62.1933*pi/180;
-simbiconGainD = 0.0253*pi/180; %[rad/m]
-simbiconGainV = 0.0110*pi/180; %[rad s/m]
+% hipPGain = 110; %[Nm/rad]
+% hipDGain = 8.5; %[Nms/rad]
+% legAngleFilter = 100; %[1/s]
+% kneeFlexGain   = 13; %[Nms/rad]
+% kneeHoldGain1  = 5.5; %[Nms/rad]
+% kneeHoldGain   = 5.5; %[Nms/rad]
+% kneeHoldGain2  = 5.5; %[Nms/rad]
+% kneeStopGain   = 250; %[Nm/rad]
+% kneeExtendGain = 200; %[Nm/rad]
+
+% Foot placement
+legLengthClr = 0.85; %[m]
+simbiconLegAngle0 = 70*pi/180;
+simbiconGainD = 5*pi/180; %[rad/m]
+simbiconGainV = 5*pi/180; %[rad s/m]
+
 %% %
 
 % ************************************ %
@@ -62,8 +64,8 @@ PreStimRFst     = 0.01; %[]
 PreStimVASst    = 0.08; %[]
 PreStimBFSHst   = 0.02; %[]
 PreStimGASst    = 0.01;  %[]
-PreStimTAst     = 0.01; %[]
 PreStimSOLst    = 0.01; %[]
+PreStimTAst     = 0.01; %[]
 
 % M1: realize compliant leg
 GainFGLUst   = 1.0/FmaxGLU; %[1/N]
@@ -72,24 +74,24 @@ GainFSOLst   = 1.2/FmaxSOL; %[1/N] M1: realize compliant leg
   
 % M2: prevent knee overextension
 GainFHAMst          = 1.0/FmaxHAM;  %[1/N] F gain
-LceOffsetBFSHVASst  = 2.3951;       %[loptBFSH] 
+LceOffsetBFSHVASst  = 2;            %[loptBFSH] 
 GainLBFSHVASst      = 0.0680;       % VAS gain on BFSH L  
-LceOffsetBFSHst     = 1.2231;       %[loptBFSH] 
-GainLBFSHst         = 1.5/FmaxBFSH; %[1/N] L gain on self
+LceOffsetBFSHst     = 1.1;          %[loptBFSH] 
+GainLBFSHst         = 2;            %[1/N] L gain on self
 GainFGASst          = 1.22/FmaxGAS; %[1/N]  F gain
 
 % M3: balance trunk
-GainPhiHATHFLst     = 0.1504; % Gain with HAT pitch
-GainDphiHATHFLst    = 0.1709; % Gain with HAT pitch velocity
-GainPhiHATGLUst     = 0.4729; % Gain with HAT pitch
-GainDphiHATGLUst    = 0.1465; % Gain with HAT pitch velocity
-GainSGLUHAMst       = 1.2707; % Gain with GLU stim
+GainPhiHATHFLst     = 1;    % Gain with HAT pitch
+GainDphiHATHFLst    = 0.3;  % Gain with HAT pitch velocity
+GainPhiHATGLUst     = 0.5;  % Gain with HAT pitch
+GainDphiHATGLUst    = 0.1;  % Gain with HAT pitch velocity
+GainSGLUHAMst       = 1;    % Gain with GLU stim
 
 % M4: compensate swing leg
-GainSGLUcHFLst    = 0.0541;
-GainSHAMcHFLst    = 0.0121;
-GainSHFLcGLUst    = 0.0225;
-GainSRFcGLUst     = 0.0546;
+GainSGLUcHFLst    = 0.1;
+GainSHAMcHFLst    = 0.1;
+GainSHFLcGLUst    = 0.1;
+GainSRFcGLUst     = 0.1;
 
 % M5: flex ankle
 LceOffsetTAst   = 1-0.65*w; %[loptTA]
@@ -97,91 +99,8 @@ GainLTAst       = 1.1;
 GainFSOLTAst    = 0.4/FmaxSOL;
 
 
+phiHATref      = 1*pi/180; %[rad] song
 
-% PreStimBFSHsw = 0.02; %[]
-% 
-% % hip flexors group (self, L+)
-% GainHFL    = 0.35/FmaxHFL; %[1/N]
-% 
-% PreStimHFLsw = 0.05; %[]
-% LceOffsetHFL = 0.6; %[loptTA]
-% 
-% % hip flexors group on hamstring (self, L+)
-% GainHAMHFL    = 4/FmaxHFL; %[1/N]
-% 
-% % hamstring group (self, F+)
-% GainHAMsw    = GainHAM;
-% 
-% PreStimHAMsw = 0.01; %[]
-% LceOffsetHAM = 0.85; %[loptTA]
-% 
-% % gluteus group (self, F+)
-% GainGLUsw    = GainGLU;
-% 
-% PreStimGLUsw = 0.01; %[]
-% 
-% % soleus (self, F+)
-% 
-% PreStimSOLsw = 0.01; %[]
-% 
-% % soleus on tibialis anterior (F-)
-% 
-% PreStimTAsw = 0.01; %[]
-% 
-% % tibialis (self, L+, stance and swing)
-% GainTAswing      = 1.1; %[]
-% 
-% % gastrocnemius (self, F+)
-% 
-% PreStimGASsw = 0.01;  %[]
-% 
-% % vasti group (self, F+)
-% 
-% PreStimVASsw = 0.08; %[]
-% 
-% % Rectus Femoris
-% GainRF    = 1.5/FmaxRF; %[1/N]
-% 
-% PreStimRFsw = 0.01; %[]
-% 
-% % BFSH 
-% 
-% 
-% % knee overextension on vasti (Phi-, directional)
-% GainKneeOverExt = 2;%
-% kneeAngleOffset = 10*pi/180;
-
-% -----------------------------------------------
-% 2.1 Stance-Leg HAT Reference Posture PD-Control
-% -----------------------------------------------
-
-% % stance hip joint position gain
-% % PosGainGG   = 1/(30*pi/180); %[1/rad]
-% % 
-% % stance hip joint speed gain
-% % SpeedGainGG = 0.2; %[s/rad] 
-% % 
-% % stance posture control muscles pre-stimulation
-% % PreStimGG   = 0.05; %[]
-% % 
-% % stance reference posture
-% % phiHATref      = 6*pi/180; %[rad]
-phiHATref      = 4.2158*pi/180; %[rad] song
-
-% % gluteus stance gain
-% Kglu = 0.7;
-% Khfl = 1;
-% Kham = 1;
-% 
-% % HFL lean gain
-% Klean = 1.15;
-% 
-% % Body weight gain
-% Kbw = 1.2;
-% 
-% DeltaS = 0.25;
-% DeltaSGLU = DeltaS;
-% DeltaSHFL = DeltaS;
 
 % ------------------------------
 % 2.2 Swing-leg Feedback Control 
@@ -207,16 +126,16 @@ PreStimRFsw     = 0.01; %[]
 PreStimVASsw    = 0.01; %[]
 PreStimBFSHsw   = 0.02; %[]
 PreStimGASsw    = 0.01;  %[]
-PreStimTAsw     = 0.01; %[]
 PreStimSOLsw    = 0.01; %[]
+PreStimTAsw     = 0.01; %[]
 
 % swing phase
-aDelsw            = 12*pi/180;
+deltaLegAngleThr = 12*pi/180; %[rad]
 
 % swing Ctrl (hip) M6
 GainLRFHFLsw      = 1/a2loptRFsw;
 GainVRFHFLsw      = .5;
-GainLHAMGLUsw     = -0.5/a2loptHAMsw;
+GainLHAMGLUsw     = 0.5/a2loptHAMsw;
 GainVHAMGLUsw     = .5;
 
 % swing Ctrl (ankle) M5
@@ -232,12 +151,12 @@ GainVBFSHsw     	= 2.5/a2loptRFsw;
 
 % swing Ctrl (knee_iii)
 GainLHAMsw          = 2/a2loptHAMsw;
-GainSHAMBFSHsw   	= -6;
+GainSHAMBFSHsw   	= 6;
 GainSHAMGASsw       = 2;
-SHAMthresholdsw     = -5.1936e-04;%-0.65;
+SHAMthresholdsw     = 0.65;
 
 % swing Ctrl (stance preparation)
-GainLHFLsw       = -0.4;
+GainLHFLsw       = 0.4;
 GainLGLUsw       = 0.4;
 LceOffsetVASsw   = 0.1;
 GainLVASsw       = 0.3;
@@ -272,6 +191,8 @@ LphiHip0  = -5*pi/180; %[rad]
 RphiAnkle0  =  0*pi/180; %[rad]
 RphiKnee0  = 5*pi/180; %[rad]
 RphiHip0  = -30*pi/180; %[rad]
+
+initialTargetAngle  = 70*pi/180;
 
 warning('Initial conditions not the same as in Song')
 % ----------------------

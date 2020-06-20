@@ -1,10 +1,10 @@
 % clc;
 %%
-tempstring = strsplit(opts.UserData,' ');
-dataFile = tempstring{end};
-InitialGuessFile = load(dataFile); 
-
-Gains = InitialGuessFile.Gains.*exp(bestever.x);
+% tempstring = strsplit(opts.UserData,' ');
+% dataFile = tempstring{end};
+% InitialGuessFile = load(dataFile); 
+% 
+% Gains = InitialGuessFile.Gains.*exp(bestever.x);
 % load('Results/Flat/GeyerHerrInit.mat');
 % load('Results/Flat/optandGeyerHerrInit.mat');
 % load('Results/Flat/SCONE.mat');
@@ -13,25 +13,14 @@ Gains = InitialGuessFile.Gains.*exp(bestever.x);
 % load('Results/Flat/v_1.1m_s.mat');
 % load('Results/Flat/v_1.4m_s.mat');
 % load('Results/Flat/optUmb10stanceswing1_3ms_prestim.mat');
-
+load('Results/Flat/SongGains.mat');
 % compareenergies = load('compareEnergyCostTotal.mat');
 
 % 
 % idx_minCost = find(compareenergies.cost==min(compareenergies.cost),1,'first');
 % Gains2 = compareenergies.Gains(idx_minCost,:)';
 % 
-% [Gains,Gains2]
-% Gains(1) = 0.8*Gains(1);
-% Gains(5) = 0.8*Gains(5);
-% Gains(4) = 4*Gains(4);
-% Gains(8) = 2*Gains(8);
-% Gains(3) = 2*Gains(3);
-% Gains(3) = 20*Gains(3);
-% Gains(15) = 0.9*Gains(15);
-Gains(10) = 0.75*Gains(10);
-% Gains(13) = 5*Gains(13);
-Gains(15) = 0.75*Gains(15);
-Gains(16) = 0.75*Gains(16);
+
 %%
 assignGains;
 dt_visual = 1/30;
@@ -45,7 +34,7 @@ toc;
 warning('on');
 
 %%
-[cost, dataStruct] = getCost(model,Gains,time,metabolicEnergy,sumOfIdealTorques,sumOfStopTorques,HATPos,swingStateCounts,stepVelocities,stepTimes,stepLengths,1);
+[cost, dataStruct] = getCost(model,Gains,time,metabolicEnergy,sumOfStopTorques,HATPos,stepVelocities,stepTimes,stepLengths,1);
 %%
 % kinematics.angularData = angularData;
 % kinematics.GaitPhaseData = GaitPhaseData;
