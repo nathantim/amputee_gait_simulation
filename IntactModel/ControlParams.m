@@ -182,15 +182,19 @@ transsw          = 1;
 vx0 = 1.3; %[m/s] 
 
 % left (stance) leg ankle, knee and hip joint angles
-LphiAnkle0  =  -5*pi/180; %[rad]
-LphiKnee0  = 5*pi/180; %[rad]
-LphiHip0  = -5*pi/180; %[rad]
+% LphiAnkle0  =  -5*pi/180; %[rad]
+% LphiKnee0  = 5*pi/180; %[rad]
+% LphiHip0  = -5*pi/180; %[rad]
+
+LphiAnkle0  =  10*pi/180; %[rad]
+LphiKnee0  = 3.3938*pi/180; %[rad]
+LphiHip0  = -23.2249*pi/180; %[rad]
 
 % right (swing) leg ankle, knee and hip joint angles
 % for walking
-RphiAnkle0  =  0*pi/180; %[rad]
-RphiKnee0  = 5*pi/180; %[rad]
-RphiHip0  = -30*pi/180; %[rad]
+RphiAnkle0  =  -4.4101*pi/180; %[rad]
+RphiKnee0  = 0.8849*pi/180; %[rad]
+RphiHip0  = 14.0806*pi/180; %[rad]
 
 initialTargetAngle  = 70*pi/180;
 
