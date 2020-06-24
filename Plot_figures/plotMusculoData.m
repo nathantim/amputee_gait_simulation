@@ -7,28 +7,33 @@ t_left_perc = GaitInfo.time.left_perc;
 t_right_perc = GaitInfo.time.right_perc;
 
 %%
-L_HFL   = musculoData.signals.values(GaitInfo.start.left:GaitInfo.end.left,1);
-L_GLU   = musculoData.signals.values(GaitInfo.start.left:GaitInfo.end.left,2);
-L_HAM   = musculoData.signals.values(GaitInfo.start.left:GaitInfo.end.left,3);
-L_RF    = musculoData.signals.values(GaitInfo.start.left:GaitInfo.end.left,4);
-L_VAS   = musculoData.signals.values(GaitInfo.start.left:GaitInfo.end.left,5);
-L_BFSH  = musculoData.signals.values(GaitInfo.start.left:GaitInfo.end.left,6);
-L_GAS   = musculoData.signals.values(GaitInfo.start.left:GaitInfo.end.left,7);
-L_SOL   = musculoData.signals.values(GaitInfo.start.left:GaitInfo.end.left,8);
-L_TA    = musculoData.signals.values(GaitInfo.start.left:GaitInfo.end.left,9);
+l_dyn = 6;
+act_offset = 5;
+L_HFL   = musculoData.signals.values(GaitInfo.start.left:GaitInfo.end.left,act_offset);
+L_GLU   = musculoData.signals.values(GaitInfo.start.left:GaitInfo.end.left,act_offset+1*l_dyn);
+L_HAM   = musculoData.signals.values(GaitInfo.start.left:GaitInfo.end.left,act_offset+2*l_dyn);
+L_RF    = musculoData.signals.values(GaitInfo.start.left:GaitInfo.end.left,act_offset+3*l_dyn);
+L_VAS   = musculoData.signals.values(GaitInfo.start.left:GaitInfo.end.left,act_offset+4*l_dyn);
+L_BFSH  = musculoData.signals.values(GaitInfo.start.left:GaitInfo.end.left,act_offset+5*l_dyn);
+L_GAS   = musculoData.signals.values(GaitInfo.start.left:GaitInfo.end.left,act_offset+6*l_dyn);
+L_SOL   = musculoData.signals.values(GaitInfo.start.left:GaitInfo.end.left,act_offset+7*l_dyn);
+L_TA    = musculoData.signals.values(GaitInfo.start.left:GaitInfo.end.left,act_offset+8*l_dyn);
 
 
-R_HFL   = musculoData.signals.values(GaitInfo.start.right:GaitInfo.end.right,10);
-R_GLU   = musculoData.signals.values(GaitInfo.start.right:GaitInfo.end.right,11);
-R_HAM   = musculoData.signals.values(GaitInfo.start.right:GaitInfo.end.right,12);
-R_RF    = musculoData.signals.values(GaitInfo.start.right:GaitInfo.end.right,13);
-R_VAS   = musculoData.signals.values(GaitInfo.start.right:GaitInfo.end.right,14);
-R_BFSH  = musculoData.signals.values(GaitInfo.start.right:GaitInfo.end.right,15);
-R_GAS   = musculoData.signals.values(GaitInfo.start.right:GaitInfo.end.right,16);
-R_SOL   = musculoData.signals.values(GaitInfo.start.right:GaitInfo.end.right,17);
-R_TA    = musculoData.signals.values(GaitInfo.start.right:GaitInfo.end.right,18);
-R_HAMc  = musculoData.signals.values(GaitInfo.start.right:GaitInfo.end.right,19);
-
+R_HFL   = musculoData.signals.values(GaitInfo.start.right:GaitInfo.end.right,act_offset+9*l_dyn);
+R_GLU   = musculoData.signals.values(GaitInfo.start.right:GaitInfo.end.right,act_offset+10*l_dyn);
+R_HAM   = musculoData.signals.values(GaitInfo.start.right:GaitInfo.end.right,act_offset+11*l_dyn);
+R_RF    = musculoData.signals.values(GaitInfo.start.right:GaitInfo.end.right,act_offset+12*l_dyn);
+R_VAS   = musculoData.signals.values(GaitInfo.start.right:GaitInfo.end.right,act_offset+13*l_dyn);
+R_BFSH  = musculoData.signals.values(GaitInfo.start.right:GaitInfo.end.right,act_offset+14*l_dyn);
+R_GAS   = musculoData.signals.values(GaitInfo.start.right:GaitInfo.end.right,act_offset+15*l_dyn);
+R_SOL   = musculoData.signals.values(GaitInfo.start.right:GaitInfo.end.right,act_offset+16*l_dyn);
+R_TA    = musculoData.signals.values(GaitInfo.start.right:GaitInfo.end.right,act_offset+17*l_dyn);
+try
+    R_HAMc  = musculoData.signals.values(GaitInfo.start.right:GaitInfo.end.right,act_offset+18*l_dyn);
+catch
+    R_HAMc = 0;
+end
 %%
 if isempty(musculoDataFigure)
     musculoDataFig = figure();

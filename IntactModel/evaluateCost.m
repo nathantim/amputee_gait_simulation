@@ -23,7 +23,7 @@ load('Results/Flat/SongGains.mat');
 
 %%
 assignGains;
-dt_visual = 1/30;
+dt_visual = 1/50;
 model = 'NeuromuscularModel';
 %open('NeuromuscularModel');
 

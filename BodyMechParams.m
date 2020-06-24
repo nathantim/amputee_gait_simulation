@@ -268,41 +268,11 @@ loptHAD    =     0.10; % optimum fiber length CE [m]
 vmaxHAD    =       12; % maximum contraction velocity [lopt/s]
 lslackHAD  =     0.18; % tendon slack length [m]
 
-% soleus muscle
-FmaxSOL    = 4000; % maximum isometric force [N]
-loptSOL    = 0.04; % optimum fiber length CE [m]
-vmaxSOL    =    6; % maximum contraction velocity [lopt/s]
-lslackSOL  = 0.26; % tendon slack length [m]
-
-% gastrocnemius muscle
-FmaxGAS    = 1500; % maximum isometric force [N]
-loptGAS    = 0.05; % optimum fiber length CE [m]
-vmaxGAS    =   12; % maximum contraction velocity [lopt/s]
-lslackGAS  = 0.40; % tendon slack length [m]
-
-% tibialis anterior
-FmaxTA     =  800; % maximum isometric force [N]
-loptTA     = 0.06; % optimum fiber length CE [m]
-vmaxTA     =   12; % maximum contraction velocity [lopt/s]
-lslackTA   = 0.24; % tendon slack length [m]
-
-% vasti muscles
-FmaxVAS    = 6000; % maximum isometric force [N]
-loptVAS    = 0.08; % optimum fiber length CE [m]
-vmaxVAS    =   12; % maximum contraction velocity [lopt/s]
-lslackVAS  = 0.23; % tendon slack length [m]
-
-% hamstring muscles
-FmaxHAM   = 3000; % maximum isometric force [N]
-loptHAM   = 0.10; % optimum fiber length CE [m]
-vmaxHAM   =   12; % maximum contraction velocity [lopt/s]
-lslackHAM = 0.31; % tendon slack length [m]
-
-% amputated hamstring muscles
-FmaxHAMCut   = 3000; % maximum isometric force [N]
-loptHAMCut   = (34.87/46)*0.10; % optimum fiber length CE [m]
-vmaxHAMCut   = 12; % maximum contraction velocity [lopt/s]
-lslackHAMCut = (34.87/46)*0.31; % tendon slack length [m]
+% hip flexor muscles
+FmaxHFL   = 2000; % maximum isometric force [N]
+loptHFL   = 0.11; % optimum fiber length CE [m]
+vmaxHFL   =   12; % maximum contraction velocity [lopt/s]
+lslackHFL = 0.10; % tendon slack length [m]
 
 % glutei muscles
 FmaxGLU   = 1500; % maximum isometric force [N]
@@ -310,11 +280,11 @@ loptGLU   = 0.11; % optimum fiber length CE [m]
 vmaxGLU   =   12; % maximum contraction velocity [lopt/s]
 lslackGLU = 0.13; % tendon slack length [m]
 
-% hip flexor muscles
-FmaxHFL   = 2000; % maximum isometric force [N]
-loptHFL   = 0.11; % optimum fiber length CE [m]
-vmaxHFL   =   12; % maximum contraction velocity [lopt/s]
-lslackHFL = 0.10; % tendon slack length [m]
+% hamstring muscles
+FmaxHAM   = 3000; % maximum isometric force [N]
+loptHAM   = 0.10; % optimum fiber length CE [m]
+vmaxHAM   =   12; % maximum contraction velocity [lopt/s]
+lslackHAM = 0.31; % tendon slack length [m]
 
 % rectus femoris muscles
 FmaxRF   = 1200; % %850 maximum isometric force [N]
@@ -322,12 +292,36 @@ loptRF   = 0.08; % optimum fiber length CE [m]
 vmaxRF   =   12; % maximum contraction velocity [lopt/s]
 lslackRF = 0.35; % tendon slack length [m]
 
+% vasti muscles
+FmaxVAS     = 6000; % maximum isometric force [N]
+loptVAS     = 0.08; % optimum fiber length CE [m]
+vmaxVAS     =   12; % maximum contraction velocity [lopt/s]
+lslackVAS   = 0.23; % tendon slack length [m]
 
 % BFSH
 FmaxBFSH	=  350; % maximum isometric force [N]
 loptBFSH    = 0.12; % optimum fiber length CE [m]
 vmaxBFSH    =   12; %6 % maximum contraction velocity [lopt/s]
 lslackBFSH  = 0.10; % tendon slack length [m]
+
+% gastrocnemius muscle
+FmaxGAS    = 1500; % maximum isometric force [N]
+loptGAS    = 0.05; % optimum fiber length CE [m]
+vmaxGAS    =   12; % maximum contraction velocity [lopt/s]
+lslackGAS  = 0.40; % tendon slack length [m]
+
+% soleus muscle
+FmaxSOL    = 4000; % maximum isometric force [N]
+loptSOL    = 0.04; % optimum fiber length CE [m]
+vmaxSOL    =    6; % maximum contraction velocity [lopt/s]
+lslackSOL  = 0.26; % tendon slack length [m]
+
+% tibialis anterior
+FmaxTA     =  800; % maximum isometric force [N]
+loptTA     = 0.06; % optimum fiber length CE [m]
+vmaxTA     =   12; % maximum contraction velocity [lopt/s]
+lslackTA   = 0.24; % tendon slack length [m]
+
 
 %Muscle type Percentages 
 %(http://sikhinspiredfitness.forums-free.com/muscle-fibre-ratios-t156.html)

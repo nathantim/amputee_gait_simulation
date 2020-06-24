@@ -108,15 +108,15 @@ phiHATref      = 1*pi/180; %[rad] song
 
 % constants (measurment parameters)
 phi2loptBFSHsw    = 0.8520*rBFSH*rhoBFSH/loptBFSH;
-phiRefBFSHsw      = 1.0557*phirefBFSH;
+phiRefBFSHsw      = 1.0557*(pi - phirefBFSH);
 a2loptRFsw        = 0.7999*rRFh*rhoRFh/loptRF;
-aRefRFsw          = 1.2605*(phirefRFh-phirefRFk/2);
+aRefRFsw          = 1.2605*((phirefRFh+pi)-(pi-phirefRFk)/2);
 a2loptHAMsw       = 0.8178*rHAMh*rhoHAMh/loptHAM;
-aRefHAMsw         = 0.7239*(phirefHAMh-phirefHAMk/2);
+aRefHAMsw         = 0.7239*((phirefHAMh+pi)-(pi-phirefHAMk)/2);
 phi2loptHFLsw     = 1.0045*rHFL*rhoHFL/loptHFL;
-phirefHFLsw       = 1.0170*phirefHFL;
+phirefHFLsw       = 1.0170*(pi+phirefHFL);
 phi2loptGLUsw     = 0.9969*rGLU*rhoGLU/loptGLU;
-phirefGLUsw       = 0.9876*phirefGLU;
+phirefGLUsw       = 0.9876*(pi+phirefGLU);
 
 % 0: prestimulations
 PreStimHFLsw    = 0.01; %[]
@@ -179,26 +179,26 @@ transsw          = 1;
 % ----------------------
 
 % initial locomotion speed
-vx0 = 1.3; %[m/s] 
+vx0 = 1.4402; %[m/s] 
 
 % left (stance) leg ankle, knee and hip joint angles
 % LphiAnkle0  =  -5*pi/180; %[rad]
 % LphiKnee0  = 5*pi/180; %[rad]
 % LphiHip0  = -5*pi/180; %[rad]
 
-LphiAnkle0  =  10*pi/180; %[rad]
-LphiKnee0  = 3.3938*pi/180; %[rad]
-LphiHip0  = -23.2249*pi/180; %[rad]
+LphiAnkle0  =  11.1730*pi/180; %[rad]
+LphiKnee0  = 6.4653*pi/180; %[rad]
+LphiHip0  = -39.3264*pi/180; %[rad]
 
 % right (swing) leg ankle, knee and hip joint angles
 % for walking
-RphiAnkle0  =  -4.4101*pi/180; %[rad]
-RphiKnee0  = 0.8849*pi/180; %[rad]
-RphiHip0  = 14.0806*pi/180; %[rad]
+RphiAnkle0  =   -5.7446*pi/180; %[rad]
+RphiKnee0  = 2.6426*pi/180; %[rad]
+RphiHip0  = 23.7692*pi/180; %[rad]
 
 initialTargetAngle  = 70*pi/180;
 
-warning('Initial conditions not the same as in Song')
+% warning('Initial conditions not the same as in Song')
 % ----------------------
 % 3.2 Simulation Control
 % ----------------------
