@@ -22,17 +22,21 @@ g = 9.80665;
 
 %foot dimensional properties
 footLength = 0.2; %[m]
-footBallToCenterDist = footLength/2;
-footCenterToCGDist = 0.14 - footBallToCenterDist; %[m] 0.14 from ball
+footBallToCenterDist = footLength/2; %[m]
+footBallToCGDist = 0.14; %[m]
+footCenterToCGDist = footBallToCGDist - footBallToCenterDist; %[m] 0.14 from ball
 footBallToAnkleDist = 0.16; %[m]
 footBallToHeelDist = footLength; %[m]
+footCenterlineToBall = 0.1/2; %[m]
+footCenterlineToHeel = 0.05/2; %[m]
 
 %foot inertial properties
 footMass  = 1.25; %[kg] 1.25
-footInertia = 0.005; %[kg*m^2] foot inertia about y-axis with (harmut's value)
+footInertia_z = 0.005; %[kg*m^2] foot inertia about y-axis with (harmut's value)
 %footInertia = 0.0112; %[kg*m^2] foot inertia about y-axis from Winter Data
 footInertia_x   = 0.0007;
 footInertia_y   = 0.005;
+footInertia = [footInertia_x footInertia_y footInertia_z];
 
 % -------------------------
 % 1.2 General Shank Segment
@@ -40,12 +44,14 @@ footInertia_y   = 0.005;
 
 shankLength = 0.5; %[m]
 shankAnkleToCenterDist  = shankLength/2; %[m]
-shankCenterToCGDist = 0.3 - shankAnkleToCenterDist; %[m]
+shankAnkleToCGDist = 0.3; %[m]
+shankCenterToCGDist = shankAnkleToCGDist - shankAnkleToCenterDist; %[m]
 shankAnkleToKneeDist = shankLength; %[m]
 shankMass = 3.5; %[kg]
-shankInertia = 0.05; %[kg*m^2] shank inertia with respect to axis ankle-CG-knee (scaled from other papers)
+shankInertia_z = 0.05; %[kg*m^2] shank inertia with respect to axis ankle-CG-knee (scaled from other papers)
 shankInertia_x   = 0.003;
 shankInertia_y   = 0.05;
+shankInertia = [shankInertia_x shankInertia_y shankInertia_z];
 % -------------------------
 % 1.3 General Thigh Segment
 % -------------------------
@@ -58,10 +64,13 @@ thighKneeToCG = 0.3;
 thighCenterToCGDist = thighKneeToCG - thighKneeToCenterDist; %[m] 
 thighKneeToHipDist = thighLength; %[m]
 thighMass  = 8.5; %[kg]
-thighInertia = 0.15; %[kg*m^2]
+thighInertia_z = 0.15; %[kg*m^2]
 thighInertia_x   = 0.03;
 thighInertia_y   = 0.15;
 relThighSensorPos = 4/5;
+thighInertiaLow = [thighInertia_x*relThighSensorPos thighInertia_y*(relThighSensorPos)^3  thighInertia_z*(relThighSensorPos)^3];
+thighInertiaHigh = [thighInertia_x*(1-relThighSensorPos) thighInertia_y*(1-relThighSensorPos)^3  thighInertia_z*(1-relThighSensorPos)^3];
+
 % -----------------------------------------
 % 1.4 General Head-Arms-Trunk (HAT) Segment
 % -----------------------------------------
@@ -71,12 +80,14 @@ hatLength = 0.8; %[m]
 hatWidth = 0.4; %[m]
 hatThickness = 0.2; %[m]
 hatHipToCenterDistLen = hatLength/2; %[m]
-hatLeftHipToCenterDistWidth = .15; %[m]
-hatCenterToCGDist = 0.35 - hatHipToCenterDistLen; %[m]
+hatLeftHipToCenterDistWidth = .1; %[m]
+hatLeftHipToCG = 0.35;
+hatCenterToCGDist = hatLeftHipToCG - hatHipToCenterDistLen; %[m]
 hatMass = 53.5; %[kg]
-hatInertia = 3; %[kg*m^2] 
+hatInertia_z = 3; %[kg*m^2] 
 hatInertia_x = 1.0;
 hatInertia_y = 4.0;
+hatInertia = [hatInertia_x hatInertia_y hatInertia_z];
 
 totalMass = 2*(footMass+shankMass+thighMass)+hatMass;
 % --------------------------------
@@ -97,9 +108,19 @@ v_max_pressure = 0.5; %[m/s]
 % modifications for adding ankle height
 % -------------------------------------
 ankle_height = 0.08;
+footBallToCGDist_y = ankle_height*footBallToCGDist/footBallToAnkleDist;
 
-leg_l = [(thighLength - ankle_height/2) (shankLength - ankle_height/2)];
-leg_0 = sum(leg_l); % [m] full leg length (from hip to ankle)
+% shanke
+shankLength = shankLength - ankle_height/2;
+shankAnkleToCGDist = shankAnkleToCGDist - ankle_height/4;
+
+% thigh
+thighLength = thighLength - ankle_height/2; %[m]
+thighKneeToCG = thighKneeToCG - ankle_height/4; %[m]
+
+leg_l = [thighLength shankLength];
+leg_0 = shankLength + thighLength; % [m] full leg length (from hip to ankle)
+    
 
 
 % ---------------------
@@ -394,8 +415,6 @@ mu_stick = 0.9;
 % --------------
 
 n_Cnt = 8;
-d_fBall = 0.1;
-d_fHeel = 0.05;
 
 k_gn    = k_gn/2;
 k_gt    = k_gt/2;
