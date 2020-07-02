@@ -115,7 +115,7 @@ try
             ASIVel                  = [exist_vars.ASIVel;ASIVel];
             costOfTransportSave     = [exist_vars.costOfTransportSave; [effort_costs.costOfTransport] ];
             costT                   = [exist_vars.costT;cost];
-            sumOfIdealTorques       = [exist_vars.sumOfIdealTorques;sumOfIdealTorques];
+%             sumOfIdealTorques       = [exist_vars.sumOfIdealTorques;sumOfIdealTorques];
             sumOfStopTorques        = [exist_vars.sumOfStopTorques;sumOfStopTorques];
             HATPos                  = [exist_vars.HATPos;HATPos];
             GainsSave               = [exist_vars.GainsSave;GainsSave];
@@ -126,7 +126,7 @@ try
         end
         
         save(filename,'metabolicEnergySave','meanVel','meanStepTime', 'meanStepLength','costOfTransportSave', ...
-            'costT','sumOfIdealTorques','sumOfStopTorques','HATPos','GainsSave','ASIStepLength','ASIStepTime','ASIVel')
+            'costT','sumOfStopTorques','HATPos','GainsSave','ASIStepLength','ASIStepTime','ASIVel')
     end
     
 catch ME

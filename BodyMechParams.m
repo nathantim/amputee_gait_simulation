@@ -54,12 +54,14 @@ shankInertia_y   = 0.05;
 thighLength = 0.5; %[m]
 thighLateralOffset = 0.1;   %[m]
 thighKneeToCenterDist = thighLength/2; %[m]
-thighCenterToCGDist = 0.3 - thighKneeToCenterDist; %[m] 
+thighKneeToCG = 0.3;
+thighCenterToCGDist = thighKneeToCG - thighKneeToCenterDist; %[m] 
 thighKneeToHipDist = thighLength; %[m]
 thighMass  = 8.5; %[kg]
 thighInertia = 0.15; %[kg*m^2]
 thighInertia_x   = 0.03;
 thighInertia_y   = 0.15;
+relThighSensorPos = 4/5;
 % -----------------------------------------
 % 1.4 General Head-Arms-Trunk (HAT) Segment
 % -----------------------------------------
@@ -82,8 +84,8 @@ totalMass = 2*(footMass+shankMass+thighMass)+hatMass;
 % --------------------------------
 
 % reference compression corresponding to steady-state with HAT mass
-% DeltaThRef = 2e-3; %[m]
-DeltaThRef = 5e-3; %[m]
+DeltaThRef = 2e-3; %[m]
+% DeltaThRef = 5e-3; %[m]
 
 % interaction stiffness
 k_pressure = hatMass * g / DeltaThRef; %[N/m]

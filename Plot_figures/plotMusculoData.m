@@ -8,7 +8,7 @@ t_right_perc = GaitInfo.time.right_perc;
 
 %%
 l_dyn = 6;
-act_offset = 5;
+act_offset = 1;
 L_HFL   = musculoData.signals.values(GaitInfo.start.left:GaitInfo.end.left,act_offset);
 L_GLU   = musculoData.signals.values(GaitInfo.start.left:GaitInfo.end.left,act_offset+1*l_dyn);
 L_HAM   = musculoData.signals.values(GaitInfo.start.left:GaitInfo.end.left,act_offset+2*l_dyn);
@@ -29,6 +29,11 @@ R_BFSH  = musculoData.signals.values(GaitInfo.start.right:GaitInfo.end.right,act
 R_GAS   = musculoData.signals.values(GaitInfo.start.right:GaitInfo.end.right,act_offset+15*l_dyn);
 R_SOL   = musculoData.signals.values(GaitInfo.start.right:GaitInfo.end.right,act_offset+16*l_dyn);
 R_TA    = musculoData.signals.values(GaitInfo.start.right:GaitInfo.end.right,act_offset+17*l_dyn);
+
+L_HAB   = musculoData.signals.values(GaitInfo.start.right:GaitInfo.end.right,act_offset+18*l_dyn); 
+L_HAD   = musculoData.signals.values(GaitInfo.start.right:GaitInfo.end.right,act_offset+19*l_dyn);
+R_HAB   = musculoData.signals.values(GaitInfo.start.right:GaitInfo.end.right,act_offset+20*l_dyn);
+R_HAD   = musculoData.signals.values(GaitInfo.start.right:GaitInfo.end.right,act_offset+21*l_dyn);
 try
     R_HAMc  = musculoData.signals.values(GaitInfo.start.right:GaitInfo.end.right,act_offset+18*l_dyn);
 catch
@@ -45,8 +50,8 @@ end
 
 % sgtitle('Muscle stimulations')
 
-[plotHandlesLeft,axesHandles] = plotMusculoDataInFigure(musculoDataFig,[],t_left_perc,L_HFL,L_GLU,L_HAM,L_RF,L_VAS,L_BFSH,L_GAS,L_SOL,L_TA,GaitInfo.b_oneGaitPhase);
-[plotHandlesRight,axesHandles] = plotMusculoDataInFigure(musculoDataFig,axesHandles,t_right_perc,R_HFL,R_GLU,R_HAM,R_RF,R_VAS,R_BFSH,R_GAS,R_SOL,R_TA,GaitInfo.b_oneGaitPhase,R_HAMc);
+[plotHandlesLeft,axesHandles] = plotMusculoDataInFigure(musculoDataFig,[],t_left_perc,L_HFL,L_GLU,L_HAM,L_RF,L_VAS,L_BFSH,L_GAS,L_SOL,L_TA,L_HAB,L_HAD,GaitInfo.b_oneGaitPhase);
+[plotHandlesRight,axesHandles] = plotMusculoDataInFigure(musculoDataFig,axesHandles,t_right_perc,R_HFL,R_GLU,R_HAM,R_RF,R_VAS,R_BFSH,R_GAS,R_SOL,R_TA,R_HAB,R_HAD,GaitInfo.b_oneGaitPhase,R_HAMc);
 if contains(saveInfo.info,'prosthetic')
     leg = legend([plotHandlesLeft(end),plotHandlesRight(end)],'Intact leg','Prosthetic leg');
 else
