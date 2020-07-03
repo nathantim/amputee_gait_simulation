@@ -6,16 +6,17 @@ end
 t_left_perc = GaitInfo.time.left_perc;
 t_right_perc = GaitInfo.time.right_perc;
 GRFData.signals.values = GRFData.signals.values./getBodyMass();
-L_Ball  = GRFData.signals.values(GaitInfo.start.left:GaitInfo.end.left,1:2);
-L_Total_x = GRFData.signals.values(GaitInfo.start.left:GaitInfo.end.left,3);
-L_Total_z = GRFData.signals.values(GaitInfo.start.left:GaitInfo.end.left,4);
-L_Heel  = GRFData.signals.values(GaitInfo.start.left:GaitInfo.end.left,5:6);
+% L_Ball  = GRFData.signals.values(GaitInfo.start.left:GaitInfo.end.left,1:2);
+L_Total_x = GRFData.signals.values(GaitInfo.start.left:GaitInfo.end.left,1);
+L_Total_z = GRFData.signals.values(GaitInfo.start.left:GaitInfo.end.left,2);
+% L_Heel  = GRFData.signals.values(GaitInfo.start.left:GaitInfo.end.left,5:6);
 
-R_Ball  = GRFData.signals.values(GaitInfo.start.right:GaitInfo.end.right,7:8);
-R_Total_x = GRFData.signals.values(GaitInfo.start.right:GaitInfo.end.right,9);
-R_Total_z = GRFData.signals.values(GaitInfo.start.right:GaitInfo.end.right,10);
-R_Heel  = GRFData.signals.values(GaitInfo.start.right:GaitInfo.end.right,11:12);
+% R_Ball  = GRFData.signals.values(GaitInfo.start.right:GaitInfo.end.right,7:8);
+R_Total_x = GRFData.signals.values(GaitInfo.start.right:GaitInfo.end.right,4);
+R_Total_z = GRFData.signals.values(GaitInfo.start.right:GaitInfo.end.right,5);
+% R_Heel  = GRFData.signals.values(GaitInfo.start.right:GaitInfo.end.right,11:12);
 
+warning('Direction stuff');
 % L_Total_x = -1*L_Total_x;
 % R_Total_x = -1*R_Total_x;
 % warning('Unreasoned factor -1');
