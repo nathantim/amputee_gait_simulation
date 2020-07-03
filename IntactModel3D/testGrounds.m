@@ -1,5 +1,5 @@
 %initialze model
-load('Results\RoughDist\optimizedGains.mat')
+load('Results\RoughGround\optimizedGains.mat')
 BodyMechParams
 ControlParams
 

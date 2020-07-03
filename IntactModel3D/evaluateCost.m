@@ -1,31 +1,57 @@
-assignGains
+clc;
+%%
+% tempstring = strsplit(opts.UserData,' ');
+% dataFile = tempstring{end};
+% InitialGuessFile = load(dataFile); 
+% 
+% Gains = InitialGuessFile.Gains.*exp(bestever.x);
+% load('Results/Flat/GeyerHerrInit.mat');
+% load('Results/Flat/optandGeyerHerrInit.mat');
+% load('Results/Flat/SCONE.mat');
+% load('Results/Flat/v_0.5m_s.mat');
+% load('Results/Flat/v_0.8m_s.mat');
+% load('Results/Flat/v_1.1m_s.mat');
+% load('Results/Flat/v_1.4m_s.mat');
+% load('Results/Flat/optUmb10stanceswing1_3ms_prestim.mat');
 
+% compareenergies = load('compareEnergyCostTotal.mat');
+
+% 
+% idx_minCost = find(compareenergies.cost==min(compareenergies.cost),1,'first');
+% Gains2 = compareenergies.Gains(idx_minCost,:)';
+% 
+
+%%
+ load('SongGains_wC.mat');
+assignGains;
+dt_visual = 1/50;
+setInitParNeuro;
+%%
+model = 'Neurostuff_New_nms_3Dmodel';
 %open('NeuromuscularModel');
+
+warning('off');
 tic;
-sim('NeuromuscularModel');
+sim(model)
 toc;
+warning('on');
 
-time
-metabolicEnergy
-sumOfIdealTorques
-sumOfStopTorques
-swingStateCounts 
-HATPos
-
-%compute cost of not using all states
-statecost = 0;
-numSteps = swingStateCounts(1);
-swingStatePercents = swingStateCounts(2:end)/numSteps;
-if sum(swingStatePercents < 0.75)
-    statecost = range(swingStateCounts);
-end
-
-%compute cost of transport
-tconst1 = 1e11;
-timecost = tconst1/exp(time);
-amputeeMass = 80;
-costOfTransport = (metabolicEnergy + 0.1*sumOfIdealTorques + .1*sumOfStopTorques)/(HATPos*amputeeMass);
-
-EnergyCost = costOfTransport + timecost + statecost
-RobustnessCost = -1*HATPos + 0.0005*sumOfStopTorques + 0.5*statecost
-HATPos
+%%
+[cost, dataStruct] = getCost(model,Gains,time,metabolicEnergy,sumOfStopTorques,HATPos,stepVelocities,stepTimes,stepLengths,0);
+%%
+% kinematics.angularData = angularData;
+% kinematics.GaitPhaseData = GaitPhaseData;
+% kinematics.time = time;
+% kinematics.stepTimes = stepTimes;
+% kinematics.musculoData = musculoData;
+% kinematics.GRFData = GRFData;
+% dataStruct.kinematics = kinematics;
+% save('dataStruct.mat','dataStruct')
+% 
+% %%
+set(0, 'DefaultFigureHitTest','on');
+set(0, 'DefaultAxesHitTest','on','DefaultAxesPickableParts','all');
+set(0, 'DefaultLineHitTest','on','DefaultLinePickableParts','all');
+set(0, 'DefaultPatchHitTest','on','DefaultPatchPickableParts','all');
+set(0, 'DefaultStairHitTest','on','DefaultStairPickableParts','all');
+set(0, 'DefaultLegendHitTest','on','DefaultLegendPickableParts','all');
