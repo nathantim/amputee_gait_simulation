@@ -43,6 +43,7 @@ footInertia = [footInertia_x footInertia_y footInertia_z];
 % -------------------------
 
 shankLength = 0.5; %[m]
+shankLengthAmp = shankLength - 0.1;
 shankAnkleToCenterDist  = shankLength/2; %[m]
 shankAnkleToCGDist = 0.3; %[m]
 shankCenterToCGDist = shankAnkleToCGDist - shankAnkleToCenterDist; %[m]
@@ -52,12 +53,20 @@ shankInertia_z = 0.05; %[kg*m^2] shank inertia with respect to axis ankle-CG-kne
 shankInertia_x   = 0.003;
 shankInertia_y   = 0.05;
 shankInertia = [shankInertia_x shankInertia_y shankInertia_z];
+
+% shank prosthesis
+shankProsthMass = 0.15; % kg
+shankProsthInertia_z = 0.002;
+shankProsthInertia_x =  1.2000e-04;
+shankProsthInertia_y = 0.002;
+shankProsthInertia = [shankProsthInertia_x shankProsthInertia_y shankProsthInertia_z];
 % -------------------------
 % 1.3 General Thigh Segment
 % -------------------------
 
 % total thigh length
 thighLength = 0.5; %[m]
+thighLengthAmp = thighLength - 0.1; % amputated thigh length
 thighLateralOffset = 0.1;   %[m]
 thighKneeToCenterDist = thighLength/2; %[m]
 thighKneeToCG = 0.3;
