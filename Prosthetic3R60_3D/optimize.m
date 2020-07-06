@@ -8,23 +8,22 @@ bdclose('all');
 clear all; close all; clc;
 
 %%
-% initial_gains_filename = ('Results/Flat/optandGH_diffswing.mat');
-% initial_gains_filename = ('Results/Flat/optdiffswing.mat');
-% initial_gains_filename = ('Results/Flat/optandGeyerHerrInit.mat');
-% initial_gains_filename = 'Results/Flat/optUmb10stanceswing1_3ms_prestim.mat';
-% initial_gains_filename = 'Results/Flat/optUmb10stanceswing1_3ms_prestim_lesshyper_dSopt.mat';
-% initial_gains_filename = 'Results/Flat/optUmb10kneelim3.mat';
-% initial_gains_filename = 'Results/Flat/optwoptUmb10_1_3ms.mat';
-% initial_gains_filename = 'Results/Flat/optwoptUmb10_swingstancesame_1_3ms.mat';
-initial_gains_filename = 'Results/Flat/Umb10_notgtangle_1_3ms_kneelim3_real.mat';
+
+initial_gains_filename = 'Results/Flat/SongGains_02amp_wC.mat';
 initial_gains_file = load(initial_gains_filename);
+load('Results/Flat/SongGains_02_wC_IC.mat');
 
 %%
 global model rtp InitialGuess
 
 %% specifiy model and intial parameters
-model = 'NeuromuscularModel';
+model = 'NeuromuscularModel_3R60_3D';
 optfunc = 'cmaesParallelSplit';
+load_system(model);
+set_param(strcat(model,'/Body Mechanics Layer/Right Ankle Joint'),'SpringStiffness','300','DampingCoefficient','100');
+% % set_param(strcat(model,'/Body Mechanics Layer/Right Ankle Joint'),'SpringStiffness','20','DampingCoefficient','4');
+set_param(model,'SimulationMode','rapid');
+set_param(model,'StopTime','30');
 
 InitialGuess = initial_gains_file.Gains;
 
@@ -32,6 +31,9 @@ InitialGuess = initial_gains_file.Gains;
 BodyMechParams;
 ControlParams;
 OptimParams;
+Prosthesis3R60Params;
+setInit;
+ 
 dt_visual = 1/30;
 [groundX, groundZ, groundTheta] = generateGround('flat');
 load_system(model)
@@ -60,7 +62,7 @@ if (min_velocity == target_velocity && max_velocity == target_velocity)
     opts.TargetVel = target_velocity;
 end
 opts.UserData = char(strcat("Gains filename: ", initial_gains_filename));
-opts.SaveFilename = 'vcmaes_Umb10_notgtangle_1_3ms_prestim_kneelim3_real.mat';
+opts.SaveFilename = 'vcmaes_Umb10_SONG.mat';
 
 %% run cmaes
 [xmin, fmin, counteval, stopflag, out, bestever] = cmaes(optfunc, x0, sigma0, opts)

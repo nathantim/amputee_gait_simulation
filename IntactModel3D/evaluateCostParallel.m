@@ -4,7 +4,7 @@ if nargin < 2
     Gains = nan(30,1);
 end
 % OptimParams;
-model = 'NeuromuscularModel';
+model = 'NeuromuscularModel3D';
 try
     simout = sim(model,...
         'RapidAcceleratorParameterSets',paramStruct,...

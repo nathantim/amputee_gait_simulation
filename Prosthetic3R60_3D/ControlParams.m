@@ -20,26 +20,45 @@ termination_height = 0.5;
 % --------------------
 
 % foot placement Ctrl %
-simbiconLegAngle0_C       =(-1)   *pi/180; 
-simbiconGainD_C           = 10     *pi/180;    % [rad/m]
-simbiconGainV_C           = 10     *pi/180;    % [rad*s/m]
+LsimbiconLegAngle0_C       =(-1)   *pi/180; 
+LsimbiconGainD_C           = 10     *pi/180;    % [rad/m]
+LsimbiconGainV_C           = 10     *pi/180;    % [rad*s/m]
+
+RsimbiconLegAngle0_C       =(-1)   *pi/180; 
+RsimbiconGainD_C           = 10     *pi/180;    % [rad/m]
+RsimbiconGainV_C           = 10     *pi/180;    % [rad*s/m]
+
 
 % 0: prestimulations
-PreStimHABst       	= 0.01;
-PreStimHADst        = 0.01;
+LPreStimHABst       	= 0.01;
+LPreStimHADst        = 0.01;
+
+RPreStimHABst       	= 0.01;
+RPreStimHADst        = 0.01;
+
 
 % M1: realize compliant leg
-GainFHABst    	= .45/FmaxHAB;
+LGainFHABst    	= .45/FmaxHAB;
+RGainFHABst    	= .45/FmaxHAB;
 
 % M3: balance trunk
-GainPhiHATHABst     = 2.4;
-GainDphiHATHABst    = .4;
-GainPhiHATHADst     = .5;
-GainDphiHATHADst    = .55;
+LGainPhiHATHABst     = 2.4;
+LGainDphiHATHABst    = .4;
+LGainPhiHATHADst     = .5;
+LGainDphiHATHADst    = .55;
+
+RGainPhiHATHABst     = 2.4;
+RGainDphiHATHABst    = .4;
+RGainPhiHATHADst     = .5;
+RGainDphiHATHADst    = .55;
+
 
 % M4: compensate swing leg
-GainSHABcHABst  = 1.5;
-GainSHADcHADst  = .4;
+LGainSHABcHABst  = 1.5;
+LGainSHADcHADst  = .4;
+
+RGainSHABcHABst  = 1.5;
+RGainSHADcHADst  = .4;
 
 
 % -------------
@@ -53,20 +72,30 @@ a2loptHAD     = 0.6798*rHAD*rhoHAD/loptHAD;
 aRefHAD       = 0.8053*(pi/2 - phirefHAD);
 
 % 0: prestimulations
-PreStimHABsw       	= 0.01;
-PreStimHADsw        = 0.01;
+LPreStimHABsw       	= 0.01;
+LPreStimHADsw        = 0.01;
+
+RPreStimHABsw       	= 0.01;
+RPreStimHADsw        = 0.01;
+
 
 % M6: swing hip
-GainLHABsw      = 1/a2loptHAB;
-GainLHADsw      = 1/a2loptHAD;
+LGainLHABsw      = 1/a2loptHAB;
+LGainLHADsw      = 1/a2loptHAD;
+
+RGainLHABsw      = 1/a2loptHAB;
+RGainLHADsw      = 1/a2loptHAD;
 
 % ----------------------------------
 % stance -> swing transition control
 % ----------------------------------
 
 
-transSupst_C       = 1;
-transsw_C          = 1;
+LtransSupst_C       = 1;
+Ltranssw_C          = 1;
+
+RtransSupst_C       = 1;
+Rtranssw_C          = 1;
 
 thetaHATref      = 0; %[rad] song
 
@@ -86,10 +115,15 @@ thetaHATref      = 0; %[rad] song
 % kneeExtendGain = 200; %[Nm/rad]
 
 % Foot placement
-legLengthClr = 0.85; %[m]
-simbiconLegAngle0 = 70*pi/180;
-simbiconGainD = 5*pi/180; %[rad/m]
-simbiconGainV = 5*pi/180; %[rad s/m]
+LlegLengthClr = 0.85; %[m]
+LsimbiconLegAngle0 = 70*pi/180;
+LsimbiconGainD = 5*pi/180; %[rad/m]
+LsimbiconGainV = 5*pi/180; %[rad s/m]
+
+RlegLengthClr = 0.85; %[m]
+RsimbiconLegAngle0 = 70*pi/180;
+RsimbiconGainD = 5*pi/180; %[rad/m]
+RsimbiconGainV = 5*pi/180; %[rad s/m]
 
 %% %
 
@@ -120,46 +154,88 @@ MinDelay        = 0.001/2;  % [s] between neurons in the spinal cord
 % -------------------------------
 
 % 0: prestimulations
-PreStimHFLst    = 0.05; %[]
-PreStimGLUst    = 0.05; %[]
-PreStimHAMst    = 0.05; %[]
-PreStimRFst     = 0.01; %[]
-PreStimVASst    = 0.08; %[]
-PreStimBFSHst   = 0.02; %[]
-PreStimGASst    = 0.01;  %[]
-PreStimSOLst    = 0.01; %[]
-PreStimTAst     = 0.01; %[]
+LPreStimHFLst    = 0.05; %[]
+LPreStimGLUst    = 0.05; %[]
+LPreStimHAMst    = 0.05; %[]
+LPreStimRFst     = 0.01; %[]
+LPreStimVASst    = 0.08; %[]
+LPreStimBFSHst   = 0.02; %[]
+LPreStimGASst    = 0.01;  %[]
+LPreStimSOLst    = 0.01; %[]
+LPreStimTAst     = 0.01; %[]
+
+RPreStimHFLst    = 0.05; %[]
+RPreStimGLUst    = 0.05; %[]
+RPreStimHAMst    = 0.05; %[]
+RPreStimRFst     = 0.01; %[]
+
+RPreStimVASst    = 0.08; %[]
+RPreStimBFSHst   = 0.02; %[]
+RPreStimGASst    = 0.01;  %[]
+RPreStimSOLst    = 0.01; %[]
+RPreStimTAst     = 0.01; %[]
+
 
 % M1: realize compliant leg
-GainFGLUst   = 1.0/FmaxGLU; %[1/N]
-GainFVASst   = 1.2/FmaxVAS; %[1/N] M1: realize compliant leg
-GainFSOLst   = 1.2/FmaxSOL; %[1/N] M1: realize compliant leg
-  
+LGainFGLUst   = 1.0/FmaxGLU; %[1/N]
+LGainFVASst   = 1.2/FmaxVAS; %[1/N] M1: realize compliant leg
+LGainFSOLst   = 1.2/FmaxSOL; %[1/N] M1: realize compliant leg
+
+RGainFGLUst   = 1.0/FmaxGLU; %[1/N]
+RGainFVASst   = 1.2/FmaxVAS; %[1/N] M1: realize compliant leg
+RGainFSOLst   = 1.2/FmaxSOL; %[1/N] M1: realize compliant leg
+
+
 % M2: prevent knee overextension
-GainFHAMst          = 1.0/FmaxHAM;  %[1/N] F gain
-LceOffsetBFSHVASst  = 2;            %[loptBFSH] 
-GainLBFSHVASst      = 0.0680;       % VAS gain on BFSH L  
-LceOffsetBFSHst     = 1.1;          %[loptBFSH] 
-GainLBFSHst         = 2;            %[1/N] L gain on self
-GainFGASst          = 1.22/FmaxGAS; %[1/N]  F gain
+LGainFHAMst          = 1.0/FmaxHAM;  %[1/N] F gain
+LLceOffsetBFSHVASst  = 2;            %[loptBFSH] 
+LGainLBFSHVASst      = 0.0680;       % VAS gain on BFSH L  
+LLceOffsetBFSHst     = 1.1;          %[loptBFSH] 
+LGainLBFSHst         = 2;            %[1/N] L gain on self
+LGainFGASst          = 1.22/FmaxGAS; %[1/N]  F gain
+
+RGainFHAMst          = 1.0/FmaxHAM;  %[1/N] F gain
+RLceOffsetBFSHVASst  = 2;            %[loptBFSH] 
+RGainLBFSHVASst      = 0.0680;       % VAS gain on BFSH L  
+RLceOffsetBFSHst     = 1.1;          %[loptBFSH] 
+RGainLBFSHst         = 2;            %[1/N] L gain on self
+RGainFGASst          = 1.22/FmaxGAS; %[1/N]  F gain
+
 
 % M3: balance trunk
-GainPhiHATHFLst     = 1;    % Gain with HAT pitch
-GainDphiHATHFLst    = 0.3;  % Gain with HAT pitch velocity
-GainPhiHATGLUst     = 0.5;  % Gain with HAT pitch
-GainDphiHATGLUst    = 0.1;  % Gain with HAT pitch velocity
-GainSGLUHAMst       = 1;    % Gain with GLU stim
+LGainPhiHATHFLst     = 1;    % Gain with HAT pitch
+LGainDphiHATHFLst    = 0.3;  % Gain with HAT pitch velocity
+LGainPhiHATGLUst     = 0.5;  % Gain with HAT pitch
+LGainDphiHATGLUst    = 0.1;  % Gain with HAT pitch velocity
+LGainSGLUHAMst       = 1;    % Gain with GLU stim
+
+RGainPhiHATHFLst     = 1;    % Gain with HAT pitch
+RGainDphiHATHFLst    = 0.3;  % Gain with HAT pitch velocity
+RGainPhiHATGLUst     = 0.5;  % Gain with HAT pitch
+RGainDphiHATGLUst    = 0.1;  % Gain with HAT pitch velocity
+RGainSGLUHAMst       = 1;    % Gain with GLU stim
+
 
 % M4: compensate swing leg
-GainSGLUcHFLst    = 0.1;
-GainSHAMcHFLst    = 0.1;
-GainSHFLcGLUst    = 0.1;
-GainSRFcGLUst     = 0.1;
+LGainSGLUcHFLst    = 0.1;
+LGainSHAMcHFLst    = 0.1;
+LGainSHFLcGLUst    = 0.1;
+LGainSRFcGLUst     = 0.1;
+
+RGainSGLUcHFLst    = 0.1;
+RGainSHAMcHFLst    = 0.1;
+RGainSHFLcGLUst    = 0.1;
+RGainSRFcGLUst     = 0.1;
+
 
 % M5: flex ankle
-LceOffsetTAst   = 1-0.65*w; %[loptTA]
-GainLTAst       = 1.1;
-GainFSOLTAst    = 0.4/FmaxSOL;
+LLceOffsetTAst   = 1-0.65*w; %[loptTA]
+LGainLTAst       = 1.1;
+LGainFSOLTAst    = 0.4/FmaxSOL;
+
+RLceOffsetTAst   = 1-0.65*w; %[loptTA]
+RGainLTAst       = 1.1;
+RGainFSOLTAst    = 0.4/FmaxSOL;
 
 
 phiHATref      = 1*pi/180; %[rad] song
@@ -182,55 +258,100 @@ phi2loptGLUsw     = 0.9969*rGLU*rhoGLU/loptGLU;
 phirefGLUsw       = 0.9876*(pi+phirefGLU);
 
 % 0: prestimulations
-PreStimHFLsw    = 0.01; %[]
-PreStimGLUsw    = 0.01; %[]
-PreStimHAMsw    = 0.01; %[]
-PreStimRFsw     = 0.01; %[]
-PreStimVASsw    = 0.01; %[]
-PreStimBFSHsw   = 0.02; %[]
-PreStimGASsw    = 0.01;  %[]
-PreStimSOLsw    = 0.01; %[]
-PreStimTAsw     = 0.01; %[]
+LPreStimHFLsw    = 0.01; %[]
+LPreStimGLUsw    = 0.01; %[]
+LPreStimHAMsw    = 0.01; %[]
+LPreStimRFsw     = 0.01; %[]
+LPreStimVASsw    = 0.01; %[]
+LPreStimBFSHsw   = 0.02; %[]
+LPreStimGASsw    = 0.01;  %[]
+LPreStimSOLsw    = 0.01; %[]
+LPreStimTAsw     = 0.01; %[]
+
+RPreStimHFLsw    = 0.01; %[]
+RPreStimGLUsw    = 0.01; %[]
+RPreStimHAMsw    = 0.01; %[]
+RPreStimRFsw     = 0.01; %[]
+RPreStimVASsw    = 0.01; %[]
+RPreStimBFSHsw   = 0.02; %[]
+RPreStimGASsw    = 0.01;  %[]
+RPreStimSOLsw    = 0.01; %[]
+RPreStimTAsw     = 0.01; %[]
+
 
 % swing phase
-deltaLegAngleThr = 12*pi/180; %[rad]
+LdeltaLegAngleThr = 12*pi/180; %[rad]
+
+RdeltaLegAngleThr = 12*pi/180; %[rad]
+
 
 % swing Ctrl (hip) M6
-GainLRFHFLsw      = 1/a2loptRFsw;
-GainVRFHFLsw      = .5;
-GainLHAMGLUsw     = 0.5/a2loptHAMsw;
-GainVHAMGLUsw     = .5;
+LGainLRFHFLsw      = 1/a2loptRFsw;
+LGainVRFHFLsw      = .5;
+LGainLHAMGLUsw     = 0.5/a2loptHAMsw;
+LGainVHAMGLUsw     = .5;
+
+RGainLRFHFLsw      = 1/a2loptRFsw;
+RGainVRFHFLsw      = .5;
+RGainLHAMGLUsw     = 0.5/a2loptHAMsw;
+RGainVHAMGLUsw     = .5;
+
 
 % swing Ctrl (ankle) M5
-GainLTAsw       = 1.1;
-LceOffsetTAsw   = (1-0.65*w);
+LGainLTAsw       = 1.1;
+LLceOffsetTAsw   = (1-0.65*w);
+
+RGainLTAsw       = 1.1;
+RLceOffsetTAsw   = (1-0.65*w);
+
 
 % swing Ctrl (knee_i) M7
-GainVRFBFSHsw   	= 0.4*loptRF/(rRFh*rhoRFh);
+LGainVRFBFSHsw   	= 0.4*loptRF/(rRFh*rhoRFh);
+
+RGainVRFBFSHsw   	= 0.4*loptRF/(rRFh*rhoRFh);
+
 
 % swing Ctrl (knee_ii)
-GainVVASRFsw        = 0.08*loptBFSH/(rBFSH*rhoBFSH);
-GainVBFSHsw     	= 2.5/a2loptRFsw;
+LGainVVASRFsw        = 0.08*loptBFSH/(rBFSH*rhoBFSH);
+LGainVBFSHsw     	= 2.5/a2loptRFsw;
+
+RGainVVASRFsw        = 0.08*loptBFSH/(rBFSH*rhoBFSH);
+RGainVBFSHsw     	= 2.5/a2loptRFsw;
+
 
 % swing Ctrl (knee_iii)
-GainLHAMsw          = 2/a2loptHAMsw;
-GainSHAMBFSHsw   	= 6;
-GainSHAMGASsw       = 2;
-SHAMthresholdsw     = 0.65;
+LGainLHAMsw          = 2/a2loptHAMsw;
+LGainSHAMBFSHsw   	= 6;
+LGainSHAMGASsw       = 2;
+LSHAMthresholdsw     = 0.65;
+
+RGainLHAMsw          = 2/a2loptHAMsw;
+RGainSHAMBFSHsw   	= 6;
+RGainSHAMGASsw       = 2;
+RSHAMthresholdsw     = 0.65;
+
 
 % swing Ctrl (stance preparation)
-GainLHFLsw       = 0.4;
-GainLGLUsw       = 0.4;
-LceOffsetVASsw   = 0.1;
-GainLVASsw       = 0.3;
+LGainLHFLsw       = 0.4;
+LGainLGLUsw       = 0.4;
+LLceOffsetVASsw   = 0.1;
+LGainLVASsw       = 0.3;
+
+RGainLHFLsw       = 0.4;
+RGainLGLUsw       = 0.4;
+RLceOffsetVASsw   = 0.1;
+RGainLVASsw       = 0.3;
+
 
 % ----------------------------------
 % stance -> swing transition control
 % ----------------------------------
 
-transSupst       = 1;
-transsw          = 1;
+LtransSupst       = 1;
+Ltranssw          = 1;
 
+RtransSupst       = 1;
+Rtranssw          = 1;
 
 
 % ******************************************** %

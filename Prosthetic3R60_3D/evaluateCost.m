@@ -1,10 +1,10 @@
 clc;
 %%
-% tempstring = strsplit(opts.UserData,' ');
-% dataFile = tempstring{end};
-% InitialGuessFile = load(dataFile); 
-% 
-% Gains = InitialGuessFile.Gains.*exp(bestever.x);
+tempstring = strsplit(opts.UserData,' ');
+dataFile = tempstring{end};
+InitialGuessFile = load(dataFile); 
+
+Gains = InitialGuessFile.Gains.*exp(bestever.x);
 % load('Results/Flat/GeyerHerrInit.mat');
 % load('Results/Flat/optandGeyerHerrInit.mat');
 % load('Results/Flat/SCONE.mat');
@@ -22,16 +22,20 @@ clc;
 % 
 
 %%
-load('Results/RoughDist/SongGains_wC.mat');
-load('Results/RoughDist/SongGains_wC_IC.mat');
+% load('Results/RoughDist/SongGains_wC.mat');
+% load('Results/RoughDist/SongGains_wC_IC.mat');
+% load('Results/Flat/SongGains_02amp_wC.mat');
+% load('Results/Flat/SongGains_02_wC_IC.mat');
 
 assignGains;
 dt_visual = 1/50;
 setInit;
 
 %%
-model = 'NeuromuscularModel3D';
+model = 'NeuromuscularModel_3R60_3D';
 %open('NeuromuscularModel');
+set_param(model,'SimulationMode','normal');
+set_param(model,'StopTime','30');
 
 warning('off');
 tic;

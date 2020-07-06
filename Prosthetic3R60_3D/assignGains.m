@@ -2,138 +2,234 @@ BodyMechParams;
 ControlParams;
 OptimParams;
 Prosthesis3R60Params;
-
-%  load('SongGains_02_wC.mat');
- thetaHATref = 0;
+ 
+%% Left
 %% stance gains
 % M1
-GainFGLUst          = Gains( 1);
-GainFVASst          = Gains( 2);
-GainFSOLst          = Gains( 3);
+LGainFGLUst          = Gains( 1);
+LGainFVASst          = Gains( 2);
+LGainFSOLst          = Gains( 3);
 
 % M2 
-GainFHAMst          = Gains( 4);
-LceOffsetBFSHVASst  = Gains( 5);
-GainLBFSHVASst      = Gains( 6);
-LceOffsetBFSHst     = Gains( 7);
-GainLBFSHst         = Gains( 8);
-GainFGASst          = Gains( 9);
+LGainFHAMst          = Gains( 4);
+LLceOffsetBFSHVASst  = Gains( 5);
+LGainLBFSHVASst      = Gains( 6);
+LLceOffsetBFSHst     = Gains( 7);
+LGainLBFSHst         = Gains( 8);
+LGainFGASst          = Gains( 9);
 
 % M3
-GainPhiHATHFLst     = Gains(10);
-GainDphiHATHFLst    = Gains(11);
-GainPhiHATGLUst     = Gains(12);
-GainDphiHATGLUst    = Gains(13);
-GainSGLUHAMst       = Gains(14);
+LGainPhiHATHFLst     = Gains(10);
+LGainDphiHATHFLst    = Gains(11);
+LGainPhiHATGLUst     = Gains(12);
+LGainDphiHATGLUst    = Gains(13);
+LGainSGLUHAMst       = Gains(14);
 
 % M4 
-GainSGLUcHFLst      = Gains(15);
-GainSHAMcHFLst      = Gains(16);
-GainSHFLcGLUst      = Gains(17);
-GainSRFcGLUst       = Gains(18);
+LGainSGLUcHFLst      = Gains(15);
+LGainSHAMcHFLst      = Gains(16);
+LGainSHFLcGLUst      = Gains(17);
+LGainSRFcGLUst       = Gains(18);
 
 % M5
-LceOffsetTAst       = Gains(19);
-GainLTAst           = Gains(20);
-GainFSOLTAst        = Gains(21);
+LLceOffsetTAst       = Gains(19);
+LGainLTAst           = Gains(20);
+LGainFSOLTAst        = Gains(21);
 
 %% Swing gains
 % M5
-GainLTAsw           = Gains(22);
-LceOffsetTAsw       = Gains(23);
+LGainLTAsw           = Gains(22);
+LLceOffsetTAsw       = Gains(23);
 
 % M6
-GainLRFHFLsw        = Gains(24);
-GainVRFHFLsw        = Gains(25);
-GainLHAMGLUsw       = Gains(26);
-GainVHAMGLUsw       = Gains(27);
+LGainLRFHFLsw        = Gains(24);
+LGainVRFHFLsw        = Gains(25);
+LGainLHAMGLUsw       = Gains(26);
+LGainVHAMGLUsw       = Gains(27);
 
 % swing Ctrl (knee_i) M7
-GainVRFBFSHsw       = Gains(28);
+LGainVRFBFSHsw       = Gains(28);
 
 % swing Ctrl (knee_ii) M7
-GainVVASRFsw        = Gains(29);
-GainVBFSHsw         = Gains(30);
+LGainVVASRFsw        = Gains(29);
+LGainVBFSHsw         = Gains(30);
 
 % swing Ctrl (knee_iii)
-GainLHAMsw          = Gains(31);
-GainSHAMBFSHsw      = Gains(32);
-GainSHAMGASsw       = Gains(33);
-SHAMthresholdsw     = Gains(34);
+LGainLHAMsw          = Gains(31);
+LGainSHAMBFSHsw      = Gains(32);
+LGainSHAMGASsw       = Gains(33);
+LSHAMthresholdsw     = Gains(34);
 
 % swing Ctrl (stance preparation)
-GainLHFLsw          = Gains(35);
-GainLGLUsw          = Gains(36);
-LceOffsetVASsw      = Gains(37);
-GainLVASsw          = Gains(38);
+LGainLHFLsw          = Gains(35);
+LGainLGLUsw          = Gains(36);
+LLceOffsetVASsw      = Gains(37);
+LGainLVASsw          = Gains(38);
 
 %% Coronal 
 %stance
 % M1: realize compliant leg
-GainFHABst          = Gains(39);
+LGainFHABst          = Gains(39);
 
 % M3: balance trunk
-GainPhiHATHABst     = Gains(40);
-GainDphiHATHABst    = Gains(41);
-GainPhiHATHADst     = Gains(42);
-GainDphiHATHADst    = Gains(43);
+LGainPhiHATHABst     = Gains(40);
+LGainDphiHATHABst    = Gains(41);
+LGainPhiHATHADst     = Gains(42);
+LGainDphiHATHADst    = Gains(43);
 
 % M4: compensate swing leg
-GainSHABcHABst      = Gains(44);
-GainSHADcHADst      = Gains(45);
+LGainSHABcHABst      = Gains(44);
+LGainSHADcHADst      = Gains(45);
 
 % swing
 % M6: swing hip
-GainLHABsw          = Gains(46);
-GainLHADsw          = Gains(47);
+LGainLHABsw          = Gains(46);
+LGainLHADsw          = Gains(47);
 
 %% Target leg angle stuff
-legLengthClr        = Gains(48);
-simbiconLegAngle0   = Gains(49);
-simbiconGainD       = Gains(50);
-simbiconGainV       = Gains(51); 
+LlegLengthClr        = Gains(48);
+LsimbiconLegAngle0   = Gains(49);
+LsimbiconGainD       = Gains(50);
+LsimbiconGainV       = Gains(51); 
 
-phiHATref           = Gains(52); % stance phase
-deltaLegAngleThr    = Gains(53); % swing phase
+LdeltaLegAngleThr    = Gains(52); % swing phase
 
-simbiconLegAngle0_C = Gains(54);
-simbiconGainD_C     = Gains(55);
-simbiconGainV_C     = Gains(56);
+LsimbiconLegAngle0_C = Gains(53);
+LsimbiconGainD_C     = Gains(54);
+LsimbiconGainV_C     = Gains(55);
 
 %% transition from stance to swing
-transSupst          = Gains(57);
-transsw             = Gains(58);
-transSupst_C        = Gains(59);
-transsw_C           = Gains(60);
+LtransSupst          = Gains(56);
+Ltranssw             = Gains(57);
+LtransSupst_C        = Gains(58);
+Ltranssw_C           = Gains(59);
 
 %% Prestimulations
 % Stance
-PreStimHFLst        = Gains(61);
-PreStimGLUst        = Gains(62);
-PreStimHAMst        = Gains(63);
-PreStimRFst         = Gains(64);
-PreStimVASst        = Gains(65);
-PreStimBFSHst       = Gains(66);
-PreStimGASst        = Gains(67);
-PreStimSOLst        = Gains(68);
-PreStimTAst         = Gains(69);
+LPreStimHFLst        = Gains(60);
+LPreStimGLUst        = Gains(61);
+LPreStimHAMst        = Gains(62);
+LPreStimRFst         = Gains(63);
+LPreStimVASst        = Gains(64);
+LPreStimBFSHst       = Gains(65);
+LPreStimGASst        = Gains(66);
+LPreStimSOLst        = Gains(67);
+LPreStimTAst         = Gains(68);
 
-PreStimHABst       	= Gains(70);
-PreStimHADst        = Gains(71);
+LPreStimHABst        = Gains(69);
+LPreStimHADst        = Gains(70);
 
 % Swing
-PreStimHFLsw        = Gains(72);
-PreStimGLUsw        = Gains(73);
-PreStimHAMsw        = Gains(74);
-PreStimRFsw         = Gains(75);
-PreStimVASsw        = Gains(76);
-PreStimBFSHsw       = Gains(77);
-PreStimGASsw        = Gains(78);
-PreStimSOLsw        = Gains(79);
-PreStimTAsw         = Gains(80);
+LPreStimHFLsw        = Gains(71);
+LPreStimGLUsw        = Gains(72);
+LPreStimHAMsw        = Gains(73);
+LPreStimRFsw         = Gains(74);
+LPreStimVASsw        = Gains(75);
+LPreStimBFSHsw       = Gains(76);
+LPreStimGASsw        = Gains(77);
+LPreStimSOLsw        = Gains(78);
+LPreStimTAsw         = Gains(79);
 
-PreStimHABsw       	= Gains(81);
-PreStimHADsw        = Gains(82);
+LPreStimHABsw        = Gains(80);
+LPreStimHADsw        = Gains(81);
+
+%%
+phiHATref           = Gains(82); % stance phase
+
+%% Right
+%% stance gains
+% M1
+RGainFGLUst          = Gains(83);
+
+% M2 
+RGainFHAMst          = Gains(84);
+
+% M3
+RGainPhiHATHFLst     = Gains(85);
+RGainDphiHATHFLst    = Gains(86);
+RGainPhiHATGLUst     = Gains(87);
+RGainDphiHATGLUst    = Gains(88);
+RGainSGLUHAMst       = Gains(89);
+
+% M4 
+RGainSGLUcHFLst      = Gains(90);
+RGainSHAMcHFLst      = Gains(91);
+RGainSHFLcGLUst      = Gains(92);
+RGainSRFcGLUst       = Gains(93);
+
+
+%% Swing gains
+% M6
+RGainLRFHFLsw        = Gains(94);
+RGainVRFHFLsw        = Gains(95);
+RGainLHAMGLUsw       = Gains(96);
+RGainVHAMGLUsw       = Gains(97);
+
+% swing Ctrl (knee_iii)
+RGainLHAMsw          = Gains(98);
+
+% swing Ctrl (stance preparation)
+RGainLHFLsw          = Gains(99);
+RGainLGLUsw          = Gains(100);
+
+%% Coronal 
+%stance
+% M1: realize compliant leg
+RGainFHABst          = Gains(101);
+
+% M3: balance trunk
+RGainPhiHATHABst     = Gains(102);
+RGainDphiHATHABst    = Gains(103);
+RGainPhiHATHADst     = Gains(104);
+RGainDphiHATHADst    = Gains(105);
+
+% M4: compensate swing leg
+RGainSHABcHABst      = Gains(106);
+RGainSHADcHADst      = Gains(107);
+
+% swing
+% M6: swing hip
+RGainLHABsw          = Gains(108);
+RGainLHADsw          = Gains(109);
+
+%% Target leg angle stuff
+RlegLengthClr        = Gains(110);
+RsimbiconLegAngle0   = Gains(111);
+RsimbiconGainD       = Gains(112);
+RsimbiconGainV       = Gains(113); 
+
+RdeltaLegAngleThr    = Gains(114); % swing phase
+
+RsimbiconLegAngle0_C = Gains(115);
+RsimbiconGainD_C     = Gains(116);
+RsimbiconGainV_C     = Gains(117);
+
+%% transition from stance to swing
+RtransSupst          = Gains(118);
+Rtranssw             = Gains(119);
+RtransSupst_C        = Gains(120);
+Rtranssw_C           = Gains(121);
+
+%% Prestimulations
+% Stance
+RPreStimHFLst        = Gains(122);
+RPreStimGLUst        = Gains(123);
+RPreStimHAMst        = Gains(124);
+RPreStimRFst         = Gains(125);
+
+RPreStimHABst        = Gains(126);
+RPreStimHADst        = Gains(127);
+
+% Swing
+RPreStimHFLsw        = Gains(128);
+RPreStimGLUsw        = Gains(129);
+RPreStimHAMsw        = Gains(130);
+RPreStimRFsw         = Gains(131);
+
+
+RPreStimHABsw        = Gains(132);
+RPreStimHADsw        = Gains(133);
+
 % [groundX, groundZ, groundTheta] = generateGround('flat');
 % [groundX, groundZ, groundTheta] = generateGround('const', .05,1);
 %[groundX, groundZ, groundTheta] = generateGround('ramp');

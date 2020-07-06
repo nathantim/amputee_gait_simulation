@@ -1,6 +1,6 @@
 function [cost, dataStruct] = getCost(model,Gains,time,metabolicEnergy,sumOfStopTorques,HATPos,stepVelocities,stepTimes,stepLengths, b_isParallel)
 try
-    if nargin < 12
+    if nargin < 10
         b_isParallel = 0;
     end
     OptimParams;

@@ -15,16 +15,20 @@ clear all; close all; clc;
 % initial_gains_filename = 'Results/Flat/optUmb10stanceswing1_3ms_prestim_lesshyper_dSopt.mat';
 % initial_gains_filename = 'Results/Flat/optUmb10kneelim3.mat';
 % initial_gains_filename = 'Results/Flat/optwoptUmb10_1_3ms.mat';
-% initial_gains_filename = 'Results/Flat/optwoptUmb10_swingstancesame_1_3ms.mat';
-initial_gains_filename = 'Results/Flat/Umb10_notgtangle_1_3ms_kneelim3_real.mat';
+initial_gains_filename = 'Results/Flat/song3Dopt.mat';
+% initial_gains_filename = 'Results/Flat/SongGains_02_wC.mat';
 initial_gains_file = load(initial_gains_filename);
+load('Results/Flat/SongGains_02_wC_IC.mat');
 
 %%
 global model rtp InitialGuess
 
 %% specifiy model and intial parameters
-model = 'NeuromuscularModel';
+model = 'NeuromuscularModel3D';
 optfunc = 'cmaesParallelSplit';
+
+set_param(model,'SimulationMode','rapid');
+set_param(model,'StopTime','30');
 
 InitialGuess = initial_gains_file.Gains;
 
@@ -32,6 +36,7 @@ InitialGuess = initial_gains_file.Gains;
 BodyMechParams;
 ControlParams;
 OptimParams;
+setInit;
 dt_visual = 1/30;
 [groundX, groundZ, groundTheta] = generateGround('flat');
 load_system(model)
@@ -52,7 +57,7 @@ opts.MaxIter = 2000;
 % opts.StopFitness = -inf;
 opts.StopFitness = 0;
 opts.DispModulo = 1;
-opts.TolX = 1e-3;
+opts.TolX = 1e-2;
 opts.TolFun = 1e-2;
 opts.EvalParallel = 'yes';
 opts.LogPlot = 'off';
@@ -60,7 +65,7 @@ if (min_velocity == target_velocity && max_velocity == target_velocity)
     opts.TargetVel = target_velocity;
 end
 opts.UserData = char(strcat("Gains filename: ", initial_gains_filename));
-opts.SaveFilename = 'vcmaes_Umb10_notgtangle_1_3ms_prestim_kneelim3_real.mat';
+opts.SaveFilename = 'vcmaes_Umb10_SONG3D_kneelim1_2.mat';
 
 %% run cmaes
 [xmin, fmin, counteval, stopflag, out, bestever] = cmaes(optfunc, x0, sigma0, opts)

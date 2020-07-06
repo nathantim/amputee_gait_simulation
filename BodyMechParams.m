@@ -32,6 +32,7 @@ footCenterlineToHeel = 0.05/2; %[m]
 
 %foot inertial properties
 footMass  = 1.25; %[kg] 1.25
+footMassAmp = 1; %kg
 footInertia_z = 0.005; %[kg*m^2] foot inertia about y-axis with (harmut's value)
 %footInertia = 0.0112; %[kg*m^2] foot inertia about y-axis from Winter Data
 footInertia_x   = 0.0007;
@@ -43,7 +44,6 @@ footInertia = [footInertia_x footInertia_y footInertia_z];
 % -------------------------
 
 shankLength = 0.5; %[m]
-shankLengthAmp = shankLength - 0.1;
 shankAnkleToCenterDist  = shankLength/2; %[m]
 shankAnkleToCGDist = 0.3; %[m]
 shankCenterToCGDist = shankAnkleToCGDist - shankAnkleToCenterDist; %[m]
@@ -66,7 +66,6 @@ shankProsthInertia = [shankProsthInertia_x shankProsthInertia_y shankProsthInert
 
 % total thigh length
 thighLength = 0.5; %[m]
-thighLengthAmp = thighLength - 0.1; % amputated thigh length
 thighLateralOffset = 0.1;   %[m]
 thighKneeToCenterDist = thighLength/2; %[m]
 thighKneeToCG = 0.3;
@@ -127,9 +126,13 @@ shankAnkleToCGDist = shankAnkleToCGDist - ankle_height/4;
 thighLength = thighLength - ankle_height/2; %[m]
 thighKneeToCG = thighKneeToCG - ankle_height/4; %[m]
 
+thighLengthAmp = thighLength - 0.1; % amputated thigh length
+shankLengthAmp = shankLength - 0.1;
+
 leg_l = [thighLength shankLength];
-leg_0 = shankLength + thighLength; % [m] full leg length (from hip to ankle)
-    
+leg_0 = sum(leg_l); % [m] full leg length (from hip to ankle)
+leg_lamp = [thighLengthAmp shankLengthAmp];
+leg_0amp = sum(leg_lamp); % [m] full leg length (from hip to ankle)    
 
 
 % ---------------------
@@ -140,7 +143,7 @@ leg_0 = shankLength + thighLength; % [m] full leg length (from hip to ankle)
 phiAnkleLowLimit =  -20*pi/180; %[rad]
 phiAnkleUpLimit  = 40*pi/180; %[rad]
 
-phiKneeUpLimit  = 5*pi/180; %[rad]
+phiKneeUpLimit  = 1*pi/180; %[rad]
 
 phiHipUpLimit  = 50*pi/180; %[rad]
 
@@ -288,11 +291,22 @@ eref =  0.04; %[lslack] tendon reference strain
 % ------------------------------
 % 3.2 Muscle-Specific Parameters
 % ------------------------------
+
+% Force factors for maximum amputated leg muscle force
+ampHipFlexFactor = 0.65;
+ampHipExtFactor = 0.6;
+
 % hip abductor (HAB)
 FmaxHAB    =     3000; % maximum isometric force [N]
 loptHAB    =     0.09; % optimum fiber length CE [m]
 vmaxHAB    =       12; % maximum contraction velocity [lopt/s]
 lslackHAB  =     0.07; % tendon slack length [m]
+
+% amputated leg hip abductor (HAB)
+FmaxHABamp    =     3000; % maximum isometric force [N]
+loptHABamp    =     0.09; % optimum fiber length CE [m]
+vmaxHABamp    =       12; % maximum contraction velocity [lopt/s]
+lslackHABamp  =     0.07; % tendon slack length [m]
 
 % hip adductor (HAD)
 FmaxHAD    =     4500; % maximum isometric force [N]
@@ -300,11 +314,23 @@ loptHAD    =     0.10; % optimum fiber length CE [m]
 vmaxHAD    =       12; % maximum contraction velocity [lopt/s]
 lslackHAD  =     0.18; % tendon slack length [m]
 
+% amputated leg hip adductor (HAD)
+FmaxHADamp    =     4500; % maximum isometric force [N]
+loptHADamp    =     0.10; % optimum fiber length CE [m]
+vmaxHADamp    =       12; % maximum contraction velocity [lopt/s]
+lslackHADamp  =     0.18; % tendon slack length [m]
+
 % hip flexor muscles
 FmaxHFL   = 2000; % maximum isometric force [N]
 loptHFL   = 0.11; % optimum fiber length CE [m]
 vmaxHFL   =   12; % maximum contraction velocity [lopt/s]
 lslackHFL = 0.10; % tendon slack length [m]
+
+% amputated leg hip flexor muscles
+FmaxHFLamp   = 2000*ampHipFlexFactor; % maximum isometric force [N]
+loptHFLamp   = 0.11; % optimum fiber length CE [m]
+vmaxHFLamp   =   12; % maximum contraction velocity [lopt/s]
+lslackHFLamp = 0.10; % tendon slack length [m]
 
 % glutei muscles
 FmaxGLU   = 1500; % maximum isometric force [N]
@@ -312,17 +338,35 @@ loptGLU   = 0.11; % optimum fiber length CE [m]
 vmaxGLU   =   12; % maximum contraction velocity [lopt/s]
 lslackGLU = 0.13; % tendon slack length [m]
 
+% amputated leg glutei muscles
+FmaxGLUamp   = 1500*ampHipExtFactor; % maximum isometric force [N]
+loptGLUamp   = 0.11; % optimum fiber length CE [m]
+vmaxGLUamp   =   12; % maximum contraction velocity [lopt/s]
+lslackGLUamp = 0.13; % tendon slack length [m]
+
 % hamstring muscles
 FmaxHAM   = 3000; % maximum isometric force [N]
 loptHAM   = 0.10; % optimum fiber length CE [m]
 vmaxHAM   =   12; % maximum contraction velocity [lopt/s]
 lslackHAM = 0.31; % tendon slack length [m]
 
+% amputated leg hamstring muscles
+FmaxHAMamp   = 3000*ampHipExtFactor; % maximum isometric force [N]
+loptHAMamp   = (34.87/46)*0.10; % optimum fiber length CE [m]
+vmaxHAMamp   =   12; % maximum contraction velocity [lopt/s]
+lslackHAMamp = (34.87/46)*0.31; % tendon slack length [m]
+
 % rectus femoris muscles
-FmaxRF   = 1200; % %850 maximum isometric force [N]
+FmaxRF   = 1200; %  maximum isometric force [N]
 loptRF   = 0.08; % optimum fiber length CE [m]
 vmaxRF   =   12; % maximum contraction velocity [lopt/s]
 lslackRF = 0.35; % tendon slack length [m]
+
+% amputated leg rectus femoris muscles
+FmaxRFamp   = 1200*ampHipFlexFactor; %  maximum isometric force [N]
+loptRFamp   = (34.87/46)*0.08; % optimum fiber length CE [m]
+vmaxRFamp   =   12; % maximum contraction velocity [lopt/s]
+lslackRFamp = (34.87/46)*0.35; % tendon slack length [m]
 
 % vasti muscles
 FmaxVAS     = 6000; % maximum isometric force [N]
@@ -380,6 +424,19 @@ FT_BFSH=65.6;
 ST_BFSH=35.4;
 FT_RF=60.6;
 ST_RF=39.4;
+
+FT_GLUamp=47.6;
+ST_GLUamp=52.4;
+FT_HFLamp=50.8;%Psoas
+ST_HFLamp=49.2;%Psoas
+FT_HAMamp=65.6;%Bicep Femoris
+ST_HAMamp=35.4;%Bicep Femoris
+FT_HABamp=85;
+ST_HABamp=15;
+FT_HADamp=58;
+ST_HADamp=42;
+FT_RFamp=60.6;
+ST_RFamp=39.4;
 warning('Unknown muscle composition BFSH, RF');
 % *************************** %
 % 4. Ground Interaction Model %

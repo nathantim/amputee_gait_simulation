@@ -8,12 +8,12 @@ t_right_perc = GaitInfo.time.right_perc;
 GRFData.signals.values = GRFData.signals.values./getBodyMass();
 % L_Ball  = GRFData.signals.values(GaitInfo.start.left:GaitInfo.end.left,1:2);
 L_Total_x = GRFData.signals.values(GaitInfo.start.left:GaitInfo.end.left,1);
-L_Total_z = GRFData.signals.values(GaitInfo.start.left:GaitInfo.end.left,2);
+L_Total_z = GRFData.signals.values(GaitInfo.start.left:GaitInfo.end.left,3);
 % L_Heel  = GRFData.signals.values(GaitInfo.start.left:GaitInfo.end.left,5:6);
 
 % R_Ball  = GRFData.signals.values(GaitInfo.start.right:GaitInfo.end.right,7:8);
 R_Total_x = GRFData.signals.values(GaitInfo.start.right:GaitInfo.end.right,4);
-R_Total_z = GRFData.signals.values(GaitInfo.start.right:GaitInfo.end.right,5);
+R_Total_z = GRFData.signals.values(GaitInfo.start.right:GaitInfo.end.right,6);
 % R_Heel  = GRFData.signals.values(GaitInfo.start.right:GaitInfo.end.right,11:12);
 
 warning('Direction stuff');
