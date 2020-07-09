@@ -58,7 +58,11 @@ end% ylabel('rad');
 hold(axesHandles(4),'on');
 
 axesHandles(5) = subplot(6,2,5,axesHandles(5));
-plotHandles(5) = plot(axesHandles(5),t,VAS);
+if (length(t) == length(VAS))
+    plotHandles(5) = plot(axesHandles(5),t,VAS);
+else
+    plotHandles(5) = plot(axesHandles(5),t,zeros(size(t)));
+end
 title(axesHandles(5),'VAS')
 if (max(VAS)<1)
     ylim(axesHandles(5),[0,1])
@@ -66,10 +70,17 @@ end
 % ylabel('rad/s')
 hold(axesHandles(5),'on');
 
+
+
 %%
 
 axesHandles(6) = subplot(6,2,6,axesHandles(6));
-plotHandles(6) = plot(axesHandles(6),t,BFSH);
+if (length(t) == length(BFSH))
+    plotHandles(6) = plot(axesHandles(6),t,BFSH);
+else
+    plotHandles(6) = plot(axesHandles(6),t,zeros(size(t)));
+end
+
 title(axesHandles(6),'BFSH')
 if (max(BFSH)<1)
     ylim(axesHandles(6),[0,1])
@@ -79,7 +90,11 @@ hold(axesHandles(6),'on');
 
 
 axesHandles(7) = subplot(6,2,7,axesHandles(7));
-plotHandles(7) = plot(axesHandles(7),t,GAS);
+if (length(t) == length(GAS))
+    plotHandles(7) = plot(axesHandles(7),t,GAS);
+else
+    plotHandles(7) = plot(axesHandles(7),t,zeros(size(t)));
+end
 title(axesHandles(7),'GAS')
 if (max(GAS)<1)
     ylim(axesHandles(7),[0,1])
@@ -88,7 +103,11 @@ end
 hold(axesHandles(7),'on');
 
 axesHandles(8) = subplot(6,2,8,axesHandles(8));
-plotHandles(8) = plot(axesHandles(8),t,SOL);
+if (length(t) == length(SOL))
+    plotHandles(8) = plot(axesHandles(8),t,SOL);
+else
+    plotHandles(8) = plot(axesHandles(8),t,zeros(size(t)));
+end
 title(axesHandles(8),'SOL')
 if (max(SOL)<1)
     ylim(axesHandles(8),[0,1])
@@ -99,7 +118,12 @@ hold(axesHandles(8),'on');
 
 
 axesHandles(9) = subplot(6,2,9,axesHandles(9));
-plotHandles(9) = plot(axesHandles(9),t,TA);
+if (length(t) == length(TA))
+    plotHandles(9) = plot(axesHandles(9),t,TA);
+else
+    plotHandles(9) = plot(axesHandles(9),t,zeros(size(t)));
+end
+
 title(axesHandles(9),'TA')
 if (max(TA)<1)
     ylim(axesHandles(9),[0,1])

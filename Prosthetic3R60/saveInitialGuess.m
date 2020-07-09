@@ -1,52 +1,29 @@
 BodyMechParams
 ControlParams
-% prostheticParams
 
-InitialGuess( 1) = LGainGAS;           
-InitialGuess( 2) = LGainGLU;           
-InitialGuess( 3) = LGainHAM;           
-InitialGuess( 4) = LGainKneeOverExt;   
-InitialGuess( 5) = LGainSOL;           
-InitialGuess( 6) = LGainSOLTA;         
-InitialGuess( 7) = LGainTA;            
-InitialGuess( 8) = LGainVAS;           
-InitialGuess( 9) = LKglu;              
-InitialGuess(10) = LPosGainGG;         
-InitialGuess(11) = LSpeedGainGG;       
-InitialGuess(12) = LhipDGain;          
-InitialGuess(13) = LhipPGain;          
-InitialGuess(14) = LkneeExtendGain;    
-InitialGuess(15) = LkneeFlexGain;      
-InitialGuess(16) = LkneeHoldGain1;     
-InitialGuess(17) = LkneeHoldGain2;     
-InitialGuess(18) = LkneeStopGain;      
-InitialGuess(19) = LlegAngleFilter;    
-InitialGuess(20) = LlegLengthClr;      
-InitialGuess(21) = RGainGAS;           
-InitialGuess(22) = RGainGLU;           
-InitialGuess(23) = RGainHAM;           
-InitialGuess(24) = RGainHAMCut;        
-InitialGuess(25) = RGainKneeOverExt;   
-InitialGuess(26) = RGainSOL;           
-InitialGuess(27) = RGainSOLTA;         
-InitialGuess(28) = RGainTA;            
-InitialGuess(29) = RGainVAS;           
-InitialGuess(30) = RKglu;              
-InitialGuess(31) = RPosGainGG;         
-InitialGuess(32) = RSpeedGainGG;       
-InitialGuess(33) = RhipDGain;          
-InitialGuess(34) = RhipPGain;          
-InitialGuess(35) = RkneeExtendGain;    
-InitialGuess(36) = RkneeFlexGain;      
-InitialGuess(37) = RkneeHoldGain1;     
-InitialGuess(38) = RkneeHoldGain2;     
-InitialGuess(39) = RkneeStopGain;      
-InitialGuess(40) = RlegAngleFilter;    
-InitialGuess(41) = RlegLengthClr;      
-InitialGuess(42) = simbiconGainD;     
-InitialGuess(43) = simbiconGainV;     
-InitialGuess(44) = simbiconLegAngle0;      
-InitialGuess(45) = legAngleTgt;      
+InitialGuess( 1) = GainGAS;
+InitialGuess( 2) = GainGLU;           
+InitialGuess( 3) = GainHAM;           
+InitialGuess( 4) = GainKneeOverExt;   
+InitialGuess( 5) = GainSOL;           
+InitialGuess( 6) = GainSOLTA;         
+InitialGuess( 7) = GainTA;            
+InitialGuess( 8) = GainVAS;           
+InitialGuess( 9) = Kglu;              
+InitialGuess(10) = PosGainGG;         
+InitialGuess(11) = SpeedGainGG;       
+InitialGuess(12) = hipDGain;          
+InitialGuess(13) = hipPGain;          
+InitialGuess(14) = kneeExtendGain;    
+InitialGuess(15) = kneeFlexGain;      
+InitialGuess(16) = kneeHoldGain1;     
+InitialGuess(17) = kneeHoldGain2;     
+InitialGuess(18) = kneeStopGain;      
+InitialGuess(19) = legAngleFilter;    
+InitialGuess(20) = legLengthClr;      
+InitialGuess(21) = simbiconGainD;     
+InitialGuess(22) = simbiconGainV;     
+InitialGuess(23) = simbiconLegAngle0;
 
 InitialGuess = InitialGuess';
 save('InitialGuess.mat','InitialGuess')

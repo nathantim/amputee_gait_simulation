@@ -1,46 +1,50 @@
 try 
     save_system;
+    disp('Saved loaded system');
 catch
     disp('No system loaded to be saved.');
 end
 bdclose('all');
-clear all; clc;
+clear all; close all; clc;
 
 %%
-initial_gains_filename = ('Results/RoughDist/optimizedGains1.mat');
-
+initial_gains_filename = 'Results/Flat/SongGains_02amp.mat';
 initial_gains_file = load(initial_gains_filename);
+load('Results/Flat/SongGains_02_wC_IC.mat');
 
 %%
 global model rtp InitialGuess
 
 %% specifiy model and intial parameters
-model = 'NeuromuscularModelwReflex2';
-% optfunc = 'cmaesParallelSplit_novirtmuscle';
+model = 'NeuromuscularModel_3R60_2D';
 optfunc = 'cmaesParallelSplit';
+load_system(model);
+set_param(strcat(model,'/Body Mechanics Layer/Right Ankle Joint'),'SpringStiffness','300','DampingCoefficient','100');
+% % set_param(strcat(model,'/Body Mechanics Layer/Right Ankle Joint'),'SpringStiffness','20','DampingCoefficient','4');
+set_param(model,'SimulationMode','rapid');
+set_param(model,'StopTime','30');
 
-InitialGuess = initial_gains_file.Gains(1:45);
+InitialGuess = initial_gains_file.Gains;
 
 %% initialze parameters
 BodyMechParams;
 ControlParams;
 OptimParams;
 Prosthesis3R60Params;
+setInit;
+ 
 dt_visual = 1/30;
 [groundX, groundZ, groundTheta] = generateGround('flat');
+load_system(model)
 
 %% Build the Rapid Accelerator target once
-load_system(model)
-set_param(strcat(model,'/Prosthetic Body Mechanics Layer/Right Ankle'),'SpringStiffness','300','DampingCoefficient','100');
-% set_param(strcat(model,'/Prosthetic Body Mechanics Layer/Right Ankle'),'SpringStiffness','20','DampingCoefficient','4');
-set_param(model,'SimulationMode','rapid');
-set_param(model,'StopTime','30');
 rtp = Simulink.BlockDiagram.buildRapidAcceleratorTarget(model);
 
 %% setup cmaes
 numvars = length(InitialGuess);
 x0 = zeros(numvars,1);
-sigma0 = 1/8;
+% sigma0 = 1/8;
+sigma0 = 1/3;
 
 opts = cmaes;
 %opts.PopSize = numvars;
@@ -57,7 +61,7 @@ if (min_velocity == target_velocity && max_velocity == target_velocity)
     opts.TargetVel = target_velocity;
 end
 opts.UserData = char(strcat("Gains filename: ", initial_gains_filename));
-opts.SaveFilename = 'variablescmaes_healthy_energy_Umb10_less_fmax_no_targetangle.mat';
-% opts.SaveFilename = 'variablescmaes_healthy_energy_Umb10_no_stiff_ankle.mat';
+opts.SaveFilename = 'vcmaes_Umb10_SONG.mat';
+
 %% run cmaes
 [xmin, fmin, counteval, stopflag, out, bestever] = cmaes(optfunc, x0, sigma0, opts)

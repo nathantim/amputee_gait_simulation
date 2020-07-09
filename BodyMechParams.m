@@ -293,8 +293,9 @@ eref =  0.04; %[lslack] tendon reference strain
 % ------------------------------
 
 % Force factors for maximum amputated leg muscle force
-ampHipFlexFactor = 0.65;
-ampHipExtFactor = 0.6;
+ampHipFlexFactor = 1;%0.65;
+ampHipExtFactor = 1;%0.6;
+Lfactor = (34.87/46);
 
 % hip abductor (HAB)
 FmaxHAB    =     3000; % maximum isometric force [N]
@@ -352,9 +353,9 @@ lslackHAM = 0.31; % tendon slack length [m]
 
 % amputated leg hamstring muscles
 FmaxHAMamp   = 3000*ampHipExtFactor; % maximum isometric force [N]
-loptHAMamp   = (34.87/46)*0.10; % optimum fiber length CE [m]
+loptHAMamp   = Lfactor*0.10; % optimum fiber length CE [m]
 vmaxHAMamp   =   12; % maximum contraction velocity [lopt/s]
-lslackHAMamp = (34.87/46)*0.31; % tendon slack length [m]
+lslackHAMamp = Lfactor*0.31; % tendon slack length [m]
 
 % rectus femoris muscles
 FmaxRF   = 1200; %  maximum isometric force [N]
@@ -364,9 +365,9 @@ lslackRF = 0.35; % tendon slack length [m]
 
 % amputated leg rectus femoris muscles
 FmaxRFamp   = 1200*ampHipFlexFactor; %  maximum isometric force [N]
-loptRFamp   = (34.87/46)*0.08; % optimum fiber length CE [m]
+loptRFamp   = Lfactor*0.08; % optimum fiber length CE [m]
 vmaxRFamp   =   12; % maximum contraction velocity [lopt/s]
-lslackRFamp = (34.87/46)*0.35; % tendon slack length [m]
+lslackRFamp = Lfactor*0.35; % tendon slack length [m]
 
 % vasti muscles
 FmaxVAS     = 6000; % maximum isometric force [N]

@@ -10,6 +10,69 @@ termination_height = 0.5;
 
 %% %
 
+
+% ==================================== %
+% SET LATERAL PLANE CONTROL PARAMETERS %
+% ==================================== %
+
+% --------------------
+% higher layer control
+% --------------------
+
+% foot placement Ctrl %
+simbiconLegAngle0_C       =(-1)   *pi/180; 
+simbiconGainD_C           = 10     *pi/180;    % [rad/m]
+simbiconGainV_C           = 10     *pi/180;    % [rad*s/m]
+
+% 0: prestimulations
+PreStimHABst       	= 0.01;
+PreStimHADst        = 0.01;
+
+% M1: realize compliant leg
+GainFHABst    	= .45/FmaxHAB;
+
+% M3: balance trunk
+GainPhiHATHABst     = 2.4;
+GainDphiHATHABst    = .4;
+GainPhiHATHADst     = .5;
+GainDphiHATHADst    = .55;
+
+% M4: compensate swing leg
+GainSHABcHABst  = 1.5;
+GainSHADcHADst  = .4;
+
+
+% -------------
+% swing control
+% -------------
+
+% constants (measurment parameters)
+a2loptHAB     = 0.5442*rHAB*rhoHAB/loptHAB;
+aRefHAB       = 0.8628*(pi/2 - phirefHAB);
+a2loptHAD     = 0.6798*rHAD*rhoHAD/loptHAD;
+aRefHAD       = 0.8053*(pi/2 - phirefHAD);
+
+% 0: prestimulations
+PreStimHABsw       	= 0.01;
+PreStimHADsw        = 0.01;
+
+% M6: swing hip
+GainLHABsw      = 1/a2loptHAB;
+GainLHADsw      = 1/a2loptHAD;
+
+% ----------------------------------
+% stance -> swing transition control
+% ----------------------------------
+
+
+transSupst_C       = 1;
+transsw_C          = 1;
+
+thetaHATref      = 0; %[rad] song
+
+%%
+
+
 % legAngleSpeedMax = 10; %[rad/s]
 
 % hipPGain = 110; %[Nm/rad]
@@ -193,7 +256,7 @@ LphiHip0  = -39.3264*pi/180; %[rad]
 % right (swing) leg ankle, knee and hip joint angles
 % for walking
 RphiAnkle0  =   -5.7446*pi/180; %[rad]
-RphiKnee0  = 2.6426*pi/180; %[rad]
+RphiKnee0  = 3.6426*pi/180; %[rad]
 RphiHip0  = 23.7692*pi/180; %[rad]
 
 initialTargetAngle  = 70*pi/180;

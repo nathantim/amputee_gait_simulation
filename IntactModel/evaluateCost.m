@@ -1,9 +1,9 @@
-% clc;
+clc;
 %%
 % tempstring = strsplit(opts.UserData,' ');
 % dataFile = tempstring{end};
 % InitialGuessFile = load(dataFile); 
-% 
+% % 
 % Gains = InitialGuessFile.Gains.*exp(bestever.x);
 % load('Results/Flat/GeyerHerrInit.mat');
 % load('Results/Flat/optandGeyerHerrInit.mat');
@@ -13,7 +13,7 @@
 % load('Results/Flat/v_1.1m_s.mat');
 % load('Results/Flat/v_1.4m_s.mat');
 % load('Results/Flat/optUmb10stanceswing1_3ms_prestim.mat');
-load('Results/Flat/SongGains.mat');
+
 % compareenergies = load('compareEnergyCostTotal.mat');
 
 % 
@@ -22,10 +22,21 @@ load('Results/Flat/SongGains.mat');
 % 
 
 %%
+% load('Results/RoughDist/SongGains_wC.mat');
+% load('Results/RoughDist/SongGains_wC_IC.mat');
+load('Results/Flat/SongGains_02.mat');
+load('Results/Flat/SongGains_02_wC_IC.mat');
+
+
 assignGains;
 dt_visual = 1/50;
-model = 'NeuromuscularModel';
+setInit;
+
+%%
+model = 'NeuromuscularModel2D';
 %open('NeuromuscularModel');
+% set_param(model,'SimulationMode','normal');
+% set_param(model,'StopTime','30');
 
 warning('off');
 tic;
@@ -34,7 +45,7 @@ toc;
 warning('on');
 
 %%
-[cost, dataStruct] = getCost(model,Gains,time,metabolicEnergy,sumOfStopTorques,HATPos,stepVelocities,stepTimes,stepLengths,1);
+[cost, dataStruct] = getCost(model,Gains,time,metabolicEnergy,sumOfStopTorques,HATPos,stepVelocities,stepTimes,stepLengths,0);
 %%
 % kinematics.angularData = angularData;
 % kinematics.GaitPhaseData = GaitPhaseData;

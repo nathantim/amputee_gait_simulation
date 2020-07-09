@@ -8,23 +8,23 @@ t_right_perc = GaitInfo.time.right_perc;
 
 %%
 
-HATAngle    = 2*180/pi*angularData.signals.values(GaitInfo.start.left:GaitInfo.end.left,1);
-HATAngleVel = 180/pi*angularData.signals.values(GaitInfo.start.left:GaitInfo.end.left,2);
+% HATAngle    = 2*180/pi*angularData.signals.values(GaitInfo.start.left:GaitInfo.end.left,1);
+% HATAngleVel = 180/pi*angularData.signals.values(GaitInfo.start.left:GaitInfo.end.left,2);
 
 LhipAngles      = -180/pi*angularData.signals.values(GaitInfo.start.left:GaitInfo.end.left,3);
-LhipAnglesVel   = -180/pi*angularData.signals.values(GaitInfo.start.left:GaitInfo.end.left,4);
+% LhipAnglesVel   = -180/pi*angularData.signals.values(GaitInfo.start.left:GaitInfo.end.left,4);
 RhipAngles      = -180/pi*angularData.signals.values(GaitInfo.start.right:GaitInfo.end.right,5);
-RhipAnglesVel   = -180/pi*angularData.signals.values(GaitInfo.start.right:GaitInfo.end.right,6);
+% RhipAnglesVel   = -180/pi*angularData.signals.values(GaitInfo.start.right:GaitInfo.end.right,6);
 
 LkneeAngles     = 180/pi*angularData.signals.values(GaitInfo.start.left:GaitInfo.end.left,7);
-LkneeAnglesVel  = 180/pi*angularData.signals.values(GaitInfo.start.left:GaitInfo.end.left,8);
+% LkneeAnglesVel  = 180/pi*angularData.signals.values(GaitInfo.start.left:GaitInfo.end.left,8);
 RkneeAngles     = 180/pi*angularData.signals.values(GaitInfo.start.right:GaitInfo.end.right,9);
-RkneeAnglesVel  = 180/pi*angularData.signals.values(GaitInfo.start.right:GaitInfo.end.right,10);
+% RkneeAnglesVel  = 180/pi*angularData.signals.values(GaitInfo.start.right:GaitInfo.end.right,10);
 
 LankleAngles    = -180/pi*angularData.signals.values(GaitInfo.start.left:GaitInfo.end.left,11);
-LankleAnglesVel = -180/pi*angularData.signals.values(GaitInfo.start.left:GaitInfo.end.left,12);
+% LankleAnglesVel = -180/pi*angularData.signals.values(GaitInfo.start.left:GaitInfo.end.left,12);
 RankleAngles    = -180/pi*angularData.signals.values(GaitInfo.start.right:GaitInfo.end.right,13);
-RankleAnglesVel = -180/pi*angularData.signals.values(GaitInfo.start.right:GaitInfo.end.right,14);
+% RankleAnglesVel = -180/pi*angularData.signals.values(GaitInfo.start.right:GaitInfo.end.right,14);
 warning('Unreasoned factor -1');
 
 leftLegState    = GaitPhaseData.signals.values(GaitInfo.start.left:GaitInfo.end.left,1);

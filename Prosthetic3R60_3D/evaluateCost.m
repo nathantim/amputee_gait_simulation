@@ -1,4 +1,4 @@
-clc;
+% clc;
 %%
 tempstring = strsplit(opts.UserData,' ');
 dataFile = tempstring{end};
@@ -23,10 +23,14 @@ Gains = InitialGuessFile.Gains.*exp(bestever.x);
 
 %%
 % load('Results/RoughDist/SongGains_wC.mat');
-% load('Results/RoughDist/SongGains_wC_IC.mat');
 % load('Results/Flat/SongGains_02amp_wC.mat');
-% load('Results/Flat/SongGains_02_wC_IC.mat');
 
+% load('Results/RoughDist/SongGains_wC_IC.mat');
+load('Results/Flat/SongGains_02_wC_IC.mat');
+% Gains(94) = 2*Gains(94);
+% Gains(101) = 1*Gains(101);
+% Gains(108) = 1*Gains(108);
+Gains(109) = 0.01*Gains(109);
 assignGains;
 dt_visual = 1/50;
 setInit;
@@ -34,8 +38,8 @@ setInit;
 %%
 model = 'NeuromuscularModel_3R60_3D';
 %open('NeuromuscularModel');
-set_param(model,'SimulationMode','normal');
-set_param(model,'StopTime','30');
+% set_param(model,'SimulationMode','normal');
+% set_param(model,'StopTime','30');
 
 warning('off');
 tic;

@@ -4,17 +4,19 @@ if nargin < 2
     Gains = nan(30,1);
 end
 % OptimParams;
-model = 'NeuromuscularModel';
+model = 'NeuromuscularModel_3R60_3D';
 try
     simout = sim(model,...
         'RapidAcceleratorParameterSets',paramStruct,...
         'RapidAcceleratorUpToDateCheck','off',...
         'TimeOut',2*60,...
         'SaveOutput','on');
-catch
+catch ME
+    
     cost = nan;
-    disp('Timeout')
     disp(Gains');
+    disp('Timeout')
+    warning(ME.message);
     return
 end
 

@@ -2,11 +2,8 @@ BodyMechParams;
 ControlParams;
 OptimParams;
 
-% load('Results/Flat/v_0.5m_s.mat');
-% load('Results/Flat/v_0.8m_s.mat');
-% load('Results/Flat/v_1.1m_s.mat');
-% load('Results/Flat/v_1.4m_s.mat');
-
+%  load('SongGains_02_wC.mat');
+ thetaHATref = 0;
 %% stance gains
 % M1
 GainFGLUst          = Gains( 1);
@@ -78,9 +75,11 @@ simbiconGainV       = Gains(42);
 phiHATref           = Gains(43); % stance phase
 deltaLegAngleThr    = Gains(44); % swing phase
 
+
 %% transition from stance to swing
 transSupst          = Gains(45);
 transsw             = Gains(46);
+
 
 %% Prestimulations
 % Stance
@@ -94,6 +93,8 @@ PreStimGASst        = Gains(53);
 PreStimSOLst        = Gains(54);
 PreStimTAst         = Gains(55);
 
+
+
 % Swing
 PreStimHFLsw        = Gains(56);
 PreStimGLUsw        = Gains(57);
@@ -105,7 +106,8 @@ PreStimGASsw        = Gains(62);
 PreStimSOLsw        = Gains(63);
 PreStimTAsw         = Gains(64);
 
-[groundX, groundZ, groundTheta] = generateGround('flat');
+
+% [groundX, groundZ, groundTheta] = generateGround('flat');
 % [groundX, groundZ, groundTheta] = generateGround('const', .05,1);
 %[groundX, groundZ, groundTheta] = generateGround('ramp');
 
