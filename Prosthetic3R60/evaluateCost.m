@@ -1,25 +1,11 @@
-% clc;
+clc;
 %%
 % tempstring = strsplit(opts.UserData,' ');
 % dataFile = tempstring{end};
 % InitialGuessFile = load(dataFile); 
 % 
 % Gains = InitialGuessFile.Gains.*exp(bestever.x);
-% load('Results/Flat/GeyerHerrInit.mat');
-% load('Results/Flat/optandGeyerHerrInit.mat');
-% load('Results/Flat/SCONE.mat');
-% load('Results/Flat/v_0.5m_s.mat');
-% load('Results/Flat/v_0.8m_s.mat');
-% load('Results/Flat/v_1.1m_s.mat');
-% load('Results/Flat/v_1.4m_s.mat');
-% load('Results/Flat/optUmb10stanceswing1_3ms_prestim.mat');
 
-% compareenergies = load('compareEnergyCostTotal.mat');
-
-% 
-% idx_minCost = find(compareenergies.cost==min(compareenergies.cost),1,'first');
-% Gains2 = compareenergies.Gains(idx_minCost,:)';
-% 
 
 %%
 % load('Results/RoughDist/SongGainsamp.mat');
@@ -27,14 +13,16 @@ load('Results/Flat/SongGains_02amp.mat');
 
 % load('Results/RoughDist/SongGains_wC_IC.mat');
 load('Results/Flat/SongGains_02_wC_IC.mat');
-% Gains(94) = 2*Gains(94);
-% Gains(101) = 1*Gains(101);
-% Gains(108) = 1*Gains(108);
-% Gains(109) = 0.01*Gains(109);
+
+
 assignGains;
 dt_visual = 1/50;
 setInit;
-
+% LlegLengthClr = 0.95*LlegLengthClr;
+% RGainLRFHFLsw = 5*RGainLRFHFLsw;
+% RGainVRFHFLsw = 5*RGainVRFHFLsw;
+% RlegLengthClr = 0.9*RlegLengthClr;
+% RGainLGLUsw = 3*RGainLGLUsw;
 %%
 model = 'NeuromuscularModel_3R60_2D';
 %open('NeuromuscularModel');

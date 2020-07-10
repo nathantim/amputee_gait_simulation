@@ -38,6 +38,7 @@ footInertia_z = 0.005; %[kg*m^2] foot inertia about y-axis with (harmut's value)
 footInertia_x   = 0.0007;
 footInertia_y   = 0.005;
 footInertia = [footInertia_x footInertia_y footInertia_z];
+footProsthInertia = [0 0 0];
 
 % -------------------------
 % 1.2 General Shank Segment

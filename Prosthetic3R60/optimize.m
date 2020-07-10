@@ -43,8 +43,8 @@ rtp = Simulink.BlockDiagram.buildRapidAcceleratorTarget(model);
 %% setup cmaes
 numvars = length(InitialGuess);
 x0 = zeros(numvars,1);
-% sigma0 = 1/8;
-sigma0 = 1/3;
+sigma0 = 1/8;
+% sigma0 = 1/3;
 
 opts = cmaes;
 %opts.PopSize = numvars;

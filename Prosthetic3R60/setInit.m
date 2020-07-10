@@ -7,7 +7,7 @@ LphiKnee0       = pi - paramIC(3)   	*180*pi/180; %[rad]
 LphiHip0        = 1/2*(paramIC(4) 	*165*pi/180 - pi); %[rad]
 RphiAnkle0      = paramIC(5)  	*90*pi/180 - pi/2; %[rad]
 RphiKnee0       = pi - paramIC(6)  	*165*pi/180; %[rad]
-RphiHip0        = -3*(paramIC(7)   	*200*pi/180 - pi); %[rad]
+RphiHip0        = -2.8*(paramIC(7)   	*200*pi/180 - pi); %[rad]
 
 
 vy0 = paramIC(10)*.2;
