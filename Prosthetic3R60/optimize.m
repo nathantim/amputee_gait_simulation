@@ -8,7 +8,8 @@ bdclose('all');
 clear all; close all; clc;
 
 %%
-initial_gains_filename = 'Results/Flat/SongGains_02amp.mat';
+% initial_gains_filename = 'Results/Flat/SongGains_02amp.mat';
+initial_gains_filename = 'Results/Flat/Umb10nodimmuscleforce.mat';
 initial_gains_file = load(initial_gains_filename);
 load('Results/Flat/SongGains_02_wC_IC.mat');
 
@@ -61,7 +62,7 @@ if (min_velocity == target_velocity && max_velocity == target_velocity)
     opts.TargetVel = target_velocity;
 end
 opts.UserData = char(strcat("Gains filename: ", initial_gains_filename));
-opts.SaveFilename = 'vcmaes_Umb10_SONG.mat';
+opts.SaveFilename = 'vcmaes_Umb10_dimmuscleforce.mat';
 
 %% run cmaes
 [xmin, fmin, counteval, stopflag, out, bestever] = cmaes(optfunc, x0, sigma0, opts)

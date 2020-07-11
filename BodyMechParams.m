@@ -294,8 +294,8 @@ eref =  0.04; %[lslack] tendon reference strain
 % ------------------------------
 
 % Force factors for maximum amputated leg muscle force
-ampHipFlexFactor = 1;%0.65;
-ampHipExtFactor = 1;%0.6;
+ampHipFlexFactor = 0.65;
+ampHipExtFactor = 0.6;
 Lfactor = (34.87/46);
 
 % hip abductor (HAB)

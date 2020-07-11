@@ -1,15 +1,15 @@
-clc;
+% clc;
 %%
-% tempstring = strsplit(opts.UserData,' ');
-% dataFile = tempstring{end};
-% InitialGuessFile = load(dataFile); 
-% 
-% Gains = InitialGuessFile.Gains.*exp(bestever.x);
+tempstring = strsplit(opts.UserData,' ');
+dataFile = tempstring{end};
+InitialGuessFile = load(dataFile); 
+
+Gains = InitialGuessFile.Gains.*exp(bestever.x);
 
 
 %%
 % load('Results/RoughDist/SongGainsamp.mat');
-load('Results/Flat/SongGains_02amp.mat');
+% load('Results/Flat/SongGains_02amp.mat');
 
 % load('Results/RoughDist/SongGains_wC_IC.mat');
 load('Results/Flat/SongGains_02_wC_IC.mat');
