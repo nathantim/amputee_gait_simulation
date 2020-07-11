@@ -65,7 +65,7 @@ try
         GaitInfo = getPartOfGaitData(1,data.kinematics.GaitPhaseData,t,data.kinematics.stepTimes);
         
         saveInfo.b_saveFigure = 0;
-        saveInfo.info = 'prosthetic';
+        saveInfo.info = 'prosthetic_3D';
         
         %%
         %         for i = 1:numOfData
