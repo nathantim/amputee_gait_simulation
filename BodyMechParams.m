@@ -7,6 +7,13 @@
 %    4. ground interaction.
 %
 
+%% obstacle
+obstacle_height = 0.05;
+obstacle_width = 0.15;
+obstacle_depth = 0.02;
+obstacle_x = 1.7; %no fall?
+obstacle_x = 1.8; % fall
+%%
 % environment
 g = 9.80665;
 %roughGroundFlag = 1;

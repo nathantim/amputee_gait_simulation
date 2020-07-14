@@ -172,7 +172,7 @@ RPreStimRFsw         = Gains(97);
 
 
 
-% [groundX, groundZ, groundTheta] = generateGround('flat');
+[groundX, groundZ, groundTheta] = generateGround('flat');
 % [groundX, groundZ, groundTheta] = generateGround('const', .05,1);
 %[groundX, groundZ, groundTheta] = generateGround('ramp');
 

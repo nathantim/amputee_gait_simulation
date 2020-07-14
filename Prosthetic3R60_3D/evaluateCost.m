@@ -30,7 +30,7 @@ load('Results/Flat/SongGains_02_wC_IC.mat');
 % Gains(94) = 2*Gains(94);
 % Gains(101) = 1*Gains(101);
 % Gains(108) = 1*Gains(108);
-Gains(109) = 0.01*Gains(109);
+% Gains(109) = 0.01*Gains(109);
 assignGains;
 dt_visual = 1/50;
 setInit;
