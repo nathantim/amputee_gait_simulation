@@ -19,6 +19,30 @@ g = 9.80665;
 %roughGroundFlag = 1;
 %load('groundHeight.mat')
 
+
+% ---------------------
+% Joint Soft Limits
+% ---------------------
+
+% angles at which soft limits engages
+phiAnkleLowLimit =  -20*pi/180; %[rad]
+phiAnkleUpLimit  = 40*pi/180; %[rad]
+
+phiKneeUpLimit  = 1*pi/180; %[rad]
+warning('Knee limit check');
+
+phiHipUpLimit  = 50*pi/180; %[rad]
+
+phiHipAbdLowLimit  = -15*pi/180; %[rad]
+phiHipAbdUpLimit  = 50*pi/180; %[rad]
+
+% soft block reference joint stiffness
+c_jointstop     = 0.3 / (pi/180);  %[Nm/rad]
+
+% soft block maximum joint stop relaxation speed
+w_max_jointstop = 1 * pi/180; %[rad/s]
+
+
 % ********************* %
 % 1. BIPED SEGMENTATION %
 % ********************* %
@@ -143,26 +167,7 @@ leg_lamp = [thighLengthAmp shankLengthAmp];
 leg_0amp = sum(leg_lamp); % [m] full leg length (from hip to ankle)    
 
 
-% ---------------------
-% 1.6 Joint Soft Limits
-% ---------------------
 
-% angles at which soft limits engages
-phiAnkleLowLimit =  -20*pi/180; %[rad]
-phiAnkleUpLimit  = 40*pi/180; %[rad]
-
-phiKneeUpLimit  = 1*pi/180; %[rad]
-
-phiHipUpLimit  = 50*pi/180; %[rad]
-
-phiHipAbdLowLimit  = -15*pi/180; %[rad]
-phiHipAbdUpLimit  = 50*pi/180; %[rad]
-
-% soft block reference joint stiffness
-c_jointstop     = 0.3 / (pi/180);  %[Nm/rad]
-
-% soft block maximum joint stop relaxation speed
-w_max_jointstop = 1 * pi/180; %[rad/s]
 
 
 % ****************************** %

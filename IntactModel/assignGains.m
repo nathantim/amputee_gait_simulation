@@ -107,7 +107,7 @@ PreStimSOLsw        = Gains(63);
 PreStimTAsw         = Gains(64);
 
 
-% [groundX, groundZ, groundTheta] = generateGround('flat');
+[groundX, groundZ, groundTheta] = generateGround('flat');
 % [groundX, groundZ, groundTheta] = generateGround('const', .05,1);
 %[groundX, groundZ, groundTheta] = generateGround('ramp');
 
