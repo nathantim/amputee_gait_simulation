@@ -9,7 +9,7 @@ clear all; close all; clc;
 
 %%
 % initial_gains_filename = 'Results/Flat/SongGains_02amp.mat';
-initial_gains_filename = 'Results/Flat/Umb10nodimmuscleforce.mat';
+initial_gains_filename = 'Results/Flat/Umb10dimmuscleforce.mat';
 initial_gains_file = load(initial_gains_filename);
 load('Results/Flat/SongGains_02_wC_IC.mat');
 
@@ -20,6 +20,7 @@ global model rtp InitialGuess
 model = 'NeuromuscularModel_3R60_2D';
 optfunc = 'cmaesParallelSplit';
 load_system(model);
+set_param(strcat(model,'/Body Mechanics Layer/Obstacle'),'Commented','on');
 set_param(strcat(model,'/Body Mechanics Layer/Right Ankle Joint'),'SpringStiffness','300','DampingCoefficient','100');
 % % set_param(strcat(model,'/Body Mechanics Layer/Right Ankle Joint'),'SpringStiffness','20','DampingCoefficient','4');
 set_param(model,'SimulationMode','rapid');
@@ -49,7 +50,7 @@ sigma0 = 1/8;
 
 opts = cmaes;
 %opts.PopSize = numvars;
-opts.Resume = 'yes';
+opts.Resume = 'no';
 opts.MaxIter = 2000;
 % opts.StopFitness = -inf;
 opts.StopFitness = 0;
@@ -62,7 +63,7 @@ if (min_velocity == target_velocity && max_velocity == target_velocity)
     opts.TargetVel = target_velocity;
 end
 opts.UserData = char(strcat("Gains filename: ", initial_gains_filename));
-opts.SaveFilename = 'vcmaes_Umb10_dimmuscleforce.mat';
+opts.SaveFilename = 'vcmaes_Umb10_dimmuscleforce_5deglim.mat';
 
 %% run cmaes
 [xmin, fmin, counteval, stopflag, out, bestever] = cmaes(optfunc, x0, sigma0, opts)

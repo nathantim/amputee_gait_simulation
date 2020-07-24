@@ -1,20 +1,21 @@
-function [cost, dataStruct] =evaluateCostParallel(paramStruct,Gains)
+function [cost, dataStruct] =evaluateCostParallel(paramStruct,model,Gains)
 dataStruct = struct;
 if nargin < 2
-    Gains = nan(30,1);
+    Gains = nan(64,1);
 end
 % OptimParams;
-model = 'NeuromuscularModel2D';
+% modellocal = 'NeuromuscularModel2D';
 try
     simout = sim(model,...
         'RapidAcceleratorParameterSets',paramStruct,...
         'RapidAcceleratorUpToDateCheck','off',...
         'TimeOut',2*60,...
         'SaveOutput','on');
-catch
+catch ME
     cost = nan;
     disp('Timeout')
     disp(Gains');
+    disp(ME.message);
     return
 end
 

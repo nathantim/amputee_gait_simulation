@@ -20,7 +20,7 @@ end
 h = get(axesHandles(1),'Children');
 set(axesHandles(1),'Children',flipud(h))
 
-title(axesHandles(1),'Hip angle')
+title(axesHandles(1),'Hip flexion angle')
 ylabel(axesHandles(1),'deg');
 
 
@@ -34,7 +34,7 @@ if ~isempty(kneeAngles_sd)
 end
 h = get(axesHandles(2),'Children');
 set(axesHandles(2),'Children',flipud(h))
-title(axesHandles(2),'Knee angle')
+title(axesHandles(2),'Knee flexion angle')
 ylabel(axesHandles(2),'deg');
 
 %%
@@ -48,7 +48,7 @@ end
 
 h = get(axesHandles(3),'Children');
 set(axesHandles(3),'Children',flipud(h))
-title(axesHandles(3),'Ankle angle')
+title(axesHandles(3),'Ankle dorsiflexion angle')
 ylabel(axesHandles(3),'deg');
 if b_oneGaitPhase
     xlabel(axesHandles(3),'%_{stride}','interpreter','tex')

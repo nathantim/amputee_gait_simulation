@@ -8,11 +8,13 @@
 %
 
 %% obstacle
-obstacle_height = 0.05;
+obstacle_height = 0.08;
 obstacle_width = 0.15;
 obstacle_depth = 0.02;
-obstacle_x = 1.7; %no fall?
-obstacle_x = 1.8; % fall
+% obstacle_x = 1.7; %no fall?
+% obstacle_x = 1.8; % fall
+% obstacle_x = 8.2; %no fall
+obstacle_x = 8.4; % fall
 %%
 % environment
 g = 9.80665;
@@ -28,8 +30,10 @@ g = 9.80665;
 phiAnkleLowLimit =  -20*pi/180; %[rad]
 phiAnkleUpLimit  = 40*pi/180; %[rad]
 
-phiKneeUpLimit  = 1*pi/180; %[rad]
-warning('Knee limit check');
+phiKneeUpLimit  = 1*pi/180; %[rad] % used previously
+% phiKneeUpLimit  = -1.5*pi/180; %[rad]
+% phiKneeUpLimit  = 5*pi/180; %[rad]
+warning('Knee limit check, now: %d deg.', phiKneeUpLimit*180/pi);
 
 phiHipUpLimit  = 50*pi/180; %[rad]
 
@@ -317,7 +321,7 @@ vmaxHAB    =       12; % maximum contraction velocity [lopt/s]
 lslackHAB  =     0.07; % tendon slack length [m]
 
 % amputated leg hip abductor (HAB)
-FmaxHABamp    =     3000; % maximum isometric force [N]
+FmaxHABamp    =     0.9*3000; % maximum isometric force [N]
 loptHABamp    =     0.09; % optimum fiber length CE [m]
 vmaxHABamp    =       12; % maximum contraction velocity [lopt/s]
 lslackHABamp  =     0.07; % tendon slack length [m]
@@ -329,7 +333,7 @@ vmaxHAD    =       12; % maximum contraction velocity [lopt/s]
 lslackHAD  =     0.18; % tendon slack length [m]
 
 % amputated leg hip adductor (HAD)
-FmaxHADamp    =     4500; % maximum isometric force [N]
+FmaxHADamp    =     0.9*4500; % maximum isometric force [N]
 loptHADamp    =     0.10; % optimum fiber length CE [m]
 vmaxHADamp    =       12; % maximum contraction velocity [lopt/s]
 lslackHADamp  =     0.18; % tendon slack length [m]
@@ -434,10 +438,10 @@ ST_HAB=15;
 FT_HAD=58;
 ST_HAD=42;
 
-FT_BFSH=65.6;
-ST_BFSH=35.4;
-FT_RF=60.6;
-ST_RF=39.4;
+FT_BFSH=33.1;
+ST_BFSH=66.9;
+FT_RF=62.2;
+ST_RF=37.8;
 
 FT_GLUamp=47.6;
 ST_GLUamp=52.4;
@@ -449,9 +453,10 @@ FT_HABamp=85;
 ST_HABamp=15;
 FT_HADamp=58;
 ST_HADamp=42;
-FT_RFamp=60.6;
-ST_RFamp=39.4;
-warning('Unknown muscle composition BFSH, RF');
+FT_RFamp=62.2;
+ST_RFamp=37.8;
+
+% warning('Unknown muscle composition BFSH, RF');
 % *************************** %
 % 4. Ground Interaction Model %
 % *************************** %

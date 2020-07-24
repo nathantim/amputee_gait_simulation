@@ -38,8 +38,10 @@ try
         effort_costs(i).costOfTransport = (metabolicEnergy(:,i))/(HATPos*amputeeMass);
     end
     
-    % Decide which to use for optimization
-    costOfTransportForOpt =  effort_costs(contains(muscle_exp_models,'Umberger (2010)')).costOfTransport;
+    % Decide which to use for optimization, 
+    % Umberger (2003), Umberger (2003) TG, Umberger (2010), Wang (2012)
+    opt_exp_model = 'Umberger (2010)';
+    costOfTransportForOpt =  effort_costs(contains(muscle_exp_models,opt_exp_model)).costOfTransport;
     if isempty(costOfTransportForOpt)
         error('Empty cost of transport')
     end
@@ -66,7 +68,8 @@ try
     %     cost = 100000*timeCost  + 1000*(velCost + 0*distCost) + 0.1*costOfTransport;
 %     cost = 100000*timeCost  + 1000*(velCost) + 100*costOfTransportForOpt + .01*sumOfStopTorques;
 %11-6-2020_19:49
-        cost = 100000*timeCost  + 100*(velCost) + 10*costOfTransportForOpt + 1E-2*sumOfStopTorques;
+        cost = 100000*timeCost  + 100*(velCost) + 10*costOfTransportForOpt ...
+                + 1E-2*sumOfStopTorques;
 
     if length(cost) ~= 1
         disp(cost);
@@ -77,8 +80,8 @@ try
         meanVel, meanStepTime, meanStepLength,round(ASIStepLength,2),round(ASIStepTime,2), timeCost, velCost);
     
     %% Save when optimizing
-    if  b_isParallel && timeCost == 0
-        dataStruct = struct('cost',struct('data',cost,'minimize',1,'info',''),'CoT',struct('data',[effort_costs(:).costOfTransport],'minimize',1,'info',{effort_costs(:).name}),...
+    if  b_isParallel
+        dataStruct = struct('timeCost',struct('data',timeCost,'minimize',1,'info',''),'cost',struct('data',cost,'minimize',1,'info',''),'CoT',struct('data',[effort_costs(:).costOfTransport],'minimize',1,'info',{effort_costs(:).name}),...
             'E',struct('data',[effort_costs(:).metabolicEnergy],'minimize',1,'info',{effort_costs(:).name}),'sumTstop',struct('data',sumOfStopTorques,'minimize',1,'info',''),...
             'HATPos',struct('data',HATPos,'minimize',0,'info',''),'vMean',struct('data',meanVel,'minimize',0,'info',''),'tStepMean',struct('data',meanStepTime,'minimize',2,'info',''),...
             'lStepMean',struct('data',meanStepLength,'minimize',2,'info',''),'lStepASI',struct('data',round(ASIStepLength,2),'minimize',2,'info',''),...
@@ -92,41 +95,43 @@ try
         %         send(dataQueueD,dataStruct);
         %     end
         %     try
-%         save('dataStruct.mat','dataStruct');
-        GainsSave = Gains;
-        if size(GainsSave,1)>size(GainsSave,2)
-            GainsSave = GainsSave';
+        %         save('dataStruct.mat','dataStruct');
+        if timeCost == 0
+            GainsSave = Gains;
+            if size(GainsSave,1)>size(GainsSave,2)
+                GainsSave = GainsSave';
+            end
+            try
+                workerID = getCurrentWorker().ProcessId;
+            catch ME
+                workerID = [];
+                warning(strcat(char(ME.message)," In ", mfilename, " line ", num2str(ME.stack(1).line)));
+            end
+            filename = char(strcat('compareEnergyCost',num2str(workerID),'.mat'));
+            if exist(filename,'file') == 2
+                exist_vars = load(filename);
+                metabolicEnergySave     = [exist_vars.metabolicEnergySave;metabolicEnergy];
+                meanVel                 = [exist_vars.meanVel;meanVel];
+                meanStepTime            = [exist_vars.meanStepTime;meanStepTime];
+                meanStepLength          = [exist_vars.meanStepLength;meanStepLength];
+                ASIStepLength           = [exist_vars.ASIStepLength;ASIStepLength];
+                ASIStepTime             = [exist_vars.ASIStepTime;ASIStepTime];
+                ASIVel                  = [exist_vars.ASIVel;ASIVel];
+                costOfTransportSave     = [exist_vars.costOfTransportSave; [effort_costs.costOfTransport] ];
+                costT                   = [exist_vars.costT;cost];
+                %             sumOfIdealTorques       = [exist_vars.sumOfIdealTorques;sumOfIdealTorques];
+                sumOfStopTorques        = [exist_vars.sumOfStopTorques;sumOfStopTorques];
+                HATPos                  = [exist_vars.HATPos;HATPos];
+                GainsSave               = [exist_vars.GainsSave;GainsSave];
+            else
+                costT = cost;
+                metabolicEnergySave = metabolicEnergy;
+                costOfTransportSave = [effort_costs.costOfTransport];
+            end
+            
+            save(filename,'metabolicEnergySave','meanVel','meanStepTime', 'meanStepLength','costOfTransportSave', ...
+                'costT','sumOfStopTorques','HATPos','GainsSave','ASIStepLength','ASIStepTime','ASIVel')
         end
-        try
-            workerID = getCurrentWorker().ProcessId;
-        catch ME
-            workerID = [];
-            warning(strcat(char(ME.message)," In ", mfilename, " line ", num2str(ME.stack(1).line)));
-        end
-        filename = char(strcat('compareEnergyCost',num2str(workerID),'.mat'));
-        if exist(filename,'file') == 2
-            exist_vars = load(filename);
-            metabolicEnergySave     = [exist_vars.metabolicEnergySave;metabolicEnergy];
-            meanVel                 = [exist_vars.meanVel;meanVel];
-            meanStepTime            = [exist_vars.meanStepTime;meanStepTime];
-            meanStepLength          = [exist_vars.meanStepLength;meanStepLength];
-            ASIStepLength           = [exist_vars.ASIStepLength;ASIStepLength];
-            ASIStepTime             = [exist_vars.ASIStepTime;ASIStepTime];
-            ASIVel                  = [exist_vars.ASIVel;ASIVel];
-            costOfTransportSave     = [exist_vars.costOfTransportSave; [effort_costs.costOfTransport] ];
-            costT                   = [exist_vars.costT;cost];
-%             sumOfIdealTorques       = [exist_vars.sumOfIdealTorques;sumOfIdealTorques];
-            sumOfStopTorques        = [exist_vars.sumOfStopTorques;sumOfStopTorques];
-            HATPos                  = [exist_vars.HATPos;HATPos];
-            GainsSave               = [exist_vars.GainsSave;GainsSave];
-        else
-            costT = cost;
-            metabolicEnergySave = metabolicEnergy;
-            costOfTransportSave = [effort_costs.costOfTransport];
-        end
-        
-        save(filename,'metabolicEnergySave','meanVel','meanStepTime', 'meanStepLength','costOfTransportSave', ...
-            'costT','sumOfStopTorques','HATPos','GainsSave','ASIStepLength','ASIStepTime','ASIVel')
     end
     
 catch ME

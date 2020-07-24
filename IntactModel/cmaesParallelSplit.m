@@ -1,5 +1,5 @@
 function costs = cmaesParallelSplit(gainsPop)
-    global rtp InitialGuess 
+    global rtp InitialGuess model
     %% Data plotting during optimization
 %     global dataQueueD
     dataQueueD = parallel.pool.DataQueue;
@@ -30,7 +30,7 @@ function costs = cmaesParallelSplit(gainsPop)
             'GainSGLUHAMst',            Gains(14), ...
             'GainSGLUcHFLst',           Gains(15), ...
             'GainSHAMcHFLst',           Gains(16), ...
-            'GainSHFLcGLUst',           Gains(17),...%);
+            'GainSHFLcGLUst',           Gains(17), ...
             'GainSRFcGLUst',            Gains(18), ...
             'LceOffsetTAst',            Gains(19), ...
             'GainLTAst',                Gains(20), ...
@@ -83,7 +83,7 @@ function costs = cmaesParallelSplit(gainsPop)
     %simulate each sample and store cost
     parfor i = 1:popSize
         localGains = InitialGuess.*exp(gainsPop(:,i));
-        [costs(i),dataStruct] = evaluateCostParallel(paramSets{i},localGains)
+        [costs(i),dataStruct] = evaluateCostParallel(paramSets{i},model,localGains)
         if ~isempty(fieldnames(dataStruct))
             send(dataQueueD,dataStruct);
         end

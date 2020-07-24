@@ -1,4 +1,4 @@
-% literature velocity: [_.5,0.8,_1.1,_1.4]
+% literature velocity: [0.5,0.9,1.2]
 target_velocity = 1.2;
 min_velocity = target_velocity;
 % min_velocity = 0.5;

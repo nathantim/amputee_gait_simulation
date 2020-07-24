@@ -10,40 +10,38 @@ set(0, 'DefaultStairHitTest','off','DefaultStairPickableParts','none');
 set(0, 'DefaultLegendHitTest','off','DefaultLegendPickableParts','none');
 
 %%
-% updateFigure = findobj('type','figure','Name','Optimization Parameters');
-gaitKinematics = findobj('type','figure','Name','Gait Kinematics');
-musclesStimulation = findobj('type','figure','Name','Muscle stimulation levels');
-GRFData = findobj('type','figure','Name','Ground reaction forces');
-
-% if isempty(updateFigure) || ~isvalid(updateFigure)
-%     updateFigure = figure();
-% %     updateFigure.HitTest = 'off';
-%     updateFigure.Name = 'Optimization Parameters';
-% end
-if isempty(gaitKinematics) || ~isvalid(gaitKinematics)
-    gaitKinematics = figure();
-%     gaitKinematics.HitTest = 'off';
-    gaitKinematics.Name = 'Gait Kinematics';
-    minCost = inf;
-end
-if isempty(musclesStimulation) || ~isvalid(musclesStimulation)
-    musclesStimulation = figure();
-%     musclesStimulation.HitTest = 'off';
-    musclesStimulation.Name = 'Muscle stimulation levels';
-end
-if isempty(GRFData) || ~isvalid(GRFData)
-    GRFData = figure();
-%     GRFData.HitTest = 'off';
-    GRFData.Name = 'Ground reaction forces';
-end
-
-
-
 try
     dataFieldnames = fieldnames(data);
-%     numOfData = length(dataFieldnames)-1;
-    
-    if ~isempty(dataFieldnames) && length(dataFieldnames)>4
+    %     numOfData = length(dataFieldnames)-1;
+    %%
+    if ~isempty(dataFieldnames) && length(dataFieldnames)>4 && data.timeCost.data == 0 
+        % updateFigure = findobj('type','figure','Name','Optimization Parameters');
+        gaitKinematics = findobj('type','figure','Name','Gait Kinematics');
+        musclesStimulation = findobj('type','figure','Name','Muscle stimulation levels');
+        GRFData = findobj('type','figure','Name','Ground reaction forces');
+        
+        % if isempty(updateFigure) || ~isvalid(updateFigure)
+        %     updateFigure = figure();
+        % %     updateFigure.HitTest = 'off';
+        %     updateFigure.Name = 'Optimization Parameters';
+        % end
+        if isempty(gaitKinematics) || ~isvalid(gaitKinematics)
+            gaitKinematics = figure();
+            %     gaitKinematics.HitTest = 'off';
+            gaitKinematics.Name = 'Gait Kinematics';
+            minCost = inf;
+        end
+        if isempty(musclesStimulation) || ~isvalid(musclesStimulation)
+            musclesStimulation = figure();
+            %     musclesStimulation.HitTest = 'off';
+            musclesStimulation.Name = 'Muscle stimulation levels';
+        end
+        if isempty(GRFData) || ~isvalid(GRFData)
+            GRFData = figure();
+            %     GRFData.HitTest = 'off';
+            GRFData.Name = 'Ground reaction forces';
+        end
+        %%
         if isempty(minCost) || data.cost.data < minCost
             minCost = data.cost.data;
             b_minCost = true;
