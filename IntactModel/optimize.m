@@ -1,11 +1,11 @@
-try 
-    save_system;
-    disp('Saved loaded system');
-catch
-    disp('No system loaded to be saved.');
-end
-bdclose('all');
-clear all; close all; clc;
+% try 
+%     save_system;
+%     disp('Saved loaded system');
+% catch
+%     disp('No system loaded to be saved.');
+% end
+% bdclose('all');
+% clear all; close all; clc;
 
 %%
 % initial_gains_filename = 'Results/Flat/song3Dopt.mat';
