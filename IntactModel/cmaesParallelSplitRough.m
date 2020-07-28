@@ -2,8 +2,10 @@ function costs = cmaesParallelSplitRough(gainsPop)
     global rtp InitialGuess inner_opt_settings model
     %% Data plotting during optimization
     %     global dataQueueD
-    dataQueueD = parallel.pool.DataQueue;
-    dataQueueD.afterEach(@plotProgressOptimization);
+    if inner_opt_settings.visual
+        dataQueueD = parallel.pool.DataQueue;
+        dataQueueD.afterEach(@plotProgressOptimization);
+    end
 
     %allocate costs vector and paramsets the generation
     popSize = size(gainsPop,2);
@@ -91,16 +93,11 @@ function costs = cmaesParallelSplitRough(gainsPop)
 
         %set ground heights
         for j = 0:(numTerrains-1)
-%             rng('default');
-%             rng(4*j);
-            
-%             for k = 21:2:length(groundX)
-%                 groundZ(k) = groundZ(k-2) + ...
-%                     groundX(k-19)*2*(rand - 0.5)*rampSlope;
-%                 groundZ(k+1) = groundZ(k);
-%             end
-%             groundTheta = [atan(diff(groundZ)./diff(groundX)), 0];
-            [~, groundZ, groundTheta] = generateGround('const', terrain_height, 4*j,false);
+            if j == 0
+                [~, groundZ, groundTheta] = generateGround('flat',[],4*j,false);
+            else
+                [~, groundZ, groundTheta] = generateGround('const', terrain_height, 4*j,false);
+            end
             paramSets{i+j} = ...
                 Simulink.BlockDiagram.modifyTunableParameters(paramSets{i}, ...
                 'groundZ',     groundZ, ...
@@ -112,7 +109,7 @@ function costs = cmaesParallelSplitRough(gainsPop)
 
     %simulate each sample and store cost
     try
-        parfor i = 1:length(paramSets)
+        parfor (i = 1:length(paramSets),inner_opt_settings.numParWorkers)
             localGains = InitialGuess.*exp(gainsPop(:,ceil(i/numTerrains)));
             [costs(i),dataStructlocal] = evaluateCostParallel(paramSets{i},model,localGains)
             try
@@ -137,17 +134,19 @@ function costs = cmaesParallelSplitRough(gainsPop)
     costs = nanmean(costs);
     costs(isinvalid) = nan;
     
-    %% send the best outcome of the best gains for plotting
-    try
-        mingainidx = find(costs == min(costs));
-        distfrommean = costsall(:,mingainidx) - costs(mingainidx);
-        meanterrainidx = find(abs(distfrommean) == min(abs(distfrommean)));
-        
-        idx2send = ((mingainidx-1)*numTerrains) + meanterrainidx;
-        %     costall = reshape(costsall,1,popSize*numTerrains);
-        if ~isempty(fieldnames(dataStruct(idx2send)))
-            send(dataQueueD,dataStruct(idx2send));
+    %% send the best outcome of the best gains for plotting, only flat terrain
+    if inner_opt_settings.visual
+        try
+            mingainidx = find(costs == min(costs));
+            %         distfrommean = costsall(:,mingainidx) - costs(mingainidx);
+            meanterrainidx = 1;%find(abs(distfrommean) == min(abs(distfrommean)));
+            
+            idx2send = ((mingainidx-1)*numTerrains) + meanterrainidx;
+            %     costall = reshape(costsall,1,popSize*numTerrains);
+            if ~isempty(fieldnames(dataStruct(idx2send)))
+                send(dataQueueD,dataStruct(idx2send));
+            end
+        catch ME
+            warning(ME.message);
         end
-    catch ME
-        warning(ME.message);
     end

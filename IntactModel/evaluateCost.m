@@ -12,6 +12,7 @@ Gains = InitialGuessFile.Gains.*exp(bestever.x);
 % load('Results/RoughDist/SongGains_wC_IC.mat');
 % load('Results/Flat/SongGains_02.mat');
 % load('Results/Flat/Umb10_kneelim0.mat');
+load('Results/Rough/Umb10_1.5cm_1.2ms_kneelim1_mstoptorque2.mat');
 load('Results/Flat/SongGains_02_wC_IC.mat');
 
 [groundX, groundZ, groundTheta] = generateGround('flat');
@@ -22,7 +23,6 @@ assignGains;
 dt_visual = 1/50;
 setInit;
 
-% GainVBFSHsw = 0.3*GainVBFSHsw;
 %%
 model = 'NeuromuscularModel2D';
 %open('NeuromuscularModel');
@@ -37,6 +37,7 @@ warning('on');
 
 %%
 [cost, dataStruct] = getCost(model,Gains,time,metabolicEnergy,sumOfStopTorques,HATPos,stepVelocities,stepTimes,stepLengths,0);
+% animPost(animData2D,'intact',true,'speed',1);
 %%
 % kinematics.angularData = angularData;
 % kinematics.GaitPhaseData = GaitPhaseData;
@@ -48,9 +49,9 @@ warning('on');
 % save('dataStruct.mat','dataStruct')
 % 
 % %%
-set(0, 'DefaultFigureHitTest','on');
-set(0, 'DefaultAxesHitTest','on','DefaultAxesPickableParts','all');
-set(0, 'DefaultLineHitTest','on','DefaultLinePickableParts','all');
-set(0, 'DefaultPatchHitTest','on','DefaultPatchPickableParts','all');
-set(0, 'DefaultStairHitTest','on','DefaultStairPickableParts','all');
-set(0, 'DefaultLegendHitTest','on','DefaultLegendPickableParts','all');
+% set(0, 'DefaultFigureHitTest','on');
+% set(0, 'DefaultAxesHitTest','on','DefaultAxesPickableParts','all');
+% set(0, 'DefaultLineHitTest','on','DefaultLinePickableParts','all');
+% set(0, 'DefaultPatchHitTest','on','DefaultPatchPickableParts','all');
+% set(0, 'DefaultStairHitTest','on','DefaultStairPickableParts','all');
+% set(0, 'DefaultLegendHitTest','on','DefaultLegendPickableParts','all');

@@ -10,8 +10,9 @@ clear all; close all; clc;
 %%
 % initial_gains_filename = 'Results/Flat/song3Dopt.mat';
 % initial_gains_filename = 'Results/Flat/SongGains_02.mat';
-% initial_gains_filename = 'Results/Flat/Umb10_kneelim1_mstoptorque3_seemsgood.mat';
-initial_gains_filename = 'Results/Rough/Umb10_1.5cm_kneelim1_mstoptorque2_1.3ms.mat';
+% initial_gains_filename = 'Results/Rough/Umb10_1.5cm_1.2ms_kneelim1_mstoptorque2.mat';
+initial_gains_filename = 'Results/Rough/Umb03_1.5cm_1.2ms_kneelim1_mstoptorque3_2.mat';
+
 initial_gains_file = load(initial_gains_filename);
 
 load('Results/Flat/SongGains_02_wC_IC.mat');
@@ -31,8 +32,16 @@ set_param(model,'StopTime','30');
 InitialGuess = initial_gains_file.Gains;
 
 %% initialze parameters
-inner_opt_settings.numTerrains = 5;
+inner_opt_settings.numTerrains = 6;
 inner_opt_settings.terrain_height = 0.015; % in m
+if usejava('desktop')
+    inner_opt_settings.numParWorkers = 4;
+    inner_opt_settings.visual = true;
+else
+    inner_opt_settings.numParWorkers = 12;
+    inner_opt_settings.visual = false;
+end
+
 BodyMechParams;
 ControlParams;
 OptimParams;
@@ -53,7 +62,7 @@ sigma0 = 1/8;
 
 opts = cmaes;
 %opts.PopSize = numvars;
-opts.Resume = 'no';
+opts.Resume = 'yes';
 opts.MaxIter = 2000;
 % opts.StopFitness = -inf;
 opts.StopFitness = 0;
@@ -68,7 +77,8 @@ if (min_velocity == target_velocity && max_velocity == target_velocity)
     fprintf('Using target velocity of %1.1f m/s.\n',target_velocity);
 end
 opts.UserData = char(strcat("Gains filename: ", initial_gains_filename));
-opts.SaveFilename = 'vcmaes_1.5cm_1.2ms_Umb10_kneelim1_mstoptorque2.mat';
+opts.SaveVariables=1;
+opts.SaveFilename = 'vcmaes_1.5cm_1.2ms_Umb10_kneelim1_mstoptorque3_2.mat';
 
 %% run cmaes
 [xmin, fmin, counteval, stopflag, out, bestever] = cmaes(optfunc, x0, sigma0, opts)

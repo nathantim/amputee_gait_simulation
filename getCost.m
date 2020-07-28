@@ -69,7 +69,7 @@ try
 %     cost = 100000*timeCost  + 1000*(velCost) + 100*costOfTransportForOpt + .01*sumOfStopTorques;
 %11-6-2020_19:49
         cost = 100000*timeCost  + 100*(velCost) + 10*costOfTransportForOpt ...
-                + 1E-2*sumOfStopTorques;
+                + 1E-3*sumOfStopTorques;
 
     if length(cost) ~= 1
         disp(cost);
@@ -96,7 +96,7 @@ try
         %     end
         %     try
         %         save('dataStruct.mat','dataStruct');
-        if timeCost == 0
+        if false && timeCost == 0
             GainsSave = Gains;
             if size(GainsSave,1)>size(GainsSave,2)
                 GainsSave = GainsSave';

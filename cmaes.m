@@ -353,6 +353,9 @@ i = strfind(opts.SaveFilename, '%'); % remove everything after comment
 if ~isempty(i)
   opts.SaveFilename = opts.SaveFilename(1:i(1)-1);
 end
+if ~exist(opts.SaveFilename,'file')
+    opts.Resume = 'no';
+end
 opts.SaveFilename = deblank(opts.SaveFilename); % remove trailing white spaces
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  
@@ -2887,6 +2890,8 @@ function f=frand(x)
   f=1./(1-rand(1, size(x,2))) - 1;
 
 % CHANGES
+% 20/07/27: Make it possible to set opts.Resume to 'yes' eventhough file
+%               does not yet exist. It will create one.
 % 12/04/28: (3.61) stopIter is relative to countiter after resume (thanks to Tom Holden)
 % 12/04/28: (3.61) some syncing from 3.32.integer branch (cmean introduced, ...)
 % 12/02/19: "future" setting of ccum, correcting for large mueff, is default now
@@ -2993,6 +2998,8 @@ function f=frand(x)
 %      o Returned default options include documentation. 
 %      o Resume part reorganized.
 % 04/03: Stopflag becomes cell-array. 
+
+
 
 % ---------------------------------------------------------------
 % CMA-ES: Evolution Strategy with Covariance Matrix Adaptation for
