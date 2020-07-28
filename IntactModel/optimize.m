@@ -37,9 +37,11 @@ inner_opt_settings.terrain_height = 0.015; % in m
 if usejava('desktop')
     inner_opt_settings.numParWorkers = 4;
     inner_opt_settings.visual = true;
+    set_param(model,'AccelMakeCommand','make_rtw')
 else
     inner_opt_settings.numParWorkers = 12;
     inner_opt_settings.visual = false;
+     set_param(model,'AccelMakeCommand','make_rtw OPT_OPTS="-D_GLIBCXX_USE_CXX11_ABI=0"');
 end
 
 BodyMechParams;

@@ -29,6 +29,14 @@ model = 'NeuromuscularModel2D';
 % set_param(model,'SimulationMode','normal');
 % set_param(model,'StopTime','30');
 
+load_system(model);
+if usejava('desktop')
+    set_param(model,'AccelMakeCommand','make_rtw')
+else
+    set_param(model,'AccelMakeCommand','make_rtw OPT_OPTS="-D_GLIBCXX_USE_CXX11_ABI=0"')
+end
+
+
 warning('off');
 tic;
 sim(model)
