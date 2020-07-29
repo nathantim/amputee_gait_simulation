@@ -2,24 +2,38 @@ function plotGRF(GRFData,plotInfo,GaitInfo,saveInfo,GRFDataFigure)
 if nargin < 5
     GRFDataFigure = [];
 end
+t = GRFData.time;
 %%
 t_left_perc = GaitInfo.time.left_perc;
 t_right_perc = GaitInfo.time.right_perc;
 GRFData.signals.values = GRFData.signals.values./getBodyMass();
 % L_Ball  = GRFData.signals.values(GaitInfo.start.left:GaitInfo.end.left,1:2);
-L_Total_x = GRFData.signals.values(GaitInfo.start.left:GaitInfo.end.left,1);
-L_Total_z = GRFData.signals.values(GaitInfo.start.left:GaitInfo.end.left,3);
+L_Total_x = GRFData.signals.values(:,1);
+L_Total_z = GRFData.signals.values(:,3);
 % L_Heel  = GRFData.signals.values(GaitInfo.start.left:GaitInfo.end.left,5:6);
 
 % R_Ball  = GRFData.signals.values(GaitInfo.start.right:GaitInfo.end.right,7:8);
-R_Total_x = GRFData.signals.values(GaitInfo.start.right:GaitInfo.end.right,4);
-R_Total_z = GRFData.signals.values(GaitInfo.start.right:GaitInfo.end.right,6);
+R_Total_x = GRFData.signals.values(:,4);
+R_Total_z = GRFData.signals.values(:,6);
 % R_Heel  = GRFData.signals.values(GaitInfo.start.right:GaitInfo.end.right,11:12);
 
 warning('Direction stuff');
 % L_Total_x = -1*L_Total_x;
 % R_Total_x = -1*R_Total_x;
 % warning('Unreasoned factor -1');
+
+[L_Total_x_avg,L_Total_x_sd] = interpData2perc(t,GaitInfo.tp,L_Total_x,GaitInfo.start.leftV,GaitInfo.end.leftV,GaitInfo.b_oneGaitPhase);
+[L_Total_z_avg,L_Total_z_sd] = interpData2perc(t,GaitInfo.tp,L_Total_z,GaitInfo.start.leftV,GaitInfo.end.leftV,GaitInfo.b_oneGaitPhase);
+
+[R_Total_x_avg,R_Total_x_sd] = interpData2perc(t,GaitInfo.tp,R_Total_x,GaitInfo.start.rightV,GaitInfo.end.rightV,GaitInfo.b_oneGaitPhase);
+[R_Total_z_avg,R_Total_z_sd] = interpData2perc(t,GaitInfo.tp,R_Total_z,GaitInfo.start.rightV,GaitInfo.end.rightV,GaitInfo.b_oneGaitPhase);
+
+if ~plotInfo.showSD
+    L_Total_x_sd = [];
+    L_Total_z_sd = [];
+    R_Total_x_sd = [];
+    R_Total_z_sd = [];
+end
 
 [tWinter,~, ~, ~,~,~,~, vGRF_winter_avg,vGRF_winter_sd, hGRF_winter_avg,hGRF_winter_sd] = getWinterData(GaitInfo.WinterDataSpeed);
 if size(vGRF_winter_avg,2) > size(vGRF_winter_avg,2)
@@ -42,8 +56,8 @@ if false
 %     plotHandlesRight = plotGRFDataInFigure(t_right_perc,R_Ball,R_Total,R_Heel);
 %     set(GRFDataFig, 'Position',[10,50,1600,900]);
 else
-    [plotHandlesLeft,axesHandles] = plotTotalGRFDataInFigure(GRFDataFig,[],t_left_perc,L_Total_x,[],L_Total_z,[],GaitInfo.b_oneGaitPhase);
-    [plotHandlesRight,axesHandles] = plotTotalGRFDataInFigure(GRFDataFig,axesHandles,t_right_perc,R_Total_x,[],R_Total_z,[],GaitInfo.b_oneGaitPhase);
+    [plotHandlesLeft,axesHandles] = plotTotalGRFDataInFigure(GRFDataFig,[],GaitInfo.tp,L_Total_x_avg,L_Total_x_sd,L_Total_z_avg,L_Total_z_sd,GaitInfo.b_oneGaitPhase);
+    [plotHandlesRight,axesHandles] = plotTotalGRFDataInFigure(GRFDataFig,axesHandles,GaitInfo.tp,R_Total_x_avg,R_Total_x_sd,R_Total_z_avg,R_Total_z_sd,GaitInfo.b_oneGaitPhase);
     if GaitInfo.b_oneGaitPhase
         [plotHandlesWinter,axesHandles] = plotTotalGRFDataInFigure(GRFDataFig,axesHandles,tWinter,hGRF_winter_avg,hGRF_winter_sd,vGRF_winter_avg,vGRF_winter_sd);
     end
@@ -68,9 +82,13 @@ set(leg,'FontSize',18);
 for i= 1:size(plotHandlesLeft,1)
     set(plotHandlesLeft(i,1),plotInfo.plotProp,plotInfo.plotProp_entries(1,:));
     set(plotHandlesRight(i,1),plotInfo.plotProp,plotInfo.plotProp_entries(2,:));
+    if plotInfo.showSD
+        set(plotHandlesLeft(i,2),plotInfo.fillProp,plotInfo.fillProp_entries(1,:));
+        set(plotHandlesRight(i,2),plotInfo.fillProp,plotInfo.fillProp_entries(2,:));
+    end
     if GaitInfo.b_oneGaitPhase && ~isnan(plotHandlesWinter(i,1))
         set(plotHandlesWinter(i,1),plotInfo.plotProp,plotInfo.plotProp_entries(3,:));
-        set(plotHandlesWinter(i,2),plotInfo.fillProp,plotInfo.fillVal);
+        set(plotHandlesWinter(i,2),plotInfo.fillProp,plotInfo.fillProp_entries(3,:));
     end
 end
 

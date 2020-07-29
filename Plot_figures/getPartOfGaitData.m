@@ -1,7 +1,7 @@
 function [GaitInfo] = getPartOfGaitData(b_oneGaitPhase,GaitPhaseData,t,stepTimes)
 t_left = t;
 t_right = t;
-
+OptimParams;
 %%
 if (b_oneGaitPhase) && min(sum(stepTimes(:,1)),sum(stepTimes(:,2))) > 1
     leftLegState    = GaitPhaseData.signals.values(:,1);
@@ -19,6 +19,19 @@ if (b_oneGaitPhase) && min(sum(stepTimes(:,1)),sum(stepTimes(:,2))) > 1
     elseif  minSwing2StanceChange > 1
         selectStart = minSwing2StanceChange - 1;
     end
+    
+    leftLegStepsIdx = L_changeSwing2StanceIdx(initiation_steps:end);
+    rightLegStepsIdx = R_changeSwing2StanceIdx(initiation_steps:end);
+    
+    for i = 1:length(leftLegStepsIdx)-1
+        leftGaitPhaseEndV(i) = leftLegStepsIdx(i+1);
+        leftGaitPhaseStartV(i) = leftLegStepsIdx(i)+1;
+    end
+    for i = 1:length(rightLegStepsIdx)-1
+        rightGaitPhaseEndV(i) = rightLegStepsIdx(i+1);
+        rightGaitPhaseStartV(i) = rightLegStepsIdx(i)+1;
+    end
+    
     leftGaitPhaseEnd = L_changeSwing2StanceIdx(selectStart+1);
     leftGaitPhaseStart = L_changeSwing2StanceIdx(selectStart)+1;
     
@@ -45,6 +58,10 @@ GaitInfo.start.left = leftGaitPhaseStart;
 GaitInfo.start.right = rightGaitPhaseStart;
 GaitInfo.end.left = leftGaitPhaseEnd;
 GaitInfo.end.right = rightGaitPhaseEnd;
+GaitInfo.start.leftV = leftGaitPhaseStartV;
+GaitInfo.start.rightV = rightGaitPhaseStartV;
+GaitInfo.end.leftV = leftGaitPhaseEndV;
+GaitInfo.end.rightV = rightGaitPhaseEndV;
 GaitInfo.time.left = t_left;
 GaitInfo.time.right = t_right;
 GaitInfo.time.left_perc = t_left_perc;

@@ -20,17 +20,25 @@ saveInfo.info = info;
 t = angularData.time;
 
 GaitInfo = getPartOfGaitData(b_oneGaitPhase,GaitPhaseData,t,stepTimes);
-
+GaitInfo.tp = (0:0.5:100)';
+% if ~b_oneGaitPhase
+%     getSteps(t,GaitPhaseData,stepTimes);
+% end
 %%
+plotInfo.showSD = true;
 plotInfo.plotProp = {'LineStyle','Color','LineWidth'};
 plotInfo.lineVec = {'-'; '--';':'};
 plotInfo.colorProp = {	'#0072BD';	'#D95319';'#7E2F8E'};
-plotInfo.fillProp = {'FaceColor','FaceAlpha','EdgeColor'};
-plotInfo.fillVal = {[0.8 0.8 0.8],0.9,'none'};
 plotInfo.lineVec = plotInfo.lineVec(1:3,:);
 plotInfo.colorProp = plotInfo.colorProp(1:3,:);
 plotInfo.lineWidthProp = {3;3;3};
 plotInfo.plotProp_entries = [plotInfo.lineVec(:),plotInfo.colorProp(:), plotInfo.lineWidthProp(:)];
+
+plotInfo.fillProp = {'FaceColor','FaceAlpha','EdgeColor','LineStyle'};
+faceAlpha = {0.2;0.2;0.2};
+plotInfo.fillVal = {'#0072BD';	'#D95319';'#7E2F8E'};% {[0.8 0.8 0.8],0.5,'none'};
+plotInfo.edgeVec = {':';':';':'};% {[0.8 0.8 0.8],0.5,'none'};
+plotInfo.fillProp_entries = [plotInfo.fillVal,faceAlpha,plotInfo.fillVal,plotInfo.edgeVec];
 
 %%
 plotAngularData(angularData,GaitPhaseData,plotInfo,GaitInfo,saveInfo);
