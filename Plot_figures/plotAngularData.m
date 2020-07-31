@@ -71,11 +71,11 @@ if true
  %%
     legStatePlot = subplot(4,1,1,axes(angularDataFig));
     if ~isempty(leftLegState_sd)
-        LegHandles(1,2) = fill(legStatePlot,[GaitInfo.tp;flipud(GaitInfo.tp)],[round(leftLegState_avg)-leftLegState_sd;flipud(round(leftLegState_avg)+leftLegState_sd)],[0.8 0.8 0.8]);
+        LegHandles(1,2) = fill(legStatePlot,[GaitInfo.tp;flipud(GaitInfo.tp)],[round(leftLegState_avg-leftLegState_sd);flipud(round(leftLegState_avg+leftLegState_sd))],[0.8 0.8 0.8]);
     end
     set(legStatePlot,'NextPlot','add');
     if ~isempty(rightLegState_sd)
-        LegHandles(2,2) = fill(legStatePlot,[GaitInfo.tp;flipud(GaitInfo.tp)],[round(rightLegState_avg)-rightLegState_sd;flipud(round(rightLegState_avg)+rightLegState_sd)],[0.8 0.8 0.8]);
+        LegHandles(2,2) = fill(legStatePlot,[GaitInfo.tp;flipud(GaitInfo.tp)],[round(rightLegState_avg-rightLegState_sd);flipud(round(rightLegState_avg+rightLegState_sd))],[0.8 0.8 0.8]);
     end
     
     LegHandles(1,1) = stairs(legStatePlot,GaitInfo.tp,round(leftLegState_avg));
