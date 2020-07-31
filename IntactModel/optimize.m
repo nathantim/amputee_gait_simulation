@@ -1,17 +1,18 @@
-% try 
-%     save_system;
-%     disp('Saved loaded system');
-% catch
-%     disp('No system loaded to be saved.');
-% end
-% bdclose('all');
-% clear all; close all; clc;
+try 
+    save_system;
+    disp('Saved loaded system');
+catch
+    disp('No system loaded to be saved.');
+end
+bdclose('all');
+clear all; close all; clc;
 
 %%
 % initial_gains_filename = 'Results/Flat/song3Dopt.mat';
 % initial_gains_filename = 'Results/Flat/SongGains_02.mat';
 % initial_gains_filename = 'Results/Rough/Umb10_1.5cm_1.2ms_kneelim1_mstoptorque2.mat';
-initial_gains_filename = 'Results/Rough/Umb03_1.5cm_1.2ms_kneelim1_mstoptorque3_2.mat';
+% initial_gains_filename = 'Results/Rough/Umb03_1.5cm_1.2ms_kneelim1_mstoptorque3_2.mat';
+initial_gains_filename = 'Results/Rough/Umb10_1.5cm_1.2ms_Umb10_kneelim1_mstoptorque3_2.mat';
 
 initial_gains_file = load(initial_gains_filename);
 
@@ -25,10 +26,14 @@ model = 'NeuromuscularModel2D';
 optfunc = 'cmaesParallelSplitRough';
 
 load_system(model);
+% set_param(model,'MakeCommand','make_rtw  CPP_OPTS="-D_GLIBCXX_USE_CXX11_ABI=0"')
+% set_param(model,'AccelMakeCommand','make_rtw  CPP_OPTS="-D_GLIBCXX_USE_CXX11_ABI=0"')
+set_param(model, 'AccelVerboseBuild', 'on')
 set_param(strcat(model,'/Body Mechanics Layer/Obstacle'),'Commented','on');
 set_param(model,'SimulationMode','rapid');
 set_param(model,'StopTime','30');
-
+disp(get_param(model,'MakeCommand'));
+disp(get_param(model,'AccelMakeCommand'));
 InitialGuess = initial_gains_file.Gains;
 
 %% initialze parameters
@@ -79,8 +84,8 @@ if (min_velocity == target_velocity && max_velocity == target_velocity)
     fprintf('Using target velocity of %1.1f m/s.\n',target_velocity);
 end
 opts.UserData = char(strcat("Gains filename: ", initial_gains_filename));
-opts.SaveVariables=1;
-opts.SaveFilename = 'vcmaes_1.5cm_1.2ms_Umb10_kneelim1_mstoptorque3_2.mat';
+
+opts.SaveFilename = 'vcmaes_1.5cm_1.2ms_Umb10_kneelim1_mstoptorque2_2.mat';
 
 %% run cmaes
 [xmin, fmin, counteval, stopflag, out, bestever] = cmaes(optfunc, x0, sigma0, opts)
