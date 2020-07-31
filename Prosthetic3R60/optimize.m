@@ -9,7 +9,8 @@ clear all; close all; clc;
 
 %%
 % initial_gains_filename = 'Results/Flat/SongGains_02amp.mat';
-initial_gains_filename = 'Results/Flat/Umb10dimmuscleforce.mat';
+% initial_gains_filename = 'Results/Flat/Umb10dimmuscleforce.mat';
+initial_gains_filename = 'Results/Rough/Umb10_1.5cm_1.2ms_Umb10_kneelim1_mstoptorque3.mat';
 initial_gains_file = load(initial_gains_filename);
 load('Results/Flat/SongGains_02_wC_IC.mat');
 
@@ -32,7 +33,7 @@ InitialGuess = initial_gains_file.Gains;
 %% initialze parameters
 inner_opt_settings.numTerrains = 6;
 inner_opt_settings.terrain_height = 0.015; % in m
-if usejava('desktop')
+if usejava('desktop') %batchStartupOptionUsed
     inner_opt_settings.numParWorkers = 4;
     inner_opt_settings.visual = true;
 %     set_param(model,'AccelMakeCommand','make_rtw')
@@ -76,7 +77,7 @@ if (min_velocity == target_velocity && max_velocity == target_velocity)
     opts.TargetVel = target_velocity;
 end
 opts.UserData = char(strcat("Gains filename: ", initial_gains_filename));
-opts.SaveFilename = 'vcmaes_1.5cm_1.2ms_Umb10_kneelim1_mstoptorque3.mat';
+opts.SaveFilename = 'vcmaes_1.5cm_1.2ms_Umb10_kneelim1_mstoptorque2.mat';
 
 %% run cmaes
 [xmin, fmin, counteval, stopflag, out, bestever] = cmaes(optfunc, x0, sigma0, opts)

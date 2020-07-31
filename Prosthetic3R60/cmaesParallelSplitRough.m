@@ -2,10 +2,10 @@ function costs = cmaesParallelSplitRough(gainsPop)
     global rtp InitialGuess inner_opt_settings model
     %% Data plotting during optimization
     %     global dataQueueD
-    if inner_opt_settings.visual
+%     if inner_opt_settings.visual
         dataQueueD = parallel.pool.DataQueue;
         dataQueueD.afterEach(@plotProgressOptimization);
-    end
+%     end
 
     %allocate costs vector and paramsets the generation
     popSize = size(gainsPop,2);
@@ -145,6 +145,9 @@ function costs = cmaesParallelSplitRough(gainsPop)
         parfor (i = 1:length(paramSets),inner_opt_settings.numParWorkers)
             localGains = InitialGuess.*exp(gainsPop(:,ceil(i/numTerrains)));
             [costs(i),dataStructlocal] = evaluateCostParallel(paramSets{i},model,localGains)
+            if inner_opt_settings.visual
+                printOptInfo(dataStructlocal,true);
+            end
             try
                 if max(contains(fieldnames(dataStructlocal),'timeCost')) 
                     if  dataStructlocal.timeCost.data == 0
@@ -167,18 +170,22 @@ function costs = cmaesParallelSplitRough(gainsPop)
     costs(isinvalid) = nan;
     
     %% send the best outcome of the best gains for plotting, only flat terrain
-    if inner_opt_settings.visual
-        try
-            mingainidx = find(costs == min(costs));
-            %         distfrommean = costsall(:,mingainidx) - costs(mingainidx);
-            meanterrainidx = 1;%find(abs(distfrommean) == min(abs(distfrommean)));
-            
-            idx2send = ((mingainidx-1)*numTerrains) + meanterrainidx;
-            %     costall = reshape(costsall,1,popSize*numTerrains);
+   
+    try
+        mingainidx = find(costs == min(costs));
+        %         distfrommean = costsall(:,mingainidx) - costs(mingainidx);
+        meanterrainidx = 1;%find(abs(distfrommean) == min(abs(distfrommean)));
+        
+        idx2send = ((mingainidx-1)*numTerrains) + meanterrainidx;
+        %     costall = reshape(costsall,1,popSize*numTerrains);
+        if inner_opt_settings.visual
             if ~isempty(fieldnames(dataStruct(idx2send)))
                 send(dataQueueD,dataStruct(idx2send));
             end
-        catch ME
-            warning(ME.message);
+        else
+            printOptInfo(dataStruct(idx2send),false);
         end
+    catch ME
+        warning(ME.message);
     end
+    
