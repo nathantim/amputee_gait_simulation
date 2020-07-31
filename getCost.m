@@ -1,5 +1,16 @@
 function [cost, dataStruct] = getCost(model,Gains,time,metabolicEnergy,sumOfStopTorques,HATPos,stepVelocities,stepTimes,stepLengths, b_isParallel)
 try
+    if contains(model,'3R60')
+         modelType = 'prosthetic';
+    else
+         modelType = 'healthy';
+    end
+    if contains(model,'3D')
+         modelType = [modelType, '3D'];
+    else
+         modelType = [modelType, '2D'];
+    end
+    
     if nargin < 10
         b_isParallel = 0;
     end
@@ -69,71 +80,74 @@ try
 %     cost = 100000*timeCost  + 1000*(velCost) + 100*costOfTransportForOpt + .01*sumOfStopTorques;
 %11-6-2020_19:49
         cost = 100000*timeCost  + 100*(velCost) + 10*costOfTransportForOpt ...
-                + 1E-3*sumOfStopTorques;
+                + 1E-2*sumOfStopTorques;
 
     if length(cost) ~= 1
         disp(cost);
         warning('Size cost is not 1');
     end
-    fprintf('-- <strong> t_sim: %2.2f</strong>, Cost: %2.2f, E_m (Wang): %.0f, E_m(Umb10): %.0f, <strong>avg v_step: %2.2f</strong>, avg t_step: %1.2f, avg l_step: %1.2f, ASI l_step: %2.2f, ASI t_step: %2.2f, timeCost: %2.2f, velCost: %2.2f --\n',...
-        time(end), cost, effort_costs(contains(muscle_exp_models,'Wang')).metabolicEnergy, effort_costs(contains(muscle_exp_models,'Umberger (2010)')).metabolicEnergy,...
-        meanVel, meanStepTime, meanStepLength,round(ASIStepLength,2),round(ASIStepTime,2), timeCost, velCost);
+    
     
     %% Save when optimizing
-    if  b_isParallel
-        dataStruct = struct('timeCost',struct('data',timeCost,'minimize',1,'info',''),'cost',struct('data',cost,'minimize',1,'info',''),'CoT',struct('data',[effort_costs(:).costOfTransport],'minimize',1,'info',{effort_costs(:).name}),...
-            'E',struct('data',[effort_costs(:).metabolicEnergy],'minimize',1,'info',{effort_costs(:).name}),'sumTstop',struct('data',sumOfStopTorques,'minimize',1,'info',''),...
-            'HATPos',struct('data',HATPos,'minimize',0,'info',''),'vMean',struct('data',meanVel,'minimize',0,'info',''),'tStepMean',struct('data',meanStepTime,'minimize',2,'info',''),...
-            'lStepMean',struct('data',meanStepLength,'minimize',2,'info',''),'lStepASI',struct('data',round(ASIStepLength,2),'minimize',2,'info',''),...
-            'tStepASI',struct('data',round(ASIStepTime,2),'minimize',2,'info',''));
-        %     dataStruct = struct('cost',struct('data',cost*rand,'minimize',1,'info',''),'costOfTransport',struct('data',[effort_costs(:).costOfTransport].*rand,'minimize',1,'info',{effort_costs(:).name}),...
-        %         'metabolicEnergy',struct('data',[effort_costs(:).metabolicEnergy].*rand,'minimize',1,'info',{effort_costs(:).name}),'sumOfStopTorques',struct('data',sumOfStopTorques.*rand,'minimize',1,'info',''),...
-        %         'HATPos',struct('data',HATPos.*rand,'minimize',0,'info',''),'vMean',struct('data',meanVel.*rand,'minimize',0,'info',''),'tStepMean',struct('data',meanStepTime.*rand,'minimize',2,'info',''),...
-        %         'lStepMean',struct('data',meanStepLength.*rand,'minimize',2,'info',''),'lStepASI',struct('data',round(ASIStepLength.*rand,2),'minimize',2,'info',''),...
-        %         'tStepASI',struct('data',round(ASIStepTime.*rand,2),'minimize',2,'info',''));
-        %     if exist('dataQueueD','var') && ~isempty(dataQueueD)
-        %         send(dataQueueD,dataStruct);
-        %     end
-        %     try
-        %         save('dataStruct.mat','dataStruct');
-        if false && timeCost == 0
-            GainsSave = Gains;
-            if size(GainsSave,1)>size(GainsSave,2)
-                GainsSave = GainsSave';
-            end
-            try
-                workerID = getCurrentWorker().ProcessId;
-            catch ME
-                workerID = [];
-                warning(strcat(char(ME.message)," In ", mfilename, " line ", num2str(ME.stack(1).line)));
-            end
-            filename = char(strcat('compareEnergyCost',num2str(workerID),'.mat'));
-            if exist(filename,'file') == 2
-                exist_vars = load(filename);
-                metabolicEnergySave     = [exist_vars.metabolicEnergySave;metabolicEnergy];
-                meanVel                 = [exist_vars.meanVel;meanVel];
-                meanStepTime            = [exist_vars.meanStepTime;meanStepTime];
-                meanStepLength          = [exist_vars.meanStepLength;meanStepLength];
-                ASIStepLength           = [exist_vars.ASIStepLength;ASIStepLength];
-                ASIStepTime             = [exist_vars.ASIStepTime;ASIStepTime];
-                ASIVel                  = [exist_vars.ASIVel;ASIVel];
-                costOfTransportSave     = [exist_vars.costOfTransportSave; [effort_costs.costOfTransport] ];
-                costT                   = [exist_vars.costT;cost];
-                %             sumOfIdealTorques       = [exist_vars.sumOfIdealTorques;sumOfIdealTorques];
-                sumOfStopTorques        = [exist_vars.sumOfStopTorques;sumOfStopTorques];
-                HATPos                  = [exist_vars.HATPos;HATPos];
-                GainsSave               = [exist_vars.GainsSave;GainsSave];
-            else
-                costT = cost;
-                metabolicEnergySave = metabolicEnergy;
-                costOfTransportSave = [effort_costs.costOfTransport];
-            end
-            
-            save(filename,'metabolicEnergySave','meanVel','meanStepTime', 'meanStepLength','costOfTransportSave', ...
-                'costT','sumOfStopTorques','HATPos','GainsSave','ASIStepLength','ASIStepTime','ASIVel')
-        end
-    end
     
+    dataStruct = struct('modelType',modelType,'timeCost',struct('data',timeCost,'minimize',1,'info',''),'cost',struct('data',cost,'minimize',1,'info',''),'CoT',struct('data',[effort_costs(:).costOfTransport]','minimize',1,'info',char({effort_costs(:).name})),...
+        'E',struct('data',[effort_costs(:).metabolicEnergy]','minimize',1,'info',char({effort_costs(:).name})),'sumTstop',struct('data',sumOfStopTorques,'minimize',1,'info',''),...
+        'HATPos',struct('data',HATPos,'minimize',0,'info',''),'vMean',struct('data',meanVel,'minimize',0,'info',''),'tStepMean',struct('data',meanStepTime,'minimize',2,'info',''),...
+        'lStepMean',struct('data',meanStepLength,'minimize',2,'info',''),'lStepASI',struct('data',round(ASIStepLength,2),'minimize',2,'info',''),...
+        'tStepASI',struct('data',round(ASIStepTime,2),'minimize',2,'info',''),'velCost',struct('data',velCost,'minimize',1,'info',''),'timeVector',struct('data',time,'minimize',1,'info',''));
+    %     dataStruct = struct('cost',struct('data',cost*rand,'minimize',1,'info',''),'costOfTransport',struct('data',[effort_costs(:).costOfTransport].*rand,'minimize',1,'info',{effort_costs(:).name}),...
+    %         'metabolicEnergy',struct('data',[effort_costs(:).metabolicEnergy].*rand,'minimize',1,'info',{effort_costs(:).name}),'sumOfStopTorques',struct('data',sumOfStopTorques.*rand,'minimize',1,'info',''),...
+    %         'HATPos',struct('data',HATPos.*rand,'minimize',0,'info',''),'vMean',struct('data',meanVel.*rand,'minimize',0,'info',''),'tStepMean',struct('data',meanStepTime.*rand,'minimize',2,'info',''),...
+    %         'lStepMean',struct('data',meanStepLength.*rand,'minimize',2,'info',''),'lStepASI',struct('data',round(ASIStepLength.*rand,2),'minimize',2,'info',''),...
+    %         'tStepASI',struct('data',round(ASIStepTime.*rand,2),'minimize',2,'info',''));
+    %     if exist('dataQueueD','var') && ~isempty(dataQueueD)
+    %         send(dataQueueD,dataStruct);
+    %     end
+    %     try
+    %         save('dataStruct.mat','dataStruct');
+    if b_isParallel && false && timeCost == 0
+        GainsSave = Gains;
+        if size(GainsSave,1)>size(GainsSave,2)
+            GainsSave = GainsSave';
+        end
+        try
+            workerID = getCurrentWorker().ProcessId;
+        catch ME
+            workerID = [];
+            warning(strcat(char(ME.message)," In ", mfilename, " line ", num2str(ME.stack(1).line)));
+        end
+        filename = char(strcat('compareEnergyCost',num2str(workerID),'.mat'));
+        if exist(filename,'file') == 2
+            exist_vars = load(filename);
+            metabolicEnergySave     = [exist_vars.metabolicEnergySave;metabolicEnergy];
+            meanVel                 = [exist_vars.meanVel;meanVel];
+            meanStepTime            = [exist_vars.meanStepTime;meanStepTime];
+            meanStepLength          = [exist_vars.meanStepLength;meanStepLength];
+            ASIStepLength           = [exist_vars.ASIStepLength;ASIStepLength];
+            ASIStepTime             = [exist_vars.ASIStepTime;ASIStepTime];
+            ASIVel                  = [exist_vars.ASIVel;ASIVel];
+            costOfTransportSave     = [exist_vars.costOfTransportSave; [effort_costs.costOfTransport] ];
+            costT                   = [exist_vars.costT;cost];
+            %             sumOfIdealTorques       = [exist_vars.sumOfIdealTorques;sumOfIdealTorques];
+            sumOfStopTorques        = [exist_vars.sumOfStopTorques;sumOfStopTorques];
+            HATPos                  = [exist_vars.HATPos;HATPos];
+            GainsSave               = [exist_vars.GainsSave;GainsSave];
+        else
+            costT = cost;
+            metabolicEnergySave = metabolicEnergy;
+            costOfTransportSave = [effort_costs.costOfTransport];
+        end
+        
+        save(filename,'metabolicEnergySave','meanVel','meanStepTime', 'meanStepLength','costOfTransportSave', ...
+            'costT','sumOfStopTorques','HATPos','GainsSave','ASIStepLength','ASIStepTime','ASIVel')
+    end
+   
+    
+    %     fprintf('-- <strong> t_sim: %2.2f</strong>, Cost: %2.2f, E_m (Wang): %.0f, E_m(Umb10): %.0f, <strong>avg v_step: %2.2f</strong>, avg t_step: %1.2f, avg l_step: %1.2f, ASI l_step: %2.2f, ASI t_step: %2.2f, timeCost: %2.2f, velCost: %2.2f --\n',...
+%         time(end), cost, effort_costs(contains(muscle_exp_models,'Wang')).metabolicEnergy, effort_costs(contains(muscle_exp_models,'Umberger (2010)')).metabolicEnergy,...
+%         meanVel, meanStepTime, meanStepLength,round(ASIStepLength,2),round(ASIStepTime,2), timeCost, velCost);
+    
+% printOptInfo(dataStruct,true);
 catch ME
     error('Error: %s\nIn %s.m line %d',ME.message,mfilename,ME.stack(1).line);
 end
