@@ -50,6 +50,10 @@ else
     rightGaitPhaseEnd = length(t);
     rightGaitPhaseStart = 1;
     b_oneGaitPhase = false;
+    leftGaitPhaseStartV = 1;
+    leftGaitPhaseEndV = length(t);
+    rightGaitPhaseStartV = 1;
+    rightGaitPhaseEndV = length(t);
 end
 
 %%

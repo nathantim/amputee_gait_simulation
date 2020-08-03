@@ -1,4 +1,4 @@
-function [cost, dataStruct] = getCost(model,Gains,time,metabolicEnergy,sumOfStopTorques,HATPos,stepVelocities,stepTimes,stepLengths, b_isParallel)
+function [cost, dataStruct] = getCost(model,Gains,time,metabolicEnergy,sumOfStopTorques,HATPos,stepVelocities,stepTimes,stepLengths,inner_opt_settings, b_isParallel)
 try
     if contains(model,'3R60')
          modelType = 'prosthetic';
@@ -11,11 +11,11 @@ try
          modelType = [modelType, '2D'];
     end
     
-    if nargin < 10
+    if nargin < 11
         b_isParallel = 0;
     end
     OptimParams;
-    dataStruct = struct;
+    dataStruct = struct('cost',struct('data',nan,'minimize',1,'info',''));
     % global dataQueueD
     
     %%
@@ -51,7 +51,8 @@ try
     
     % Decide which to use for optimization, 
     % Umberger (2003), Umberger (2003) TG, Umberger (2010), Wang (2012)
-    opt_exp_model = 'Umberger (2010)';
+%     opt_exp_model = 'Umberger (2010)';
+    opt_exp_model = inner_opt_settings.expenditure_model;
     costOfTransportForOpt =  effort_costs(contains(muscle_exp_models,opt_exp_model)).costOfTransport;
     if isempty(costOfTransportForOpt)
         error('Empty cost of transport')
@@ -79,8 +80,12 @@ try
     %     cost = 100000*timeCost  + 1000*(velCost + 0*distCost) + 0.1*costOfTransport;
 %     cost = 100000*timeCost  + 1000*(velCost) + 100*costOfTransportForOpt + .01*sumOfStopTorques;
 %11-6-2020_19:49
-        cost = 100000*timeCost  + 100*(velCost) + 10*costOfTransportForOpt ...
-                + 1E-2*sumOfStopTorques;
+    timeFactor  = inner_opt_settings.timeFactor;
+    velFactor   = inner_opt_settings.velocityFactor;
+    CoTFactor   = inner_opt_settings.CoTFactor;
+    stopTFactor = inner_opt_settings.sumStopTorqueFactor;
+    cost = timeFactor*timeCost  + velFactor*(velCost) + CoTFactor*costOfTransportForOpt ...
+                + stopTFactor*sumOfStopTorques;
 
     if length(cost) ~= 1
         disp(cost);

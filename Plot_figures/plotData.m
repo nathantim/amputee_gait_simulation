@@ -21,6 +21,7 @@ t = angularData.time;
 
 GaitInfo = getPartOfGaitData(b_oneGaitPhase,GaitPhaseData,t,stepTimes);
 GaitInfo.tp = (0:0.5:100)';
+
 % if ~b_oneGaitPhase
 %     getSteps(t,GaitPhaseData,stepTimes);
 % end

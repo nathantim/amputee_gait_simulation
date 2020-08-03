@@ -51,6 +51,10 @@ end
 
 % sgtitle('Ground Reaction Forces')
 
+if ~GaitInfo.b_oneGaitPhase
+        GaitInfo.tp = GRFData.time;
+end
+
 if false
 %     plotHandlesLeft = plotGRFDataInFigure(t_left_perc,L_Ball,L_Total,L_Heel);
 %     plotHandlesRight = plotGRFDataInFigure(t_right_perc,R_Ball,R_Total,R_Heel);
@@ -82,7 +86,7 @@ set(leg,'FontSize',18);
 for i= 1:size(plotHandlesLeft,1)
     set(plotHandlesLeft(i,1),plotInfo.plotProp,plotInfo.plotProp_entries(1,:));
     set(plotHandlesRight(i,1),plotInfo.plotProp,plotInfo.plotProp_entries(2,:));
-    if plotInfo.showSD
+    if plotInfo.showSD && GaitInfo.b_oneGaitPhase
         set(plotHandlesLeft(i,2),plotInfo.fillProp,plotInfo.fillProp_entries(1,:));
         set(plotHandlesRight(i,2),plotInfo.fillProp,plotInfo.fillProp_entries(2,:));
     end

@@ -1,4 +1,4 @@
-function [cost, dataStruct] =evaluateCostParallel(paramStruct,model,Gains)
+function [cost, dataStruct] =evaluateCostParallel(paramStruct,model,Gains,inner_opt_settings)
 dataStruct = struct;
 if nargin < 2
     Gains = nan(64,1);
@@ -52,7 +52,9 @@ kinematics.GRFData = GRFData;
 %         cost = nan;
 %     end
 try
-    [cost, dataStruct] = getCost(model,Gains,time,metabolicEnergy,sumOfStopTorques,HATPos,stepVelocities,stepTimes,stepLengths,1);
+    [cost, dataStruct] = getCost(model,Gains,time,metabolicEnergy,sumOfStopTorques, ...
+                                HATPos,stepVelocities,stepTimes,stepLengths,...
+                                 inner_opt_settings,1);
     dataStruct.kinematics = kinematics;
 catch ME
     save('error_getCost.mat');

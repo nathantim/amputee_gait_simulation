@@ -70,6 +70,10 @@ end
 if true
  %%
     legStatePlot = subplot(4,1,1,axes(angularDataFig));
+    if ~GaitInfo.b_oneGaitPhase
+        GaitInfo.tp = GaitPhaseData.time;
+    end
+        
     if ~isempty(leftLegState_sd)
         LegHandles(1,2) = fill(legStatePlot,[GaitInfo.tp;flipud(GaitInfo.tp)],[round(leftLegState_avg-leftLegState_sd);flipud(round(leftLegState_avg+leftLegState_sd))],[0.8 0.8 0.8]);
     end
@@ -92,7 +96,10 @@ if true
 %     ylabel('rad');
 %%
     subplotStart = 412;
-
+    
+    if ~GaitInfo.b_oneGaitPhase
+        GaitInfo.tp = angularData.time;
+    end
     [plotHandlesLeft,axesHandles] = plotAngularDataInFigure(angularDataFig,[],GaitInfo.tp,LhipAngles_avg,LhipAngles_sd,LkneeAngles_avg,LkneeAngles_sd,LankleAngles_avg,LankleAngles_sd,subplotStart,GaitInfo.b_oneGaitPhase);
     [plotHandlesRight,axesHandles] = plotAngularDataInFigure(angularDataFig,axesHandles,GaitInfo.tp,RhipAngles_avg,RhipAngles_sd,RkneeAngles_avg,RkneeAngles_sd,RankleAngles_avg,RankleAngles_sd,subplotStart,GaitInfo.b_oneGaitPhase);
     if GaitInfo.b_oneGaitPhase
@@ -106,7 +113,7 @@ end
 % set(flipud(legStatePlot.Children),plotInfo.plotProp,plotInfo.plotProp_entries(1:2,:));
 for j = 1:size(LegHandles,1)
     set(LegHandles(j,1),plotInfo.plotProp,plotInfo.plotProp_entries(j,:));
-    if plotInfo.showSD
+    if plotInfo.showSD && GaitInfo.b_oneGaitPhase
         set(LegHandles(j,2),plotInfo.fillProp,plotInfo.fillProp_entries(j,:));
     end
 end
@@ -118,7 +125,7 @@ end
 for i= 1:size(plotHandlesLeft,1)
     set(plotHandlesLeft(i,1),plotInfo.plotProp,plotInfo.plotProp_entries(1,:));
     set(plotHandlesRight(i,1),plotInfo.plotProp,plotInfo.plotProp_entries(2,:));
-    if plotInfo.showSD
+    if plotInfo.showSD && GaitInfo.b_oneGaitPhase
         set(plotHandlesLeft(i,2),plotInfo.fillProp,plotInfo.fillProp_entries(1,:));
         set(plotHandlesRight(i,2),plotInfo.fillProp,plotInfo.fillProp_entries(2,:));
     end

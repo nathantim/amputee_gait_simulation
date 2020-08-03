@@ -3,8 +3,9 @@ if nargin < 5
     musculoDataFigure = [];
 end
 %%
-t_left_perc = GaitInfo.time.left_perc;
-t_right_perc = GaitInfo.time.right_perc;
+if ~GaitInfo.b_oneGaitPhase
+        GaitInfo.tp = musculoData.time;
+end
 t = musculoData.time;
 %%
 l_dyn = 6;
@@ -128,6 +129,8 @@ end
 set(0, 'DefaultAxesFontSize',10);
 % sgtitle('Muscle stimulations')
 
+
+    
 [plotHandlesLeft,axesHandles] = plotMusculoDataInFigure(musculoDataFig,[],GaitInfo.tp,L_HFL_avg,L_HFL_sd,L_GLU_avg,L_GLU_sd,L_HAM_avg,L_HAM_sd,L_RF_avg,L_RF_sd,L_VAS_avg,L_VAS_sd,...
         L_BFSH_avg,L_BFSH_sd,L_GAS_avg,L_GAS_sd,L_SOL_avg,L_SOL_sd,L_TA_avg,L_TA_sd,L_HAB_avg,L_HAB_sd,L_HAD_avg,L_HAD_sd,GaitInfo.b_oneGaitPhase);
 [plotHandlesRight,axesHandles] = plotMusculoDataInFigure(musculoDataFig,axesHandles,GaitInfo.tp,R_HFL_avg,R_HFL_sd,R_GLU_avg,R_GLU_sd,R_HAM_avg,R_HAM_sd,R_RF_avg,R_RF_sd,R_VAS_avg,R_VAS_sd,...
@@ -148,7 +151,7 @@ for i= 1:length(plotHandlesLeft)
     if ~isnan(plotHandlesRight(i,1))
         set(plotHandlesRight(i,1),plotInfo.plotProp,plotInfo.plotProp_entries(2,:));
     end
-    if plotInfo.showSD
+    if plotInfo.showSD && GaitInfo.b_oneGaitPhase
         if ~isnan(plotHandlesLeft(i,2))
             set(plotHandlesLeft(i,2),plotInfo.fillProp,plotInfo.fillProp_entries(1,:));
         end

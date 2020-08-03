@@ -66,6 +66,7 @@ try
         t = data.kinematics.angularData.time;
         GaitInfo = getPartOfGaitData(1,data.kinematics.GaitPhaseData,t,data.kinematics.stepTimes);
         GaitInfo.tp = (0:0.5:100)';
+        GaitInfo.b_oneGaitPhase = true;
         saveInfo.b_saveFigure = 0;
         saveInfo.info = data.modelType;
         
