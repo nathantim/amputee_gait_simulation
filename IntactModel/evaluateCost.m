@@ -3,7 +3,7 @@
 % tempstring = strsplit(opts.UserData,' ');
 % dataFile = tempstring{end};
 % InitialGuessFile = load(dataFile);
-%
+% 
 % Gains = InitialGuessFile.Gains.*exp(bestever.x);
 
 
@@ -30,33 +30,7 @@ model = 'NeuromuscularModel2D';
 % set_param(model,'StopTime','30');
 
 %%
-inner_opt_settings.expenditure_model = 'Umberger (2003)';
-inner_opt_settings.timeFactor = 100000;
-inner_opt_settings.velocityFactor = 100;
-inner_opt_settings.CoTFactor = 10; % cost of transport
-inner_opt_settings.sumStopTorqueFactor = 1E-2;
-
-if usejava('desktop')
-    inner_opt_settings.visual = true;
-    %       set_param(model,'AccelMakeCommand','make_rtw')
-    %       set_param(model,'MakeCommand','make_rtw')
-else
-    inner_opt_settings.visual = false;
-    load_system(model);% 'normal', 'accelerator', 'rapid'
-    
-    set_param(model,'AccelMakeCommand','make_rtw CPP_OPTS="-D_GLIBCXX_USE_CXX11_ABI=0"')
-    %set_param(model,'AccelMakeCommand','make_rtw CXX_OPTS="-D_GLIBCXX_USE_CXX11_ABI=0"')
-    set_param(model,'MakeCommand','make_rtw CPP_OPTS="-D_GLIBCXX_USE_CXX11_ABI=0"')
-    %set_param(model,'MakeCommand','make_rtw CXX_OPTS="-D_GLIBCXX_USE_CXX11_ABI=0"')
-    set_param(model, 'AccelVerboseBuild', 'on')
-    
-    disp('Library path:');
-    disp(getenv('LD_LIBRARY_PATH'))
-    disp(get_param(model,'MakeCommand'));
-    disp(get_param(model,'AccelMakeCommand'));
-    save_system(model);
-    close_system(model);
-end
+inner_opt_settings = setInnerOptSettings();
 
 
 %%

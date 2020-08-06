@@ -1,4 +1,4 @@
-function [cost, dataStruct] =evaluateCostParallel(paramStruct,model,Gains,inner_opt_settings)
+function [cost, dataStruct] = evaluateCostParallel(paramStruct,model,Gains,inner_opt_settings)
 dataStruct = struct;
 if nargin < 2
     Gains = nan(64,1);

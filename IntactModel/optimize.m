@@ -23,38 +23,24 @@ global model rtp InitialGuess inner_opt_settings
 
 %% specifiy model and intial parameters
 model = 'NeuromuscularModel2D';
+% model = 'NeuromuscularModel3D';
+% model = 'NeuromuscularModel_3R60_2D';
+% model = 'NeuromuscularModel_3R60_3D';
 optfunc = 'cmaesParallelSplitRough';
 
 load_system(model);
 % set_param(model,'MakeCommand','make_rtw  CPP_OPTS="-D_GLIBCXX_USE_CXX11_ABI=0"')
 % set_param(model,'AccelMakeCommand','make_rtw  CPP_OPTS="-D_GLIBCXX_USE_CXX11_ABI=0"')
-set_param(model, 'AccelVerboseBuild', 'on')
+% set_param(model, 'AccelVerboseBuild', 'on')
 set_param(strcat(model,'/Body Mechanics Layer/Obstacle'),'Commented','on');
 set_param(model,'SimulationMode','rapid');
 set_param(model,'StopTime','30');
-disp(get_param(model,'MakeCommand'));
-disp(get_param(model,'AccelMakeCommand'));
+% disp(get_param(model,'MakeCommand'));
+% disp(get_param(model,'AccelMakeCommand'));
 InitialGuess = initial_gains_file.Gains;
 
 %% initialize parameters
-% Umberger (2003), Umberger (2003) TG, Umberger (2010), Wang (2012)
-inner_opt_settings.expenditure_model = 'Umberger (2010)';
-inner_opt_settings.timeFactor = 100000;
-inner_opt_settings.velocityFactor = 100;
-inner_opt_settings.CoTFactor = 10; % cost of transport
-inner_opt_settings.sumStopTorqueFactor = 1E-2;
-
-inner_opt_settings.numTerrains = 6;
-inner_opt_settings.terrain_height = 0.015; % in m
-if usejava('desktop')
-    inner_opt_settings.numParWorkers = 4;
-    inner_opt_settings.visual = true;
-%     set_param(model,'AccelMakeCommand','make_rtw')
-else
-    inner_opt_settings.numParWorkers = 12;
-    inner_opt_settings.visual = false;
-%      set_param(model,'AccelMakeCommand','make_rtw OPT_OPTS="-D_GLIBCXX_USE_CXX11_ABI=0"');
-end
+[inner_opt_settings,opts] = setInnerOptSettings(initial_gains_filename);
 
 BodyMechParams;
 ControlParams;
@@ -74,25 +60,12 @@ x0 = zeros(numvars,1);
 sigma0 = 1/8;
 % sigma0 = 1/3;
 
-opts = cmaes;
-%opts.PopSize = numvars;
-opts.Resume = 'yes';
-opts.MaxIter = 2000;
-% opts.StopFitness = -inf;
-opts.StopFitness = 0;
-opts.DispModulo = 1;
-opts.TolX = 1e-2;
-% opts.TolX = 1e-3;
-opts.TolFun = 1e-2;
-opts.EvalParallel = 'yes';
-opts.LogPlot = 'off';
-if (min_velocity == target_velocity && max_velocity == target_velocity)
-    opts.TargetVel = target_velocity;
-    fprintf('Using target velocity of %1.1f m/s.\n',target_velocity);
-end
-opts.UserData = char(strcat("Gains filename: ", initial_gains_filename));
-opts.UserDat2 = 'leave out all stop torque and energy before init steps';
-opts.SaveFilename = 'vcmaes_1.5cm_1.2ms_Umb10_kneelim1_mstoptorque2_3.mat';
+opts.SaveFilename = 'vcmaes_1.5cm_1.2ms_Umb03_kneelim1_mstoptorque2.mat';
+
+%% Show settings
+clc;
+disp(inner_opt_settings);
+fprintf('Target velocity: %1.1f m/s \n',target_velocity);
 
 %% run cmaes
 [xmin, fmin, counteval, stopflag, out, bestever] = cmaes(optfunc, x0, sigma0, opts)

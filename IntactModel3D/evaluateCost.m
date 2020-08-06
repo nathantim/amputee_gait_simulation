@@ -34,9 +34,15 @@ setInit;
 
 %%
 model = 'NeuromuscularModel3D';
+
+%%
+inner_opt_settings = setInnerOptSettings();
 %open('NeuromuscularModel');
 set_param(model,'SimulationMode','normal');
 set_param(model,'StopTime','30');
+
+
+%%
 
 warning('off');
 tic;

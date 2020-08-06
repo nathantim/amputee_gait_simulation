@@ -15,20 +15,27 @@ initial_gains_file = load(initial_gains_filename);
 load('Results/Flat/SongGains_02_wC_IC.mat');
 
 %%
-global model rtp InitialGuess
+global model rtp InitialGuess inner_opt_settings
 
 %% specifiy model and intial parameters
 model = 'NeuromuscularModel_3R60_3D';
-optfunc = 'cmaesParallelSplit';
+optfunc = 'cmaesParallelSplitRough';
 load_system(model);
 set_param(strcat(model,'/Body Mechanics Layer/Right Ankle Joint'),'SpringStiffness','300','DampingCoefficient','100');
 % % set_param(strcat(model,'/Body Mechanics Layer/Right Ankle Joint'),'SpringStiffness','20','DampingCoefficient','4');
 set_param(model,'SimulationMode','rapid');
 set_param(model,'StopTime','30');
+try
+    set_param(strcat(model,'/Body Mechanics Layer/Obstacle'),'Commented','on');
+catch ME
+    warning(ME.message);
+end
 
 InitialGuess = initial_gains_file.Gains;
 
 %% initialze parameters
+[inner_opt_settings,opts] = setInnerOptSettings(initial_gains_filename);
+
 BodyMechParams;
 ControlParams;
 OptimParams;
@@ -48,22 +55,7 @@ x0 = zeros(numvars,1);
 % sigma0 = 1/8;
 sigma0 = 1/3;
 
-opts = cmaes;
-%opts.PopSize = numvars;
-opts.Resume = 'no';
-opts.MaxIter = 2000;
-% opts.StopFitness = -inf;
-opts.StopFitness = 0;
-opts.DispModulo = 1;
-opts.TolX = 1e-2;
-opts.TolFun = 1e-2;
-opts.EvalParallel = 'yes';
-opts.LogPlot = 'off';
-if (min_velocity == target_velocity && max_velocity == target_velocity)
-    opts.TargetVel = target_velocity;
-end
-opts.UserData = char(strcat("Gains filename: ", initial_gains_filename));
-opts.SaveFilename = 'vcmaes_Umb10_dimmuscleforce_3Dstart2.mat';
+opts.SaveFilename = 'vcmaes_1.5cm_1.2ms_Umb10_kneelim1_mstoptorque2.mat';
 
 %% run cmaes
 [xmin, fmin, counteval, stopflag, out, bestever] = cmaes(optfunc, x0, sigma0, opts)

@@ -1,10 +1,10 @@
-function [cost, dataStruct] =evaluateCostParallel(paramStruct,Gains)
+function [cost, dataStruct] = evaluateCostParallel(paramStruct,model,Gains,inner_opt_settings)
 dataStruct = struct;
 if nargin < 2
-    Gains = nan(30,1);
+    Gains = nan(133,1);
 end
 % OptimParams;
-model = 'NeuromuscularModel_3R60_3D';
+% modellocal = 'NeuromuscularModel2D';
 try
     simout = sim(model,...
         'RapidAcceleratorParameterSets',paramStruct,...
@@ -12,11 +12,10 @@ try
         'TimeOut',2*60,...
         'SaveOutput','on');
 catch ME
-    
     cost = nan;
-    disp(Gains');
     disp('Timeout')
-    warning(ME.message);
+    disp(Gains');
+    disp(ME.message);
     return
 end
 
@@ -53,7 +52,9 @@ kinematics.GRFData = GRFData;
 %         cost = nan;
 %     end
 try
-    [cost, dataStruct] = getCost(model,Gains,time,metabolicEnergy,sumOfStopTorques,HATPos,stepVelocities,stepTimes,stepLengths,1);
+    [cost, dataStruct] = getCost(model,Gains,time,metabolicEnergy,sumOfStopTorques, ...
+                                HATPos,stepVelocities,stepTimes,stepLengths,...
+                                 inner_opt_settings,1);
     dataStruct.kinematics = kinematics;
 catch ME
     save('error_getCost.mat');
