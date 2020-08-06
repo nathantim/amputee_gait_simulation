@@ -144,7 +144,7 @@ function costs = cmaesParallelSplitRough(gainsPop)
     try
         parfor (i = 1:length(paramSets),inner_opt_settings.numParWorkers)
             localGains = InitialGuess.*exp(gainsPop(:,ceil(i/numTerrains)));
-            [costs(i),dataStructlocal] = evaluateCostParallel(paramSets{i},model,localGains)
+            [costs(i),dataStructlocal] = evaluateCostParallel(paramSets{i},model,localGains,inner_opt_settings)
             if inner_opt_settings.visual
                 printOptInfo(dataStructlocal,true);
             end
@@ -170,7 +170,6 @@ function costs = cmaesParallelSplitRough(gainsPop)
     costs(isinvalid) = nan;
     
     %% send the best outcome of the best gains for plotting, only flat terrain
-   
     try
         mingainidx = find(costs == min(costs));
         %         distfrommean = costsall(:,mingainidx) - costs(mingainidx);
