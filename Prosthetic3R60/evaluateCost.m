@@ -26,7 +26,7 @@ setInit;
 model = 'NeuromuscularModel_3R60_2D';
 
 %%
-inner_opt_settings = setInnerOptSettings();
+[inner_opt_settings,~] = setInnerOptSettings();
 
 %%
 %open('NeuromuscularModel');

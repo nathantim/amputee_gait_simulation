@@ -12,7 +12,7 @@ try
     end
     
     if nargin < 11
-        b_isParallel = 0;
+        b_isParallel = false;
     end
     OptimParams;
     dataStruct = struct('cost',struct('data',nan,'minimize',1,'info',''));
@@ -110,7 +110,7 @@ try
     %     end
     %     try
     %         save('dataStruct.mat','dataStruct');
-    if b_isParallel && false && timeCost == 0
+    if b_isParallel && timeCost == 0
         GainsSave = Gains;
         if size(GainsSave,1)>size(GainsSave,2)
             GainsSave = GainsSave';
