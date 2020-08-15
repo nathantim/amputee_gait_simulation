@@ -1,5 +1,7 @@
 setup_paths;
-addpath(genpath(strcat(mainfolderpath,'IntactModel')));
-cd 'IntactModel';
-% optimize;
-evaluateCost;
+modelname = 'Prosthetic3R60_3D';
+addpath(genpath(strcat(mainfolderpath,modelname)));
+cd(modelname);
+disp(modelname);
+optimize;
+% evaluateCost;

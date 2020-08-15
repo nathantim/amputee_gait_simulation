@@ -137,14 +137,16 @@ try
             sumOfStopTorques        = [exist_vars.sumOfStopTorques;sumOfStopTorques];
             HATPos                  = [exist_vars.HATPos;HATPos];
             GainsSave               = [exist_vars.GainsSave;GainsSave];
+            timeCostSave            = [exist_vars.timeCostSave;timeCost];
         else
             costT = cost;
             metabolicEnergySave = metabolicEnergy;
             costOfTransportSave = [effort_costs.costOfTransport];
+            timeCostSave            = [timeCost];
         end
         
         save(filename,'metabolicEnergySave','meanVel','meanStepTime', 'meanStepLength','costOfTransportSave', ...
-            'costT','sumOfStopTorques','HATPos','GainsSave','ASIStepLength','ASIStepTime','ASIVel')
+            'costT','sumOfStopTorques','HATPos','GainsSave','ASIStepLength','ASIStepTime','ASIVel','timeCostSave')
     end
    
     
