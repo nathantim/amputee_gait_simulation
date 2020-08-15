@@ -45,6 +45,7 @@ slprj/
 *.log
 *.sql
 *.sqlite
+*.hpc
 
 # OS generated files #
 ######################
