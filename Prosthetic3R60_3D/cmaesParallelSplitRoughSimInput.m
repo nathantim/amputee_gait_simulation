@@ -20,11 +20,18 @@ function costs = cmaesParallelSplitRoughSimInput(gainsPop)
 
     %create param sets
     gainind = 1;
+    leftSwingSaggital = [model,'/Neural Control Layer/L Swing Phase (sagittal)'];
+    rightSwingSaggital = [model,'/Neural Control Layer/R Swing Phase amp (sagittal)'];
+    leftStanceSaggital = [model,'/Neural Control Layer/L Stance Phase (sagittal)'];
+    rightStanceSaggital = [model,'/Neural Control Layer/R Stance Phase amp (sagittal)'];
+    leftTransSaggital = [model,'/Neural Control Layer/L Stance, Swing, Trans (sagittal)'];
+    leftTransSaggital = [model,'/Neural Control Layer/R Stance, Swing, Trans amp (sagittal)'];
+    
     for i = 1:numTerrains:(numTerrains*popSize)
         %set gains
         Gains = InitialGuess.*exp(gainsPop(:,gainind));
         in(i) = Simulink.SimulationInput(model);
-        in(i).setModelParameter( ...
+        in(i).setBlockParameter( ...
             'LGainFGLUst',               Gains( 1), ...
             'LGainFVASst',               Gains( 2), ...
             'LGainFSOLst',               Gains( 3), ...
@@ -224,3 +231,13 @@ function costs = cmaesParallelSplitRoughSimInput(gainsPop)
 %     catch ME
 %         warning(ME.message);
 %     end
+
+function in = set_gainvalues(in, Gains)
+    global DEFAULT_RTP;
+    % Modify the parameter value
+    parameterSet = Simulink.BlockDiagram.modifyTunableParameters(DEFAULT_RTP, 'Mb', Mb);
+    
+    % Set the model parameter on the SimulationInput object and return the
+    % modified SimulationInput object to be used for simulation
+    in = in.setModelParameter('RapidAcceleratorParameterSets', parameterSet);
+end
