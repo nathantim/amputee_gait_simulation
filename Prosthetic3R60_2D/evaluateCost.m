@@ -16,6 +16,11 @@ load('Results/Rough/Umb10_1.5cm_1.2ms_kneelim1_mstoptorque2.mat');
 load('Results/Flat/SongGains_02_wC_IC.mat');
 
 assignGains;
+
+[groundX, groundZ, groundTheta] = generateGround('flat');
+% [groundX, groundZ, groundTheta] = generateGround('const', .05,1);
+%[groundX, groundZ, groundTheta] = generateGround('ramp');
+
 dt_visual = 1/50;
 setInit;
 % LlegLengthClr = 0.95*LlegLengthClr;
