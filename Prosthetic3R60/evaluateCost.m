@@ -1,17 +1,18 @@
 % clc;
 %%
-tempstring = strsplit(opts.UserData,' ');
-dataFile = tempstring{end};
-InitialGuessFile = load(dataFile); 
-
-Gains = InitialGuessFile.Gains.*exp(bestever.x);
+% tempstring = strsplit(opts.UserData,' ');
+% dataFile = tempstring{end};
+% InitialGuessFile = load(dataFile); 
+% 
+% Gains = InitialGuessFile.Gains.*exp(bestever.x);
 
 %%
-% load('Results/RoughDist/SongGainsamp.mat');
+% load('Results/Rough/SongGainsamp.mat');
 % load('Results/Flat/SongGains_02amp.mat');
 
-% load('Results/RoughDist/SongGains_wC_IC.mat');
+% load('Results/Rough/SongGains_wC_IC.mat');
 % load('Results/Rough/Umb10_1.5cm_1.2ms_Umb10_kneelim1_mstoptorque3.mat');
+load('Results/Rough/Umb10_1.5cm_1.2ms_kneelim1_mstoptorque2.mat');
 load('Results/Flat/SongGains_02_wC_IC.mat');
 
 assignGains;
@@ -24,7 +25,13 @@ setInit;
 % RGainLGLUsw = 3*RGainLGLUsw;
 %%
 model = 'NeuromuscularModel_3R60_2D';
-
+load_system(model);
+Vals = [RGainFGLUst,1];
+for i = 1:2
+    in(i) = Simulink.SimulationInput(model);
+    in(i) = in(i).setVariable('LGainLVASsw',Vals(i));
+    in(i) = in(i).setVariable('RGainLVASsw',Vals(i));
+end
 %%
 [inner_opt_settings,~] = setInnerOptSettings();
 
@@ -35,13 +42,19 @@ model = 'NeuromuscularModel_3R60_2D';
 
 warning('off');
 tic;
-sim(model)
+% sim(model)
+out = parsim(in, 'ShowProgress', 'on');
 toc;
 warning('on');
 
+disp('1:')
+disp(out(1).logsout.get('time').Values)
+
+disp('2:')
+disp(out(2).logsout.get('time').Values)
 %%
-[cost, dataStruct] = getCost(model,Gains,time,metabolicEnergy,sumOfStopTorques,HATPos,stepVelocities,stepTimes,stepLengths,inner_opt_settings,0);
-printOptInfo(dataStruct,true);
+% [cost, dataStruct] = getCost(model,Gains,time,metabolicEnergy,sumOfStopTorques,HATPos,stepVelocities,stepTimes,stepLengths,inner_opt_settings,0);
+% printOptInfo(dataStruct,true);
 %%
 % kinematics.angularData = angularData;
 % kinematics.GaitPhaseData = GaitPhaseData;
