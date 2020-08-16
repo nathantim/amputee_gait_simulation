@@ -66,9 +66,9 @@ disp(out(2).logsout.get('time').Values)
 % save('dataStruct.mat','dataStruct')
 % 
 % %%
-set(0, 'DefaultFigureHitTest','on');
-set(0, 'DefaultAxesHitTest','on','DefaultAxesPickableParts','all');
-set(0, 'DefaultLineHitTest','on','DefaultLinePickableParts','all');
-set(0, 'DefaultPatchHitTest','on','DefaultPatchPickableParts','all');
-set(0, 'DefaultStairHitTest','on','DefaultStairPickableParts','all');
-set(0, 'DefaultLegendHitTest','on','DefaultLegendPickableParts','all');
+% set(0, 'DefaultFigureHitTest','on');
+% set(0, 'DefaultAxesHitTest','on','DefaultAxesPickableParts','all');
+% set(0, 'DefaultLineHitTest','on','DefaultLinePickableParts','all');
+% set(0, 'DefaultPatchHitTest','on','DefaultPatchPickableParts','all');
+% set(0, 'DefaultStairHitTest','on','DefaultStairPickableParts','all');
+% set(0, 'DefaultLegendHitTest','on','DefaultLegendPickableParts','all');
