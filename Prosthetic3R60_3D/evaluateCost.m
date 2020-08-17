@@ -35,6 +35,11 @@ assignGains;
 dt_visual = 1/50;
 setInit;
 
+[groundX, groundZ, groundTheta] = generateGround('flat');
+% [groundX, groundZ, groundTheta] = generateGround('const', .05,1);
+%[groundX, groundZ, groundTheta] = generateGround('ramp');
+
+
 %%
 model = 'NeuromuscularModel_3R60_3D';
 
@@ -52,8 +57,8 @@ toc;
 warning('on');
 
 %%
-[cost, dataStruct] = getCost(model,Gains,time,metabolicEnergy,sumOfStopTorques,HATPos,stepVelocities,stepTimes,stepLengths,0);
-printOptInfo(dataStruct);
+[cost, dataStruct] = getCost(model,Gains,time,metabolicEnergy,sumOfStopTorques,HATPos,stepVelocities,stepTimes,stepLengths,inner_opt_settings,0);
+printOptInfo(dataStruct,true);
 %%
 % kinematics.angularData = angularData;
 % kinematics.GaitPhaseData = GaitPhaseData;
