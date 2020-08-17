@@ -1,6 +1,7 @@
 # Folders #
 ###########
 Plot_figures/Figures/
+logfilematlab.txt
 
 # Compiled source #
 ###################
@@ -44,6 +45,7 @@ slprj/
 *.log
 *.sql
 *.sqlite
+*.hpc
 
 # OS generated files #
 ######################

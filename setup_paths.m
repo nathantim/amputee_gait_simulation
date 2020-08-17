@@ -8,6 +8,10 @@ while isempty(outputstruct) && i < 5
 end
 mainfolderpath = outputstruct.folder;
 addpath(mainfolderpath);
-addpath(strcat(mainfolderpath,'/Animation'));
+
 addpath(genpath(strcat(mainfolderpath,'/Functions')));
-addpath(strcat(mainfolderpath,'/Plot_figures'));
+try
+    addpath(strcat(mainfolderpath,'/Animation'));
+    addpath(strcat(mainfolderpath,'/Plot_figures'));
+catch
+end

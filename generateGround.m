@@ -1,4 +1,4 @@
-function [groundX, groundZ, groundTheta] = generateGround(type, param, seed)
+function [groundX, groundZ, groundTheta] = generateGround(type, param, seed, b_save)
 groundX = zeros(1,200);
 groundX(1:2:end) = 0:99;
 groundX(2:2:end) = (1:100)-.03;
@@ -10,14 +10,17 @@ if nargin < 3
 else
     rng(seed);
 end
+if nargin < 4
+    b_save = true;
+end
 if nargin == 0
     type = 'flat';
 end
-
+% fprintf('Ground type is: <strong>%s</strong>\n',type);
 switch lower(type)
     %no roughness
     case 'flat'
-
+    
     %ramped roughness
     case 'ramp'
         %default slope of 2.5 mm per meter
@@ -35,9 +38,9 @@ switch lower(type)
 
     %const roughness
     case {'constant', 'const'}
-        %default step size of 3 cm
+        %default step size of 2 cm
         if nargin == 1
-            stepSize = 0.03;
+            stepSize = 0.02;
         else
             stepSize = param;
         end
@@ -56,4 +59,6 @@ end
 %calculate slope angle
 groundTheta = [atan(diff(groundZ)./diff(groundX)), 0];
 
-save('groundHeight.mat','groundX','groundZ','groundTheta');
+if b_save
+    save('groundHeight.mat','groundX','groundZ','groundTheta');
+end
