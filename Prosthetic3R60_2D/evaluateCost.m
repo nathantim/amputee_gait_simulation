@@ -1,10 +1,10 @@
 % clc;
 %%
-tempstring = strsplit(opts.UserData,' ');
-dataFile = tempstring{end};
-InitialGuessFile = load(dataFile); 
-
-Gains = InitialGuessFile.Gains.*exp(bestever.x);
+% tempstring = strsplit(opts.UserData,' ');
+% dataFile = tempstring{end};
+% InitialGuessFile = load(dataFile); 
+% 
+% Gains = InitialGuessFile.Gains.*exp(bestever.x);
 
 %%
 % load('Results/RoughDist/SongGainsamp.mat');
@@ -12,11 +12,17 @@ Gains = InitialGuessFile.Gains.*exp(bestever.x);
 
 % load('Results/RoughDist/SongGains_wC_IC.mat');
 % load('Results/Rough/Umb10_1.5cm_1.2ms_Umb10_kneelim1_mstoptorque3.mat');
+load('Results/Rough/Umb10_1.5cm_1.2ms_kneelim1_mstoptorque2.mat');
 load('Results/Flat/SongGains_02_wC_IC.mat');
 
 assignGains;
 dt_visual = 1/50;
 setInit;
+
+[groundX, groundZ, groundTheta] = generateGround('flat');
+% [groundX, groundZ, groundTheta] = generateGround('const', .05,1);
+%[groundX, groundZ, groundTheta] = generateGround('ramp');
+
 % LlegLengthClr = 0.95*LlegLengthClr;
 % RGainLRFHFLsw = 5*RGainLRFHFLsw;
 % RGainVRFHFLsw = 5*RGainVRFHFLsw;
