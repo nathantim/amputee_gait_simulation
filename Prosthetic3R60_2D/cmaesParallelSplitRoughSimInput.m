@@ -16,7 +16,7 @@ function costs = cmaesParallelSplitRough(gainsPop)
     %     [groundX, groundZ, groundTheta] = generateGround('flat');
 
     costs = nan(popSize*numTerrains,1);
-    paramSets = cell(popSize*numTerrains,1);
+%     paramSets = cell(popSize*numTerrains,1);
 %     dataStruct = struct;
 
 %create param sets
@@ -151,26 +151,69 @@ function costs = cmaesParallelSplitRough(gainsPop)
     rng('shuffle');
 
     %simulate each sample and store cost
-    try
-        parfor (i = 1:length(paramSets),inner_opt_settings.numParWorkers)
-            localGains = InitialGuess.*exp(gainsPop(:,ceil(i/numTerrains)));
-            [costs(i),dataStructlocal] = evaluateCostParallel(paramSets{i},model,localGains,inner_opt_settings)
-            if inner_opt_settings.visual
-                printOptInfo(dataStructlocal,true);
-            end
-            try
-                if max(contains(fieldnames(dataStructlocal),'timeCost')) 
-                    if  dataStructlocal.timeCost.data == 0
-                        dataStruct(i) = dataStructlocal;
-                    end
-                end
-            catch ME
-               warning('Error: %s\nIn %s.m line %d',ME.message,mfilename,ME.stack(1).line); 
-            end
+    out = parsim(in, 'ShowProgress', 'on');
+    for i = 1:length(in)
+        time = out(i).time;
+        metabolicEnergy = out(i).metabolicEnergy;
+        sumOfStopTorques = out(i).sumOfStopTorques;
+        HATPos = out(i).HATPos;
+        stepVelocities = out(i).stepVelocities;
+        stepTimes = out(i).stepTimes;
+        stepLengths = out(i).stepLengths;
+        angularData = out(i).angularData;
+        GaitPhaseData = out(i).GaitPhaseData;
+        musculoData = out(i).musculoData;
+        GRFData = out(i).GRFData;
+ 
+        
+        kinematics.angularData = angularData;
+        kinematics.GaitPhaseData = GaitPhaseData;
+        kinematics.time = time;
+        kinematics.stepTimes = stepTimes;
+        kinematics.musculoData = musculoData;
+        kinematics.GRFData = GRFData;
+        try
+            [costs(i), dataStructlocal] = getCost(model,Gains,time,metabolicEnergy,sumOfStopTorques, ...
+                HATPos,stepVelocities,stepTimes,stepLengths,...
+                inner_opt_settings,true);
+            dataStruct.kinematics = kinematics;
+        catch ME
+            save('error_getCost.mat');
+            error('Error not possible to evaluate getCost: %s\nIn %s.m line %d',ME.message,mfilename,ME.stack(1).line);
         end
-    catch ME
-       error(ME.message); 
+        if inner_opt_settings.visual
+            printOptInfo(dataStructlocal,true);
+        end
+        try
+            if max(contains(fieldnames(dataStructlocal),'timeCost'))
+                if  dataStructlocal.timeCost.data == 0
+                    dataStruct(i) = dataStructlocal;
+                end
+            end
+        catch ME
+            warning('Error: %s\nIn %s.m line %d',ME.message,mfilename,ME.stack(1).line);
+        end
     end
+%     try
+%         parfor (i = 1:length(paramSets),inner_opt_settings.numParWorkers)
+%             localGains = InitialGuess.*exp(gainsPop(:,ceil(i/numTerrains)));
+%             [costs(i),dataStructlocal] = evaluateCostParallel(paramSets{i},model,localGains,inner_opt_settings)
+%             if inner_opt_settings.visual
+%                 printOptInfo(dataStructlocal,true);
+%             end
+%             try
+%                 if max(contains(fieldnames(dataStructlocal),'timeCost')) 
+%                     if  dataStructlocal.timeCost.data == 0
+%                         dataStruct(i) = dataStructlocal;
+%                     end
+%                 end
+%             catch ME
+%                warning('Error: %s\nIn %s.m line %d',ME.message,mfilename,ME.stack(1).line); 
+%             end
+%         end
+%     catch ME
+%        error(ME.message); 
+%     end
 
         
     %calculate mean across terrains
