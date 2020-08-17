@@ -133,7 +133,22 @@ function costs = cmaesParallelSplitRough(gainsPop)
         in(i) = in(i).setVariable('RPreStimGLUsw',             Gains(95),'Workspace',model);
         in(i) = in(i).setVariable('RPreStimHAMsw',             Gains(96),'Workspace',model);
         in(i) = in(i).setVariable('RPreStimRFsw',              Gains(97),'Workspace',model);
-
+        
+        prepend = 'NeuromuscularModel_3R60_2D/Neural Control Layer';
+        in(i) = in(i).setBlockParameter(    [prepend,'SDelay20'],'InitialOutput', Gains(46), ... %LPreStimHFLst
+                                            [prepend,'SDelay21'],'InitialOutput', Gains(47), ... %LPreStimGLUst
+                                            [prepend,'SDelay22'],'InitialOutput', Gains(48), ... %LPreStimHAMst
+                                            [prepend,'SDelay23'],'InitialOutput', Gains(49), ... %LPreStimRFst
+                                            [prepend,'MDelay9'] ,'InitialOutput', Gains(50), ... %LPreStimVASst
+                                            [prepend,'MDelay10'],'InitialOutput', Gains(51), ... %LPreStimBFSHst
+                                            [prepend,'LDelay11'],'InitialOutput', Gains(52), ... %LPreStimGASst
+                                            [prepend,'LDelay9'] ,'InitialOutput', Gains(53), ... %LPreStimSOLst
+                                            [prepend,'LDelay10'],'InitialOutput', Gains(54), ... %LPreStimTAst
+                                            [prepend,'SDelay24'],'InitialOutput', Gains(94), ... %RPreStimHFLsw
+                                            [prepend,'SDelay25'],'InitialOutput', Gains(95), ... %RPreStimGLUsw
+                                            [prepend,'SDelay26'],'InitialOutput', Gains(96), ... %RPreStimHAMsw
+                                            [prepend,'SDelay27'],'InitialOutput', Gains(97)); ... %RPreStimRFsw
+                                            
         %set ground heights
         for j = 0:(numTerrains-1)
             if j == 0
@@ -151,8 +166,10 @@ function costs = cmaesParallelSplitRough(gainsPop)
     rng('shuffle');
 
     %simulate each sample and store cost
-    out = parsim(in, 'ShowProgress', 'on');
+    out = parsim(in, 'ShowProgress', true,'TransferBaseWorkspaceVariables',true,'UseFastRestart',true);
     for i = 1:length(in)
+        fprintf('Error Message of %d: \n',i);
+        disp(out(i).ErrorMessage);
         time = out(i).time;
         metabolicEnergy = out(i).metabolicEnergy;
         sumOfStopTorques = out(i).sumOfStopTorques;
@@ -164,7 +181,7 @@ function costs = cmaesParallelSplitRough(gainsPop)
         GaitPhaseData = out(i).GaitPhaseData;
         musculoData = out(i).musculoData;
         GRFData = out(i).GRFData;
- 
+        
         
         kinematics.angularData = angularData;
         kinematics.GaitPhaseData = GaitPhaseData;
@@ -176,13 +193,13 @@ function costs = cmaesParallelSplitRough(gainsPop)
             [costs(i), dataStructlocal] = getCost(model,Gains,time,metabolicEnergy,sumOfStopTorques, ...
                 HATPos,stepVelocities,stepTimes,stepLengths,...
                 inner_opt_settings,true);
-            dataStruct.kinematics = kinematics;
+            dataStructlocal.kinematics = kinematics;
         catch ME
             save('error_getCost.mat');
             error('Error not possible to evaluate getCost: %s\nIn %s.m line %d',ME.message,mfilename,ME.stack(1).line);
         end
-        if inner_opt_settings.visual
-            printOptInfo(dataStructlocal,true);
+        if ~inner_opt_settings.visual
+            printOptInfo(dataStructlocal,false);
         end
         try
             if max(contains(fieldnames(dataStructlocal),'timeCost'))
@@ -194,28 +211,28 @@ function costs = cmaesParallelSplitRough(gainsPop)
             warning('Error: %s\nIn %s.m line %d',ME.message,mfilename,ME.stack(1).line);
         end
     end
-%     try
-%         parfor (i = 1:length(paramSets),inner_opt_settings.numParWorkers)
-%             localGains = InitialGuess.*exp(gainsPop(:,ceil(i/numTerrains)));
-%             [costs(i),dataStructlocal] = evaluateCostParallel(paramSets{i},model,localGains,inner_opt_settings)
-%             if inner_opt_settings.visual
-%                 printOptInfo(dataStructlocal,true);
-%             end
-%             try
-%                 if max(contains(fieldnames(dataStructlocal),'timeCost')) 
-%                     if  dataStructlocal.timeCost.data == 0
-%                         dataStruct(i) = dataStructlocal;
-%                     end
-%                 end
-%             catch ME
-%                warning('Error: %s\nIn %s.m line %d',ME.message,mfilename,ME.stack(1).line); 
-%             end
-%         end
-%     catch ME
-%        error(ME.message); 
-%     end
-
-        
+    %     try
+    %         parfor (i = 1:length(paramSets),inner_opt_settings.numParWorkers)
+    %             localGains = InitialGuess.*exp(gainsPop(:,ceil(i/numTerrains)));
+    %             [costs(i),dataStructlocal] = evaluateCostParallel(paramSets{i},model,localGains,inner_opt_settings)
+    %             if inner_opt_settings.visual
+    %                 printOptInfo(dataStructlocal,true);
+    %             end
+    %             try
+    %                 if max(contains(fieldnames(dataStructlocal),'timeCost'))
+    %                     if  dataStructlocal.timeCost.data == 0
+    %                         dataStruct(i) = dataStructlocal;
+    %                     end
+    %                 end
+    %             catch ME
+    %                warning('Error: %s\nIn %s.m line %d',ME.message,mfilename,ME.stack(1).line);
+    %             end
+    %         end
+    %     catch ME
+    %        error(ME.message);
+    %     end
+    
+    
     %calculate mean across terrains
     costs = reshape(costs,numTerrains,popSize); % size(costs) = [numTerrrains, popSize]
     isinvalid = sum(isnan(costs))>1;
@@ -240,4 +257,3 @@ function costs = cmaesParallelSplitRough(gainsPop)
     catch ME
         warning(ME.message);
     end
-    
