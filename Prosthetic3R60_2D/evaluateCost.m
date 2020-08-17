@@ -38,7 +38,7 @@ load_system(model);
 Vals = [LPreStimHFLst,1];
 for i = 1:2
     in(i) = Simulink.SimulationInput(model);
-    in(i) = in(i).setVariable('LPreStimHFLst',Vals(i));
+    in(i) = in(i).setVariable('LPreStimHFLst',Vals(i),'Workspace',model);
 end
 %%
 [inner_opt_settings,~] = setInnerOptSettings();
