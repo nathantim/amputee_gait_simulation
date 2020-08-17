@@ -25,8 +25,8 @@ set_param(model, 'AccelVerboseBuild', 'on')
 set_param(strcat(model,'/Body Mechanics Layer/Obstacle'),'Commented','on');
 set_param(strcat(model,'/Body Mechanics Layer/Right Ankle Joint'),'SpringStiffness','300','DampingCoefficient','100');
 % % set_param(strcat(model,'/Body Mechanics Layer/Right Ankle Joint'),'SpringStiffness','20','DampingCoefficient','4');
-set_param(model,'SimulationMode','rapid');
-set_param(model,'StopTime','30');
+% set_param(model,'SimulationMode','rapid');
+% set_param(model,'StopTime','30');
 
 InitialGuess = initial_gains_file.Gains;
 

@@ -31,32 +31,40 @@ setInit;
 %%
 model = 'NeuromuscularModel_3R60_2D';
 load_system(model);
-Vals = [RGainFGLUst,1];
+
+% set_param(model,'SimulationMode','accelerator');
+% set_param(model,'StopTime','30');
+
+Vals = [LPreStimHFLst,1];
 for i = 1:2
     in(i) = Simulink.SimulationInput(model);
-    in(i) = in(i).setVariable('LGainLVASsw',Vals(i));
-    in(i) = in(i).setVariable('RGainLVASsw',Vals(i));
+    in(i) = in(i).setVariable('LPreStimHFLst',Vals(i));
 end
 %%
 [inner_opt_settings,~] = setInnerOptSettings();
 
 %%
 %open('NeuromuscularModel');
-% set_param(model,'SimulationMode','normal');
-% set_param(model,'StopTime','30');
 
-warning('off');
+
+% warning('off');
 tic;
-% sim(model)
+% out = sim(model)
 out = parsim(in, 'ShowProgress', 'on');
 toc;
-warning('on');
+% warning('on');
 
-disp('1:')
-disp(out(1).logsout.get('time').Values)
+try
+disp('1 Error message:')
+disp(out(1).ErrorMessage)
 
-disp('2:')
-disp(out(2).logsout.get('time').Values)
+disp('2 Error message:')
+disp(out(2).ErrorMessage)
+catch
+end
+
+fprintf('1 time: %d seconds\n',out(1).time(end));
+fprintf('2 time: %d seconds\n',out(2).time(end));
 %%
 % [cost, dataStruct] = getCost(model,Gains,time,metabolicEnergy,sumOfStopTorques,HATPos,stepVelocities,stepTimes,stepLengths,inner_opt_settings,0);
 % printOptInfo(dataStruct,true);
