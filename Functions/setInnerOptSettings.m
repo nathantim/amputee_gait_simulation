@@ -10,18 +10,22 @@ inner_opt_settings.sumStopTorqueFactor = 1E-2;
 
 inner_opt_settings.numTerrains = 6;
 inner_opt_settings.terrain_height = 0.015; % in m
+
+feature('NumCores')
+inner_opt_settings.numParWorkers = feature('NumCores');
+
 if usejava('desktop')
-    inner_opt_settings.numParWorkers = 4;
+    %inner_opt_settings.numParWorkers = 4;
     inner_opt_settings.visual = true;
 else
-    inner_opt_settings.numParWorkers = 4;
+
     inner_opt_settings.visual = false;
 end
 if nargin > 0
     opts = cmaes;
     %opts.PopSize = numvars;
     opts.Resume = 'yes';
-    opts.MaxIter = 2000;
+    opts.MaxIter = 2;
     % opts.StopFitness = -inf;
     opts.StopFitness = 0;
     opts.DispModulo = 1;
