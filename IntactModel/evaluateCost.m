@@ -29,7 +29,7 @@ load_system(model);
 
 modelwspace = get_param(model,'ModelWorkspace');
 modelwspace.DataSource = 'MATLAB File';
-modelwspace.Filename = [pwd,'/setVars.m'];
+modelwspace.Filename = [pwd,filesep,'setVars.m'];
 modelwspace.saveToSource;
 
 %%
