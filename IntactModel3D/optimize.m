@@ -89,7 +89,8 @@ x0 = zeros(numvars,1);
 sigma0 = 1/8;
 % sigma0 = 1/3;
 
-opts.SaveFilename = 'vcmaes_Umb10_SONG3D_kneelim1_2.mat';
+% opts.SaveFilename = 'vcmaes_Umb10_SONG3D_kneelim1_2.mat';
+opts.SaveFilename = 'vcmaes_simInputTry.mat';
 opts.UserDat2 = strcat(opts.UserDat2,"; ", "sigma0: ", string(sigma0));
 
 save_system(model);
