@@ -230,8 +230,5 @@ RPreStimRFsw         = Gains(131);
 RPreStimHABsw        = Gains(132);
 RPreStimHADsw        = Gains(133);
 
-% [groundX, groundZ, groundTheta] = generateGround('flat');
-% [groundX, groundZ, groundTheta] = generateGround('const', .05,1);
-%[groundX, groundZ, groundTheta] = generateGround('ramp');
 
 

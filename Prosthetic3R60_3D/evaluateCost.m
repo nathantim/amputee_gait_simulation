@@ -36,6 +36,9 @@ assignGains;
 dt_visual = 1/50;
 setInit;
 
+[groundX, groundZ, groundTheta] = generateGround('flat');
+% [groundX, groundZ, groundTheta] = generateGround('const', .05,1);
+
 %%
 model = 'NeuromuscularModel_3R60_3D';
 load_system(model);
