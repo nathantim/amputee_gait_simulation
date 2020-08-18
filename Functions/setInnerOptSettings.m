@@ -18,7 +18,7 @@ if usejava('desktop')
     %inner_opt_settings.numParWorkers = 4;
     inner_opt_settings.visual = true;
 else
-
+%     inner_opt_settings.numParWorkers = 12;
     inner_opt_settings.visual = false;
 end
 if nargin > 0

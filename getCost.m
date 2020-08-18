@@ -1,5 +1,7 @@
 function [cost, dataStruct] = getCost(model,Gains,time,metabolicEnergy,sumOfStopTorques,HATPos,stepVelocities,stepTimes,stepLengths,inner_opt_settings, b_isParallel)
 try
+    OptimParams;
+    
     if contains(model,'3R60')
          modelType = 'prosthetic';
     else
@@ -14,29 +16,7 @@ try
     if nargin < 11
         b_isParallel = false;
     end
-    OptimParams;
-    dataStruct = struct('cost',struct('data',nan,'minimize',1,'info',''));
-    % global dataQueueD
     
-    %%
-    if HATPos > 101
-        cost = nan;
-        disp('HATPos > 101')
-        return
-    elseif HATPos < 0
-        cost = nan;
-        disp('HATPos < 0')
-        return
-    elseif any(metabolicEnergy < 0)
-        cost = nan;
-        disp('Metabolic Energy < 0')
-        return
-        % elseif ( min(size(stepVelocities)) == 0 || min(size(stepTimes)) == 0 || size(stepVelocities,2) ~= 2 || size(stepTimes,2) ~= 2 || ...
-        %         min(size(stepVelocities(stepVelocities~=0))) == 0 ||  min(size(stepTimes(stepTimes~=0))) == 0)
-        %     cost = nan;
-        %     disp('No steps')
-        %     return
-    end
     
     %% Calculate cost of transport
     amputeeMass = 80; % kg
@@ -79,7 +59,7 @@ try
     %%
     %     cost = 100000*timeCost  + 1000*(velCost + 0*distCost) + 0.1*costOfTransport;
 %     cost = 100000*timeCost  + 1000*(velCost) + 100*costOfTransportForOpt + .01*sumOfStopTorques;
-%11-6-2020_19:49
+
     timeFactor  = inner_opt_settings.timeFactor;
     velFactor   = inner_opt_settings.velocityFactor;
     CoTFactor   = inner_opt_settings.CoTFactor;
@@ -94,22 +74,31 @@ try
     
     
     %% Save when optimizing
-    
     dataStruct = struct('modelType',modelType,'timeCost',struct('data',timeCost,'minimize',1,'info',''),'cost',struct('data',cost,'minimize',1,'info',''),'CoT',struct('data',[effort_costs(:).costOfTransport]','minimize',1,'info',char({effort_costs(:).name})),...
         'E',struct('data',[effort_costs(:).metabolicEnergy]','minimize',1,'info',char({effort_costs(:).name})),'sumTstop',struct('data',sumOfStopTorques,'minimize',1,'info',''),...
         'HATPos',struct('data',HATPos,'minimize',0,'info',''),'vMean',struct('data',meanVel,'minimize',0,'info',''),'tStepMean',struct('data',meanStepTime,'minimize',2,'info',''),...
         'lStepMean',struct('data',meanStepLength,'minimize',2,'info',''),'lStepASI',struct('data',round(ASIStepLength,2),'minimize',2,'info',''),...
         'tStepASI',struct('data',round(ASIStepTime,2),'minimize',2,'info',''),'velCost',struct('data',velCost,'minimize',1,'info',''),'timeVector',struct('data',time,'minimize',1,'info',''));
-    %     dataStruct = struct('cost',struct('data',cost*rand,'minimize',1,'info',''),'costOfTransport',struct('data',[effort_costs(:).costOfTransport].*rand,'minimize',1,'info',{effort_costs(:).name}),...
-    %         'metabolicEnergy',struct('data',[effort_costs(:).metabolicEnergy].*rand,'minimize',1,'info',{effort_costs(:).name}),'sumOfStopTorques',struct('data',sumOfStopTorques.*rand,'minimize',1,'info',''),...
-    %         'HATPos',struct('data',HATPos.*rand,'minimize',0,'info',''),'vMean',struct('data',meanVel.*rand,'minimize',0,'info',''),'tStepMean',struct('data',meanStepTime.*rand,'minimize',2,'info',''),...
-    %         'lStepMean',struct('data',meanStepLength.*rand,'minimize',2,'info',''),'lStepASI',struct('data',round(ASIStepLength.*rand,2),'minimize',2,'info',''),...
-    %         'tStepASI',struct('data',round(ASIStepTime.*rand,2),'minimize',2,'info',''));
-    %     if exist('dataQueueD','var') && ~isempty(dataQueueD)
-    %         send(dataQueueD,dataStruct);
-    %     end
-    %     try
-    %         save('dataStruct.mat','dataStruct');
+    
+    %%
+    if HATPos > 101
+        cost = nan;
+        dataStruct.cost.data = nan;
+        disp('HATPos > 101');
+        return
+    elseif HATPos < 0
+        cost = nan;
+        dataStruct.cost.data = nan;
+        disp('HATPos < 0');
+        return
+    elseif any(metabolicEnergy < 0)
+        cost = nan;
+        dataStruct.cost.data = nan;
+        disp('Metabolic Energy < 0')
+        return
+    end
+    
+    
     if b_isParallel && timeCost == 0
         GainsSave = Gains;
         if size(GainsSave,1)>size(GainsSave,2)
