@@ -110,6 +110,8 @@ end
 rng('shuffle');
 
 %simulate each sample and store cost
+out = parsim(in, 'ShowProgress', true,'TransferBaseWorkspaceVariables',true,'UseFastRestart',true);
+
 % dataStruct(length(in)) = struct();
 
 for i = 1:length(in)
