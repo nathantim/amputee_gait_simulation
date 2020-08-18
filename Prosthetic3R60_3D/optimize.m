@@ -10,7 +10,7 @@ clear all; close all; clc;
 %%
 % initial_gains_filename = 'Results/Flat/SongGains_02amp_wC.mat';
 % initial_gains_filename = 'Results/Flat/Umb10nodimmuscleforce3D.mat';
-initial_gains_filename = 'Results/Flat/Umb10nodimmuscleforce2D_C3D.mat';
+% initial_gains_filename = 'Results/Flat/Umb10nodimmuscleforce2D_C3D.mat';
 initial_gains_filename = 'Results/Rough/Umb10_1.5cm_0.9ms_kneelim1_mstoptorque2.mat';
 initial_gains_file = load(initial_gains_filename);
 load('Results/Flat/SongGains_02_wC_IC.mat');
