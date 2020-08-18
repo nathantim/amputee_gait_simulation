@@ -60,6 +60,11 @@ set_param( [prepend,'SDelay24'],'InitialOutput', '0'); %RPreStimHFLsw
 set_param( [prepend,'SDelay25'],'InitialOutput', '0'); %RPreStimGLUsw
 set_param( [prepend,'SDelay26'],'InitialOutput', '0'); %RPreStimHAMsw
 set_param( [prepend,'SDelay27'],'InitialOutput', '0'); %RPreStimRFsw
+set_param( [prepend,'MDelay12'] ,'InitialOutput', '0'); %RPreStimVASst
+set_param( [prepend,'MDelay11'],'InitialOutput', '0'); %RPreStimBFSHst
+set_param( [prepend,'LDelay7'],'InitialOutput', '0'); %RPreStimGASst
+set_param( [prepend,'LDelay8'] ,'InitialOutput', '0'); %RPreStimSOLst
+set_param( [prepend,'LDelay6'],'InitialOutput', '0'); %RPreStimTAst
 
 InitialGuess = initial_gains_file.Gains;
 
