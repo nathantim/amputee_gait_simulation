@@ -13,7 +13,7 @@ RphiHipR0       = -paramIC(9)*(0)*pi/180; %[rad]
 
 vy0 = paramIC(10)*.2;
 
-x0      = .2;
+x0Init      = .2;
 y0      = hatLeftHipToCenterDistWidth;
 z0      = paramIC(11)      *.01;
 yaw0    = pi/180;

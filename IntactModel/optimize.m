@@ -60,6 +60,11 @@ set_param( [prepend,'SDelay24'],'InitialOutput', '0'); %RPreStimHFLsw
 set_param( [prepend,'SDelay25'],'InitialOutput', '0'); %RPreStimGLUsw
 set_param( [prepend,'SDelay26'],'InitialOutput', '0'); %RPreStimHAMsw
 set_param( [prepend,'SDelay27'],'InitialOutput', '0'); %RPreStimRFsw
+set_param( [prepend,'MDelay12'] ,'InitialOutput', '0'); %RPreStimVASst
+set_param( [prepend,'MDelay11'],'InitialOutput', '0'); %RPreStimBFSHst
+set_param( [prepend,'LDelay7'],'InitialOutput', '0'); %RPreStimGASst
+set_param( [prepend,'LDelay8'] ,'InitialOutput', '0'); %RPreStimSOLst
+set_param( [prepend,'LDelay6'],'InitialOutput', '0'); %RPreStimTAst
 
 InitialGuess = initial_gains_file.Gains;
 
@@ -82,7 +87,8 @@ x0 = zeros(numvars,1);
 sigma0 = 1/8;
 % sigma0 = 1/3;
 
-opts.SaveFilename = 'vcmaes_1.5cm_1.2ms_Umb03_kneelim1_mstoptorque2.mat';
+% opts.SaveFilename = 'vcmaes_1.5cm_1.2ms_Umb03_kneelim1_mstoptorque2.mat';
+opts.SaveFilename = 'vcmaes_simInputTry.mat';
 opts.UserDat2 = strcat(opts.UserDat2,"; ", "sigma0: ", string(sigma0), "; ampHipFlexFactor: ", string(ampHipFlexFactor) , "; ampHipExtFactor: ", string(ampHipExtFactor) );
 
 save_system(model);
