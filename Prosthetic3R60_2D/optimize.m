@@ -15,7 +15,7 @@ initial_gains_file = load(initial_gains_filename);
 load('Results/Flat/SongGains_02_wC_IC.mat');
 
 %%
-global model rtp InitialGuess inner_opt_settings
+global model InitialGuess inner_opt_settings %rtp
 
 %% specifiy model and intial parameters
 model = 'NeuromuscularModel_3R60_2D';
@@ -44,7 +44,7 @@ set_param(model,'StopTime','30');
 BodyMechParams;
 ControlParams;
 
-prepend = 'NeuromuscularModel_3R60_2D/Neural Control Layer/';
+prepend = [model,'/Neural Control Layer/'];
 set_param(   [prepend,'SDelay20'],'InitialOutput', char(string(LPreStimHFLst)));  %LPreStimHFLst
 set_param( [prepend,'SDelay21'],'InitialOutput', char(string(LPreStimGLUst))); %LPreStimGLUst
 set_param( [prepend,'SDelay22'],'InitialOutput', char(string(LPreStimHAMst))); %LPreStimHAMst
@@ -85,6 +85,7 @@ sigma0 = 1/8;
 opts.SaveFilename = 'vcmaes_simInputTry.mat';
 
 save_system(model);
+
 %% Show settings
 clc;
 disp(inner_opt_settings);
