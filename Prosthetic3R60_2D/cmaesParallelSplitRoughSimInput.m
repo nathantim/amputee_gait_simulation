@@ -34,7 +34,7 @@ function costs = cmaesParallelSplitRough(gainsPop)
         Gains = InitialGuess.*exp(gainsPop(:,gainind));
         %         Gains = InitialGuess.*exp(gainsPop(:,i));
         in(i) = Simulink.SimulationInput(model);
-        in(i) = in(i).setModelParameter('SimulationMode','accelerator');
+        %in(i) = in(i).setModelParameter('SimulationMode','accelerator');
         
         in(i) = in(i).setVariable('LGainFGLUst',               Gains( 1),'Workspace',model);
         in(i) = in(i).setVariable('LGainFVASst',               Gains( 2),'Workspace',model);
@@ -134,20 +134,20 @@ function costs = cmaesParallelSplitRough(gainsPop)
         in(i) = in(i).setVariable('RPreStimHAMsw',             Gains(96),'Workspace',model);
         in(i) = in(i).setVariable('RPreStimRFsw',              Gains(97),'Workspace',model);
         
-        prepend = 'NeuromuscularModel_3R60_2D/Neural Control Layer';
-        in(i) = in(i).setBlockParameter(    [prepend,'SDelay20'],'InitialOutput', Gains(46), ... %LPreStimHFLst
-                                            [prepend,'SDelay21'],'InitialOutput', Gains(47), ... %LPreStimGLUst
-                                            [prepend,'SDelay22'],'InitialOutput', Gains(48), ... %LPreStimHAMst
-                                            [prepend,'SDelay23'],'InitialOutput', Gains(49), ... %LPreStimRFst
-                                            [prepend,'MDelay9'] ,'InitialOutput', Gains(50), ... %LPreStimVASst
-                                            [prepend,'MDelay10'],'InitialOutput', Gains(51), ... %LPreStimBFSHst
-                                            [prepend,'LDelay11'],'InitialOutput', Gains(52), ... %LPreStimGASst
-                                            [prepend,'LDelay9'] ,'InitialOutput', Gains(53), ... %LPreStimSOLst
-                                            [prepend,'LDelay10'],'InitialOutput', Gains(54), ... %LPreStimTAst
-                                            [prepend,'SDelay24'],'InitialOutput', Gains(94), ... %RPreStimHFLsw
-                                            [prepend,'SDelay25'],'InitialOutput', Gains(95), ... %RPreStimGLUsw
-                                            [prepend,'SDelay26'],'InitialOutput', Gains(96), ... %RPreStimHAMsw
-                                            [prepend,'SDelay27'],'InitialOutput', Gains(97)); ... %RPreStimRFsw
+        prepend = 'NeuromuscularModel_3R60_2D/Neural Control Layer/';
+        in(i) = in(i).setBlockParameter(    [prepend,'SDelay20'],'InitialOutput', char(string(Gains(46))), ... %LPreStimHFLst
+                                            [prepend,'SDelay21'],'InitialOutput', char(string(Gains(47))), ... %LPreStimGLUst
+                                            [prepend,'SDelay22'],'InitialOutput', char(string(Gains(48))), ... %LPreStimHAMst
+                                            [prepend,'SDelay23'],'InitialOutput', char(string(Gains(49))), ... %LPreStimRFst
+                                            [prepend,'MDelay9'] ,'InitialOutput', char(string(Gains(50))), ... %LPreStimVASst
+                                            [prepend,'MDelay10'],'InitialOutput', char(string(Gains(51))), ... %LPreStimBFSHst
+                                            [prepend,'LDelay11'],'InitialOutput', char(string(Gains(52))), ... %LPreStimGASst
+                                            [prepend,'LDelay9'] ,'InitialOutput', char(string(Gains(53))), ... %LPreStimSOLst
+                                            [prepend,'LDelay10'],'InitialOutput', char(string(Gains(54))), ... %LPreStimTAst
+                                            [prepend,'SDelay24'],'InitialOutput', char(string(Gains(94))), ... %RPreStimHFLsw
+                                            [prepend,'SDelay25'],'InitialOutput', char(string(Gains(95))), ... %RPreStimGLUsw
+                                            [prepend,'SDelay26'],'InitialOutput', char(string(Gains(96))), ... %RPreStimHAMsw
+                                            [prepend,'SDelay27'],'InitialOutput', char(string(Gains(97)))); ... %RPreStimRFsw
                                             
         %set ground heights
         for j = 0:(numTerrains-1)
@@ -167,6 +167,7 @@ function costs = cmaesParallelSplitRough(gainsPop)
 
     %simulate each sample and store cost
     out = parsim(in, 'ShowProgress', true,'TransferBaseWorkspaceVariables',true,'UseFastRestart',true);
+    disp(out(1));
     for i = 1:length(in)
         fprintf('Error Message of %d: \n',i);
         disp(out(i).ErrorMessage);
