@@ -10,7 +10,7 @@ clear all; close all; clc;
 %%
 % initial_gains_filename = 'Results/Flat/song3Dopt.mat';
 % initial_gains_filename = 'Results/Flat/SongGains_02.mat';
-initial_gains_filename = 'Results/Rough/Umb10_1.5cm_1.2ms_kneelim1_mstoptorque2.mat';
+initial_gains_filename = 'Results/Rough/Umb10_1.5cm_1.2ms_kneelim1_mstoptorque2.mat'; 
 % initial_gains_filename = 'Results/Rough/Umb03_1.5cm_1.2ms_kneelim1_mstoptorque3_2.mat';
 % initial_gains_filename = 'Results/Rough/Umb10_1.5cm_1.2ms_Umb10_kneelim1_mstoptorque3_2.mat';
 
@@ -29,7 +29,7 @@ load_system(model);
 
 modelwspace = get_param(model,'ModelWorkspace');
 modelwspace.DataSource = 'MATLAB File';
-modelwspace.Filename = [pwd,'/setVars.m'];
+modelwspace.Filename = [pwd,filesep,'setVars.m'];
 modelwspace.saveToSource;
 
 set_param(model, 'AccelVerboseBuild', 'on');
