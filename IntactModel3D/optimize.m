@@ -8,14 +8,8 @@ bdclose('all');
 clear all; close all; clc;
 
 %%
-% initial_gains_filename = ('Results/Flat/optandGH_diffswing.mat');
-% initial_gains_filename = ('Results/Flat/optdiffswing.mat');
-% initial_gains_filename = ('Results/Flat/optandGeyerHerrInit.mat');
-% initial_gains_filename = 'Results/Flat/optUmb10stanceswing1_3ms_prestim.mat';
-% initial_gains_filename = 'Results/Flat/optUmb10stanceswing1_3ms_prestim_lesshyper_dSopt.mat';
-% initial_gains_filename = 'Results/Flat/optUmb10kneelim3.mat';
-% initial_gains_filename = 'Results/Flat/optwoptUmb10_1_3ms.mat';
-initial_gains_filename = 'Results/Flat/song3Dopt.mat';
+% initial_gains_filename = 'Results/Flat/song3Dopt.mat';
+initial_gains_filename = 'Results/Flat/Umb10_SONG3D_kneelim1_2.mat';
 % initial_gains_filename = 'Results/Flat/SongGains_02_wC.mat';
 initial_gains_file = load(initial_gains_filename);
 load('Results/Flat/SongGains_02_wC_IC.mat');
@@ -30,7 +24,7 @@ load_system(model);
 
 modelwspace = get_param(model,'ModelWorkspace');
 modelwspace.DataSource = 'MATLAB File';
-modelwspace.Filename = [pwd,'/setVars.m'];
+modelwspace.Filename = [pwd,filesep,'setVars.m'];
 modelwspace.saveToSource;
 
 set_param(model, 'AccelVerboseBuild', 'on');
