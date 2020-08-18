@@ -94,7 +94,6 @@ save_system(model);
 %% Show settings
 clc;
 disp(inner_opt_settings);
-disp(initial_gains_filename);
 fprintf('Target velocity: %1.1f m/s \n',target_velocity);
 fprintf('Amputated hip flexor diminish factor:   %1.2f \n',ampHipFlexFactor);
 fprintf('Amputated hip extensor diminish factor: %1.2f \n',ampHipExtFactor);
