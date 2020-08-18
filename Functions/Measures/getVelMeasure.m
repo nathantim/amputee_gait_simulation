@@ -7,7 +7,7 @@ elseif min(size(stepVelocity(stepVelocity~=0))) == 0 || min(size(stepTimes(stepT
 elseif max(size(stepVelocity(stepVelocity~=0))) <= initiation_steps || max(size(stepTimes(stepTimes~=0))) <= initiation_steps  
     velMeasure = 9999999;
 elseif mean((stepVelocity(stepVelocity~=0))) < 0
-    velMeasure = 99999999*exp(-min((stepVelocity(stepVelocity~=0))));
+    velMeasure = 99999999*exp(-mean((stepVelocity(stepVelocity~=0))));
 else
 
     stepVelocity    = stepVelocity(stepVelocity~=0,1);
