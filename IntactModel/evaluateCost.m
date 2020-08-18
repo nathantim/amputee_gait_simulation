@@ -11,8 +11,8 @@
 % load('Results/RoughDist/SongGains_wC.mat');
 % load('Results/RoughDist/SongGains_wC_IC.mat');
 % load('Results/Flat/SongGains_02.mat');
-load('Results/Rough/Umb03_1.5cm_1.2ms_kneelim1_mstoptorque3_2.mat');
-% load('Results/Rough/Umb10_1.5cm_1.2ms_kneelim1_mstoptorque2.mat');
+% load('Results/Rough/Umb03_1.5cm_1.2ms_kneelim1_mstoptorque3_2.mat');
+load('Results/Rough/Umb10_1.5cm_1.2ms_kneelim1_mstoptorque2.mat');
 load('Results/Flat/SongGains_02_wC_IC.mat');
 
 [groundX, groundZ, groundTheta] = generateGround('flat');
@@ -25,20 +25,26 @@ setInit;
 
 %%
 model = 'NeuromuscularModel2D';
-%open('NeuromuscularModel');
-% set_param(model,'SimulationMode','normal');
-% set_param(model,'StopTime','30');
+load_system(model);
+
+modelwspace = get_param(model,'ModelWorkspace');
+modelwspace.DataSource = 'MATLAB File';
+modelwspace.Filename = [pwd,'/setVars.m'];
+modelwspace.saveToSource;
 
 %%
 inner_opt_settings = setInnerOptSettings();
+set_param(model,'SimulationMode','accelerator');
+set_param(model,'StopTime','30');
 
 
 %%
-warning('off');
+save_system(model);
+% warning('off');
 tic;
 sim(model)
 toc;
-warning('on');
+% warning('on');
 
 %%
 [cost, dataStruct] = getCost(model,Gains,time,metabolicEnergy,sumOfStopTorques,HATPos,stepVelocities,stepTimes,stepLengths,inner_opt_settings,0);

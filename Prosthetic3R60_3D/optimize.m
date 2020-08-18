@@ -19,9 +19,8 @@ global model InitialGuess inner_opt_settings %rtp
 
 %% specifiy model and intial parameters
 model = 'NeuromuscularModel_3R60_3D';
-optfunc = 'cmaesParallelSplitRough';
+optfunc = 'cmaesParallelSplitRoughSimInput';
 load_system(model);
-
 
 modelwspace = get_param(model,'ModelWorkspace');
 modelwspace.DataSource = 'MATLAB File';
@@ -89,8 +88,8 @@ sigma0 = 1/8;
 opts.SaveFilename = 'vcmaes_1.5cm_0.9ms_Umb10_kneelim1_mstoptorque2.mat';
 opts.UserDat2 = strcat(opts.UserDat2,"; ", "sigma0: ", string(sigma0), "; ampHipFlexFactor: ", string(ampHipFlexFactor) , "; ampHipExtFactor: ", string(ampHipExtFactor) );
 
-
 save_system(model);
+
 %% Show settings
 clc;
 disp(inner_opt_settings);
