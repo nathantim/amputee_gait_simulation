@@ -25,7 +25,7 @@ if nargin > 0
     opts = cmaes;
     %opts.PopSize = numvars;
     opts.Resume = 'yes';
-    opts.MaxIter = 2;
+    opts.MaxIter = 2000;
     % opts.StopFitness = -inf;
     opts.StopFitness = 0;
     opts.DispModulo = 1;

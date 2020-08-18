@@ -134,7 +134,7 @@ for i = 1:numTerrains:(numTerrains*popSize)
     in(i) = in(i).setVariable('RPreStimHAMsw',             Gains(96),'Workspace',model);
     in(i) = in(i).setVariable('RPreStimRFsw',              Gains(97),'Workspace',model);
     
-    prepend = 'NeuromuscularModel_3R60_2D/Neural Control Layer/';
+%     prepend = 'NeuromuscularModel_3R60_2D/Neural Control Layer/';
     %in(i) = in(i).setBlockParameter(    [prepend,'SDelay20'],'InitialOutput', char(string(Gains(46))), ... %LPreStimHFLst
     %                                    [prepend,'SDelay21'],'InitialOutput', char(string(Gains(47))), ... %LPreStimGLUst
     %                                    [prepend,'SDelay22'],'InitialOutput', char(string(Gains(48))), ... %LPreStimHAMst
