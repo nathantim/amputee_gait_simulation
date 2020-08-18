@@ -34,6 +34,7 @@ for i = 1:numTerrains:(numTerrains*popSize)
     Gains = InitialGuess.*exp(gainsPop(:,gainind));
     %         Gains = InitialGuess.*exp(gainsPop(:,i));
     in(i) = Simulink.SimulationInput(model);
+    in(i) = in(i).setModelParameter('TimeOut', 2*60);
     %in(i) = in(i).setModelParameter('SimulationMode','accelerator');
     
     in(i) = in(i).setVariable('LGainFGLUst',               Gains( 1),'Workspace',model);
@@ -166,7 +167,7 @@ end
 rng('shuffle');
 
 %simulate each sample and store cost
-out = parsim(in, 'ShowProgress', true,'TimeOut',2*60,'TransferBaseWorkspaceVariables',true,'UseFastRestart',true);
+out = parsim(in, 'ShowProgress', true,'TransferBaseWorkspaceVariables',true,'UseFastRestart',true);
 
 % 	mData=out(1).getSimulationMetadata();
 % 	try
