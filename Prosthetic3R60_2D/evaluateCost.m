@@ -32,8 +32,13 @@ setInit;
 model = 'NeuromuscularModel_3R60_2D';
 load_system(model);
 
-% set_param(model,'SimulationMode','accelerator');
-% set_param(model,'StopTime','30');
+modelwspace = get_param(model,'ModelWorkspace');
+modelwspace.DataSource = 'MATLAB File';
+modelwspace.Filename = [pwd,'/setVars.m'];
+modelwspace.saveToSource;
+
+set_param(model,'SimulationMode','accelerator');
+set_param(model,'StopTime','30');
 
 Vals = [LPreStimHFLst,1];
 for i = 1:2
@@ -46,10 +51,10 @@ end
 %%
 %open('NeuromuscularModel');
 
-
+save_system(model);
 % warning('off');
 tic;
-% out = sim(model)
+% out = sim(model);
 out = parsim(in, 'ShowProgress', 'on');
 toc;
 % warning('on');

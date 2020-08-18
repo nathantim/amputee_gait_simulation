@@ -1,7 +1,5 @@
 function [cost, dataStruct] = getCost(model,Gains,time,metabolicEnergy,sumOfStopTorques,HATPos,stepVelocities,stepTimes,stepLengths,inner_opt_settings, b_isParallel)
-try
-    OptimParams;
-    
+try    
     if contains(model,'3R60')
          modelType = 'prosthetic';
     else
@@ -46,15 +44,15 @@ try
     end
     
     %% Calculate velocity cost
-    velCost = getVelMeasure(stepVelocities(:,1),stepTimes(:,1),min_velocity,max_velocity,initiation_steps) + ...
-        getVelMeasure(stepVelocities(:,2),stepTimes(:,2),min_velocity,max_velocity,initiation_steps);
+    velCost = getVelMeasure(stepVelocities(:,1),stepTimes(:,1),inner_opt_settings.min_velocity,inner_opt_settings.max_velocity,inner_opt_settings.initiation_steps) + ...
+        getVelMeasure(stepVelocities(:,2),stepTimes(:,2),inner_opt_settings.min_velocity,inner_opt_settings.max_velocity,inner_opt_settings.initiation_steps);
     
     %     [distCost, dist_covered] = getDistMeasure(timeSetToRun,stepLengths,min_velocity,max_velocity,dist_slack);
     
     %% Calculate step info
-    [meanStepLength, ASIStepLength] = getFilterdMean_and_ASI(stepLengths(:,1),stepLengths(:,2),initiation_steps);
-    [meanStepTime, ASIStepTime] = getFilterdMean_and_ASI(stepTimes(:,1),stepTimes(:,2),initiation_steps);
-    [meanVel, ASIVel] = getFilterdMean_and_ASI(stepVelocities(:,1),stepVelocities(:,2),initiation_steps);
+    [meanStepLength, ASIStepLength] = getFilterdMean_and_ASI(stepLengths(:,1),stepLengths(:,2),inner_opt_settings.initiation_steps);
+    [meanStepTime, ASIStepTime] = getFilterdMean_and_ASI(stepTimes(:,1),stepTimes(:,2),inner_opt_settings.initiation_steps);
+    [meanVel, ASIVel] = getFilterdMean_and_ASI(stepVelocities(:,1),stepVelocities(:,2),inner_opt_settings.initiation_steps);
     
     %%
     %     cost = 100000*timeCost  + 1000*(velCost + 0*distCost) + 0.1*costOfTransport;

@@ -27,11 +27,6 @@ modelwspace.DataSource = 'MATLAB File';
 modelwspace.Filename = [pwd,'/setVars.m'];
 modelwspace.saveToSource;
 
-%modelwspace.reload;
-%set_param(model,'ModelWorkspace',modelwspace);
-%save_system(model);
-%load_system(model);
-
 set_param(model, 'AccelVerboseBuild', 'on');
 set_param(model,'FastRestart','on');
 
@@ -45,24 +40,29 @@ BodyMechParams;
 ControlParams;
 
 prepend = [model,'/Neural Control Layer/'];
-set_param(   [prepend,'SDelay20'],'InitialOutput', char(string(LPreStimHFLst)));  %LPreStimHFLst
-set_param( [prepend,'SDelay21'],'InitialOutput', char(string(LPreStimGLUst))); %LPreStimGLUst
-set_param( [prepend,'SDelay22'],'InitialOutput', char(string(LPreStimHAMst))); %LPreStimHAMst
-set_param( [prepend,'SDelay23'],'InitialOutput', char(string(LPreStimRFst))); %LPreStimRFst
-set_param( [prepend,'MDelay9'] ,'InitialOutput', char(string(LPreStimVASst))); %LPreStimVASst
-set_param( [prepend,'MDelay10'],'InitialOutput', char(string(LPreStimBFSHst))); %LPreStimBFSHst
-set_param( [prepend,'LDelay11'],'InitialOutput', char(string(LPreStimGASst))); %LPreStimGASst
-set_param( [prepend,'LDelay9'] ,'InitialOutput', char(string(LPreStimSOLst))); %LPreStimSOLst
-set_param( [prepend,'LDelay10'],'InitialOutput', char(string(LPreStimTAst))); %LPreStimTAst
-set_param( [prepend,'SDelay24'],'InitialOutput', char(string(RPreStimHFLsw))); %RPreStimHFLsw
-set_param( [prepend,'SDelay25'],'InitialOutput', char(string(RPreStimGLUsw))); %RPreStimGLUsw
-set_param( [prepend,'SDelay26'],'InitialOutput', char(string(RPreStimHAMsw))); %RPreStimHAMsw
-set_param( [prepend,'SDelay27'],'InitialOutput', char(string(RPreStimRFsw))); %RPreStimRFsw
-											
+set_param( [prepend,'SDelay46'],'InitialOutput', '0'); %LStimHAB
+set_param( [prepend,'SDelay40'],'InitialOutput', '0'); %LStimHAD
+set_param( [prepend,'SDelay35'],'InitialOutput', '0'); %RStimHAB
+set_param( [prepend,'SDelay37'],'InitialOutput', '0'); %RStimHAD
+
+set_param( [prepend,'SDelay20'],'InitialOutput', '0'); %LPreStimHFLst
+set_param( [prepend,'SDelay21'],'InitialOutput', '0'); %LPreStimGLUst
+set_param( [prepend,'SDelay22'],'InitialOutput', '0'); %LPreStimHAMst
+set_param( [prepend,'SDelay23'],'InitialOutput', '0'); %LPreStimRFst
+set_param( [prepend,'MDelay9'] ,'InitialOutput', '0'); %LPreStimVASst
+set_param( [prepend,'MDelay10'],'InitialOutput', '0'); %LPreStimBFSHst
+set_param( [prepend,'LDelay11'],'InitialOutput', '0'); %LPreStimGASst
+set_param( [prepend,'LDelay9'] ,'InitialOutput', '0'); %LPreStimSOLst
+set_param( [prepend,'LDelay10'],'InitialOutput', '0'); %LPreStimTAst
+set_param( [prepend,'SDelay24'],'InitialOutput', '0'); %RPreStimHFLsw
+set_param( [prepend,'SDelay25'],'InitialOutput', '0'); %RPreStimGLUsw
+set_param( [prepend,'SDelay26'],'InitialOutput', '0'); %RPreStimHAMsw
+set_param( [prepend,'SDelay27'],'InitialOutput', '0'); %RPreStimRFsw
+
 InitialGuess = initial_gains_file.Gains;
 
 %% initialze parameters
-[inner_opt_settings,opts] = setInnerOptSettings(initial_gains_filename);
+[inner_opt_settings,opts] = setInnerOptSettings('init_gains_file',initial_gains_filename);
 
 OptimParams;
 Prosthesis3R60Params;
@@ -83,6 +83,7 @@ sigma0 = 1/8;
 
 %opts.SaveFilename = 'vcmaes_1.5cm_0.9ms_Umb10_kneelim1_mstoptorque2.mat';
 opts.SaveFilename = 'vcmaes_simInputTry.mat';
+opts.UserDat2 = strcat(opts.UserDat2,"; ", "sigma0: ", string(sigma0), "; ampHipFlexFactor: ", string(ampHipFlexFactor) , "; ampHipExtFactor: ", string(ampHipExtFactor) );
 
 save_system(model);
 
@@ -90,6 +91,8 @@ save_system(model);
 clc;
 disp(inner_opt_settings);
 fprintf('Target velocity: %1.1f m/s \n',target_velocity);
+fprintf('Amputated hip flexor diminish factor:   %1.2f \n',ampHipFlexFactor);
+fprintf('Amputated hip extensor diminish factor: %1.2f \n',ampHipExtFactor);
 parpool('local',inner_opt_settings.numParWorkers);
 
 %% run cmaes

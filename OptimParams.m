@@ -1,8 +1,6 @@
-% literature velocity: [0.5,0.9,1.2]
-target_velocity = 0.9;
-min_velocity = target_velocity;
-% min_velocity = 0.5;
-max_velocity = target_velocity; 
-% max_velocity = 299792458.0; % speed of light
-initiation_steps = 5;
-dist_slack = 0.4;
+[inner_opt_settings,~] = setInnerOptSettings();
+
+target_velocity = inner_opt_settings.target_velocity;
+min_velocity = inner_opt_settings.min_velocity;
+max_velocity = inner_opt_settings.max_velocity;
+initiation_steps = inner_opt_settings.initiation_steps;

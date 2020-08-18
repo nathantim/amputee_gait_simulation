@@ -37,22 +37,30 @@ setInit;
 
 %%
 model = 'NeuromuscularModel_3R60_3D';
+load_system(model);
 
+modelwspace = get_param(model,'ModelWorkspace');
+modelwspace.DataSource = 'MATLAB File';
+modelwspace.Filename = [pwd,'/setVars.m'];
+modelwspace.saveToSource;
 %%
 inner_opt_settings = setInnerOptSettings();
-%open('NeuromuscularModel');
-% set_param(model,'SimulationMode','normal');
-% set_param(model,'StopTime','30');
+set_param(model,'SimulationMode','accelerator');
+set_param(model,'StopTime','30');
+
 
 %%
-warning('off');
+save_system(model);
+% warning('off');
 tic;
 sim(model)
 toc;
-warning('on');
+% warning('on');
 
 %%
-[cost, dataStruct] = getCost(model,Gains,time,metabolicEnergy,sumOfStopTorques,HATPos,stepVelocities,stepTimes,stepLengths,0);
+[cost, dataStruct] = getCost(model,Gains,time,metabolicEnergy,sumOfStopTorques,HATPos,stepVelocities,stepTimes,stepLengths,inner_opt_settings,0);
+printOptInfo(dataStruct,true);
+
 %%
 % kinematics.angularData = angularData;
 % kinematics.GaitPhaseData = GaitPhaseData;
