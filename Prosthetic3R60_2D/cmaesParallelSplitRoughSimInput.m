@@ -1,11 +1,11 @@
-function costs = cmaesParallelSplitRough(gainsPop)
-global rtp InitialGuess inner_opt_settings model
+function costs = cmaesParallelSplitRoughSimInput(gainsPop)
+global InitialGuess inner_opt_settings model %rtp
 %% Data plotting during optimization
 %     global dataQueueD
-%     if inner_opt_settings.visual
-dataQueueD = parallel.pool.DataQueue;
-dataQueueD.afterEach(@plotProgressOptimization);
-%     end
+    if inner_opt_settings.visual
+        dataQueueD = parallel.pool.DataQueue;
+        dataQueueD.afterEach(@plotProgressOptimization);
+    end
 
 %allocate costs vector and paramsets the generation
 popSize = size(gainsPop,2);
@@ -187,7 +187,7 @@ out = parsim(in, 'ShowProgress', true,'TransferBaseWorkspaceVariables',true,'Use
 %             elseif strcmp(mData.ExecutionInfo.StopEvent,'ModelStop')
 %                 disp('Sim was stopped due to model stop');
 
-dataStruct(length(in)) = struct();
+% dataStruct(length(in)) = struct();
 
 for i = 1:length(in)
     
