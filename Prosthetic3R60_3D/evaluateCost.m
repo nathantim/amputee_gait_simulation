@@ -26,7 +26,7 @@
 % load('Results/Flat/SongGains_02amp_wC.mat');
 
 % load('Results/RoughDist/SongGains_wC_IC.mat');
-load('Umb10_1.5cm_0.9ms_kneelim1_mstoptorque2.mat');
+load('Results/Rough/Umb10_1.5cm_0.9ms_kneelim1_mstoptorque2.mat');
 load('Results/Flat/SongGains_02_wC_IC.mat');
 % Gains(94) = 2*Gains(94);
 % Gains(101) = 1*Gains(101);
