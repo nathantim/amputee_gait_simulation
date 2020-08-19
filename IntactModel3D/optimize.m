@@ -58,7 +58,13 @@ x0 = zeros(numvars,1);
 sigma0 = 1/8;
 % sigma0 = 1/3;
 
-opts.SaveFilename = 'vcmaes_Umb10_SONG3D_kneelim1_2.mat';
+opts.SaveFilename = 'vcmaes_1.5cm_0.9ms_Umb10_kneelim1_mstoptorque2.mat';
+
+%% Show settings
+clc;
+disp(inner_opt_settings);
+disp(initial_gains_filename);
+fprintf('Target velocity: %1.1f m/s \n',target_velocity);
 
 %% run cmaes
 [xmin, fmin, counteval, stopflag, out, bestever] = cmaes(optfunc, x0, sigma0, opts)
