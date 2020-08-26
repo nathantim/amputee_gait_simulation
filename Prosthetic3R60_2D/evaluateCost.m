@@ -9,10 +9,11 @@
 %%
 % load('Results/RoughDist/SongGainsamp.mat');
 % load('Results/Flat/SongGains_02amp.mat');
-
 % load('Results/RoughDist/SongGains_wC_IC.mat');
 % load('Results/Rough/Umb10_1.5cm_1.2ms_Umb10_kneelim1_mstoptorque3.mat');
+
 load('Results/Rough/Umb10_1.5cm_1.2ms_kneelim1_mstoptorque2.mat');
+% load('Results/Rough/Umb10_1.5cm_0.9ms_kneelim1_mstoptorque2.mat');
 load('Results/Flat/SongGains_02_wC_IC.mat');
 
 assignGains;
