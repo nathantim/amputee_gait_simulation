@@ -10,7 +10,8 @@ clear all; close all; clc;
 %%
 % initial_gains_filename = 'Results/Flat/SongGains_02amp_wC.mat';
 % initial_gains_filename = 'Results/Flat/Umb10nodimmuscleforce3D.mat';
-initial_gains_filename = 'Results/Flat/Umb10nodimmuscleforce2D_C3D.mat';
+% initial_gains_filename = 'Results/Flat/Umb10nodimmuscleforce2D_C3D.mat';
+initial_gains_filename = 'Results/Rough/Prosthetic2D_C3D.mat';
 initial_gains_file = load(initial_gains_filename);
 load('Results/Flat/SongGains_02_wC_IC.mat');
 
@@ -55,11 +56,13 @@ x0 = zeros(numvars,1);
 sigma0 = 1/8;
 % sigma0 = 1/3;
 
+opts.DiagonalOnly = 150;
 opts.SaveFilename = 'vcmaes_1.5cm_0.9ms_Umb10_kneelim1_mstoptorque2.mat';
 opts.UserDat2 = strcat(opts.UserDat2,"; ", "sigma0: ", string(sigma0), "; ampHipFlexFactor: ", string(ampHipFlexFactor) , "; ampHipExtFactor: ", string(ampHipExtFactor) );
 
 %% Show settings
 clc;
+disp(opts);
 disp(inner_opt_settings);
 disp(initial_gains_filename);
 fprintf('Target velocity: %1.1f m/s \n',target_velocity);

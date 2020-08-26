@@ -108,10 +108,14 @@ thighKneeToCG = 0.3;
 thighCenterToCGDist = thighKneeToCG - thighKneeToCenterDist; %[m] 
 thighKneeToHipDist = thighLength; %[m]
 thighMass  = 8.5; %[kg]
+thighAmpMass  = 8.5; %[kg]
 thighInertia_z = 0.15; %[kg*m^2]
 thighInertia_x   = 0.03;
 thighInertia_y   = 0.15;
 relThighSensorPos = 4/5;
+thighAmpInertia = [thighInertia_x thighInertia_y thighInertia_z];
+thighInertia = [thighInertia_x thighInertia_y thighInertia_z];
+
 thighInertiaLow = [thighInertia_x*relThighSensorPos thighInertia_y*(relThighSensorPos)^3  thighInertia_z*(relThighSensorPos)^3];
 thighInertiaHigh = [thighInertia_x*(1-relThighSensorPos) thighInertia_y*(1-relThighSensorPos)^3  thighInertia_z*(1-relThighSensorPos)^3];
 
