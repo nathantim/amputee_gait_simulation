@@ -1,10 +1,10 @@
 % clc;
 %%
-tempstring = strsplit(opts.UserData,' ');
-dataFile = tempstring{end};
-InitialGuessFile = load(dataFile); 
-
-Gains = InitialGuessFile.Gains.*exp(bestever.x);
+% tempstring = strsplit(opts.UserData,' ');
+% dataFile = tempstring{end};
+% InitialGuessFile = load(dataFile); 
+% 
+% Gains = InitialGuessFile.Gains.*exp(bestever.x);
 % load('Results/Flat/GeyerHerrInit.mat');
 % load('Results/Flat/optandGeyerHerrInit.mat');
 % load('Results/Flat/SCONE.mat');
@@ -24,6 +24,8 @@ Gains = InitialGuessFile.Gains.*exp(bestever.x);
 %%
 % load('Results/RoughDist/SongGains_wC.mat');
 % load('Results/Flat/SongGains_02amp_wC.mat');
+% load('Results/Flat/Umb10nodimmuscleforce2D_C3D.mat');
+load('Results/Rough/Prosthetic2D_C3D.mat');
 
 % load('Results/RoughDist/SongGains_wC_IC.mat');
 load('Results/Flat/SongGains_02_wC_IC.mat');
@@ -35,16 +37,17 @@ assignGains;
 dt_visual = 1/50;
 setInit;
 
-[groundX, groundZ, groundTheta] = generateGround('flat');
-% [groundX, groundZ, groundTheta] = generateGround('const', .05,1);
-%[groundX, groundZ, groundTheta] = generateGround('ramp');
-
 
 %%
 model = 'NeuromuscularModel_3R60_3D';
 
 %%
 inner_opt_settings = setInnerOptSettings();
+% [groundX, groundZ, groundTheta] = generateGround('flat');
+% [groundX, groundZ, groundTheta] = generateGround('const', .05,1);
+[groundX, groundZ, groundTheta] = generateGround('const', inner_opt_settings.terrain_height, 1,true);
+%[groundX, groundZ, groundTheta] = generateGround('ramp');
+
 %open('NeuromuscularModel');
 % set_param(model,'SimulationMode','normal');
 % set_param(model,'StopTime','30');
