@@ -10,8 +10,8 @@ clear all; close all; clc;
 %%
 % initial_gains_filename = 'Results/Flat/SongGains_02amp.mat';
 % initial_gains_filename = 'Results/Flat/Umb10dimmuscleforce.mat';
-load('Results/Rough/Umb10_1.5cm_1.2ms_kneelim1_mstoptorque2.mat');
-initial_gains_filename = 'Results/initCMGgains.mat';
+load('Results/Rough/Umb10_1.5cm_1.2ms_kneelim1_mstoptorque2_wCMG.mat');
+initial_gains_filename = 'Results/littleoptCMGgains.mat';
 
 initial_gains_file = load(initial_gains_filename);
 load('Results/Flat/SongGains_02_wC_IC.mat');
@@ -56,7 +56,7 @@ x0 = zeros(numvars,1);
 sigma0 = 1/8;
 % sigma0 = 1/3;
 
-opts.SaveFilename = 'vcmaes_1.5cm_1.2ms_Umb10_kneelim1_mstoptorque2_CMGopts.mat';
+opts.SaveFilename = 'vcmaes_1.5cm_1.2ms_Umb10_CMGopts_wmass.mat';
 
 %% Show settings
 clc;
