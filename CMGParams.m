@@ -26,8 +26,8 @@ RkneeStopGain           = 12000;
 RkneeExtendGain         = 25000;
 RlegAngleFilter = 100; %[1/s]
 
-% tripDetectThreshold = -70; % m/s^2
-tripDetectThreshold = -60; % m/s^2
+tripDetectThreshold = -70; % m/s^2
+% tripDetectThreshold = -60; % m/s^2   1.2 m/s
 
 omegaRef = 2100; % rad/s
 
