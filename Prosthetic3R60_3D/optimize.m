@@ -68,6 +68,7 @@ disp(initial_gains_filename);
 fprintf('Target velocity: %1.1f m/s \n',target_velocity);
 fprintf('Amputated hip flexor diminish factor:   %1.2f \n',ampHipFlexFactor);
 fprintf('Amputated hip extensor diminish factor: %1.2f \n',ampHipExtFactor);
+parpool(inner_opt_settings.numParWorkers);
 
 %% run cmaes
 [xmin, fmin, counteval, stopflag, out, bestever] = cmaes(optfunc, x0, sigma0, opts)
