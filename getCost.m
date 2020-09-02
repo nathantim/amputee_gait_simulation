@@ -1,4 +1,4 @@
-function [cost, dataStruct] = getCost(model,Gains,time,metabolicEnergy,sumOfStopTorques,HATPos,stepVelocities,stepTimes,stepLengths,inner_opt_settings, b_isParallel)
+function [cost, dataStruct] = getCost(model,Gains,time,metabolicEnergy,sumOfStopTorques,HATPos,stepVelocities,stepTimes,stepLengths,CMGData,inner_opt_settings, b_isParallel)
 try
     if contains(model,'3R60')
          modelType = 'prosthetic';
@@ -77,6 +77,13 @@ try
     [meanVel, ASIVel] = getFilterdMean_and_ASI(stepVelocities(:,1),stepVelocities(:,2),initiation_steps);
     
     %%
+    if ~isempty(CMGData)
+        maxCMGTorque = max(CMGData.signals.values(:,8));
+    else
+        maxCMGTorque = 0;
+    end
+    
+    %%
     %     cost = 100000*timeCost  + 1000*(velCost + 0*distCost) + 0.1*costOfTransport;
 %     cost = 100000*timeCost  + 1000*(velCost) + 100*costOfTransportForOpt + .01*sumOfStopTorques;
 %11-6-2020_19:49
@@ -84,8 +91,9 @@ try
     velFactor   = inner_opt_settings.velocityFactor;
     CoTFactor   = inner_opt_settings.CoTFactor;
     stopTFactor = inner_opt_settings.sumStopTorqueFactor;
+    CMGTorqueFactor = inner_opt_settings.CMGTorqueFactor;
     cost = timeFactor*timeCost  + velFactor*(velCost) + CoTFactor*costOfTransportForOpt ...
-                + stopTFactor*sumOfStopTorques;
+                + stopTFactor*sumOfStopTorques + CMGTorqueFactor*maxCMGTorque;
 
     if length(cost) ~= 1
         disp(cost);
@@ -99,7 +107,8 @@ try
         'E',struct('data',[effort_costs(:).metabolicEnergy]','minimize',1,'info',char({effort_costs(:).name})),'sumTstop',struct('data',sumOfStopTorques,'minimize',1,'info',''),...
         'HATPos',struct('data',HATPos,'minimize',0,'info',''),'vMean',struct('data',meanVel,'minimize',0,'info',''),'tStepMean',struct('data',meanStepTime,'minimize',2,'info',''),...
         'lStepMean',struct('data',meanStepLength,'minimize',2,'info',''),'lStepASI',struct('data',round(ASIStepLength,2),'minimize',2,'info',''),...
-        'tStepASI',struct('data',round(ASIStepTime,2),'minimize',2,'info',''),'velCost',struct('data',velCost,'minimize',1,'info',''),'timeVector',struct('data',time,'minimize',1,'info',''));
+        'tStepASI',struct('data',round(ASIStepTime,2),'minimize',2,'info',''),'velCost',struct('data',velCost,'minimize',1,'info',''),'timeVector',struct('data',time,'minimize',1,'info',''),...
+        'maxCMGTorque',struct('data',maxCMGTorque,'minimize',1,'info',''));
     %     dataStruct = struct('cost',struct('data',cost*rand,'minimize',1,'info',''),'costOfTransport',struct('data',[effort_costs(:).costOfTransport].*rand,'minimize',1,'info',{effort_costs(:).name}),...
     %         'metabolicEnergy',struct('data',[effort_costs(:).metabolicEnergy].*rand,'minimize',1,'info',{effort_costs(:).name}),'sumOfStopTorques',struct('data',sumOfStopTorques.*rand,'minimize',1,'info',''),...
     %         'HATPos',struct('data',HATPos.*rand,'minimize',0,'info',''),'vMean',struct('data',meanVel.*rand,'minimize',0,'info',''),'tStepMean',struct('data',meanStepTime.*rand,'minimize',2,'info',''),...

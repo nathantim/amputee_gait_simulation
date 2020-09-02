@@ -32,6 +32,11 @@ angularData = get(simout, 'angularData');
 GaitPhaseData = get(simout,'GaitPhaseData');
 musculoData = get(simout, 'musculoData');
 GRFData = get(simout, 'GRFData');
+try
+    CMGData = get(simout, 'CMGData');
+catch
+    CMGData = [];
+end
 
 kinematics.angularData = angularData;
 kinematics.GaitPhaseData = GaitPhaseData;
@@ -54,7 +59,7 @@ kinematics.GRFData = GRFData;
 try
     [cost, dataStruct] = getCost(model,Gains,time,metabolicEnergy,sumOfStopTorques, ...
                                 HATPos,stepVelocities,stepTimes,stepLengths,...
-                                 inner_opt_settings,true);
+                                 CMGData, inner_opt_settings,true);
     dataStruct.kinematics = kinematics;
 catch ME
     save('error_getCost.mat');
