@@ -8,7 +8,8 @@ RkneeFlexPosGain        = CMGGains(5);
 RkneeStopGain           = CMGGains(6);
 RkneeExtendGain         = CMGGains(7);
 TargetLegAngleTripFlex  = CMGGains(8);
-
+% tripDetectThreshold     = CMGGains(9);
+% tripDetectThreshold = -110;
 
 % KpGammaReset
 % KdGammaReset

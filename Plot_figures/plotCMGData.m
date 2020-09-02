@@ -21,22 +21,26 @@ hold on;
 plot(CMGData.time(idx),CMGData.signals.values(idx,3),':'); 
 legend('$\dot{\gamma}(t)$','$\dot{\gamma}_{{ref}}$');
 title('GM angular velocity ');
+yaxis(-6,40);
 ylabel('$\dot{\gamma}(t)$ (rad/s)'); 
 
 subplot(413); 
-plot(CMGData.time(idx),CMGData.signals.values(idx,6)); 
+% plot(CMGData.time(idx),CMGData.signals.values(idx,6)); % total
+% plot(CMGData.time(idx),CMGData.signals.values(idx,7));  % locking torque
+plot(CMGData.time(idx),CMGData.signals.values(idx,8));  % trip reaction torque
 title('GM torque');
+% yaxis(-10,10);
 ylabel('$\tau(t)$ (Nm)'); 
 
 
 subplot(414); 
 colorOrder = get(gca,'colororder');
-plot(CMGData.time(idx),CMGData.signals.values(idx,7),'-.'); 
+plot(CMGData.time(idx),CMGData.signals.values(idx,9),'-.'); 
 hold on;
-plot(CMGData.time(idx),CMGData.signals.values(idx,8)); 
+plot(CMGData.time(idx),CMGData.signals.values(idx,10)); 
 
-plot(CMGData.time(idx),CMGData.signals.values(idx,9),'--');%,'color',colorOrder(4,:)); 
-plot(CMGData.time(idx),CMGData.signals.values(idx,10),' :');%,'color',colorOrder(3,:)); 
+plot(CMGData.time(idx),CMGData.signals.values(idx,11),'--');%,'color',colorOrder(4,:)); 
+plot(CMGData.time(idx),CMGData.signals.values(idx,12),' :');%,'color',colorOrder(3,:)); 
 % plot(CMGData.time(idx),-CMGData.signals.values(idx,9),'--','color',colorOrder(4,:)); 
 
 legend('$\Delta H_{ML}(t)$','$\Delta H_{AP}(t)$','$||\mathbf{H}(t)||$','$||\Delta\mathbf{H}(t)||$','location','northwest');

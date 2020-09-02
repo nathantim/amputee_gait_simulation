@@ -17,8 +17,10 @@ TargetLegAngleTripFlex = 2/3*pi; % rad
 KpGamma = 5; % Nm/(rad/s)
 KiGamma = 1; % Nm/rad
 
-KpGammaReset = 10; % Nm/(rad)
-KdGammaReset = 2; % Nm/(rad/s)
+% KpGammaReset = 10; % Nm/(rad)
+% KdGammaReset = 2; % Nm/(rad/s)
+KpGammaReset = 10000; % Nm/(rad)
+KdGammaReset = 2000; % Nm/(rad/s)
 
 RkneeFlexSpeedGain      = 6;
 RkneeFlexPosGain        = 6;
@@ -26,13 +28,15 @@ RkneeStopGain           = 12000;
 RkneeExtendGain         = 25000;
 RlegAngleFilter = 100; %[1/s]
 
-tripDetectThreshold = -70; % m/s^2
+% tripDetectThreshold = -100; % m/s^2   0.9 m/s
 % tripDetectThreshold = -60; % m/s^2   1.2 m/s
+
+tripDetectThreshold = -700; % m/s^2 
 
 omegaRef = 2100; % rad/s
 
-maxTflywheelmotor = 1.83E-3;
-
+maxTflywheelmotor = 1.83E-3; % Nm
+maxGMTorque = 4;%15; % Nm
 zeroOrderHoldTs = 1/1000; % s
 lowpassbandFreq = 80; % Hz
 highpassbandFreq = 3; % Hz

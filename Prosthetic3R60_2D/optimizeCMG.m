@@ -13,7 +13,8 @@ clear all; close all; clc;
 % load('Results/Rough/Umb10_1.5cm_1.2ms_kneelim1_mstoptorque2_wCMG.mat');
 load('Results/Rough/Umb10_1.5cm_0.9ms_kneelim1_mstoptorque2.mat');
 
-initial_gains_filename = 'Results/littleoptCMGgains_1_2ms.mat';
+% initial_gains_filename = 'Results/littleoptCMGgains_1_2ms.mat';
+initial_gains_filename =  'Results/littleoptCMGgains_1_2ms.mat';
 
 initial_gains_file = load(initial_gains_filename);
 load('Results/Flat/SongGains_02_wC_IC.mat');
@@ -37,6 +38,9 @@ InitialGuess = initial_gains_file.CMGGains;
 %% initialze parameters
 [inner_opt_settings,opts] = setInnerOptSettings(initial_gains_filename);
 
+inner_opt_settings.numTerrains = 1;
+inner_opt_settings.terrain_height = 0.0000015; % in m
+
 BodyMechParams;
 ControlParams;
 OptimParams;
@@ -58,7 +62,7 @@ x0 = zeros(numvars,1);
 sigma0 = 1/8;
 % sigma0 = 1/3;
 
-opts.SaveFilename = 'vcmaes_1.5cm_0.9ms_Umb10_CMGopts_wmass.mat';
+opts.SaveFilename = 'vcmaes_CMG_1.5cm_0.9ms_Umb10.mat';
 
 %% Show settings
 clc;
