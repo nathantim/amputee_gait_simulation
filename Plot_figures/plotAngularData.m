@@ -26,6 +26,10 @@ LankleAngles    = -180/pi*angularData.signals.values(:,11);
 % LankleAnglesVel = -180/pi*angularData.signals.values(GaitInfo.start.left:GaitInfo.end.left,12);
 RankleAngles    = -180/pi*angularData.signals.values(:,13);
 
+LhipRollAngles    = 180/pi*angularData.signals.values(:,15);
+% LankleAnglesVel = -180/pi*angularData.signals.values(GaitInfo.start.left:GaitInfo.end.left,12);
+RhipRollAngles    = 180/pi*angularData.signals.values(:,17);
+
 % RankleAnglesVel = -180/pi*angularData.signals.values(GaitInfo.start.right:GaitInfo.end.right,14);
 warning('Unreasoned factor -1');
 
@@ -38,9 +42,11 @@ rightLegState   = GaitPhaseData.signals.values(:,2);
 [rightLegState_avg,rightLegState_sd] = interpData2perc(t,GaitInfo.tp,rightLegState,GaitInfo.start.rightV,GaitInfo.end.rightV,GaitInfo.b_oneGaitPhase);
 
 [LhipAngles_avg,LhipAngles_sd] = interpData2perc(t,GaitInfo.tp,LhipAngles,GaitInfo.start.leftV,GaitInfo.end.leftV,GaitInfo.b_oneGaitPhase);
+[LhipRollAngles_avg,LhipRollAngles_sd] = interpData2perc(t,GaitInfo.tp,LhipRollAngles,GaitInfo.start.leftV,GaitInfo.end.leftV,GaitInfo.b_oneGaitPhase);
 [LkneeAngles_avg,LkneeAngles_sd] = interpData2perc(t,GaitInfo.tp,LkneeAngles,GaitInfo.start.leftV,GaitInfo.end.leftV,GaitInfo.b_oneGaitPhase);
 [LankleAngles_avg,LankleAngles_sd] = interpData2perc(t,GaitInfo.tp,LankleAngles,GaitInfo.start.leftV,GaitInfo.end.leftV,GaitInfo.b_oneGaitPhase);
 [RhipAngles_avg,RhipAngles_sd] = interpData2perc(t,GaitInfo.tp,RhipAngles,GaitInfo.start.rightV,GaitInfo.end.rightV,GaitInfo.b_oneGaitPhase);
+[RhipRollAngles_avg,RhipRollAngles_sd] = interpData2perc(t,GaitInfo.tp,RhipRollAngles,GaitInfo.start.rightV,GaitInfo.end.rightV,GaitInfo.b_oneGaitPhase);
 [RkneeAngles_avg,RkneeAngles_sd] = interpData2perc(t,GaitInfo.tp,RkneeAngles,GaitInfo.start.rightV,GaitInfo.end.rightV,GaitInfo.b_oneGaitPhase);
 [RankleAngles_avg,RankleAngles_sd] = interpData2perc(t,GaitInfo.tp,RankleAngles,GaitInfo.start.rightV,GaitInfo.end.rightV,GaitInfo.b_oneGaitPhase);
 
@@ -48,11 +54,14 @@ if ~plotInfo.showSD
     leftLegState_sd = [];
     rightLegState_sd = [];
     LhipAngles_sd = [];
+    LhipRollAngles_sd = [];
     LkneeAngles_sd = [];
     LankleAngles_sd = [];
     RhipAngles_sd = [];
+    RhipRollAngles_sd = [];
     RkneeAngles_sd = [];
     RankleAngles_sd = [];
+    
 end
 
 %%
@@ -69,7 +78,7 @@ end
 %%
 if true
  %%
-    legStatePlot = subplot(4,1,1,axes(angularDataFig));
+    legStatePlot = subplot(5,1,1,axes(angularDataFig));
     if ~GaitInfo.b_oneGaitPhase
         GaitInfo.tp = GaitPhaseData.time;
     end
@@ -95,15 +104,15 @@ if true
 %     title('HAT angle')
 %     ylabel('rad');
 %%
-    subplotStart = 412;
+    subplotStart = 512;
     
     if ~GaitInfo.b_oneGaitPhase
         GaitInfo.tp = angularData.time;
     end
-    [plotHandlesLeft,axesHandles] = plotAngularDataInFigure(angularDataFig,[],GaitInfo.tp,LhipAngles_avg,LhipAngles_sd,LkneeAngles_avg,LkneeAngles_sd,LankleAngles_avg,LankleAngles_sd,subplotStart,GaitInfo.b_oneGaitPhase);
-    [plotHandlesRight,axesHandles] = plotAngularDataInFigure(angularDataFig,axesHandles,GaitInfo.tp,RhipAngles_avg,RhipAngles_sd,RkneeAngles_avg,RkneeAngles_sd,RankleAngles_avg,RankleAngles_sd,subplotStart,GaitInfo.b_oneGaitPhase);
+    [plotHandlesLeft,axesHandles] = plotAngularDataInFigure(angularDataFig,[],GaitInfo.tp,LhipAngles_avg,LhipAngles_sd,LhipRollAngles_avg,LhipRollAngles_sd,LkneeAngles_avg,LkneeAngles_sd,LankleAngles_avg,LankleAngles_sd,subplotStart,GaitInfo.b_oneGaitPhase);
+    [plotHandlesRight,axesHandles] = plotAngularDataInFigure(angularDataFig,axesHandles,GaitInfo.tp,RhipAngles_avg,RhipAngles_sd,RhipRollAngles_avg,RhipRollAngles_sd,RkneeAngles_avg,RkneeAngles_sd,RankleAngles_avg,RankleAngles_sd,subplotStart,GaitInfo.b_oneGaitPhase);
     if GaitInfo.b_oneGaitPhase
-        [plotHandlesWinter,axesHandles] = plotAngularDataInFigure(angularDataFig,axesHandles,timeWinter,hipAngleWinter_avg,hipAngleWinter_sd,kneeAngleWinter_avg,kneeAngleWinter_sd, ...
+        [plotHandlesWinter,axesHandles] = plotAngularDataInFigure(angularDataFig,axesHandles,timeWinter,hipAngleWinter_avg,hipAngleWinter_sd,[],[],kneeAngleWinter_avg,kneeAngleWinter_sd, ...
             ankleAngleWinter_avg,ankleAngleWinter_sd,subplotStart);
     end
 

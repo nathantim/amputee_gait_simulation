@@ -9,9 +9,9 @@ RphiAnkle0      = paramIC(5)  	*90*pi/180 - pi/2; %[rad]
 RphiKnee0       = pi - paramIC(6)  	*165*pi/180; %[rad]
 RphiHip0        = -2.8*(paramIC(7)   	*200*pi/180 - pi); %[rad]
 LphiHipR0       = -paramIC(8)*(-1)*pi/180; %[rad]
-RphiHipR0       = -paramIC(9)*(0)*pi/180; %[rad]
+RphiHipR0       = -paramIC(9)*(1)*pi/180; %[rad]
 
-vyInit = -paramIC(10)*.2;
+vyInit = paramIC(10)*.2;
 vzInit = 0;
 xInit      = .2;
 yInit      = -hatLeftHipToCenterDistWidth;

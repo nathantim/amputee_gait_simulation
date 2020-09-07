@@ -1,11 +1,11 @@
-function [plotHandles,axesHandles] = plotAngularDataInFigure(angularDataFig,axesHandles,t,hipAngles_avg,hipAngles_sd,kneeAngles_avg,kneeAngles_sd,ankleAngles_avg,ankleAngles_sd,subplotStart,b_oneGaitPhase)
-plotHandles = nan(3,2);
+function [plotHandles,axesHandles] = plotAngularDataInFigure(angularDataFig,axesHandles,t,hipAngles_avg,hipAngles_sd,hipRollAngles_avg,hipRollAngles_sd,kneeAngles_avg,kneeAngles_sd,ankleAngles_avg,ankleAngles_sd,subplotStart,b_oneGaitPhase)
+plotHandles = nan(4,2);
 if isempty(axesHandles)
     for i = 1:size(plotHandles,1)
         axesHandles(i) = axes(angularDataFig);
     end
 end
-if  nargin <= 10
+if  nargin <= 12
     b_oneGaitPhase = true;
 end
 
@@ -58,4 +58,22 @@ if b_oneGaitPhase
 else
     xlabel(axesHandles(3),'s')
 end
+
+%%
+subplotStartvec = dec2base(subplotStart+3,10) - '0';
+axesHandles(4) = subplot(subplotStartvec(1),subplotStartvec(2),subplotStartvec(3),axesHandles(4));
+if ~isempty(hipRollAngles_sd)
+    plotHandles(4,2) = fill(axesHandles(4),[t;flipud(t)],[hipRollAngles_avg-hipRollAngles_sd;flipud(hipRollAngles_avg+hipRollAngles_sd)],[0.8 0.8 0.8]);
+end
+hold(axesHandles(4),'on');
+if ~isempty(hipRollAngles_avg)
+    plotHandles(4,1) = plot(axesHandles(4),t,hipRollAngles_avg);
+end
+
+
+% h = get(axesHandles(4),'Children');
+% set(axesHandles(4),'Children',h) % 
+
+title(axesHandles(4),'Hip abduction angle')
+ylabel(axesHandles(4),'deg');
 
