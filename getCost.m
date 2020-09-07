@@ -79,10 +79,18 @@ try
     %%
     if ~isempty(CMGData)
         maxCMGTorque = max(CMGData.signals.values(:,8));
+        maxCMGdeltaH = max(CMGData.signals.values(:,12));
+        controlRMSE = sqrt(sum((CMGData.signals.values(:,2)-CMGData.signals.values(:,3)).^2)); %/length(CMGData.signals.values(:,2))
     else
         maxCMGTorque = 0;
+        maxCMGdeltaH = 0;
+        controlRMSE = 0;
     end
-    
+    if maxCMGTorque == 0
+        cost = nan;
+        disp('No trip');
+        return
+    end
     %%
     %     cost = 100000*timeCost  + 1000*(velCost + 0*distCost) + 0.1*costOfTransport;
 %     cost = 100000*timeCost  + 1000*(velCost) + 100*costOfTransportForOpt + .01*sumOfStopTorques;
@@ -92,8 +100,11 @@ try
     CoTFactor   = inner_opt_settings.CoTFactor;
     stopTFactor = inner_opt_settings.sumStopTorqueFactor;
     CMGTorqueFactor = inner_opt_settings.CMGTorqueFactor;
+    CMGdeltaHFactor = inner_opt_settings.CMGdeltaHFactor;
+    ControlRMSEFactor = inner_opt_settings.ControlRMSEFactor;
     cost = timeFactor*timeCost  + velFactor*(velCost) + CoTFactor*costOfTransportForOpt ...
-                + stopTFactor*sumOfStopTorques + CMGTorqueFactor*maxCMGTorque;
+                + stopTFactor*sumOfStopTorques + CMGTorqueFactor*maxCMGTorque + CMGdeltaHFactor*maxCMGdeltaH ...
+                + ControlRMSEFactor*controlRMSE;
 
     if length(cost) ~= 1
         disp(cost);
@@ -108,7 +119,7 @@ try
         'HATPos',struct('data',HATPos,'minimize',0,'info',''),'vMean',struct('data',meanVel,'minimize',0,'info',''),'tStepMean',struct('data',meanStepTime,'minimize',2,'info',''),...
         'lStepMean',struct('data',meanStepLength,'minimize',2,'info',''),'lStepASI',struct('data',round(ASIStepLength,2),'minimize',2,'info',''),...
         'tStepASI',struct('data',round(ASIStepTime,2),'minimize',2,'info',''),'velCost',struct('data',velCost,'minimize',1,'info',''),'timeVector',struct('data',time,'minimize',1,'info',''),...
-        'maxCMGTorque',struct('data',maxCMGTorque,'minimize',1,'info',''));
+        'maxCMGTorque',struct('data',maxCMGTorque,'minimize',1,'info',''),'maxCMGdeltaH',struct('data',maxCMGdeltaH,'minimize',1,'info',''),'controlRMSE',struct('data',controlRMSE,'minimize',1,'info',''));
     %     dataStruct = struct('cost',struct('data',cost*rand,'minimize',1,'info',''),'costOfTransport',struct('data',[effort_costs(:).costOfTransport].*rand,'minimize',1,'info',{effort_costs(:).name}),...
     %         'metabolicEnergy',struct('data',[effort_costs(:).metabolicEnergy].*rand,'minimize',1,'info',{effort_costs(:).name}),'sumOfStopTorques',struct('data',sumOfStopTorques.*rand,'minimize',1,'info',''),...
     %         'HATPos',struct('data',HATPos.*rand,'minimize',0,'info',''),'vMean',struct('data',meanVel.*rand,'minimize',0,'info',''),'tStepMean',struct('data',meanStepTime.*rand,'minimize',2,'info',''),...
@@ -147,15 +158,20 @@ try
             HATPos                  = [exist_vars.HATPos;HATPos];
             GainsSave               = [exist_vars.GainsSave;GainsSave];
             timeCostSave            = [exist_vars.timeCostSave;timeCost];
+            maxCMGTorqueSave        = [exist_vars.maxCMGTorqueSave;maxCMGTorque];
+            maxCMGdeltaHSave        = [exist_vars.maxCMGdeltaHSave;maxCMGdeltaH];
         else
             costT = cost;
             metabolicEnergySave = metabolicEnergy;
             costOfTransportSave = [effort_costs.costOfTransport];
             timeCostSave            = [timeCost];
+            maxCMGTorqueSave    = [maxCMGTorque];
+            maxCMGdeltaHSave        = [maxCMGdeltaH];
+
         end
         
         save(filename,'metabolicEnergySave','meanVel','meanStepTime', 'meanStepLength','costOfTransportSave', ...
-            'costT','sumOfStopTorques','HATPos','GainsSave','ASIStepLength','ASIStepTime','ASIVel','timeCostSave')
+            'costT','maxCMGdeltaHSave','maxCMGTorqueSave','sumOfStopTorques','HATPos','GainsSave','ASIStepLength','ASIStepTime','ASIVel','timeCostSave')
     end
    
     

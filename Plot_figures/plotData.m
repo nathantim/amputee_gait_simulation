@@ -1,16 +1,16 @@
-function plotData(angularData,musculoData,GRFData,GaitPhaseData,stepTimes,info,b_saveFigure,b_oneGaitPhase)
+function plotData(angularData,musculoData,GRFData,GaitPhaseData,stepTimes,CMGData,info,b_saveFigure,b_oneGaitPhase)
 %%
 set(0, 'DefaultAxesTitleFontSizeMultiplier',1.5);
 set(0, 'DefaultAxesLabelFontSizeMultiplier',1.5);
 
 
 saveInfo = struct;
-if  nargin < 7
+if  nargin < 8
     saveInfo.b_saveFigure = 1;
 else
     saveInfo.b_saveFigure = b_saveFigure;
 end
-if  nargin < 8
+if  nargin < 9
     b_oneGaitPhase = true;
 end
 if saveInfo.b_saveFigure
@@ -43,8 +43,9 @@ plotInfo.fillProp_entries = [plotInfo.fillVal,faceAlpha,plotInfo.fillVal,plotInf
 
 %%
 plotAngularData(angularData,GaitPhaseData,plotInfo,GaitInfo,saveInfo);
-plotMusculoData(musculoData,plotInfo,GaitInfo,saveInfo);
-plotGRF(GRFData,plotInfo,GaitInfo,saveInfo);
+% plotMusculoData(musculoData,plotInfo,GaitInfo,saveInfo);
+% plotGRF(GRFData,plotInfo,GaitInfo,saveInfo);
+% plotCMGData(CMGData,saveInfo);
 
 %
 set(0, 'DefaultAxesTitleFontSizeMultiplier',1);

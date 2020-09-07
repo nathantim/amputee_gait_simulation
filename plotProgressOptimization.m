@@ -19,6 +19,7 @@ try
         gaitKinematics = findobj('type','figure','Name','Gait Kinematics');
         musclesStimulation = findobj('type','figure','Name','Muscle stimulation levels');
         GRFData = findobj('type','figure','Name','Ground reaction forces');
+        CMGData = findobj('type','figure','Name','CMG data');
         
         % if isempty(updateFigure) || ~isvalid(updateFigure)
         %     updateFigure = figure();
@@ -40,6 +41,10 @@ try
             GRFData = figure();
             %     GRFData.HitTest = 'off';
             GRFData.Name = 'Ground reaction forces';
+        end
+        if isempty(CMGData) || ~isvalid(CMGData)
+            CMGData = figure();
+            CMGData.Name = 'CMG data';
         end
         %%
         if isempty(minCost) || data.cost.data < minCost
@@ -99,6 +104,11 @@ try
             clf(GRFData);
             sgtitle(GRFData,['Ground reaction forces for cost of ',num2str(round(data.cost.data,1)),', with $v_{mean}$ = ', num2str(round(data.vMean.data,1)),'m/s','. $\tau_{stop}$ = ', num2str(data.sumTstop.data)]);
             plotGRF(data.kinematics.GRFData,plotInfo,GaitInfo,saveInfo,GRFData);
+            
+            clf(CMGData);
+            sgtitle(CMGData,['CMG data for cost of ',num2str(round(data.cost.data,1)),', with $v_{mean}$ = ', num2str(round(data.vMean.data,1)),'m/s','. $\tau_{stop}$ = ', num2str(data.sumTstop.data)]);
+            plotCMGData(data.kinematics.CMGData,saveInfo,CMGData);
+ 
             warning('on');
         end
         %         drawnow;

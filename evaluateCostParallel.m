@@ -9,7 +9,7 @@ try
     simout = sim(model,...
         'RapidAcceleratorParameterSets',paramStruct,...
         'RapidAcceleratorUpToDateCheck','off',...
-        'TimeOut',2*60,...
+        'TimeOut',10*60,...
         'SaveOutput','on');
 catch ME
     cost = nan;
@@ -17,6 +17,10 @@ catch ME
 %     disp(Gains');
     disp(ME.message);
     return
+end
+
+if contains(simout.SimulationMetadata.ExecutionInfo.StopEvent,'Timeout')
+    disp('Timeout');
 end
 
 time = get(simout,'time');
@@ -32,6 +36,7 @@ angularData = get(simout, 'angularData');
 GaitPhaseData = get(simout,'GaitPhaseData');
 musculoData = get(simout, 'musculoData');
 GRFData = get(simout, 'GRFData');
+
 try
     CMGData = get(simout, 'CMGData');
 catch
@@ -44,6 +49,7 @@ kinematics.time = time;
 kinematics.stepTimes = stepTimes;
 kinematics.musculoData = musculoData;
 kinematics.GRFData = GRFData;
+kinematics.CMGData = CMGData;
 %     if ~bisProperDistCovered(stepTimes.time(end),stepLengths,min_velocity,max_velocity,dist_slack)
 %         cost = nan;
 %         disp('Not enough distance covered')

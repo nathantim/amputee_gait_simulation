@@ -1,13 +1,13 @@
 CMGParams
 
-KpGamma                 = CMGGains(1);
-KiGamma                 = CMGGains(2);
-RlegAngleFilter         = CMGGains(3);
-RkneeFlexSpeedGain      = CMGGains(4);
-RkneeFlexPosGain        = CMGGains(5);
-RkneeStopGain           = CMGGains(6);
-RkneeExtendGain         = CMGGains(7);
-TargetLegAngleTripFlex  = CMGGains(8);
+% KpGamma                 = CMGGains(1);
+% KiGamma                 = CMGGains(2);
+RlegAngleFilter         = CMGGains(1);
+RkneeFlexSpeedGain      = CMGGains(2);
+RkneeFlexPosGain        = CMGGains(3);
+RkneeStopGain           = CMGGains(4);
+RkneeExtendGain         = CMGGains(5);
+TargetLegAngleTripFlex  = CMGGains(6);
 % tripDetectThreshold     = CMGGains(9);
 % tripDetectThreshold = -110;
 

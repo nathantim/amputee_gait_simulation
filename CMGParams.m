@@ -4,6 +4,8 @@ CMGt = 0.005; % thickness in m
 CMGmass = 1; % kg
 
 maxGMangle = 60 *pi/180; % rad
+maxTflywheelmotor = 1.83E-3; % Nm
+maxGMTorque = 15; % Nm
 
 % Modeled Cylinder shell with only rim + solid cylinder, both half the mass
 CMGInertia_x = 1/12*CMGmass*(3*CMGr^2+CMGt^2) + CMGmass/8*CMGr^2; % kgm^2
@@ -14,13 +16,13 @@ CMGInertia = [CMGInertia_x CMGInertia_y CMGInertia_z]; % kgm^2
 deltaLegAngleThr = 8*pi/180; %[rad]
 legAngleSpeedMax = 10; %[rad/s]
 TargetLegAngleTripFlex = 2/3*pi; % rad
-KpGamma = 5; % Nm/(rad/s)
+KpGamma = 10; % Nm/(rad/s)
 KiGamma = 1; % Nm/rad
 
 % KpGammaReset = 10; % Nm/(rad)
 % KdGammaReset = 2; % Nm/(rad/s)
-KpGammaReset = 10000; % Nm/(rad)
-KdGammaReset = 2000; % Nm/(rad/s)
+KpGammaReset = 30000; % Nm/(rad)
+KdGammaReset = 6000; % Nm/(rad/s)
 
 RkneeFlexSpeedGain      = 6;
 RkneeFlexPosGain        = 6;
@@ -31,15 +33,15 @@ RlegAngleFilter = 100; %[1/s]
 % tripDetectThreshold = -100; % m/s^2   0.9 m/s
 % tripDetectThreshold = -60; % m/s^2   1.2 m/s
 
-tripDetectThreshold = -700; % m/s^2 
+tripDetectThreshold = -35; % m/s^2
+
 
 omegaRef = 2100; % rad/s
 
-maxTflywheelmotor = 1.83E-3; % Nm
-maxGMTorque = 4;%15; % Nm
+
 zeroOrderHoldTs = 1/1000; % s
 lowpassbandFreq = 80; % Hz
-highpassbandFreq = 3; % Hz
+highpassbandFreq = 10;%3; % Hz
 % CMGmass = 0.0000001;
 
 % idx1 = (find(time==5):(find(GRFData.signals.values(:,1)>470,1,'first')))-13;

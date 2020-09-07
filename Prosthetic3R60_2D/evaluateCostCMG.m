@@ -3,9 +3,17 @@
 tempstring = strsplit(opts.UserData,' ');
 dataFile = tempstring{end};
 InitialGuessFile = load(dataFile); 
-
-% Gains = InitialGuessFile.Gains.*exp(bestever.x);
+% 
+% % Gains = InitialGuessFile.Gains.*exp(bestever.x);
 CMGGains = InitialGuessFile.CMGGains.*exp(bestever.x);
+
+% compareenergies = load('compareEnergyCostTotal_Umb10_CMG.mat');
+
+% idx_minCost = find(round(compareenergies.cost)==min(compareenergies.cost),1,'first');
+% 
+% idx_minCost = find(round(compareenergies.cost)==48),1,'first');
+% CMGGains = compareenergies.Gains(idx_minCost,:)';
+% CMGGains = GainsSave(1,:)';
 %%
 % load('Results/RoughDist/SongGainsamp.mat');
 % load('Results/Flat/SongGains_02amp.mat');
@@ -13,15 +21,17 @@ CMGGains = InitialGuessFile.CMGGains.*exp(bestever.x);
 % load('Results/Rough/Umb10_1.5cm_1.2ms_Umb10_kneelim1_mstoptorque3.mat');
 
 % load('Results/Rough/Umb10_1.5cm_1.2ms_kneelim1_mstoptorque2_wCMG.mat');
-% load('Results/Rough/Umb10_1.5cm_1.2ms_kneelim1_mstoptorque2.mat');
+load('Results/Rough/Umb10_1.5cm_1.2ms_kneelim1_mstoptorque2.mat');
 
-load('Results/Rough/Umb10_1.5cm_0.9ms_kneelim1_mstoptorque2.mat');
+% load('Results/Rough/Umb10_1.5cm_0.9ms_kneelim1_mstoptorque2.mat');
 load('Results/Flat/SongGains_02_wC_IC.mat');
 
-% load('Results/optCMGGains_wmass.mat');
+% load('Results/optCMGGains_1_2ms_wmass.mat');
+% load('Results/optCMGgains_1_2ms_lowerDH.mat');
 
 assignCMGGains;
 assignGains;
+
 
 dt_visual = 1/50;
 setInit;
@@ -40,12 +50,21 @@ model = 'NeuromuscularModel_3R60_2D';
 
 %%
 [inner_opt_settings,~] = setInnerOptSettings();
-
+% myModelBuildInfo = RTW.BuildInfo;
+% addCompileFlags(myModelBuildInfo,{'/fp:precise'},'OPTS');
+% getCompileFlags(myModelBuildInfo)
+% % RTW.BuildInfo = myModelBuildInfo;
+% getCompileFlags(RTW.BuildInfo)
 %%
 %open('NeuromuscularModel');
 % set_param(model,'SimulationMode','normal');
 % set_param(model,'StopTime','30');
+% -ffloat-store
+% AccelMakeCommand
+% RTWMakeCommand
+% RTWBuildArgs
 
+% set_param(model,'RTWMakeCommand','make_rtw OPT_OPTS="-ffloat-store"');
 warning('off');
 tic;
 sim(model)

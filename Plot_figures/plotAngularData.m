@@ -13,20 +13,21 @@ t_right_perc = GaitInfo.time.right_perc;
 % HATAngleVel = 180/pi*angularData.signals.values(GaitInfo.start.left:GaitInfo.end.left,2);
 
 LhipAngles      = -180/pi*angularData.signals.values(:,3);
-% LhipAnglesVel   = -180/pi*angularData.signals.values(GaitInfo.start.left:GaitInfo.end.left,4);
+LhipAnglesVel   = -180/pi*angularData.signals.values(:,4);
+
 RhipAngles      = -180/pi*angularData.signals.values(:,5);
-% RhipAnglesVel   = -180/pi*angularData.signals.values(GaitInfo.start.right:GaitInfo.end.right,6);
+RhipAnglesVel   = -180/pi*angularData.signals.values(:,6);
 
 LkneeAngles     = 180/pi*angularData.signals.values(:,7);
-% LkneeAnglesVel  = 180/pi*angularData.signals.values(GaitInfo.start.left:GaitInfo.end.left,8);
+LkneeAnglesVel  = 180/pi*angularData.signals.values(:,8);
 RkneeAngles     = 180/pi*angularData.signals.values(:,9);
-% RkneeAnglesVel  = 180/pi*angularData.signals.values(GaitInfo.start.right:GaitInfo.end.right,10);
+RkneeAnglesVel  = 180/pi*angularData.signals.values(:,10);
 
 LankleAngles    = -180/pi*angularData.signals.values(:,11);
-% LankleAnglesVel = -180/pi*angularData.signals.values(GaitInfo.start.left:GaitInfo.end.left,12);
+LankleAnglesVel = -180/pi*angularData.signals.values(:,12);
 RankleAngles    = -180/pi*angularData.signals.values(:,13);
+RankleAnglesVel = -180/pi*angularData.signals.values(:,14);
 
-% RankleAnglesVel = -180/pi*angularData.signals.values(GaitInfo.start.right:GaitInfo.end.right,14);
 warning('Unreasoned factor -1');
 
 leftLegState    = GaitPhaseData.signals.values(:,1);
@@ -44,6 +45,13 @@ rightLegState   = GaitPhaseData.signals.values(:,2);
 [RkneeAngles_avg,RkneeAngles_sd] = interpData2perc(t,GaitInfo.tp,RkneeAngles,GaitInfo.start.rightV,GaitInfo.end.rightV,GaitInfo.b_oneGaitPhase);
 [RankleAngles_avg,RankleAngles_sd] = interpData2perc(t,GaitInfo.tp,RankleAngles,GaitInfo.start.rightV,GaitInfo.end.rightV,GaitInfo.b_oneGaitPhase);
 
+[LhipAnglesVel_avg,LhipAnglesVel_sd] = interpData2perc(t,GaitInfo.tp,LhipAnglesVel,GaitInfo.start.leftV,GaitInfo.end.leftV,GaitInfo.b_oneGaitPhase);
+[LkneeAnglesVel_avg,LkneeAnglesVel_sd] = interpData2perc(t,GaitInfo.tp,LkneeAnglesVel,GaitInfo.start.leftV,GaitInfo.end.leftV,GaitInfo.b_oneGaitPhase);
+[LankleAnglesVel_avg,LankleAnglesVel_sd] = interpData2perc(t,GaitInfo.tp,LankleAnglesVel,GaitInfo.start.leftV,GaitInfo.end.leftV,GaitInfo.b_oneGaitPhase);
+[RhipAnglesVel_avg,RhipAnglesVel_sd] = interpData2perc(t,GaitInfo.tp,RhipAnglesVel,GaitInfo.start.rightV,GaitInfo.end.rightV,GaitInfo.b_oneGaitPhase);
+[RkneeAnglesVel_avg,RkneeAnglesVel_sd] = interpData2perc(t,GaitInfo.tp,RkneeAnglesVel,GaitInfo.start.rightV,GaitInfo.end.rightV,GaitInfo.b_oneGaitPhase);
+[RankleAnglesVel_avg,RankleAnglesVel_sd] = interpData2perc(t,GaitInfo.tp,RankleAnglesVel,GaitInfo.start.rightV,GaitInfo.end.rightV,GaitInfo.b_oneGaitPhase);
+
 if ~plotInfo.showSD
     leftLegState_sd = [];
     rightLegState_sd = [];
@@ -53,6 +61,12 @@ if ~plotInfo.showSD
     RhipAngles_sd = [];
     RkneeAngles_sd = [];
     RankleAngles_sd = [];
+    LhipAnglesVel_sd = [];
+    LkneeAnglesVel_sd = [];
+    LankleAnglesVel_sd = [];
+    RhipAnglesVel_sd = [];
+    RkneeAnglesVel_sd = [];
+    RankleAnglesVel_sd = [];
 end
 
 %%
