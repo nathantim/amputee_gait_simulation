@@ -1,6 +1,6 @@
 function [plotHandles, axesHandles] = plotMusculoDataInFigure(musculoDataFigure,axesHandles,t,HFL_avg,HFL_sd,GLU_avg,GLU_sd,HAM_avg,HAM_sd,...
                                                                 RF_avg,RF_sd,VAS_avg,VAS_sd,BFSH_avg,BFSH_sd,GAS_avg,GAS_sd,SOL_avg,SOL_sd,TA_avg,TA_sd,...
-                                                                HAB_avg,HAB_sd,HAD_avg,HAD_sd,b_oneGaitPhase)
+                                                                HAB_avg,HAB_sd,HAD_avg,HAD_sd,b_oneGaitPhase,subplotStart)
 plotHandles = nan(11,2);
 if isempty(axesHandles)
     for i = 1:length(plotHandles)
@@ -12,9 +12,10 @@ if  nargin < 26
     b_oneGaitPhase = true;
 end
 
+% subplotStart = dec2base(subplotStart,10) - '0';
 
 %%
-axesHandles(1) = subplot(6,2,1,axesHandles(1));
+axesHandles(1) = subplot(subplotStart(1),subplotStart(2),subplotStart(3),axesHandles(1));
 if ~isempty(HFL_sd)
     plotHandles(1,2) = fill(axesHandles(1),[t;flipud(t)],[HFL_avg-HFL_sd;flipud(HFL_avg+HFL_sd)],[0.8 0.8 0.8]);
 end
@@ -26,8 +27,9 @@ if (max(HFL_avg)<1)
     ylim(axesHandles(1),[0,1])
 end
 
+subplotStart(3) = subplotStart(3) +1;
 
-axesHandles(2) = subplot(6,2,2,axesHandles(2));
+axesHandles(2) = subplot(subplotStart(1),subplotStart(2),subplotStart(3),axesHandles(2));
 if ~isempty(GLU_sd)
     plotHandles(2,2) = fill(axesHandles(2),[t;flipud(t)],[GLU_avg-GLU_sd;flipud(GLU_avg+GLU_sd)],[0.8 0.8 0.8]);
 end
@@ -41,7 +43,9 @@ end
 
 
 %%
-axesHandles(3) = subplot(6,2,3,axesHandles(3));
+subplotStart(3) = subplotStart(3) +1;
+
+axesHandles(3) = subplot(subplotStart(1),subplotStart(2),subplotStart(3),axesHandles(3));
 if ~isempty(HAM_sd)
     plotHandles(3,2) = fill(axesHandles(3),[t;flipud(t)],[HAM_avg-HAM_sd;flipud(HAM_avg+HAM_sd)],[0.8 0.8 0.8]);
 end
@@ -55,8 +59,9 @@ end
 % ylabel('rad');
 
 
+subplotStart(3) = subplotStart(3) +1;
 
-axesHandles(4) = subplot(6,2,4,axesHandles(4));
+axesHandles(4) = subplot(subplotStart(1),subplotStart(2),subplotStart(3),axesHandles(4));
 if ~isempty(RF_sd)
     plotHandles(4,2) = fill(axesHandles(4),[t;flipud(t)],[RF_avg-RF_sd;flipud(RF_avg+RF_sd)],[0.8 0.8 0.8]);
 end
@@ -67,8 +72,9 @@ if (max(RF_avg)<1)
     ylim(axesHandles(4),[0,1])
 end% ylabel('rad');
 
+subplotStart(3) = subplotStart(3) +1;
 
-axesHandles(5) = subplot(6,2,5,axesHandles(5));
+axesHandles(5) = subplot(subplotStart(1),subplotStart(2),subplotStart(3),axesHandles(5));
 if ~isempty(VAS_sd)
     plotHandles(5,2) = fill(axesHandles(5),[t;flipud(t)],[VAS_avg-VAS_sd;flipud(VAS_avg+VAS_sd)],[0.8 0.8 0.8]);
 end
@@ -88,8 +94,9 @@ end
 
 
 %%
+subplotStart(3) = subplotStart(3) +1;
 
-axesHandles(6) = subplot(6,2,6,axesHandles(6));
+axesHandles(6) = subplot(subplotStart(1),subplotStart(2),subplotStart(3),axesHandles(6));
 if ~isempty(BFSH_sd)
     plotHandles(6,2) = fill(axesHandles(6),[t;flipud(t)],[BFSH_avg-BFSH_sd;flipud(BFSH_avg+BFSH_sd)],[0.8 0.8 0.8]);
 end
@@ -107,8 +114,9 @@ end
 % ylabel('rad/s')
 
 
+subplotStart(3) = subplotStart(3) +1;
 
-axesHandles(7) = subplot(6,2,7,axesHandles(7));
+axesHandles(7) = subplot(subplotStart(1),subplotStart(2),subplotStart(3),axesHandles(7));
 if ~isempty(GAS_sd)
     plotHandles(7,2) = fill(axesHandles(7),[t;flipud(t)],[GAS_avg-GAS_sd;flipud(GAS_avg+GAS_sd)],[0.8 0.8 0.8]);
 end
@@ -124,8 +132,9 @@ if (max(GAS_avg)<1)
 end
 % ylabel('rad');
 
+subplotStart(3) = subplotStart(3) +1;
 
-axesHandles(8) = subplot(6,2,8,axesHandles(8));
+axesHandles(8) = subplot(subplotStart(1),subplotStart(2),subplotStart(3),axesHandles(8));
 if ~isempty(SOL_sd)
     plotHandles(8,2) = fill(axesHandles(8),[t;flipud(t)],[SOL_avg-SOL_sd;flipud(SOL_avg+SOL_sd)],[0.8 0.8 0.8]);
 end
@@ -141,8 +150,9 @@ if (max(SOL_avg)<1)
 end
 % ylabel('rad/s')
 
+subplotStart(3) = subplotStart(3) +1;
 
-axesHandles(9) = subplot(6,2,9,axesHandles(9));
+axesHandles(9) = subplot(subplotStart(1),subplotStart(2),subplotStart(3),axesHandles(9));
 if ~isempty(TA_sd)
     plotHandles(9,2) = fill(axesHandles(9),[t;flipud(t)],[TA_avg-TA_sd;flipud(TA_avg+TA_sd)],[0.8 0.8 0.8]);
 end
@@ -159,8 +169,9 @@ if (max(TA_avg)<1)
 end
 % ylabel('rad');
 
+subplotStart(3) = subplotStart(3) +1;
 
-axesHandles(10) = subplot(6,2,10,axesHandles(10));
+axesHandles(10) = subplot(subplotStart(1),subplotStart(2),subplotStart(3),axesHandles(10));
 if ~isempty(HAB_sd)
     plotHandles(10,2) = fill(axesHandles(10),[t;flipud(t)],[HAB_avg-HAB_sd;flipud(HAB_avg+HAB_sd)],[0.8 0.8 0.8]);
 end
@@ -178,8 +189,9 @@ else
 end
 
 
+subplotStart(3) = subplotStart(3) +1;
 
-axesHandles(11) = subplot(6,2,11,axesHandles(11));
+axesHandles(11) = subplot(subplotStart(1),subplotStart(2),subplotStart(3),axesHandles(11));
 if ~isempty(HAD_sd)
     plotHandles(11,2) = fill(axesHandles(11),[t;flipud(t)],[HAD_avg-HAD_sd;flipud(HAD_avg+HAD_sd)],[0.8 0.8 0.8]);
 end
