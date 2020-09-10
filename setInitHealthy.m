@@ -1,7 +1,7 @@
 %% set initial conditions
 % conditions from Song
 
-vx0             = paramIC(1)  	*(inner_opt_settings.target_velocity); %[m/s] 
+vx0             = paramIC(1)  	*(target_velocity); %[m/s] 
 LphiAnkle0      = paramIC(2)   	*100*pi/180 - pi/2; %[rad]
 LphiKnee0       = pi - paramIC(3)   	*180*pi/180; %[rad]
 LphiHip0        = paramIC(4) 	*165*pi/180 - pi; %[rad]
@@ -11,7 +11,7 @@ RphiHip0        = paramIC(7)   	*200*pi/180 - pi; %[rad]
 LphiHipR0       = paramIC(8)*(-1)*pi/180; %[rad]
 RphiHipR0       = paramIC(9)*(1)*pi/180; %[rad]
 
-vyInit = paramIC(10)*.2*(inner_opt_settings.target_velocity/1.3);
+vyInit = paramIC(10)*.2*(target_velocity/1.3);
 vzInit = 0;
 
 xInit      = .2;

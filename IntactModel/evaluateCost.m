@@ -11,17 +11,17 @@
 % load('Results/RoughDist/SongGains_wC.mat');
 % load('Results/RoughDist/SongGains_wC_IC.mat');
 % load('Results/Flat/SongGains_02.mat');
-load('Results/Rough/Umb03_1.5cm_1.2ms_kneelim1_mstoptorque3_2.mat');
-% load('Results/Rough/Umb10_1.5cm_1.2ms_kneelim1_mstoptorque2.mat');
+% load('Results/Rough/Umb03_1.5cm_1.2ms_kneelim1_mstoptorque3_2.mat');
+load('Results/Rough/Umb10_1.5cm_1.2ms_kneelim1_mstoptorque2.mat');
 load('Results/Flat/SongGains_02_wC_IC.mat');
 
 [groundX, groundZ, groundTheta] = generateGround('flat');
 % [groundX, groundZ, groundTheta] = generateGround('const', .015,1,true);
 %[groundX, groundZ, groundTheta] = generateGround('ramp');
 
-assignGains;
+assignGainsSagittal;
 dt_visual = 1/50;
-setInit;
+
 
 %%
 model = 'NeuromuscularModel2D';
@@ -31,7 +31,7 @@ model = 'NeuromuscularModel2D';
 
 %%
 inner_opt_settings = setInnerOptSettings();
-
+setInitHealthy;
 
 %%
 warning('off');
