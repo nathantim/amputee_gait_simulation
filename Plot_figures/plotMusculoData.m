@@ -1,6 +1,10 @@
-function plotMusculoData(musculoData,plotInfo,GaitInfo,saveInfo,musculoDataFigure)
+function plotMusculoData(musculoData,plotInfo,GaitInfo,saveInfo,musculoDataFigure,subplotStart)
 if nargin < 5
     musculoDataFigure = [];
+end
+if nargin < 6 || isempty(subplotStart)
+    subplotStart = 621;
+    subplotStart = dec2base(subplotStart,10) - '0';
 end
 %%
 if ~GaitInfo.b_oneGaitPhase
@@ -126,15 +130,15 @@ else
     musculoDataFig = musculoDataFigure;
 %     clf(musculoDataFig);
 end
-set(0, 'DefaultAxesFontSize',10);
+
 % sgtitle('Muscle stimulations')
 
 
     
 [plotHandlesLeft,axesHandles] = plotMusculoDataInFigure(musculoDataFig,[],GaitInfo.tp,L_HFL_avg,L_HFL_sd,L_GLU_avg,L_GLU_sd,L_HAM_avg,L_HAM_sd,L_RF_avg,L_RF_sd,L_VAS_avg,L_VAS_sd,...
-        L_BFSH_avg,L_BFSH_sd,L_GAS_avg,L_GAS_sd,L_SOL_avg,L_SOL_sd,L_TA_avg,L_TA_sd,L_HAB_avg,L_HAB_sd,L_HAD_avg,L_HAD_sd,GaitInfo.b_oneGaitPhase);
+        L_BFSH_avg,L_BFSH_sd,L_GAS_avg,L_GAS_sd,L_SOL_avg,L_SOL_sd,L_TA_avg,L_TA_sd,L_HAB_avg,L_HAB_sd,L_HAD_avg,L_HAD_sd,GaitInfo.b_oneGaitPhase,subplotStart);
 [plotHandlesRight,axesHandles] = plotMusculoDataInFigure(musculoDataFig,axesHandles,GaitInfo.tp,R_HFL_avg,R_HFL_sd,R_GLU_avg,R_GLU_sd,R_HAM_avg,R_HAM_sd,R_RF_avg,R_RF_sd,R_VAS_avg,R_VAS_sd,...
-        R_BFSH_avg,R_BFSH_sd,R_GAS_avg,R_GAS_sd,R_SOL_avg,R_SOL_sd,R_TA_avg,R_TA_sd,R_HAB_avg,R_HAB_sd,R_HAD_avg,R_HAD_sd,GaitInfo.b_oneGaitPhase);
+        R_BFSH_avg,R_BFSH_sd,R_GAS_avg,R_GAS_sd,R_SOL_avg,R_SOL_sd,R_TA_avg,R_TA_sd,R_HAB_avg,R_HAB_sd,R_HAD_avg,R_HAD_sd,GaitInfo.b_oneGaitPhase,subplotStart);
 
     if contains(saveInfo.info,'prosthetic')
         leg = legend([plotHandlesLeft(end,1),plotHandlesRight(end,1)],'Intact leg','Prosthetic leg');
@@ -142,7 +146,9 @@ set(0, 'DefaultAxesFontSize',10);
         leg = legend([plotHandlesLeft(end,1),plotHandlesRight(end,1)],'Left leg','Right leg');
     end
 % set(leg,'FontSize',18);
-set(leg,'FontSize',12);
+if ~isempty(leg)
+    set(leg,'FontSize',12);
+end
 
 for i= 1:length(plotHandlesLeft)
     if ~isnan(plotHandlesLeft(i,1))
@@ -160,7 +166,6 @@ for i= 1:length(plotHandlesLeft)
         end
     end
 end
-set(0, 'DefaultAxesFontSize',15);
 if saveInfo.b_saveFigure
     for j = 1:length(saveInfo.type)
         saveFigure(musculoDataFig,'musculoData',saveInfo.type{j},saveInfo.info)

@@ -1,6 +1,13 @@
-function plotGRF(GRFData,plotInfo,GaitInfo,saveInfo,GRFDataFigure)
+function plotGRF(GRFData,plotInfo,GaitInfo,saveInfo,GRFDataFigure,subplotStart)
 if nargin < 5
     GRFDataFigure = [];
+end
+if nargin < 6 || isempty(subplotStart)
+    subplotStart = 211;
+    subplotStart = dec2base(subplotStart,10) - '0';
+    setLegend = true;
+else
+    setLegend = false;
 end
 t = GRFData.time;
 %%
@@ -35,7 +42,7 @@ if ~plotInfo.showSD
     R_Total_z_sd = [];
 end
 
-[tWinter,~, ~, ~,~,~,~, vGRF_winter_avg,vGRF_winter_sd, hGRF_winter_avg,hGRF_winter_sd] = getWinterData(GaitInfo.WinterDataSpeed);
+[tWinter,~, ~, ~,~,~,~, vGRF_winter_avg,vGRF_winter_sd, hGRF_winter_avg,hGRF_winter_sd, ~,~,~,~,~,~] = getWinterData(GaitInfo.WinterDataSpeed);
 if size(vGRF_winter_avg,2) > size(vGRF_winter_avg,2)
     vGRF_winter_avg = vGRF_winter_avg';
     hGRF_winter_avg = hGRF_winter_avg';
@@ -60,37 +67,42 @@ if false
 %     plotHandlesRight = plotGRFDataInFigure(t_right_perc,R_Ball,R_Total,R_Heel);
 %     set(GRFDataFig, 'Position',[10,50,1600,900]);
 else
-    [plotHandlesLeft,axesHandles] = plotTotalGRFDataInFigure(GRFDataFig,[],GaitInfo.tp,L_Total_x_avg,L_Total_x_sd,L_Total_z_avg,L_Total_z_sd,GaitInfo.b_oneGaitPhase);
-    [plotHandlesRight,axesHandles] = plotTotalGRFDataInFigure(GRFDataFig,axesHandles,GaitInfo.tp,R_Total_x_avg,R_Total_x_sd,R_Total_z_avg,R_Total_z_sd,GaitInfo.b_oneGaitPhase);
-    if GaitInfo.b_oneGaitPhase
-        [plotHandlesWinter,axesHandles] = plotTotalGRFDataInFigure(GRFDataFig,axesHandles,tWinter,hGRF_winter_avg,hGRF_winter_sd,vGRF_winter_avg,vGRF_winter_sd);
+    [plotHandlesLeft,axesHandles] = plotTotalGRFDataInFigure(GRFDataFig,[],GaitInfo.tp,L_Total_x_avg,L_Total_x_sd,L_Total_z_avg,L_Total_z_sd,GaitInfo.b_oneGaitPhase,subplotStart);
+    [plotHandlesRight,axesHandles] = plotTotalGRFDataInFigure(GRFDataFig,axesHandles,GaitInfo.tp,R_Total_x_avg,R_Total_x_sd,R_Total_z_avg,R_Total_z_sd,GaitInfo.b_oneGaitPhase,subplotStart);
+    if GaitInfo.b_oneGaitPhase && plotInfo.plotWinterData 
+        [plotHandlesWinter,axesHandles] = plotTotalGRFDataInFigure(GRFDataFig,axesHandles,tWinter,hGRF_winter_avg,hGRF_winter_sd,vGRF_winter_avg,vGRF_winter_sd,GaitInfo.b_oneGaitPhase,subplotStart);
     end
 
 end
 
-if GaitInfo.b_oneGaitPhase && contains(saveInfo.info,'prosthetic')
+if setLegend && GaitInfo.b_oneGaitPhase && contains(saveInfo.info,'prosthetic') && plotInfo.plotWinterData 
     leg = legend([plotHandlesLeft(2,1),plotHandlesRight(2,1),plotHandlesWinter(2,1)],'Intact leg','Prosthetic leg', 'Winter data');
 %     leg = legend('Intact leg','Prosthetic leg',char(strcat(string(GaitInfo.WinterDataSpeed), ' gait Winter')) );
-elseif GaitInfo.b_oneGaitPhase
+elseif setLegend && GaitInfo.b_oneGaitPhase && plotInfo.plotWinterData 
     leg = legend([plotHandlesLeft(2,1),plotHandlesRight(2,1),plotHandlesWinter(2,1)],'Left leg','Right leg', 'Winter data');
 %     leg = legend('Left leg','Right leg',char(strcat(string(GaitInfo.WinterDataSpeed), ' gait Winter')));
-elseif contains(saveInfo.info,'prosthetic')
+elseif setLegend && contains(saveInfo.info,'prosthetic')
     leg = legend([plotHandlesLeft(2),plotHandlesRight(2)],'Intact leg','Prosthetic leg');
 %     leg = legend('Intact leg','Prosthetic leg');
-else
+elseif setLegend 
     leg = legend([plotHandlesLeft(2),plotHandlesRight(2)],'Left leg','Right leg');
 %     leg = legend('Left leg','Right leg');
+else
+    leg = [];
 end
-set(leg,'FontSize',18);
+
+if ~isempty(leg)
+    set(leg,'FontSize',18);
+end
 
 for i= 1:size(plotHandlesLeft,1)
     set(plotHandlesLeft(i,1),plotInfo.plotProp,plotInfo.plotProp_entries(1,:));
     set(plotHandlesRight(i,1),plotInfo.plotProp,plotInfo.plotProp_entries(2,:));
-    if plotInfo.showSD && GaitInfo.b_oneGaitPhase
+    if plotInfo.showSD && GaitInfo.b_oneGaitPhase 
         set(plotHandlesLeft(i,2),plotInfo.fillProp,plotInfo.fillProp_entries(1,:));
         set(plotHandlesRight(i,2),plotInfo.fillProp,plotInfo.fillProp_entries(2,:));
     end
-    if GaitInfo.b_oneGaitPhase && ~isnan(plotHandlesWinter(i,1))
+    if GaitInfo.b_oneGaitPhase && plotInfo.plotWinterData && ~isnan(plotHandlesWinter(i,1)) 
         set(plotHandlesWinter(i,1),plotInfo.plotProp,plotInfo.plotProp_entries(3,:));
         set(plotHandlesWinter(i,2),plotInfo.fillProp,plotInfo.fillProp_entries(3,:));
     end

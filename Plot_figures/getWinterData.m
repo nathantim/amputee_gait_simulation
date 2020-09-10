@@ -1,4 +1,6 @@
-function [time,hipAngle_avg,hipAngle_sd, kneeAngle_avg,kneeAngle_sd, ankleAngle_avg,ankleAngle_sd, vertGRF_avg,vertGRF_sd, horGRF_avg,horGRF_sd] = getWinterData(speed,angleUnit)
+function   [time,hipAngle_avg,hipAngle_sd, kneeAngle_avg,kneeAngle_sd, ankleAngle_avg,ankleAngle_sd,...
+            vertGRF_avg,vertGRF_sd, horGRF_avg,horGRF_sd, ...
+            hipTorque_avg, hipTorque_sd, kneeTorque_avg, kneeTorque_sd, ankleTorque_avg, ankleTorque_sd] = getWinterData(speed,angleUnit)
 % close all;
 % clear all
 % Note that angles and moments do not have concisten signs in Winter's excel(so Jpower=dAng/dt*-Mom)
@@ -9,7 +11,7 @@ Fgt = xlsread('winterdata.xlsx','Ft snf');
 % taking the negative of the winters moments make things concistent such
 % that powers are correctly calculated, and Bogert results can be
 % replicated, and angle versus moments plots make sense
-Jmom = -xlsread('winterdata.xlsx','JTt snf'); 
+Jmom = xlsread('winterdata.xlsx','JTt snf'); % moment *-1?
 Jpow = xlsread('winterdata.xlsx','JPt snf');
 
 gaittypes = {'slow gait', 'normal gait', 'fast gait'};
@@ -63,6 +65,12 @@ vertGRF_sd          = Fgt(1:max(size(hipAngle_avg)),vertGRF_entry_sd);
 horGRF_avg          = Fgt(1:max(size(hipAngle_avg)),horGRF_entry_avg);
 horGRF_sd          = Fgt(1:max(size(hipAngle_avg)),horGRF_entry_sd);
 
+hipTorque_avg        = Jmom(:,hip_entry_avg);
+hipTorque_sd         = Jmom(:,hip_entry_sd);
+kneeTorque_avg       = Jmom(:,knee_entry_avg);
+kneeTorque_sd        = Jmom(:,knee_entry_sd);
+ankleTorque_avg      = Jmom(:,ankle_entry_avg);
+ankleTorque_sd       = Jmom(:,ankle_entry_sd);
 
 if exist('angleUnit','var') && strcmp(angleUnit,"deg")
    hipAngle_avg     = 180/pi*hipAngle_avg;
