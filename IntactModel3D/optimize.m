@@ -58,7 +58,8 @@ x0 = zeros(numvars,1);
 sigma0 = 1/8;
 % sigma0 = 1/3;
 
-opts.SaveFilename = 'vcmaes_1.5cm_0.9ms_Umb10_kneelim1_mstoptorque2.mat';
+opts.DiagonalOnly = 150;
+opts.SaveFilename = 'vcmaes_1.5cm_1.2ms_Umb10_kneelim1_mstoptorque2.mat';
 
 %% Show settings
 clc;
