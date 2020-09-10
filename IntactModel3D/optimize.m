@@ -8,14 +8,9 @@ bdclose('all');
 clear all; close all; clc;
 
 %%
-% initial_gains_filename = ('Results/Flat/optandGH_diffswing.mat');
-% initial_gains_filename = ('Results/Flat/optdiffswing.mat');
-% initial_gains_filename = ('Results/Flat/optandGeyerHerrInit.mat');
-% initial_gains_filename = 'Results/Flat/optUmb10stanceswing1_3ms_prestim.mat';
-% initial_gains_filename = 'Results/Flat/optUmb10stanceswing1_3ms_prestim_lesshyper_dSopt.mat';
-% initial_gains_filename = 'Results/Flat/optUmb10kneelim3.mat';
-% initial_gains_filename = 'Results/Flat/optwoptUmb10_1_3ms.mat';
-initial_gains_filename = 'Results/Flat/song3Dopt.mat';
+% initial_gains_filename = 'Results/Flat/song3Dopt.mat';
+initial_gains_filename = 'Results/Rough/Umb10_1.5cm_0.9ms_kneelim1_mstoptorque2.mat';
+
 % initial_gains_filename = 'Results/Flat/SongGains_02_wC.mat';
 initial_gains_file = load(initial_gains_filename);
 load('Results/Flat/SongGains_02_wC_IC.mat');
@@ -36,7 +31,7 @@ catch ME
     warning(ME.message);
 end
 
-InitialGuess = initial_gains_file.Gains;
+InitialGuess = [initial_gains_file.GainsSagittal;initial_gains_file.GainsCoronal];
 
 %% initialze parameters
 [inner_opt_settings,opts] = setInnerOptSettings(initial_gains_filename);
@@ -44,10 +39,10 @@ InitialGuess = initial_gains_file.Gains;
 BodyMechParams;
 ControlParams;
 OptimParams;
-setInit;
+setInitHealthy;
 dt_visual = 1/30;
 [groundX, groundZ, groundTheta] = generateGround('flat');
-load_system(model)
+save_system(model)
 
 %% Build the Rapid Accelerator target once
 rtp = Simulink.BlockDiagram.buildRapidAcceleratorTarget(model);
@@ -63,6 +58,7 @@ opts.SaveFilename = 'vcmaes_1.5cm_1.2ms_Umb10_kneelim1_mstoptorque2.mat';
 
 %% Show settings
 clc;
+disp(opts);
 disp(inner_opt_settings);
 disp(initial_gains_filename);
 fprintf('Target velocity: %1.1f m/s \n',target_velocity);
