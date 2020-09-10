@@ -28,7 +28,7 @@ set_param(strcat(model,'/Body Mechanics Layer/Right Ankle Joint'),'SpringStiffne
 set_param(model,'SimulationMode','rapid');
 set_param(model,'StopTime','30');
 
-InitialGuess = initial_gains_file.Gains;
+InitialGuess = initial_gains_file.GainsSagittal;
 
 %% initialze parameters
 [inner_opt_settings,opts] = setInnerOptSettings(initial_gains_filename);
