@@ -162,6 +162,7 @@ function costs = cmaesParallelSplitRough(gainsPop)
         %     costall = reshape(costsall,1,popSize*numTerrains);
         if inner_opt_settings.visual
             if ~isempty(fieldnames(dataStruct(idx2send)))
+                dataStruct(idx2send).optimCost = costs(idx2send);
                 send(dataQueueD,dataStruct(idx2send));
             end
         else

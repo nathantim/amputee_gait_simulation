@@ -42,8 +42,8 @@ try
             GRFData.Name = 'Ground reaction forces';
         end
         %%
-        if isempty(minCost) || data.cost.data < minCost
-            minCost = data.cost.data;
+        if isempty(minCost) || data.optimCost < minCost
+            minCost = data.optimCost;
             b_minCost = true;
         else
             b_minCost = false;
