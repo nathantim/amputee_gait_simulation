@@ -17,8 +17,8 @@ load('Results/Rough/Umb10_1.5cm_1.2ms_kneelim1_mstoptorque2.mat');
 % load('Results/Rough/Umb10_1.5cm_0.9ms_kneelim1_mstoptorque2.mat');
 load('Results/Flat/SongGains_02_wC_IC.mat');
 
-load('Results/optCMGGains_wmass.mat');
-
+% load('Results/optCMGGains_wmass.mat');
+load('Results/optCMGgains_1_2ms_lowerDH_noKpKi.mat');
 assignCMGGains;
 assignGains;
 

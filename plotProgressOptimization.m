@@ -62,6 +62,7 @@ try
         plotInfo.colorProp = plotInfo.colorProp(1:3,:);
         plotInfo.lineWidthProp = {3;3;3};
         plotInfo.plotProp_entries = [plotInfo.lineVec(:),plotInfo.colorProp(:), plotInfo.lineWidthProp(:)];
+        plotInfo.plotWinterData = true;
         
         plotInfo.fillProp = {'FaceColor','FaceAlpha','EdgeColor','LineStyle'};
         faceAlpha = {0.2;0.2;0.2};

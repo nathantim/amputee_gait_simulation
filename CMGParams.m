@@ -33,8 +33,8 @@ RlegAngleFilter = 100; %[1/s]
 % tripDetectThreshold = -100; % m/s^2   0.9 m/s
 % tripDetectThreshold = -60; % m/s^2   1.2 m/s
 
-tripDetectThreshold = -35; % m/s^2
-
+% tripDetectThreshold = -35; % m/s^2 2D
+tripDetectThreshold = -60; % m/s^2
 
 omegaRef = 2100; % rad/s
 

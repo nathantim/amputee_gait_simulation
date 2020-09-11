@@ -16,6 +16,7 @@ obstacle_depth = 0.02;
 obstacle_x = 8.65; %fall for Prosthetic_2D 1.2 m/s
 % obstacle_x = 8.10; %fall for Prosthetic_2D 0.9 m/s
 % obstacle_x = 8.4; % fall
+obstacle_y = -1.57; %fall for Prosthetic_2D 1.2 m/s
 %%
 % environment
 g = 9.80665;
@@ -109,10 +110,14 @@ thighKneeToCG = 0.3;
 thighCenterToCGDist = thighKneeToCG - thighKneeToCenterDist; %[m] 
 thighKneeToHipDist = thighLength; %[m]
 thighMass  = 8.5; %[kg]
+thighAmpMass  = 8.5; %[kg]
 thighInertia_z = 0.15; %[kg*m^2]
 thighInertia_x   = 0.03;
 thighInertia_y   = 0.15;
 relThighSensorPos = 4/5;
+thighAmpInertia = [thighInertia_x thighInertia_y thighInertia_z];
+thighInertia = [thighInertia_x thighInertia_y thighInertia_z];
+
 thighInertiaLow = [thighInertia_x*relThighSensorPos thighInertia_y*(relThighSensorPos)^3  thighInertia_z*(relThighSensorPos)^3];
 thighInertiaHigh = [thighInertia_x*(1-relThighSensorPos) thighInertia_y*(1-relThighSensorPos)^3  thighInertia_z*(1-relThighSensorPos)^3];
 
@@ -313,6 +318,8 @@ eref =  0.04; %[lslack] tendon reference strain
 % Force factors for maximum amputated leg muscle force
 ampHipFlexFactor = 0.65;
 ampHipExtFactor = 0.6;
+ampHipAbdFactor = 0.7;
+ampHipAddFactor = 0.5;
 Lfactor = (34.87/46);
 
 % hip abductor (HAB)
@@ -322,7 +329,7 @@ vmaxHAB    =       12; % maximum contraction velocity [lopt/s]
 lslackHAB  =     0.07; % tendon slack length [m]
 
 % amputated leg hip abductor (HAB)
-FmaxHABamp    =     0.9*3000; % maximum isometric force [N]
+FmaxHABamp    =     FmaxHAB*ampHipAbdFactor; % maximum isometric force [N]
 loptHABamp    =     0.09; % optimum fiber length CE [m]
 vmaxHABamp    =       12; % maximum contraction velocity [lopt/s]
 lslackHABamp  =     0.07; % tendon slack length [m]
@@ -334,7 +341,7 @@ vmaxHAD    =       12; % maximum contraction velocity [lopt/s]
 lslackHAD  =     0.18; % tendon slack length [m]
 
 % amputated leg hip adductor (HAD)
-FmaxHADamp    =     0.9*4500; % maximum isometric force [N]
+FmaxHADamp    =     FmaxHAD*ampHipAddFactor; % maximum isometric force [N]
 loptHADamp    =     0.10; % optimum fiber length CE [m]
 vmaxHADamp    =       12; % maximum contraction velocity [lopt/s]
 lslackHADamp  =     0.18; % tendon slack length [m]
@@ -346,7 +353,7 @@ vmaxHFL   =   12; % maximum contraction velocity [lopt/s]
 lslackHFL = 0.10; % tendon slack length [m]
 
 % amputated leg hip flexor muscles
-FmaxHFLamp   = 2000*ampHipFlexFactor; % maximum isometric force [N]
+FmaxHFLamp   = FmaxHFL*ampHipFlexFactor; % maximum isometric force [N]
 loptHFLamp   = 0.11; % optimum fiber length CE [m]
 vmaxHFLamp   =   12; % maximum contraction velocity [lopt/s]
 lslackHFLamp = 0.10; % tendon slack length [m]
@@ -358,7 +365,7 @@ vmaxGLU   =   12; % maximum contraction velocity [lopt/s]
 lslackGLU = 0.13; % tendon slack length [m]
 
 % amputated leg glutei muscles
-FmaxGLUamp   = 1500*ampHipExtFactor; % maximum isometric force [N]
+FmaxGLUamp   = FmaxGLU*ampHipExtFactor; % maximum isometric force [N]
 loptGLUamp   = 0.11; % optimum fiber length CE [m]
 vmaxGLUamp   =   12; % maximum contraction velocity [lopt/s]
 lslackGLUamp = 0.13; % tendon slack length [m]
@@ -370,10 +377,10 @@ vmaxHAM   =   12; % maximum contraction velocity [lopt/s]
 lslackHAM = 0.31; % tendon slack length [m]
 
 % amputated leg hamstring muscles
-FmaxHAMamp   = 3000*ampHipExtFactor; % maximum isometric force [N]
-loptHAMamp   = Lfactor*0.10; % optimum fiber length CE [m]
+FmaxHAMamp   = FmaxHAM*ampHipExtFactor; % maximum isometric force [N]
+loptHAMamp   = Lfactor*loptHAM; % optimum fiber length CE [m]
 vmaxHAMamp   =   12; % maximum contraction velocity [lopt/s]
-lslackHAMamp = Lfactor*0.31; % tendon slack length [m]
+lslackHAMamp = Lfactor*lslackHAM; % tendon slack length [m]
 
 % rectus femoris muscles
 FmaxRF   = 1200; %  maximum isometric force [N]
@@ -382,10 +389,10 @@ vmaxRF   =   12; % maximum contraction velocity [lopt/s]
 lslackRF = 0.35; % tendon slack length [m]
 
 % amputated leg rectus femoris muscles
-FmaxRFamp   = 1200*ampHipFlexFactor; %  maximum isometric force [N]
-loptRFamp   = Lfactor*0.08; % optimum fiber length CE [m]
+FmaxRFamp   = FmaxRF*ampHipFlexFactor; %  maximum isometric force [N]
+loptRFamp   = Lfactor*loptRF; % optimum fiber length CE [m]
 vmaxRFamp   =   12; % maximum contraction velocity [lopt/s]
-lslackRFamp = Lfactor*0.35; % tendon slack length [m]
+lslackRFamp = Lfactor*lslackRF; % tendon slack length [m]
 
 % vasti muscles
 FmaxVAS     = 6000; % maximum isometric force [N]

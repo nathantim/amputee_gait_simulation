@@ -77,20 +77,22 @@ try
     [meanVel, ASIVel] = getFilterdMean_and_ASI(stepVelocities(:,1),stepVelocities(:,2),initiation_steps);
     
     %%
-    if ~isempty(CMGData)
+    try
         maxCMGTorque = max(CMGData.signals.values(:,8));
         maxCMGdeltaH = max(CMGData.signals.values(:,12));
         controlRMSE = sqrt(sum((CMGData.signals.values(:,2)-CMGData.signals.values(:,3)).^2)); %/length(CMGData.signals.values(:,2))
-    else
+        if maxCMGTorque == 0
+            cost = nan;
+            disp('No trip');
+            return
+        end
+    catch 
         maxCMGTorque = 0;
         maxCMGdeltaH = 0;
         controlRMSE = 0;
     end
-    if maxCMGTorque == 0
-        cost = nan;
-        disp('No trip');
-        return
-    end
+    
+    
     %%
     %     cost = 100000*timeCost  + 1000*(velCost + 0*distCost) + 0.1*costOfTransport;
 %     cost = 100000*timeCost  + 1000*(velCost) + 100*costOfTransportForOpt + .01*sumOfStopTorques;
