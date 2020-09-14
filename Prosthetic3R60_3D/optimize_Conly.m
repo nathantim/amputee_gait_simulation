@@ -11,9 +11,9 @@ clear all; close all; clc;
 % initial_gains_filename = 'Results/Flat/SongGains_02amp_wC.mat';
 % initial_gains_filename = 'Results/Flat/Umb10nodimmuscleforce3D.mat';
 % initial_gains_filename = 'Results/Flat/Umb10nodimmuscleforce2D_C3D.mat';
-initial_gains_filename = 'Results/Rough/Umb10_1.5cm_0.9ms_kneelim1_mstoptorque2_2Dopt.mat';
+initial_gains_filename = 'Results/Rough/Umb10_1.5cm_0.9ms_kneelim1_mstoptorque2opt_1.2msCoronal.mat';
 % initial_gains_filename = 'Results/Rough/Umb10_0.9_ms_3D_partlyopt.mat';
-load(initial_gains_filename);
+% load(initial_gains_filename);
 
 initial_gains_file = load(initial_gains_filename);
 load('Results/Flat/SongGains_02_wC_IC.mat');
@@ -37,6 +37,7 @@ end
 
 % InitialGuess = initial_gains_file.Gains;
 InitialGuess = initial_gains_file.GainsCoronal;
+GainsSagittal = initial_gains_file.GainsSagittal;
 
 %% initialze parameters
 [inner_opt_settings,opts] = setInnerOptSettings(initial_gains_filename);
@@ -46,7 +47,7 @@ ControlParams;
 OptimParams;
 Prosthesis3R60Params;
 assignGainsSagittal;
-setInit;
+setInitAmputee;
 
  
 dt_visual = 1/30;
@@ -63,7 +64,7 @@ sigma0 = 1/8;
 % sigma0 = 1/3;
 
 % opts.DiagonalOnly = 150;
-opts.SaveFilename = 'vcmaes_1.5cm_0.9ms_Umb10_kneelim1_mstoptorque2_Conly.mat';
+opts.SaveFilename = 'vcmaes_1.5cm_0.9ms_Umb10_kneelim1_mstoptorque2_Conly_2.mat';
 opts.UserDat2 = strcat(opts.UserDat2,"; ", "sigma0: ", string(sigma0), "; ampHipFlexFactor: ", string(ampHipFlexFactor) , "; ampHipExtFactor: ", string(ampHipExtFactor) );
 
 %% Show settings

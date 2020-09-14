@@ -1,10 +1,10 @@
 % clc;
-%%
-% tempstring = strsplit(opts.UserData,' ');
-% dataFile = tempstring{end};
-% InitialGuessFile = load(dataFile); 
-% 
-% Gains = InitialGuessFile.Gains.*exp(bestever.x);
+%
+tempstring = strsplit(opts.UserData,' ');
+dataFile = tempstring{end};
+InitialGuessFile = load(dataFile); 
+
+GainsSagittal = InitialGuessFile.Gains.*exp(bestever.x);
 
 %%
 % load('Results/RoughDist/SongGainsamp.mat');

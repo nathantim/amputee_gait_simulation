@@ -3,9 +3,9 @@
 % load('Results/Rough/Prosthetic2D_C3D.mat');
 % assignGains;
 
-% tempstring = strsplit(opts.UserData,' ');
-% dataFile = tempstring{end};
-% InitialGuessFile = load(dataFile); 
+tempstring = strsplit(opts.UserData,' ');
+dataFile = tempstring{end};
+InitialGuessFile = load(dataFile); 
 % InitialGuess = InitialGuessFile.Gains([39:47,53:55,58,59,69,70,80,81,101:109,115:117,120:121,126,127,132,133]);
 % GainsSagittal = InitialGuessFile.Gains([1:38,48:52,56:57,60:68,71:79,82:100,110:114,118:119,122:125,128:131]);
 % 
