@@ -13,10 +13,11 @@ obstacle_width = 0.15;
 obstacle_depth = 0.02;
 % obstacle_x = 1.7; %no fall?
 % obstacle_x = 1.8; % fall
-obstacle_x = 8.65; %fall for Prosthetic_2D 1.2 m/s
+% obstacle_x = 8.65; %fall for Prosthetic_2D 1.2 m/s
 % obstacle_x = 8.10; %fall for Prosthetic_2D 0.9 m/s
 % obstacle_x = 8.4; % fall
-obstacle_y = -1.57; %fall for Prosthetic_2D 1.2 m/s
+obstacle_x = 8.7; %fall for Prosthetic_3D 1.2 m/s
+obstacle_y = -0; %fall for Prosthetic_2D 1.2 m/s
 %%
 % environment
 g = 9.80665;

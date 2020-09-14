@@ -3,22 +3,13 @@
 % load('Results/Rough/Prosthetic2D_C3D.mat');
 % assignGains;
 
-% tempstring = strsplit(opts.UserData,' ');
-% dataFile = tempstring{end};
-% InitialGuessFile = load(dataFile); 
-% InitialGuess = InitialGuessFile.Gains([39:47,53:55,58,59,69,70,80,81,101:109,115:117,120:121,126,127,132,133]);
-% GainsSagittal = InitialGuessFile.Gains([1:38,48:52,56:57,60:68,71:79,82:100,110:114,118:119,122:125,128:131]);
-% 
-% GainsCoronal = InitialGuess.*exp(bestever.x);
+tempstring = strsplit(opts.UserData,' ');
+dataFile = tempstring{end};
+InitialGuessFile = load(dataFile); 
 
-% load('Results/Flat/GeyerHerrInit.mat');
-% load('Results/Flat/optandGeyerHerrInit.mat');
-% load('Results/Flat/SCONE.mat');
-% load('Results/Flat/v_0.5m_s.mat');
-% load('Results/Flat/v_0.8m_s.mat');
-% load('Results/Flat/v_1.1m_s.mat');
-% load('Results/Flat/v_1.4m_s.mat');
-% load('Results/Flat/optUmb10stanceswing1_3ms_prestim.mat');
+GainsSagittal = InitialGuessFile.GainsSagittal;
+GainsCoronal = InitialGuessFile.GainsCoronal;%.*exp(bestever.x);
+
 
 % compareenergies = load('compareEnergyCostTotal_Umb10_prost.mat');
 % 
@@ -28,25 +19,14 @@
 % 
 
 %%
-% load('Results/RoughDist/SongGains_wC.mat');
-% load('Results/Flat/SongGains_02amp_wC.mat');
-% load('Results/Flat/Umb10nodimmuscleforce2D_C3D.mat');
 % load('Results/Rough/Prosthetic2D_C3D.mat');
 % load('Results/Rough/Umb10_0.9_ms_3D_partlyopt.mat');
 
-load('Results/Rough/Umb10_1.5cm_1.2ms_kneelim1_mstoptorque2.mat');
+% load('Results/Rough/Umb10_1.5cm_1.2ms_kneelim1_mstoptorque2.mat');
 % load('Results/Rough/Umb10_1.5cm_0.9ms_kneelim1_mstoptorque2_2Dopt.mat');
 
-% load('Results/RoughDist/SongGains_wC_IC.mat');
+
 load('Results/Flat/SongGains_02_wC_IC.mat');
-% Gains(94) = 2*Gains(94);
-% Gains(101) = 1*Gains(101);
-% Gains(108) = 1*Gains(108);
-% Gains(109) = 0.01*Gains(109);
-% assignGains;
-
-
-
 
 
 %%
@@ -85,7 +65,7 @@ toc;
 warning('on');
 
 %%
-[cost, dataStruct] = getCost(model,Gains,time,metabolicEnergy,sumOfStopTorques,HATPos,stepVelocities,stepTimes,stepLengths,CMGGains,inner_opt_settings,0);
+[cost, dataStruct] = getCost(model,[],time,metabolicEnergy,sumOfStopTorques,HATPos,stepVelocities,stepTimes,stepLengths,CMGGains,inner_opt_settings,0);
 printOptInfo(dataStruct,true);
 
 %%
