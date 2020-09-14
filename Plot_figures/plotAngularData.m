@@ -1,12 +1,19 @@
-function plotAngularData(angularData,GaitPhaseData,plotInfo,GaitInfo,saveInfo,angularDataFigure,subplotStart,b_plotBothLegs)
+function plotAngularData(angularData,GaitPhaseData,plotInfo,GaitInfo,saveInfo,angularDataFigure,subplotStart,b_plotBothLegs,b_plotLegState)
 if nargin < 6
     angularDataFigure = [];
 end
+if nargin < 9
+   b_plotLegState = true; 
+end
 if nargin < 7 || isempty(subplotStart)
 %     subplotStart = 151;
-    subplotStart = 511;
-    subplotStart = dec2base(subplotStart,10) - '0';
+    if b_plotLegState
+        subplotStart = [5 1 1];
+    else
+        subplotStart = [4 1 1];
+    end
     setLegend = true;
+    
 else
     setLegend = false;
 end
@@ -92,30 +99,30 @@ end
 %%
 
  %%
-    
- legStatePlot = subplot(subplotStart(1),subplotStart(2),subplotStart(3),axes(angularDataFig));
- if ~GaitInfo.b_oneGaitPhase
-     GaitInfo.tp = GaitPhaseData.time;
+ if b_plotLegState
+     legStatePlot = subplot(subplotStart(1),subplotStart(2),subplotStart(3),axes(angularDataFig));
+     if ~GaitInfo.b_oneGaitPhase
+         GaitInfo.tp = GaitPhaseData.time;
+     end
+     subplotStart(3) = subplotStart(3)+1;
+     if ~isempty(leftLegState_sd)
+         LegHandles(1,2) = fill(legStatePlot,[GaitInfo.tp;flipud(GaitInfo.tp)],[round(leftLegState_avg-leftLegState_sd);flipud(round(leftLegState_avg+leftLegState_sd))],[0.8 0.8 0.8]);
+     end
+     set(legStatePlot,'NextPlot','add');
+     if ~isempty(rightLegState_sd) && b_plotBothLegs
+         LegHandles(2,2) = fill(legStatePlot,[GaitInfo.tp;flipud(GaitInfo.tp)],[round(rightLegState_avg-rightLegState_sd);flipud(round(rightLegState_avg+rightLegState_sd))],[0.8 0.8 0.8]);
+     end
+     
+     LegHandles(1,1) = stairs(legStatePlot,GaitInfo.tp,round(leftLegState_avg));
+     %     stairs(legStatePlot,t_left_perc,round(leftLegState_avg));
+     if b_plotBothLegs
+         LegHandles(2,1) = stairs(legStatePlot,GaitInfo.tp,round(rightLegState_avg));
+     end
+     %     stairs(legStatePlot,t_right_perc,rightLegState);
+     title(legStatePlot,'Leg state')
+     yticks(legStatePlot,0:1:4);
+     yticklabels(legStatePlot,{'EarlyStance','LateStance','Lift-off','Swing','Landing'})
  end
- subplotStart(3) = subplotStart(3)+1;
- if ~isempty(leftLegState_sd)
-     LegHandles(1,2) = fill(legStatePlot,[GaitInfo.tp;flipud(GaitInfo.tp)],[round(leftLegState_avg-leftLegState_sd);flipud(round(leftLegState_avg+leftLegState_sd))],[0.8 0.8 0.8]);
- end
- set(legStatePlot,'NextPlot','add');
- if ~isempty(rightLegState_sd) && b_plotBothLegs
-     LegHandles(2,2) = fill(legStatePlot,[GaitInfo.tp;flipud(GaitInfo.tp)],[round(rightLegState_avg-rightLegState_sd);flipud(round(rightLegState_avg+rightLegState_sd))],[0.8 0.8 0.8]);
- end
- 
- LegHandles(1,1) = stairs(legStatePlot,GaitInfo.tp,round(leftLegState_avg));
- %     stairs(legStatePlot,t_left_perc,round(leftLegState_avg));
- if b_plotBothLegs
-     LegHandles(2,1) = stairs(legStatePlot,GaitInfo.tp,round(rightLegState_avg));
- end
- %     stairs(legStatePlot,t_right_perc,rightLegState);
- title(legStatePlot,'Leg state')
- yticks(legStatePlot,0:1:4);
- yticklabels(legStatePlot,{'EarlyStance','LateStance','Lift-off','Swing','Landing'})
- 
  %     subplot(5,1,2);
  %     HATAnglePlot = plot(t_left_perc,HATAngle);
  %     title('HAT angle')
@@ -139,10 +146,12 @@ end
 
 %%
 % set(flipud(legStatePlot.Children),plotInfo.plotProp,plotInfo.plotProp_entries(1:2,:));
-for j = 1:size(LegHandles,1)
-    set(LegHandles(j,1),plotInfo.plotProp,plotInfo.plotProp_entries(j,:));
-    if plotInfo.showSD && GaitInfo.b_oneGaitPhase
-        set(LegHandles(j,2),plotInfo.fillProp,plotInfo.fillProp_entries(j,:));
+if b_plotLegState
+    for j = 1:size(LegHandles,1)
+        set(LegHandles(j,1),plotInfo.plotProp,plotInfo.plotProp_entries(j,:));
+        if plotInfo.showSD && GaitInfo.b_oneGaitPhase
+            set(LegHandles(j,2),plotInfo.fillProp,plotInfo.fillProp_entries(j,:));
+        end
     end
 end
 
