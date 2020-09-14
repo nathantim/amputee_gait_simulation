@@ -3,7 +3,7 @@
 joint = {'Hip','HipAbd','Knee','Ankle'};
 proper = {'phi','phi'};
 properapp = {'UpLimit','LowLimit'};
-rowhead = {'$\\theta_{\\text{max}}$ (deg)', '$\\theta_{\\text{min}}$ (deg)'};
+rowhead = {'$\\theta_{\\mathrm{max}} (\\unit{\\degree})$', '$\\theta_{\\mathrm{min}} (\\unit{\\degree})'};
 
 textarr = '';
 for j = 1:length(rowhead)

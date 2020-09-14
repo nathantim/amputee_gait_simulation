@@ -4,7 +4,7 @@ segment = {'hat','thigh','thigh','shank','shank','foot','foot'};
 segmentapp = {'','','Amp','','Prosth','','Prosth'};
 % properpre = {'r','r','r','phimax','phimin','phiref','rho'};
 properapp = {'Mass', 'Length', 'Inertia'};%,'',''};
-rowhead = {'mass (kg)','Length (m)','Moment of inertia (kg~$\\cdot$~m~$^2$)'};%, 'Center of Mass'};
+rowhead = {'mass ($\\unit{kg}$)','Length ($\\unit{m}$)','Moment of inertia ($\\unit{kg\\cdot m$^2}$)'};%, 'Center of Mass'};
 
 textarr = '';
 for j = 1:length(rowhead)
