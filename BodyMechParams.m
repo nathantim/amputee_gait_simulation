@@ -60,6 +60,7 @@ w_max_jointstop = 1 * pi/180; %[rad/s]
 
 %foot dimensional properties
 footLength = 0.2; %[m]
+footProsthLength = 0.2; %[m]
 footBallToCenterDist = footLength/2; %[m]
 footBallToCGDist = 0.14; %[m]
 footCenterToCGDist = footBallToCGDist - footBallToCenterDist; %[m] 0.14 from ball
@@ -70,13 +71,13 @@ footCenterlineToHeel = 0.05/2; %[m]
 
 %foot inertial properties
 footMass  = 1.25; %[kg] 1.25
-footMassAmp = 1; %kg
+footProsthMass = 1; %kg
 footInertia_z = 0.005; %[kg*m^2] foot inertia about y-axis with (harmut's value)
 %footInertia = 0.0112; %[kg*m^2] foot inertia about y-axis from Winter Data
 footInertia_x   = 0.0007;
 footInertia_y   = 0.005;
 footInertia = [footInertia_x footInertia_y footInertia_z];
-footProsthInertia = [0 0 0];
+footProsthInertia = 1/10*footInertia;
 
 % -------------------------
 % 1.2 General Shank Segment
@@ -85,6 +86,7 @@ footProsthInertia = [0 0 0];
 shankLength = 0.5; %[m]
 shankAnkleToCenterDist  = shankLength/2; %[m]
 shankAnkleToCGDist = 0.3; %[m]
+shankProsthAnkleToCGDist = 0.3; % m
 shankCenterToCGDist = shankAnkleToCGDist - shankAnkleToCenterDist; %[m]
 shankAnkleToKneeDist = shankLength; %[m]
 shankMass = 3.5; %[kg]
@@ -108,10 +110,11 @@ thighLength = 0.5; %[m]
 thighLateralOffset = 0.1;   %[m]
 thighKneeToCenterDist = thighLength/2; %[m]
 thighKneeToCG = 0.3;
+thighKneeToCGAmp = 0.3;
 thighCenterToCGDist = thighKneeToCG - thighKneeToCenterDist; %[m] 
 thighKneeToHipDist = thighLength; %[m]
 thighMass  = 8.5; %[kg]
-thighAmpMass  = 8.5; %[kg]
+thighAmpMass  = 7.5; %[kg] 8.5
 thighInertia_z = 0.15; %[kg*m^2]
 thighInertia_x   = 0.03;
 thighInertia_y   = 0.15;
@@ -119,8 +122,10 @@ relThighSensorPos = 4/5;
 thighAmpInertia = [thighInertia_x thighInertia_y thighInertia_z];
 thighInertia = [thighInertia_x thighInertia_y thighInertia_z];
 
-thighInertiaLow = [thighInertia_x*relThighSensorPos thighInertia_y*(relThighSensorPos)^3  thighInertia_z*(relThighSensorPos)^3];
-thighInertiaHigh = [thighInertia_x*(1-relThighSensorPos) thighInertia_y*(1-relThighSensorPos)^3  thighInertia_z*(1-relThighSensorPos)^3];
+thighInertiaLow = [thighInertia(1)*relThighSensorPos thighInertia(2)*(relThighSensorPos)^3  thighInertia(3)*(relThighSensorPos)^3];
+thighInertiaHigh = [thighInertia(1)*(1-relThighSensorPos) thighInertia(2)*(1-relThighSensorPos)^3  thighInertia(3)*(1-relThighSensorPos)^3];
+thighInertiaAmpLow = [thighInertia(1)*relThighSensorPos thighInertia(2)*(relThighSensorPos)^3  thighInertia(3)*(relThighSensorPos)^3];
+thighInertiaAmpHigh = [thighAmpInertia(1)*(1-relThighSensorPos) thighAmpInertia(2)*(1-relThighSensorPos)^3  thighAmpInertia(3)*(1-relThighSensorPos)^3];
 
 % -----------------------------------------
 % 1.4 General Head-Arms-Trunk (HAT) Segment
@@ -169,12 +174,13 @@ shankAnkleToCGDist = shankAnkleToCGDist - ankle_height/4;
 thighLength = thighLength - ankle_height/2; %[m]
 thighKneeToCG = thighKneeToCG - ankle_height/4; %[m]
 
-thighLengthAmp = thighLength - 0.1; % amputated thigh length
-shankLengthAmp = shankLength - 0.1;
+prosthesisLengthOffset = 0.1;
+thighAmpLength = thighLength - 0.11; % amputated thigh length
+shankProsthLength = shankLength - prosthesisLengthOffset;
 
 leg_l = [thighLength shankLength];
 leg_0 = sum(leg_l); % [m] full leg length (from hip to ankle)
-leg_lamp = [thighLengthAmp shankLengthAmp];
+leg_lamp = [thighAmpLength shankProsthLength];
 leg_0amp = sum(leg_lamp); % [m] full leg length (from hip to ankle)    
 
 
