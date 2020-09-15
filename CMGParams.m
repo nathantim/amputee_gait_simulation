@@ -28,8 +28,8 @@ KiGamma = 1; % Nm/rad
 
 % KpGammaReset = 10; % Nm/(rad)
 % KdGammaReset = 2; % Nm/(rad/s)
-KpGammaReset = 80000; % Nm/(rad)
-KdGammaReset = 60000; % Nm/(rad/s)
+KpGammaReset = 30000; % Nm/(rad)
+KdGammaReset = 6000; % Nm/(rad/s)
 
 RkneeFlexSpeedGain      = 6;
 RkneeFlexPosGain        = 6;
