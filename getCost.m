@@ -1,4 +1,4 @@
-function [cost, dataStruct] = getCost(model,Gains,time,metabolicEnergy,sumOfStopTorques,HATPos,stepVelocities,stepTimes,stepLengths,CMGData,inner_opt_settings, b_isParallel)
+function [cost, dataStruct] = getCost(model,Gains,time,metabolicEnergy,sumOfStopTorques,HATPosVel,stepVelocities,stepTimes,stepLengths,stepNumbers,CMGData,inner_opt_settings, b_isParallel)
 try
     if contains(model,'3R60')
          modelType = 'prosthetic';
@@ -11,12 +11,13 @@ try
          modelType = [modelType, '2D'];
     end
     
-    if nargin < 11
+    if nargin < 13
         b_isParallel = false;
     end
     OptimParams;
     dataStruct = struct('cost',struct('data',nan,'minimize',1,'info',''));
     % global dataQueueD
+    HATPos = sqrt(sum(HATPosVel.signals.values(end,[1,2]).^2));
     
     %%
     if HATPos > 101
@@ -43,6 +44,9 @@ try
     effort_costs = struct;
     
     muscle_exp_models = getExpenditureModels(model);
+    if isempty(muscle_exp_models)
+        error('No expenditure model in getCost');
+    end
     for i = 1:length(muscle_exp_models)
         effort_costs(i).name = (muscle_exp_models{i});
         effort_costs(i).metabolicEnergy = metabolicEnergy(:,i);
@@ -55,6 +59,7 @@ try
     opt_exp_model = inner_opt_settings.expenditure_model;
     costOfTransportForOpt =  effort_costs(contains(muscle_exp_models,opt_exp_model)).costOfTransport;
     if isempty(costOfTransportForOpt)
+        disp(effort_costs(:));
         error('Empty cost of transport')
     end
     
@@ -66,9 +71,9 @@ try
     end
     
     %% Calculate velocity cost
-    velCost = getVelMeasure(stepVelocities(:,1),stepTimes(:,1),min_velocity,max_velocity,initiation_steps) + ...
-        getVelMeasure(stepVelocities(:,2),stepTimes(:,2),min_velocity,max_velocity,initiation_steps);
-    
+%     velCost = getVelMeasure(stepVelocities(:,1),stepTimes(:,1),min_velocity,max_velocity,initiation_steps) + ...
+%         getVelMeasure(stepVelocities(:,2),stepTimes(:,2),min_velocity,max_velocity,initiation_steps);
+    velCost = getVelMeasure2(HATPosVel,stepNumbers,min_velocity,max_velocity,initiation_steps);
     %     [distCost, dist_covered] = getDistMeasure(timeSetToRun,stepLengths,min_velocity,max_velocity,dist_slack);
     
     %% Calculate step info
@@ -79,13 +84,14 @@ try
     %%
     try
         maxCMGTorque = max(CMGData.signals.values(:,8));
+        maxTotalTorque = abs(CMGData.time(idx),CMGData.signals.values(:,6));
         maxCMGdeltaH = max(CMGData.signals.values(:,12));
         controlRMSE = sqrt(sum((CMGData.signals.values(:,2)-CMGData.signals.values(:,3)).^2)); %/length(CMGData.signals.values(:,2))
-        if maxCMGTorque == 0
-            cost = nan;
-            disp('No trip');
-            return
-        end
+%         if maxCMGTorque == 0 
+%             cost = nan;
+%             disp('No trip');
+%             return
+%         end
     catch 
         maxCMGTorque = 0;
         maxCMGdeltaH = 0;
@@ -183,5 +189,6 @@ try
     
 % printOptInfo(dataStruct,true);
 catch ME
+    save('ErrorWorkspace');
     error('Error: %s\nIn %s.m line %d',ME.message,mfilename,ME.stack(1).line);
 end

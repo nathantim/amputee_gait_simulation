@@ -44,6 +44,7 @@ set_param(strcat(model,'/Body Mechanics Layer/Right Ankle Joint'),'SpringStiffne
 
 load('Results/optCMGgains_1_2ms_lowerDH_noKpKi.mat');
 assignCMGGains;
+% CMGParams;
 
 %%
 inner_opt_settings = setInnerOptSettings();
@@ -65,7 +66,7 @@ toc;
 warning('on');
 
 %%
-[cost, dataStruct] = getCost(model,[],time,metabolicEnergy,sumOfStopTorques,HATPos,stepVelocities,stepTimes,stepLengths,CMGGains,inner_opt_settings,0);
+[cost, dataStruct] = getCost(model,[],time,metabolicEnergy,sumOfStopTorques,HATPosVel,stepVelocities,stepTimes,stepLengths,stepNumbers,CMGData,inner_opt_settings,0);
 printOptInfo(dataStruct,true);
 
 %%

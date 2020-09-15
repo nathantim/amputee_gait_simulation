@@ -70,7 +70,7 @@ sigma0 = 1/8;
 % sigma0 = 1/3;
 
 % opts.DiagonalOnly = 150;
-opts.SaveFilename = 'vcmaes_1.5cm_1.2ms_Umb10_kneelim1_mstoptorque2_Conly_wCMG_flat.mat';
+opts.SaveFilename = 'vcmaes_1.5cm_1.2ms_Umb10_kneelim1_mstoptorque2_Conly_wCMG_flat_2.mat';
 opts.UserDat2 = strcat(opts.UserDat2,"; ", "sigma0: ", string(sigma0), "; ampHipFlexFactor: ", string(ampHipFlexFactor) , "; ampHipExtFactor: ", string(ampHipExtFactor) );
 
 %% Show settings
@@ -83,6 +83,7 @@ fprintf('Amputated hip flexor diminish factor:   %1.2f \n',ampHipFlexFactor);
 fprintf('Amputated hip extensor diminish factor: %1.2f \n',ampHipExtFactor);
 fprintf('Amputated hip abductor diminish factor: %1.2f \n',ampHipAbdFactor);
 fprintf('Amputated hip adductor diminish factor: %1.2f \n',ampHipAddFactor);
+fprintf('Trip threshold: %3.1f \n', tripDetectThreshold);
 
 % parpool(inner_opt_settings.numParWorkers);
 

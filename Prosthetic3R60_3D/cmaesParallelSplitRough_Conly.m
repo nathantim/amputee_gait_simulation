@@ -82,7 +82,7 @@ end
 
     %simulate each sample and store cost
     try
-        parfor (i = 1:length(paramSets),inner_opt_settings.numParWorkers)
+        parfor (i = 1:length(paramSets))%,inner_opt_settings.numParWorkers)
             localGains = InitialGuess.*exp(gainsPop(:,ceil(i/numTerrains)));
             [costs(i),dataStructlocal] = evaluateCostParallel(paramSets{i},model,localGains,inner_opt_settings);
             if inner_opt_settings.visual
@@ -120,7 +120,8 @@ end
         idx2send = ((mingainidx-1)*numTerrains) + meanterrainidx;
         %     costall = reshape(costsall,1,popSize*numTerrains);
         if inner_opt_settings.visual
-            if ~isempty(fieldnames(dataStruct(idx2send)))
+            if ~isempty(fieldnames(dataStruct(idx2send))) 
+                dataStruct(idx2send).optimCost = costs(mingainidx);
                 send(dataQueueD,dataStruct(idx2send));
             end
         else

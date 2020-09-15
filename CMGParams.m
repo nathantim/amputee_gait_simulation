@@ -12,7 +12,7 @@ angleOffset = 0 *pi/180; % rad
 % tripDetectThreshold = -60; % m/s^2   1.2 m/s
 
 % tripDetectThreshold = -35; % m/s^2 2D
-tripDetectThreshold = -600; % m/s^2
+tripDetectThreshold = -600000; % m/s^2
 
 % Modeled Cylinder shell with only rim + solid cylinder, both half the mass
 CMGInertia_x = 1/12*CMGmass*(3*CMGr^2+CMGt^2) + CMGmass/8*CMGr^2; % kgm^2
@@ -28,8 +28,8 @@ KiGamma = 1; % Nm/rad
 
 % KpGammaReset = 10; % Nm/(rad)
 % KdGammaReset = 2; % Nm/(rad/s)
-KpGammaReset = 30000; % Nm/(rad)
-KdGammaReset = 6000; % Nm/(rad/s)
+KpGammaReset = 80000; % Nm/(rad)
+KdGammaReset = 60000; % Nm/(rad/s)
 
 RkneeFlexSpeedGain      = 6;
 RkneeFlexPosGain        = 6;

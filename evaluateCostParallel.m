@@ -9,7 +9,7 @@ try
     simout = sim(model,...
         'RapidAcceleratorParameterSets',paramStruct,...
         'RapidAcceleratorUpToDateCheck','off',...
-        'TimeOut',10*60,...
+        'TimeOut',20*60,...
         'SaveOutput','on');
 catch ME
     cost = nan;
@@ -20,18 +20,21 @@ catch ME
 end
 
 if contains(simout.SimulationMetadata.ExecutionInfo.StopEvent,'Timeout')
-    disp('Timeout');
+    cost = nan;
+    disp('Timeout')
+    return
 end
 
 time = get(simout,'time');
 metabolicEnergy = get(simout,'metabolicEnergy');
 % sumOfIdealTorques = get(simout,'sumOfIdealTorques');
 sumOfStopTorques = get(simout,'sumOfStopTorques');
-HATPos = get(simout,'HATPos');
+HATPosVel = get(simout,'HATPosVel');
 % swingStateCounts = get(simout, 'swingStateCounts');
 stepVelocities = get(simout, 'stepVelocities');
 stepTimes = get(simout, 'stepTimes');
 stepLengths = get(simout, 'stepLengths');
+stepNumbers = get(simout, 'stepNumbers');
 angularData = get(simout, 'angularData');
 GaitPhaseData = get(simout,'GaitPhaseData');
 musculoData = get(simout, 'musculoData');
@@ -64,8 +67,8 @@ kinematics.CMGData = CMGData;
 %     end
 try
     [cost, dataStruct] = getCost(model,Gains,time,metabolicEnergy,sumOfStopTorques, ...
-                                HATPos,stepVelocities,stepTimes,stepLengths,...
-                                 CMGData, inner_opt_settings,true);
+                                HATPosVel,stepVelocities,stepTimes,stepLengths,...
+                                 stepNumbers, CMGData, inner_opt_settings,true);
     dataStruct.kinematics = kinematics;
 catch ME
     save('error_getCost.mat');
