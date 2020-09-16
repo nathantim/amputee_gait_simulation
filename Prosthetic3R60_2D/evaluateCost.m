@@ -1,10 +1,10 @@
 % clc;
-%
-tempstring = strsplit(opts.UserData,' ');
-dataFile = tempstring{end};
-InitialGuessFile = load(dataFile); 
-
-GainsSagittal = InitialGuessFile.Gains.*exp(bestever.x);
+% %
+% tempstring = strsplit(opts.UserData,' ');
+% dataFile = tempstring{end};
+% InitialGuessFile = load(dataFile); 
+% 
+% GainsSagittal = InitialGuessFile.Gains.*exp(bestever.x);
 
 %%
 % load('Results/RoughDist/SongGainsamp.mat');
@@ -46,8 +46,9 @@ toc;
 warning('on');
 
 %%
-[cost, dataStruct] = getCost(model,Gains,time,metabolicEnergy,sumOfStopTorques,HATPos,stepVelocities,stepTimes,stepLengths,inner_opt_settings,0);
+[~,dataStruct] = getCost(model,[],time,metabolicEnergy,sumOfStopTorques,HATPosVel,stepVelocities,stepTimes,stepLengths,stepNumbers,[],inner_opt_settings, 0);
 printOptInfo(dataStruct,true);
+
 %%
 % kinematics.angularData = angularData;
 % kinematics.GaitPhaseData = GaitPhaseData;
