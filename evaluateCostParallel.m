@@ -9,7 +9,7 @@ try
     simout = sim(model,...
         'RapidAcceleratorParameterSets',paramStruct,...
         'RapidAcceleratorUpToDateCheck','off',...
-        'TimeOut',4*60,...
+        'TimeOut',20*60,...
         'SaveOutput','on');
 catch ME
     cost = nan;
@@ -19,19 +19,32 @@ catch ME
     return
 end
 
+if contains(simout.SimulationMetadata.ExecutionInfo.StopEvent,'Timeout')
+    cost = nan;
+    disp('Timeout')
+    return
+end
+
 time = get(simout,'time');
 metabolicEnergy = get(simout,'metabolicEnergy');
 % sumOfIdealTorques = get(simout,'sumOfIdealTorques');
 sumOfStopTorques = get(simout,'sumOfStopTorques');
-HATPos = get(simout,'HATPos');
+HATPosVel = get(simout,'HATPosVel');
 % swingStateCounts = get(simout, 'swingStateCounts');
 stepVelocities = get(simout, 'stepVelocities');
 stepTimes = get(simout, 'stepTimes');
 stepLengths = get(simout, 'stepLengths');
+stepNumbers = get(simout, 'stepNumbers');
 angularData = get(simout, 'angularData');
 GaitPhaseData = get(simout,'GaitPhaseData');
 musculoData = get(simout, 'musculoData');
 GRFData = get(simout, 'GRFData');
+
+try
+    CMGData = get(simout, 'CMGData');
+catch
+    CMGData = [];
+end
 
 kinematics.angularData = angularData;
 kinematics.GaitPhaseData = GaitPhaseData;
@@ -39,6 +52,7 @@ kinematics.time = time;
 kinematics.stepTimes = stepTimes;
 kinematics.musculoData = musculoData;
 kinematics.GRFData = GRFData;
+kinematics.CMGData = CMGData;
 %     if ~bisProperDistCovered(stepTimes.time(end),stepLengths,min_velocity,max_velocity,dist_slack)
 %         cost = nan;
 %         disp('Not enough distance covered')
@@ -53,8 +67,8 @@ kinematics.GRFData = GRFData;
 %     end
 try
     [cost, dataStruct] = getCost(model,Gains,time,metabolicEnergy,sumOfStopTorques, ...
-                                HATPos,stepVelocities,stepTimes,stepLengths,...
-                                 inner_opt_settings,true);
+                                HATPosVel,stepVelocities,stepTimes,stepLengths,...
+                                 stepNumbers, CMGData, inner_opt_settings,true);
     dataStruct.kinematics = kinematics;
 catch ME
     save('error_getCost.mat');

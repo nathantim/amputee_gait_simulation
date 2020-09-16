@@ -10,7 +10,9 @@ clear all; close all; clc;
 %%
 % initial_gains_filename = 'Results/Flat/SongGains_02amp.mat';
 % initial_gains_filename = 'Results/Flat/Umb10dimmuscleforce.mat';
-initial_gains_filename = 'Results/Rough/Umb10_1.5cm_1.2ms_kneelim1_mstoptorque2.mat';
+% initial_gains_filename = 'Results/Rough/Umb10_1.5cm_1.2ms_kneelim1_mstoptorque2.mat';
+initial_gains_filename = 'Results/Rough/Umb10_1.5cm_0.9ms_kneelim1_mstoptorque2.mat';
+
 initial_gains_file = load(initial_gains_filename);
 load('Results/Flat/SongGains_02_wC_IC.mat');
 
@@ -37,11 +39,12 @@ BodyMechParams;
 ControlParams;
 OptimParams;
 Prosthesis3R60Params;
-setInit;
+setInitAmputee;
  
 dt_visual = 1/30;
-[groundX, groundZ, groundTheta] = generateGround('const', inner_opt_settings.terrain_height,1,true);
-load_system(model)
+[groundX, groundZ, groundTheta] = generateGround('flat');
+% [groundX, groundZ, groundTheta] = generateGround('const', inner_opt_settings.terrain_height,1,true);
+save_system(model)
 
 %% Build the Rapid Accelerator target once
 rtp = Simulink.BlockDiagram.buildRapidAcceleratorTarget(model);
@@ -56,8 +59,11 @@ opts.SaveFilename = 'vcmaes_1.5cm_0.9ms_Umb10_kneelim1_mstoptorque2.mat';
 
 %% Show settings
 clc;
+disp(opts);
 disp(inner_opt_settings);
 fprintf('Target velocity: %1.1f m/s \n',target_velocity);
+fprintf('Amputated hip flexor diminish factor:   %1.2f \n',ampHipFlexFactor);
+fprintf('Amputated hip extensor diminish factor: %1.2f \n',ampHipExtFactor);
 
 %% run cmaes
 [xmin, fmin, counteval, stopflag, out, bestever] = cmaes(optfunc, x0, sigma0, opts)

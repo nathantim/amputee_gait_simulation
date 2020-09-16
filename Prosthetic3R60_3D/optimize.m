@@ -1,18 +1,20 @@
-% try 
-%     save_system;
-%     disp('Saved loaded system');
-% catch
-%     disp('No system loaded to be saved.');
-% end
-% bdclose('all');
-% clear all; close all; clc;
+try 
+    save_system;
+    disp('Saved loaded system');
+catch
+    disp('No system loaded to be saved.');
+end
+bdclose('all');
+clear all; close all; clc;
 
 %%
 % initial_gains_filename = 'Results/Flat/SongGains_02amp_wC.mat';
 % initial_gains_filename = 'Results/Flat/Umb10nodimmuscleforce3D.mat';
 % initial_gains_filename = 'Results/Flat/Umb10nodimmuscleforce2D_C3D.mat';
 % initial_gains_filename = 'Results/Rough/Prosthetic2D_C3D.mat';
-initial_gains_filename = 'Results/Rough/Umb10_0.9_ms_3D_partlyopt.mat';
+% initial_gains_filename = 'Results/Rough/Umb10_0.9_ms_3D_partlyopt.mat';
+initial_gains_filename = 'Results/Rough/Umb10_1.5cm_0.9ms_kneelim1_mstoptorque2opt_1.2msCoronal.mat';
+
 initial_gains_file = load(initial_gains_filename);
 load('Results/Flat/SongGains_02_wC_IC.mat');
 
@@ -33,7 +35,7 @@ catch ME
     warning(ME.message);
 end
 
-InitialGuess = initial_gains_file.Gains;
+InitialGuess = [initial_gains_file.GainsSagittal;initial_gains_file.GainsCoronal;];
 
 %% initialze parameters
 [inner_opt_settings,opts] = setInnerOptSettings(initial_gains_filename);
@@ -42,8 +44,8 @@ BodyMechParams;
 ControlParams;
 OptimParams;
 Prosthesis3R60Params;
-setInit;
- 
+setInitAmputee;
+
 dt_visual = 1/30;
 [groundX, groundZ, groundTheta] = generateGround('flat');
 save_system(model)
@@ -58,7 +60,7 @@ sigma0 = 1/8;
 % sigma0 = 1/3;
 
 opts.DiagonalOnly = 150;
-opts.SaveFilename = 'vcmaes_1.5cm_0.9ms_Umb10_kneelim1_mstoptorque2_lessabd.mat';
+opts.SaveFilename = 'vcmaes_1.5cm_0.9ms_Umb10_kneelim1_mstoptorque2.mat';
 opts.UserDat2 = strcat(opts.UserDat2,"; ", "sigma0: ", string(sigma0), "; ampHipFlexFactor: ", string(ampHipFlexFactor) , "; ampHipExtFactor: ", string(ampHipExtFactor), "; ampHipAbdFactor: ", string(ampHipAbdFactor), "; ampHipAddFactor: ", string(ampHipAddFactor) );
 
 %% Show settings
