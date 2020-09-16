@@ -39,7 +39,7 @@ InitialGuess = initial_gains_file.GainsSagittal;
 BodyMechParams;
 ControlParams;
 OptimParams;
-setInitHealthy;
+setInitAmputee;
 dt_visual = 1/30;
 [groundX, groundZ, groundTheta] = generateGround('flat');
 % [groundX, groundZ, groundTheta] = generateGround('const', inner_opt_settings.terrain_height,1,true);
@@ -54,7 +54,7 @@ x0 = zeros(numvars,1);
 sigma0 = 1/8;
 % sigma0 = 1/3;
 
-opts.SaveFilename = 'vcmaes_1.5cm_1.2ms_Umb10_kneelim1_mstoptorque2.mat';
+opts.SaveFilename = 'vcmaes_1.5cm_0.9ms_Umb10_kneelim1_mstoptorque2_ampinit.mat';
 
 %% Show settings
 clc;

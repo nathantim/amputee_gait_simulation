@@ -1,10 +1,17 @@
 % clc;
 %%
-% tempstring = strsplit(opts.UserData,' ');
-% dataFile = tempstring{end};
-% InitialGuessFile = load(dataFile); 
-% % 
-% Gains = InitialGuessFile.Gains.*exp(bestever.x);
+
+tempstring = strsplit(opts.UserData,' ');
+dataFile = tempstring{end};
+InitialGuessFile = load(dataFile); 
+% 
+% GainsCoronal = InitialGuessFile.GainsCoronal.*exp(bestever.x);
+% GainsSagittal = InitialGuessFile.GainsSagittal;
+
+Gains = [InitialGuessFile.GainsSagittal;InitialGuessFile.GainsCoronal].*exp(bestever.x);
+GainsCoronal = Gains(length(InitialGuessFile.GainsSagittal)+1:end);
+GainsSagittal = Gains(1:length(InitialGuessFile.GainsSagittal));
+
 % load('Results/Flat/GeyerHerrInit.mat');
 
 % compareenergies = load('compareEnergyCostTotal.mat');
@@ -17,16 +24,14 @@
 %%
 % load('Results/RoughDist/SongGains_wC.mat');
 % load('Results/RoughDist/SongGains_wC_IC.mat');
-load('Results/Flat/song3Dopt.mat' );
+% load('Results/Flat/song3Dopt.mat' );
 % load('Results/Rough/Umb10_1.5cm_0.9ms_kneelim1_mstoptorque2.mat');
-
 
 load('Results/Flat/SongGains_02_wC_IC.mat');
 
-
-assignGains;
+assignGainsSagittal;
+assignGainsCoronal;
 dt_visual = 1/50;
-setInit;
 
 %%
 model = 'NeuromuscularModel3D';
@@ -34,7 +39,7 @@ model = 'NeuromuscularModel3D';
 %%
 inner_opt_settings = setInnerOptSettings();
 [groundX, groundZ, groundTheta] = generateGround('flat');
-
+setInitAmputee;
 %open('NeuromuscularModel');
 % set_param(model,'SimulationMode','normal');
 % set_param(model,'StopTime','30');
@@ -49,7 +54,7 @@ toc;
 warning('on');
 
 %%
-[cost, dataStruct] = getCost(model,Gains,time,metabolicEnergy,sumOfStopTorques,HATPos,stepVelocities,stepTimes,stepLengths,inner_opt_settings,0);
+[cost, dataStruct] = getCost(model,[],time,metabolicEnergy,sumOfStopTorques,HATPos,stepVelocities,stepTimes,stepLengths,inner_opt_settings,0);
 printOptInfo(dataStruct,true);
 
 %%
