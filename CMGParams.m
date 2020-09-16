@@ -3,16 +3,18 @@ CMGt = 0.005; % thickness in m
 
 CMGmass = 1; % kg
 
-maxGMangle = 60 *pi/180; % rad
+GMantposOffset = 0;%0.015; % m
+maxGMangle = 1000000;%60 *pi/180; % rad
 maxTflywheelmotor = 1.83E-3; % Nm
 maxGMTorque = 15; % Nm
-angleOffset = 0 *pi/180; % rad
+angleOffset = -90 *pi/180; % rad
+maxGammadot = 500; % rad/s
 
 % tripDetectThreshold = -100; % m/s^2   0.9 m/s
 % tripDetectThreshold = -60; % m/s^2   1.2 m/s
 
 % tripDetectThreshold = -35; % m/s^2 2D
-tripDetectThreshold = -600000; % m/s^2
+tripDetectThreshold = -2000; % m/s^2
 
 % Modeled Cylinder shell with only rim + solid cylinder, both half the mass
 CMGInertia_x = 1/12*CMGmass*(3*CMGr^2+CMGt^2) + CMGmass/8*CMGr^2; % kgm^2

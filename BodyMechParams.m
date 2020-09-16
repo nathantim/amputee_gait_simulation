@@ -16,8 +16,8 @@ obstacle_depth = 0.02;
 % obstacle_x = 8.65; %fall for Prosthetic_2D 1.2 m/s
 % obstacle_x = 8.10; %fall for Prosthetic_2D 0.9 m/s
 % obstacle_x = 8.4; % fall
-obstacle_x = 8.4; %fall for Prosthetic_3D 1.2 m/s
-obstacle_y = -1.9; %fall for Prosthetic_2D 1.2 m/s
+obstacle_x = 7.9; %fall for Prosthetic_3D 1.2 m/s
+obstacle_y = -2.5; %fall for Prosthetic_2D 1.2 m/s
 %%
 % environment
 g = 9.80665;
@@ -86,7 +86,7 @@ footProsthInertia = 1/10*footInertia;
 shankLength = 0.5; %[m]
 shankAnkleToCenterDist  = shankLength/2; %[m]
 shankAnkleToCGDist = 0.3; %[m]
-shankProsthAnkleToCGDist = 0.3; % m
+shankProsthAnkleToCGDist = 0.25; % m
 shankCenterToCGDist = shankAnkleToCGDist - shankAnkleToCenterDist; %[m]
 shankAnkleToKneeDist = shankLength; %[m]
 shankMass = 3.5; %[kg]

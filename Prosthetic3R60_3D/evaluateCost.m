@@ -8,7 +8,7 @@ dataFile = tempstring{end};
 InitialGuessFile = load(dataFile); 
 
 GainsSagittal = InitialGuessFile.GainsSagittal;
-GainsCoronal = InitialGuessFile.GainsCoronal;%.*exp(bestever.x);
+GainsCoronal = InitialGuessFile.GainsCoronal.*exp(bestever.x);
 
 
 % compareenergies = load('compareEnergyCostTotal_Umb10_prost.mat');
