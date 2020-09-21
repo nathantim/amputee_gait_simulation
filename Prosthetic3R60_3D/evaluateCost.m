@@ -39,7 +39,6 @@ load('Results/Rough/Umb10_1.5cm_1.2ms_kneelim1_mstoptorque2.mat');
 assignGainsSagittal;
 assignGainsCoronal;
 % load('Results/RoughDist/SongGains_wC_IC.mat');
-load('Results/Flat/SongGains_02_wC_IC.mat');
 % Gains(94) = 2*Gains(94);
 % Gains(101) = 1*Gains(101);
 % Gains(108) = 1*Gains(108);
@@ -79,6 +78,7 @@ warning('on');
 %%
 [~,dataStruct] = getCost(model,[],time,metabolicEnergy,sumOfStopTorques,HATPosVel,stepVelocities,stepTimes,stepLengths,stepNumbers,[],inner_opt_settings, 0);
 printOptInfo(dataStruct,true);
+
 %%
 % kinematics.angularData = angularData;
 % kinematics.GaitPhaseData = GaitPhaseData;
