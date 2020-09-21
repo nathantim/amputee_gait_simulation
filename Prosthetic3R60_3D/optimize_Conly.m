@@ -11,7 +11,7 @@ clear all; close all; clc;
 % initial_gains_filename = 'Results/Flat/SongGains_02amp_wC.mat';
 % initial_gains_filename = 'Results/Flat/Umb10nodimmuscleforce3D.mat';
 % initial_gains_filename = 'Results/Flat/Umb10nodimmuscleforce2D_C3D.mat';
-initial_gains_filename = 'Results/Rough/Umb10_1.5cm_0.9ms_kneelim1_mstoptorque2opt_1.2msCoronal.mat';
+initial_gains_filename = 'Results/Rough/Umb10_1.5cm_0.9ms_kneelim1_sagg_1.2msCoronal.mat';
 % initial_gains_filename = 'Results/Rough/Umb10_0.9_ms_3D_partlyopt.mat';
 % load(initial_gains_filename);
 
@@ -64,8 +64,8 @@ sigma0 = 1/8;
 % sigma0 = 1/3;
 
 % opts.DiagonalOnly = 150;
-opts.SaveFilename = 'vcmaes_1.5cm_0.9ms_Umb10_kneelim1_mstoptorque2_Conly_2.mat';
-opts.UserDat2 = strcat(opts.UserDat2,"; ", "sigma0: ", string(sigma0), "; ampHipFlexFactor: ", string(ampHipFlexFactor) , "; ampHipExtFactor: ", string(ampHipExtFactor) );
+opts.SaveFilename = 'vcmaes_1.5cm_0.9ms_Umb10_kneelim1_mstoptorque2_Conly.mat';
+opts.UserDat2 = strcat(opts.UserDat2,"; ", "sigma0: ", string(sigma0), "; ampHipFlexFactor: ", string(ampHipFlexFactor) , "; ampHipExtFactor: ", string(ampHipExtFactor),"; ampHipAbdFactor: ", string(ampHipAbdFactor) , "; ampHipAddFactor: ", string(ampHipAddFactor) );
 
 %% Show settings
 clc;

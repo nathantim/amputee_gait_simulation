@@ -44,6 +44,7 @@ BodyMechParams;
 ControlParams;
 OptimParams;
 Prosthesis3R60Params;
+initSignals;
 setInitAmputee;
 
 dt_visual = 1/30;

@@ -1,21 +1,26 @@
 % clc;
-% %
+% % %
 % tempstring = strsplit(opts.UserData,' ');
 % dataFile = tempstring{end};
 % InitialGuessFile = load(dataFile); 
 % 
-% GainsSagittal = InitialGuessFile.Gains.*exp(bestever.x);
+% GainsSagittal = InitialGuessFile.GainsSagittal.*exp(bestever.x(1:length(InitialGuessFile.GainsSagittal)));
+% initConditionsSagittal = InitialGuessFile.initConditionsSagittal.*exp(bestever.x(length(InitialGuessFile.GainsSagittal)+1:end));
+
 
 %%
 % load('Results/RoughDist/SongGainsamp.mat');
 % load('Results/Flat/SongGains_02amp.mat');
 
 % load('Results/RoughDist/SongGains_wC_IC.mat');
-load('Results/Rough/Umb10_1.5cm_0.9ms_kneelim1_mstoptorque2.mat');
-% load('Results/Rough/Umb10_1.5cm_1.2ms_kneelim1_mstoptorque2.mat');
+% load('Results/Rough/Umb10_1.5cm_0.9ms_kneelim1.mat');
+load('Results/Rough/Umb10_1.5cm_1.2ms_kneelim1_mstoptorque2.mat');
 load('Results/Flat/SongGains_02_wC_IC.mat');
 
 assignGainsSagittal;
+% assignInit;
+initSignals;
+% setInitAmputee;
 dt_visual = 1/50;
 
 [groundX, groundZ, groundTheta] = generateGround('flat');

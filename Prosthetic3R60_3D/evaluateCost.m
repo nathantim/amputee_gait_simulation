@@ -57,7 +57,9 @@ set_param(strcat(model,'/Body Mechanics Layer/Right Ankle Joint'),'SpringStiffne
 
 %%
 inner_opt_settings = setInnerOptSettings();
+initSignals;
 setInitAmputee;
+assignInit;
 [groundX, groundZ, groundTheta] = generateGround('flat');
 % [groundX, groundZ, groundTheta] = generateGround('const', .05,1);
 % [groundX, groundZ, groundTheta] = generateGround('const', inner_opt_settings.terrain_height, 1,true);
@@ -75,7 +77,7 @@ toc;
 warning('on');
 
 %%
-getCost(model,[],time,metabolicEnergy,sumOfStopTorques,HATPosVel,stepVelocities,stepTimes,stepLengths,stepNumbers,[],inner_opt_settings, 0);
+[~,dataStruct] = getCost(model,[],time,metabolicEnergy,sumOfStopTorques,HATPosVel,stepVelocities,stepTimes,stepLengths,stepNumbers,[],inner_opt_settings, 0);
 printOptInfo(dataStruct,true);
 %%
 % kinematics.angularData = angularData;

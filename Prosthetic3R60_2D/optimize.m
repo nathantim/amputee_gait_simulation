@@ -1,17 +1,18 @@
-try 
-    save_system;
-    disp('Saved loaded system');
-catch
-    disp('No system loaded to be saved.');
-end
-bdclose('all');
+% try 
+%     save_system;
+%     disp('Saved loaded system');
+% catch
+%     disp('No system loaded to be saved.');
+% end
+% bdclose('all');
 clear all; close all; clc;
 
 %%
 % initial_gains_filename = 'Results/Flat/SongGains_02amp.mat';
 % initial_gains_filename = 'Results/Flat/Umb10dimmuscleforce.mat';
 % initial_gains_filename = 'Results/Rough/Umb10_1.5cm_1.2ms_kneelim1_mstoptorque2.mat';
-initial_gains_filename = 'Results/Rough/Umb10_1.5cm_0.9ms_kneelim1_mstoptorque2.mat';
+% initial_gains_filename = 'Results/Rough/Umb10_1.5cm_1.2ms_kneelim1_mstoptorque2.mat';
+initial_gains_filename = 'Results/Rough/Umb10_1.5cm_0.9ms_kneelim1.mat';
 
 initial_gains_file = load(initial_gains_filename);
 load('Results/Flat/SongGains_02_wC_IC.mat');
@@ -30,7 +31,7 @@ set_param(strcat(model,'/Body Mechanics Layer/Right Ankle Joint'),'SpringStiffne
 set_param(model,'SimulationMode','rapid');
 set_param(model,'StopTime','30');
 
-InitialGuess = initial_gains_file.GainsSagittal;
+InitialGuess = [initial_gains_file.GainsSagittal;initial_gains_file.initConditionsSagittal; 0.01];
 
 %% initialze parameters
 [inner_opt_settings,opts] = setInnerOptSettings(initial_gains_filename);
@@ -40,7 +41,7 @@ ControlParams;
 OptimParams;
 Prosthesis3R60Params;
 setInitAmputee;
- 
+
 dt_visual = 1/30;
 [groundX, groundZ, groundTheta] = generateGround('flat');
 % [groundX, groundZ, groundTheta] = generateGround('const', inner_opt_settings.terrain_height,1,true);
@@ -55,7 +56,7 @@ x0 = zeros(numvars,1);
 sigma0 = 1/8;
 % sigma0 = 1/3;
 
-opts.SaveFilename = 'vcmaes_1.5cm_0.9ms_Umb10_kneelim1_mstoptorque2.mat';
+opts.SaveFilename = 'vcmaes_1.5cm_0.5ms_Umb10_kneelim1_mstoptorque2_wInit_try.mat';
 
 %% Show settings
 clc;
