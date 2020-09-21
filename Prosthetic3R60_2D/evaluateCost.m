@@ -15,7 +15,6 @@
 % load('Results/RoughDist/SongGains_wC_IC.mat');
 % load('Results/Rough/Umb10_1.5cm_0.9ms_kneelim1.mat');
 load('Results/Rough/Umb10_1.5cm_1.2ms_kneelim1_mstoptorque2.mat');
-load('Results/Flat/SongGains_02_wC_IC.mat');
 
 assignGainsSagittal;
 % assignInit;
@@ -37,7 +36,7 @@ model = 'NeuromuscularModel_3R60_2D';
 
 %%
 [inner_opt_settings,~] = setInnerOptSettings();
-setInitAmputee;
+assignInit;
 
 %%
 %open('NeuromuscularModel');
