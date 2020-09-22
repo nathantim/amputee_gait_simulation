@@ -11,9 +11,9 @@ clear all; close all; clc;
 % initial_gains_filename = 'Results/Flat/SongGains_02amp_wC.mat';
 % initial_gains_filename = 'Results/Flat/Umb10nodimmuscleforce3D.mat';
 % initial_gains_filename = 'Results/Flat/Umb10nodimmuscleforce2D_C3D.mat';
-% initial_gains_filename = 'Results/Rough/Prosthetic2D_C3D.mat';
+initial_gains_filename = 'Results/Rough/Umb10_1.5cm_1.2ms_kneelim1_mstoptorque2.mat';
 % initial_gains_filename = 'Results/Rough/Umb10_0.9_ms_3D_partlyopt.mat';
-initial_gains_filename = 'Results/Rough/Umb10_1.5cm_0.9ms_kneelim1_mstoptorque2opt_1.2msCoronal.mat';
+% initial_gains_filename = 'Results/Rough/Umb10_1.5cm_0.9ms_kneelim1_mstoptorque2opt_1.2msCoronal.mat';
 
 initial_gains_file = load(initial_gains_filename);
 load('Results/Flat/SongGains_02_wC_IC.mat');
@@ -35,7 +35,8 @@ catch ME
     warning(ME.message);
 end
 
-InitialGuess = [initial_gains_file.GainsSagittal;initial_gains_file.GainsCoronal;];
+InitialGuess = [initial_gains_file.GainsSagittal;initial_gains_file.initConditionsSagittal;...
+				initial_gains_file.GainsCoronal; initial_gains_file.initConditionsCoronal];
 
 %% initialze parameters
 [inner_opt_settings,opts] = setInnerOptSettings(initial_gains_filename);
@@ -44,7 +45,7 @@ BodyMechParams;
 ControlParams;
 OptimParams;
 Prosthesis3R60Params;
-initSignals;
+% initSignals;
 setInitAmputee;
 
 dt_visual = 1/30;
@@ -60,8 +61,8 @@ x0 = zeros(numvars,1);
 sigma0 = 1/8;
 % sigma0 = 1/3;
 
-opts.DiagonalOnly = 150;
-opts.SaveFilename = 'vcmaes_1.5cm_0.9ms_Umb10_kneelim1_mstoptorque2.mat';
+opts.DiagonalOnly = 50;
+opts.SaveFilename = 'vcmaes_1.5cm_0.9ms_Umb10_kneelim1_mstoptorque2_wInit.mat';
 opts.UserDat2 = strcat(opts.UserDat2,"; ", "sigma0: ", string(sigma0), "; ampHipFlexFactor: ", string(ampHipFlexFactor) , "; ampHipExtFactor: ", string(ampHipExtFactor), "; ampHipAbdFactor: ", string(ampHipAbdFactor), "; ampHipAddFactor: ", string(ampHipAddFactor) );
 
 %% Show settings
@@ -75,7 +76,7 @@ fprintf('Amputated hip extensor diminish factor: %1.2f \n',ampHipExtFactor);
 fprintf('Amputated hip abductor diminish factor: %1.2f \n',ampHipAbdFactor);
 fprintf('Amputated hip adductor diminish factor: %1.2f \n',ampHipAddFactor);
 
-% parpool(inner_opt_settings.numParWorkers);
+parpool(inner_opt_settings.numParWorkers);
 
 %% run cmaes
 [xmin, fmin, counteval, stopflag, out, bestever] = cmaes(optfunc, x0, sigma0, opts)

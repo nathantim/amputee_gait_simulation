@@ -56,7 +56,7 @@ set_param(strcat(model,'/Body Mechanics Layer/Right Ankle Joint'),'SpringStiffne
 
 %%
 inner_opt_settings = setInnerOptSettings();
-initSignals;
+% initSignals;
 setInitAmputee;
 assignInit;
 [groundX, groundZ, groundTheta] = generateGround('flat');
