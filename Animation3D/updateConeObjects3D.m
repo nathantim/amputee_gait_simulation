@@ -79,6 +79,34 @@ if t==0
             set(R_ShankObj, 'ZData', get(R_ShankObj, 'ZData') * R_ShankLength);
             x(36) = R_ShankLength;
         end
+<<<<<<< HEAD
+=======
+            
+            
+            % set right foot length
+            R_BallLength = sqrt( (u(25)-u(28))^2 + (u(26)-u(29))^2 + (u(27)-u(30))^2 );
+            set(R_BallObj, 'ZData', get(R_BallObj, 'ZData') * R_BallLength);
+            x(27) = R_BallLength;
+            
+            R_HeelLength = sqrt( (u(25)-u(31))^2 + (u(26)-u(32))^2 + (u(27)-u(33))^2 );
+            set(R_HeelObj, 'ZData', get(R_HeelObj, 'ZData') * R_HeelLength);
+            
+
+        
+        % rotate and shift cones to their new angles and positions
+        lowHATu =(u(4:6)+u(19:21))./2;
+        magHATu = sqrt(sum( (u(1:3)-lowHATu).^2));
+        unitHATu = ((u(1:3)-lowHATu))./magHATu;
+        topHATu = unitHATu*HAT_Length + lowHATu;
+        rotTransObj( HAT_ConeObj, lowHATu,   topHATu,   zeros(1,3),   x(1:3))
+        rotTransObj(  L_ThighObj, u(7:9),   u(4:6),   zeros(1,3),   x(4:6))
+        rotTransObj(  L_ShankObj, u(10:12),   u(7:9),   zeros(1,3),   x(7:9))
+        rotTransObj(   L_BallObj, u(13:15), u(10:12),  zeros(1,3), x(10:12))
+        x(12) = L_HeelLength;
+        rotTransObj(   L_HeelObj, u(16:18), u(10:12),  zeros(1,3), x(10:12))
+
+        rotTransObj(  R_ThighObj, u(22:24), u(19:21), zeros(1,3), x(19:21))
+>>>>>>> a2e6379efd7858bbf211a26ddd734b4a09107930
         
     else
         % set right shank length
