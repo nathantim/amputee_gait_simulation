@@ -11,8 +11,9 @@ clear all; close all; clc;
 % initial_gains_filename = 'Results/Flat/SongGains_02amp_wC.mat';
 % initial_gains_filename = 'Results/Flat/Umb10nodimmuscleforce3D.mat';
 % initial_gains_filename = 'Results/Flat/Umb10nodimmuscleforce2D_C3D.mat';
-initial_gains_filename = 'Results/Rough/Umb10_1.5cm_0.9ms_kneelim1_sagg_1.2msCoronal.mat';
-% initial_gains_filename = 'Results/Rough/Umb10_0.9_ms_3D_partlyopt.mat';
+% initial_gains_filename = 'Results/Rough/Umb10_1.5cm_0.9ms_kneelim1_sagg_1.2msCoronal.mat';
+initial_gains_filename = 'Results/Rough/Umb10_1.5cm_0.9ms_opt_1.2mscoronal.mat';
+
 % load(initial_gains_filename);
 
 initial_gains_file = load(initial_gains_filename);
@@ -36,8 +37,11 @@ catch ME
 end
 
 % InitialGuess = initial_gains_file.Gains;
-InitialGuess = initial_gains_file.GainsCoronal;
+InitialGuessTxt = '[initial_gains_file.GainsCoronal;initial_gains_file.initConditionsCoronal;initial_gains_file.initConditionsSagittal]'; 
+InitialGuess = eval(InitialGuessTxt);
 GainsSagittal = initial_gains_file.GainsSagittal;
+initConditionsSagittal = initial_gains_file.initConditionsSagittal;
+initConditionsCoronal = initial_gains_file.initConditionsCoronal;
 
 %% initialze parameters
 [inner_opt_settings,opts] = setInnerOptSettings(initial_gains_filename);
@@ -47,7 +51,7 @@ ControlParams;
 OptimParams;
 Prosthesis3R60Params;
 assignGainsSagittal;
-setInitAmputee;
+assignInit;
 
  
 dt_visual = 1/30;
@@ -64,8 +68,8 @@ sigma0 = 1/8;
 % sigma0 = 1/3;
 
 % opts.DiagonalOnly = 150;
-opts.SaveFilename = 'vcmaes_1.5cm_0.9ms_Umb10_kneelim1_mstoptorque2_Conly.mat';
-opts.UserDat2 = strcat(opts.UserDat2,"; ", "sigma0: ", string(sigma0), "; ampHipFlexFactor: ", string(ampHipFlexFactor) , "; ampHipExtFactor: ", string(ampHipExtFactor),"; ampHipAbdFactor: ", string(ampHipAbdFactor) , "; ampHipAddFactor: ", string(ampHipAddFactor) );
+opts.SaveFilename = 'vcmaes_1.5cm_0.9ms_Umb10_Conly_initBoth.mat';
+opts.UserDat2 = strcat(opts.UserDat2,"; InitialGuessTxt: ",InitialGuessTxt, "; ", "sigma0: ", string(sigma0), "; ampHipFlexFactor: ", string(ampHipFlexFactor) , "; ampHipExtFactor: ", string(ampHipExtFactor),"; ampHipAbdFactor: ", string(ampHipAbdFactor) , "; ampHipAddFactor: ", string(ampHipAddFactor) );
 
 %% Show settings
 clc;
@@ -78,7 +82,7 @@ fprintf('Amputated hip extensor diminish factor: %1.2f \n',ampHipExtFactor);
 fprintf('Amputated hip abductor diminish factor: %1.2f \n',ampHipAbdFactor);
 fprintf('Amputated hip adductor diminish factor: %1.2f \n',ampHipAddFactor);
 
-% parpool(inner_opt_settings.numParWorkers);
+parpool(inner_opt_settings.numParWorkers);
 
 %% run cmaes
 [xmin, fmin, counteval, stopflag, out, bestever] = cmaes(optfunc, x0, sigma0, opts)

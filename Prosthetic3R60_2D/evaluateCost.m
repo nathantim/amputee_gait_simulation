@@ -13,30 +13,35 @@
 % load('Results/Flat/SongGains_02amp.mat');
 
 % load('Results/RoughDist/SongGains_wC_IC.mat');
-% load('Results/Rough/Umb10_1.5cm_0.9ms_kneelim1.mat');
-load('Results/Rough/Umb10_1.5cm_1.2ms_kneelim1_mstoptorque2.mat');
+% load('Results/Rough/Umb10_1.5cm_0.9ms_intermediate.mat');
+% load('Results/Rough/Umb10_1.5cm_1.2ms_kneelim1_mstoptorque2.mat');
 
-assignGainsSagittal;
+
+%%
+model = 'NeuromuscularModel_3R60_2D';
+load_system(model);
+set_param(strcat(model,'/Body Mechanics Layer/Right Ankle Joint'),'SpringStiffness','3000','DampingCoefficient','1000');
+set_param(strcat(model,'/Body Mechanics Layer/Obstacle'),'Commented','on');
+
+%%
+[inner_opt_settings,~] = setInnerOptSettings();
+
+BodyMechParams;
+ControlParams;
+OptimParams;
+Prosthesis3R60Params;
+% initSignals;
+setInitAmputee;
+
 % assignInit;
-initSignals;
-% setInitAmputee;
-dt_visual = 1/50;
+assignGainsSagittal;
+
+dt_visual = 1/30;
 
 [groundX, groundZ, groundTheta] = generateGround('flat');
 % [groundX, groundZ, groundTheta] = generateGround('const', .05,1);
 %[groundX, groundZ, groundTheta] = generateGround('ramp');
 
-% LlegLengthClr = 0.95*LlegLengthClr;
-% RGainLRFHFLsw = 5*RGainLRFHFLsw;
-% RGainVRFHFLsw = 5*RGainVRFHFLsw;
-% RlegLengthClr = 0.9*RlegLengthClr;
-% RGainLGLUsw = 3*RGainLGLUsw;
-%%
-model = 'NeuromuscularModel_3R60_2D';
-
-%%
-[inner_opt_settings,~] = setInnerOptSettings();
-assignInit;
 
 %%
 %open('NeuromuscularModel');

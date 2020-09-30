@@ -7,21 +7,21 @@ LphiAnkle0      = initConditionsSagittal(4); %
 RphiHip0        = initConditionsSagittal(5);
 
 LTargetAngleInit    = initConditionsSagittal(6);
-LPreStimHFLinit     = initConditionsSagittal(7);
-LPreStimGLUinit     = initConditionsSagittal(8);
-LPreStimHAMinit     = initConditionsSagittal(9);
-LPreStimRFinit      = initConditionsSagittal(10);
-LPreStimVASinit     = initConditionsSagittal(11);
-LPreStimBFSHinit    = initConditionsSagittal(12);
-LPreStimGASinit     = initConditionsSagittal(13);
-LPreStimSOLinit     = initConditionsSagittal(14);
-LPreStimTAinit      = initConditionsSagittal(15);
-
-RTargetAngleInit    = initConditionsSagittal(16);
-RPreStimHFLinit     = initConditionsSagittal(17);
-RPreStimGLUinit     = initConditionsSagittal(18);
-RPreStimHAMinit     = initConditionsSagittal(19);
-RPreStimRFinit      = initConditionsSagittal(20);
+% LPreStimHFLinit     = initConditionsSagittal(7);
+% LPreStimGLUinit     = initConditionsSagittal(8);
+% LPreStimHAMinit     = initConditionsSagittal(9);
+% LPreStimRFinit      = initConditionsSagittal(10);
+% LPreStimVASinit     = initConditionsSagittal(11);
+% LPreStimBFSHinit    = initConditionsSagittal(12);
+% LPreStimGASinit     = initConditionsSagittal(13);
+% LPreStimSOLinit     = initConditionsSagittal(14);
+% LPreStimTAinit      = initConditionsSagittal(15);
+% 
+% RTargetAngleInit    = initConditionsSagittal(16);
+% RPreStimHFLinit     = initConditionsSagittal(17);
+% RPreStimGLUinit     = initConditionsSagittal(18);
+% RPreStimHAMinit     = initConditionsSagittal(19);
+% RPreStimRFinit      = initConditionsSagittal(20);
 
 % RphiAnkle0      = initConditionsSagittal(5);
 

@@ -8,7 +8,7 @@ bdclose('all');
 clear all; close all; clc;
 
 %%
-initial_gains_filename = 'Results/Rough/Umb10_1.5cm_1.2ms_kneelim1_mstoptorque2.mat';
+initial_gains_filename = 'Results/Rough/Umb10_1.5cm_0.9ms_intermediate.mat';
 % initial_gains_filename = 'Results/Rough/Umb10_1.5cm_0.9ms_kneelim1.mat';
 
 initial_gains_file = load(initial_gains_filename);
@@ -22,7 +22,7 @@ optfunc = 'cmaesParallelSplitRough';
 load_system(model);
 set_param(model, 'AccelVerboseBuild', 'on')
 set_param(strcat(model,'/Body Mechanics Layer/Obstacle'),'Commented','on');
-set_param(strcat(model,'/Body Mechanics Layer/Right Ankle Joint'),'SpringStiffness','300','DampingCoefficient','100');
+set_param(strcat(model,'/Body Mechanics Layer/Right Ankle Joint'),'SpringStiffness','3000','DampingCoefficient','1000');
 % % set_param(strcat(model,'/Body Mechanics Layer/Right Ankle Joint'),'SpringStiffness','20','DampingCoefficient','4');
 set_param(model,'SimulationMode','rapid');
 set_param(model,'StopTime','30');
@@ -54,7 +54,7 @@ x0 = zeros(numvars,1);
 sigma0 = 1/8;
 % sigma0 = 1/3;
 
-opts.SaveFilename = 'vcmaes_1.5cm_0.9ms_Umb10_kneelim1_mstoptorque2_wInit.mat';
+opts.SaveFilename = 'vcmaes_1.5cm_0.9ms_Umb10_kneelim1_mstoptorque2_wInit_2.mat';
 
 %% Show settings
 clc;

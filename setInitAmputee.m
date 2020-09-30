@@ -2,7 +2,7 @@
 % conditions from Song
 load('Results/Flat/SongGains_02_wC_IC.mat');
 warning('Check init conditions');
-vxInit             = (1.3); %[m/s]
+vxInit             = (0.9); %[m/s]
 vzInit = 0; % not optimize
 xInit      = .2; % not optimize
 yInit      = -hatLeftHipToCenterDistWidth;% not optimize

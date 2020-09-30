@@ -1,7 +1,7 @@
-BodyMechParams;
-ControlParams;
-OptimParams;
-Prosthesis3R60Params;
+% BodyMechParams;
+% ControlParams;
+% OptimParams;
+% Prosthesis3R60Params;
  
 %% Left
 %% stance gains

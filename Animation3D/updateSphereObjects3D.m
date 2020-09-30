@@ -4,18 +4,19 @@
 
 function updateSphereObjects3D( SphereObjects, u, x, yShift, intactFlag)
     % extract sphere objects
-    L_HJ_Obj  = SphereObjects(1);
-    L_BallObj = SphereObjects(2);
-    L_HeelObj = SphereObjects(3);
-    L_AJ_Obj  = SphereObjects(4);
-    L_KJ_Obj  = SphereObjects(5);
-    R_HJ_Obj  = SphereObjects(6);
-
-    if(intactFlag)
-        R_BallObj = SphereObjects( 7);
-        R_HeelObj = SphereObjects( 8);
-        R_AJ_Obj  = SphereObjects( 9);
-        R_KJ_Obj  = SphereObjects(10);
+    L_HJ_Obj  = SphereObjects( 1);
+    L_KJ_Obj  = SphereObjects( 2);
+    L_AJ_Obj  = SphereObjects( 3);
+    L_BallObj = SphereObjects( 4);
+    L_HeelObj = SphereObjects( 5);
+    R_HJ_Obj  = SphereObjects( 6);
+    R_KJ_Obj  = SphereObjects( 7);
+    R_AJ_Obj  = SphereObjects( 8);
+    R_BallObj = SphereObjects( 9);
+    R_HeelObj = SphereObjects(10);
+    
+    if false %(~intactFlag)
+       R_KJ2_Obj  = SphereObjects(11);
     end
         
 
@@ -38,7 +39,7 @@ function updateSphereObjects3D( SphereObjects, u, x, yShift, intactFlag)
     set(R_HJ_Obj,  'XData',  get(R_HJ_Obj, 'XData')  +  u(19) - x(19), ...
                    'YData',  get(R_HJ_Obj, 'YData')  +  u(20) - x(20), ...
                    'ZData',  get(R_HJ_Obj, 'ZData')  +  u(21) - x(21))
-    if(intactFlag)
+%     if(intactFlag)
         set(R_KJ_Obj,  'XData',  get(R_KJ_Obj, 'XData')  +  u(22) - x(22), ...
                        'YData',  get(R_KJ_Obj, 'YData')  +  u(23) - x(23), ...
                        'ZData',  get(R_KJ_Obj, 'ZData')  +  u(24) - x(24))
@@ -51,5 +52,5 @@ function updateSphereObjects3D( SphereObjects, u, x, yShift, intactFlag)
         set(R_HeelObj, 'XData',  get(R_HeelObj, 'XData') +  u(31) - x(31), ...
                        'YData',  get(R_HeelObj, 'YData') +  u(32) - x(32), ...
                        'ZData',  get(R_HeelObj, 'ZData') +  u(33) - x(33))
-    end
+%     end
 end
