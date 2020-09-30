@@ -88,7 +88,7 @@ function updateConeObjects3D( ConeObjects, u, x, t, intactFlag)
         rotTransObj(  L_ThighObj, u(7:9),   u(4:6),   zeros(1,3),   x(4:6))
         rotTransObj(  L_ShankObj, u(10:12),   u(7:9),   zeros(1,3),   x(7:9))
         rotTransObj(   L_BallObj, u(13:15), u(10:12),  zeros(1,3), x(10:12))
-        x(11) = L_HeelLength;
+        x(12) = L_HeelLength;
         rotTransObj(   L_HeelObj, u(16:18), u(10:12),  zeros(1,3), x(10:12))
 
         rotTransObj(  R_ThighObj, u(22:24), u(19:21), zeros(1,3), x(19:21))
