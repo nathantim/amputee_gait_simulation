@@ -6,11 +6,18 @@ function ConeObjects = createConeObjects(ConeRes, yShift, rFoot, rShank, rThigh,
 
     ConeCol2 = [1 1 0.99];
     ConeCol  = [0.8 0.8 0.7];
-                                           
+    if intactFlag
+        ConeCol3 = [1 1 0.99];
+    else
+        ConeCol3 = [0.5 0.5 0.5];
+    end
     % feet cone
     [xf,yf,zf] = cylinder( rFoot, ConeRes);
-    L_FootObj = surf( xf, yf + yShift + yShiftGlobal, zf, 'FaceColor', ConeCol2);
-
+    L_BallObj = surf( xf, yf + yShift + yShiftGlobal, zf, 'FaceColor', ConeCol2);
+    
+    [xf,yf,zf] = cylinder( rFoot, ConeRes);
+    L_HeelObj = surf( xf, yf + yShift + yShiftGlobal, zf, 'FaceColor', ConeCol2);
+    
     % shank cones
     [xs,ys,zs] = cylinder( rShank, ConeRes);
     L_ShankObj = surf( xs, ys + yShift + yShiftGlobal, zs, 'FaceColor', ConeCol2);
@@ -24,14 +31,16 @@ function ConeObjects = createConeObjects(ConeRes, yShift, rFoot, rShank, rThigh,
     [x,y,z] = cylinder( rHAT_Cone, ConeRes);
     HAT_ConeObj = surf( 1.3*x, 2.2*y + yShiftGlobal, z, 'FaceColor', ConeCol);
 
-    %make additional cones if intact
-    if(intactFlag)
-        R_FootObj  = surf( xf, yf - yShift + yShiftGlobal, zf, 'FaceColor', ConeCol2);
-        R_ShankObj = surf( xs, ys - yShift + yShiftGlobal, zs, 'FaceColor', ConeCol2);
-        ConeObjects = [HAT_ConeObj, L_ThighObj, L_ShankObj, L_FootObj, R_ThighObj, R_ShankObj, R_FootObj];
-    else
-        % generate objects vector
-        ConeObjects = [HAT_ConeObj, L_ThighObj, L_ShankObj, L_FootObj, R_ThighObj];
+    
+    R_BallObj  = surf( xf, yf - yShift + yShiftGlobal, zf, 'FaceColor', ConeCol3);
+    R_HeelObj  = surf( xf, yf - yShift + yShiftGlobal, zf, 'FaceColor', ConeCol3);
+    R_ShankObj = surf( xs, ys - yShift + yShiftGlobal, zs, 'FaceColor', ConeCol3);
+    ConeObjects = [HAT_ConeObj, L_ThighObj, L_ShankObj, L_BallObj, L_HeelObj, R_ThighObj, R_ShankObj, R_BallObj, R_HeelObj];
+   
+    if false %(intactFlag)
+   %make additional cones if not intact
+        R_KneeProsthObj = surf( xf, yf - yShift + yShiftGlobal, zf, 'FaceColor', ConeCol3);
+        ConeObjects = [ConeObjects, R_KneeProsthObj];
     end
 
     % set general properties                 

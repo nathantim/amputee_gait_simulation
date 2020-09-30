@@ -23,17 +23,19 @@ if isempty(p)
 
     validBoolFcn = @(i) islogical(i) && isscalar(i);
     addParamValue(p,'intact',false,validBoolFcn);
+    addParamValue(p,'obstacle',false,validBoolFcn);
     addParamValue(p,'saveAllFrames',false,validBoolFcn);
     addParamValue(p,'createVideo',false,validBoolFcn);
     addParamValue(p,'showFrameNum',false,validBoolFcn);
-    addParamValue(p,'showTime',false,validBoolFcn);
-    addParamValue(p,'followModel',false,validBoolFcn);
+    addParamValue(p,'showTime',true,validBoolFcn);
+    addParamValue(p,'followModel',true,validBoolFcn);
 
     validTimeRangeFcn = @(i) isnumeric(i) && length(i) == 2 && i(1) <= i(2);
     addParamValue(p,'saveFramesInTimeRange',[],validTimeRangeFcn);
 
     validLabelFcn = @(i) ischar(i) && length(i)>0;
     addParamValue(p,'label','',validLabelFcn);
+    addParamValue(p,'view','',validLabelFcn);
 
 end
 parse(p,varargin{:});
@@ -42,10 +44,12 @@ frameRate = animData.time(2) - animData.time(1);
 frameSkip = p.Results.frameSkip;
 speed = p.Results.speed;
 intactFlag = p.Results.intact;
+obstacleFlag = p.Results.obstacle;
 txtLabel = p.Results.label;
 showFrameNum = p.Results.showFrameNum;
 showTime = p.Results.showTime;
 followModel = p.Results.followModel;
+viewOpt = p.Results.view;
 
 videoFlag = p.Results.createVideo;
 snapShotFlag = p.Results.saveAllFrames;
@@ -87,8 +91,19 @@ ViewShiftParamsY = [0 0 0];
 
 set(gca, 'YColor', [1 1 1], 'ZColor', [1 1 1])% switch off the y- and z-axis
 set(gca, 'XTick', -10:1:100)% set x-axis labels
-view(0,0)
+
 % view(25,25)
+if contains(viewOpt,'front')
+    view(90,0);
+    followModel = true;
+elseif contains(viewOpt,'side')
+    view(0,0);
+elseif contains(viewOpt,'perspective')
+    view(25,25);
+else
+    fprintf('Default view.\n');
+    view(0,0);
+end
 
 % Generate 3D Objects
 % -------------------
@@ -124,12 +139,37 @@ view(0,0)
 
     % create cone objects (bones)
     ConeObjects = createConeObjects3D(ConeRes, yShift, rFoot, rShank, rThigh, rHAT_Cone, intactFlag);
-
+    if obstacleFlag
+        obstacle_height = 0.08;
+        obstacle_width = 0.15;
+        obstacle_depth = 0.02;
+        xoffset = 8.8;
+        yoffset = -1;
+        zoffset = 0;
+        v = [xoffset, yoffset - obstacle_width/2, 0;...
+            xoffset, yoffset + obstacle_width/2, 0;...
+            xoffset, yoffset + obstacle_width/2, obstacle_height;...
+            xoffset, yoffset - obstacle_width/2, obstacle_height;...
+            xoffset + obstacle_depth, yoffset - obstacle_width/2, 0;...
+            xoffset + obstacle_depth, yoffset + obstacle_width/2, 0;...
+            xoffset + obstacle_depth, yoffset + obstacle_width/2, obstacle_height;...
+            xoffset + obstacle_depth, yoffset - obstacle_width/2, obstacle_height];
+        f = [ 1,2,3,4; ... %front
+            5,6,7,8; ... % back
+            1,5,8,4; ... % y- side
+            2,3,7,6; ... % y+ side
+            3,4,8,7]; % top
+%         Obstacle = patch('Faces',f,'Vertices',v,'FaceColor','green');
+        Obstacle = patch('Faces',f,'Vertices',v,'FaceColor',[1 1 0.8]);
+    end
+    
+  
+    
 % 3D Prosthetic Objects
 % ---------------
-    if(~intactFlag)
-        ProstheticObjects = createProstheticObjects();
-    end
+%     if(~intactFlag)
+%         ProstheticObjects = createProstheticObjects();
+%     end
 
 % 3D Walk Way
 % -----------
@@ -208,9 +248,9 @@ tframe = frameSkip/30/speed;
                 if t==0
                   set(SphereObjects, 'Visible', 'on')
                   set(ConeObjects,   'Visible', 'on')
-                  if(~intactFlag)
-                      set(ProstheticObjects,   'Visible', 'on')
-                  end
+%                   if(~intactFlag)
+%                       set(ProstheticObjects,   'Visible', 'on')
+%                   end
                 end
                 
                 
@@ -218,9 +258,9 @@ tframe = frameSkip/30/speed;
                 % ------------------------------------------
                 updateSphereObjects3D( SphereObjects, u, x, yShift, intactFlag)
                 updateConeObjects3D( ConeObjects, u, x, t, intactFlag);
-                if(~intactFlag)
-                    updateProstheticObjects( ProstheticObjects, u, x);
-                end
+%                 if(~intactFlag)
+%                     updateProstheticObjects( ProstheticObjects, u, x);
+%                 end
                 
                 % Update Text objects
                 % -------------------

@@ -67,66 +67,71 @@ if ViewShiftParamsX(1)~=0
 end
 
 %% y
+% YLimits = get(gca, 'YLim');
+% set(gca, 'YLim', StartPosY + ShiftDirY*yLimShift+[0 ViewWin]);
+minY = u(2);
+set(gca, 'YLim', [minY - ViewWin  minY + ViewWin]);
+%         maxY = u(2);
   % Check For Shift Initiation
     % --------------------------
 
-    if ViewShiftParamsY(1)==0
-        % get axis limits
-        YLimits = get(gca, 'YLim');
-
-        % get min and max xpos of object
-        minY = u(2);
-        maxY = u(2);
-
-        % check right border
-        if YLimits(2) < ( maxY + ViewWin*TolFrac )
-            % initiate shift to the right
-            StartPosY  = YLimits(1);
-            dShiftTotY = (minY - ViewWin*TolFrac)  - StartPosY; 
-            ViewShiftParamsY = [1 t StartPosY dShiftTotY];
-
-            set(gca, 'YLim', [minY - ViewWin*TolFrac  minY + ViewWin*(1-TolFrac)]);
-        % check left border
-        elseif YLimits(1) > ( minY - ViewWin*TolFrac )
-            % initiate shift to the left
-            StartPosY  = YLimits(1);
-            dShiftTotY = StartPosY - (minY + ViewWin*TolFrac - ViewWin); 
-            ViewShiftParamsY = [-1 t StartPosY dShiftTotY];
-            set(gca, 'YLim', [maxY - ViewWin*(1-TolFrac)  maxY + ViewWin*TolFrac]);
-        end
-    end
-
-
-    % Shift View Window
-    % -----------------
-
-    if ViewShiftParamsY(1)~=0
-        % get current shift time
-        tShift   = t - ViewShiftParamsY(2);
-
-        % check for end of shift phase
-        if tShift > tShiftTot
-            % reset view window shift parameters
-            ViewShiftParamsY(1) = 0;
-        else
-            ShiftDirY = ViewShiftParamsY(1);  % get shift direction
-            dShiftTotY = ViewShiftParamsY(4); % get shift distance
-            StartPosY  = ViewShiftParamsY(3); % get start position
-
-            % get new distance to former axis limit
-            if tShiftTot == 0
-                yLimShift = dShiftTotY;
-            else
-                if tShift <= tShiftTot/2 
-                    yLimShift = 2*dShiftTotY * (tShift/tShiftTot)^2;
-                else
-                    yLimShift = dShiftTotY-2*dShiftTotY*((tShiftTot-tShift)/tShiftTot)^2;
-                end
-            end
-
-            % shift axis limits
-            set(gca, 'YLim', StartPosY + ShiftDirY*yLimShift+[0 ViewWin]);
-        end
-    end
+%     if ViewShiftParamsY(1)==0
+%         % get axis limits
+%         YLimits = get(gca, 'YLim');
+% 
+%         % get min and max xpos of object
+%         minY = u(2);
+%         maxY = u(2);
+% 
+%         % check right border
+%         if YLimits(2) < ( maxY + ViewWin*TolFrac )
+%             % initiate shift to the right
+%             StartPosY  = YLimits(1);
+%             dShiftTotY = (minY - ViewWin*TolFrac)  - StartPosY; 
+%             ViewShiftParamsY = [1 t StartPosY dShiftTotY];
+% 
+%             set(gca, 'YLim', [minY - ViewWin*TolFrac  minY + ViewWin*(1-TolFrac)]);
+%         % check left border
+%         elseif YLimits(1) > ( minY - ViewWin*TolFrac )
+%             % initiate shift to the left
+%             StartPosY  = YLimits(1);
+%             dShiftTotY = StartPosY - (minY + ViewWin*TolFrac - ViewWin); 
+%             ViewShiftParamsY = [-1 t StartPosY dShiftTotY];
+%             set(gca, 'YLim', [maxY - ViewWin*(1-TolFrac)  maxY + ViewWin*TolFrac]);
+%         end
+%     end
+% 
+% 
+%     % Shift View Window
+%     % -----------------
+% 
+%     if ViewShiftParamsY(1)~=0
+%         % get current shift time
+%         tShift   = t - ViewShiftParamsY(2);
+% 
+%         % check for end of shift phase
+%         if tShift > tShiftTot
+%             % reset view window shift parameters
+%             ViewShiftParamsY(1) = 0;
+%         else
+%             ShiftDirY = ViewShiftParamsY(1);  % get shift direction
+%             dShiftTotY = ViewShiftParamsY(4); % get shift distance
+%             StartPosY  = ViewShiftParamsY(3); % get start position
+% 
+%             % get new distance to former axis limit
+%             if tShiftTot == 0
+%                 yLimShift = dShiftTotY;
+%             else
+%                 if tShift <= tShiftTot/2 
+%                     yLimShift = 2*dShiftTotY * (tShift/tShiftTot)^2;
+%                 else
+%                     yLimShift = dShiftTotY-2*dShiftTotY*((tShiftTot-tShift)/tShiftTot)^2;
+%                 end
+%             end
+% 
+%             % shift axis limits
+%             set(gca, 'YLim', StartPosY + ShiftDirY*yLimShift+[0 ViewWin]);
+%         end
+%     end
 end
 
