@@ -24,6 +24,7 @@ if isempty(p)
     validBoolFcn = @(i) islogical(i) && isscalar(i);
     addParamValue(p,'intact',false,validBoolFcn);
     addParamValue(p,'obstacle',false,validBoolFcn);
+    addParamValue(p,'CMG',false,validBoolFcn);
     addParamValue(p,'saveAllFrames',false,validBoolFcn);
     addParamValue(p,'createVideo',false,validBoolFcn);
     addParamValue(p,'showFrameNum',false,validBoolFcn);
@@ -45,6 +46,7 @@ frameSkip = p.Results.frameSkip;
 speed = p.Results.speed;
 intactFlag = p.Results.intact;
 obstacleFlag = p.Results.obstacle;
+CMGFlag = p.Results.CMG;
 txtLabel = p.Results.label;
 showFrameNum = p.Results.showFrameNum;
 showTime = p.Results.showTime;
@@ -118,12 +120,12 @@ end
     rAJ  = 0.04; %[m]
     rKJ  = 0.05; %[m]
     rHJ  = 0.075; %[m]
-
+    rCMG = 0.04;
     % y-shift (arbitrary, since sagittal model displayed with 3D objects)
     yShift = 0;%0*rHJ; %[m]
 
     % create sphere objects (contact points and joints and HAT top)
-    SphereObjects = createSphereObjects3D(SphereRes, yShift, rCP, rAJ, rKJ, rHJ, intactFlag);
+    SphereObjects = createSphereObjects3D(SphereRes, yShift, rCP, rAJ, rKJ, rHJ,rCMG, intactFlag, CMGFlag);
 
 % 3D Cone Objects
 % ---------------
@@ -132,18 +134,21 @@ end
     ConeRes = 10;
 
     % cone radii (bottom and top)
-    rFoot     = [rCP rCP]-0.01; %[m]
-    rShank    = [rAJ-0.02 rAJ-0.02 rAJ-0.02 rAJ-0.02 rAJ-0.01 rAJ]; %[m]
-    rThigh    = [rKJ-0.01 rKJ-0.02 rKJ-0.02 rKJ-0.01 rKJ rKJ+0.01]; %[m]
-    rHAT_Cone = [rHJ-0.02 rHJ-0.02 0.06 0.07 rHJ-0.01 rHJ-0.01 0]; %[m] male
-
+    rFoot           = [rCP rCP]-0.01; %[m]
+    rShank          = [rAJ-0.02 rAJ-0.02 rAJ-0.02 rAJ-0.02 rAJ-0.01 rAJ]; %[m]
+    rThigh          = [rKJ-0.01 rKJ-0.02 rKJ-0.02 rKJ-0.01 rKJ rKJ+0.01]; %[m]
+    rHAT_Cone       = [rHJ-0.02 rHJ-0.02 0.06 0.07 rHJ-0.01 rHJ-0.01 0]; %[m] male
+    prosthFactor = 0.65;
+    rFootProsth     = prosthFactor*[rCP rCP]-0.01; %[m]
+    rShankProsth    = [prosthFactor*rAJ-0.02 prosthFactor*rAJ-0.02 prosthFactor*rAJ-0.02 prosthFactor*rAJ-0.02 prosthFactor*rAJ-0.01 prosthFactor*rAJ]; %[m]
+    
     % create cone objects (bones)
-    ConeObjects = createConeObjects3D(ConeRes, yShift, rFoot, rShank, rThigh, rHAT_Cone, intactFlag);
+    ConeObjects = createConeObjects3D(ConeRes, yShift, rFoot, rShank, rThigh, rHAT_Cone, rShankProsth, rFootProsth, intactFlag, CMGFlag);
     if obstacleFlag
         obstacle_height = 0.08;
         obstacle_width = 0.15;
         obstacle_depth = 0.02;
-        xoffset = 8.8;
+        xoffset = 8.85;
         yoffset = -1;
         zoffset = 0;
         v = [xoffset, yoffset - obstacle_width/2, 0;...
@@ -159,8 +164,8 @@ end
             1,5,8,4; ... % y- side
             2,3,7,6; ... % y+ side
             3,4,8,7]; % top
-%         Obstacle = patch('Faces',f,'Vertices',v,'FaceColor','green');
-        Obstacle = patch('Faces',f,'Vertices',v,'FaceColor',[1 1 0.8]);
+        Obstacle = patch('Faces',f,'Vertices',v,'FaceColor','green');
+%         Obstacle = patch('Faces',f,'Vertices',v,'FaceColor',[1 1 0.8]);
     end
     
   
@@ -207,7 +212,7 @@ if videoFlag
     else
         intactInfo = 'prosthetic';
     end
-    writerObj = VideoWriter(['SnapShots',filesep,dateNow,'-',intactInfo,'.avi']);
+    writerObj = VideoWriter(['SnapShots',filesep,dateNow,'-',intactInfo],'MPEG-4');
     writerObj.FrameRate = 1/frameRate;
     open(writerObj);
 end
@@ -256,8 +261,8 @@ tframe = frameSkip/30/speed;
                 
                 % Update 3D-Objects Position and Orientation
                 % ------------------------------------------
-                updateSphereObjects3D( SphereObjects, u, x, yShift, intactFlag)
-                updateConeObjects3D( ConeObjects, u, x, t, intactFlag);
+                updateSphereObjects3D( SphereObjects, u, x, yShift, intactFlag, CMGFlag)
+                updateConeObjects3D( ConeObjects, u, x, t, intactFlag, CMGFlag, rCMG);
 %                 if(~intactFlag)
 %                     updateProstheticObjects( ProstheticObjects, u, x);
 %                 end
@@ -300,4 +305,5 @@ tframe = frameSkip/30/speed;
         close(writerObj);
     end
 
+    close(FigHndl);
 end
