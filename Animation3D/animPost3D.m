@@ -106,6 +106,7 @@ elseif contains(viewOpt,'perspective')
     view(25,25);
 else
     fprintf('Default view.\n');
+    viewOpt = 'default';
     view(0,0);
 end
 
@@ -217,7 +218,7 @@ if videoFlag
     if ~isempty(animInfo)
         fileInfo = ['_',animInfo];
     end
-    writerObj = VideoWriter(['SnapShots',filesep,dateNow,'-',intactInfo,fileInfo],'MPEG-4');
+    writerObj = VideoWriter(['SnapShots',filesep,dateNow,'-',intactInfo,fileInfo,'_',viewOpt],'MPEG-4');
     writerObj.FrameRate = 1/frameRate;
     open(writerObj);
 end
