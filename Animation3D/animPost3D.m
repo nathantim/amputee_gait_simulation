@@ -37,6 +37,7 @@ if isempty(p)
     validLabelFcn = @(i) ischar(i) && length(i)>0;
     addParamValue(p,'label','',validLabelFcn);
     addParamValue(p,'view','',validLabelFcn);
+    addParamValue(p,'info','',validLabelFcn);
 
 end
 parse(p,varargin{:});
@@ -48,6 +49,7 @@ intactFlag = p.Results.intact;
 obstacleFlag = p.Results.obstacle;
 CMGFlag = p.Results.CMG;
 txtLabel = p.Results.label;
+animInfo = p.Results.info;
 showFrameNum = p.Results.showFrameNum;
 showTime = p.Results.showTime;
 followModel = p.Results.followModel;
@@ -212,7 +214,10 @@ if videoFlag
     else
         intactInfo = 'prosthetic';
     end
-    writerObj = VideoWriter(['SnapShots',filesep,dateNow,'-',intactInfo],'MPEG-4');
+    if ~isempty(animInfo)
+        fileInfo = ['_',animInfo];
+    end
+    writerObj = VideoWriter(['SnapShots',filesep,dateNow,'-',intactInfo,fileInfo],'MPEG-4');
     writerObj.FrameRate = 1/frameRate;
     open(writerObj);
 end
