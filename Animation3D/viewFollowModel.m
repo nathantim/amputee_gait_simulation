@@ -5,8 +5,10 @@ function viewFollowModel(u, ViewWin)
     % Check if an object is out of bounds
     % --------------------------
 
-    % get hip x pos
-    hipX = u(13);
+    % get HAT x,y pos
+    HATx = u(1);
+    HATy = u(2);
 
     % shift to align with hip
-    set(gca, 'XLim', [hipX - ViewWin/2,  hipX + ViewWin/2]);
+    set(gca, 'XLim', [HATx - ViewWin/2,  HATx + ViewWin/2]);
+    set(gca, 'YLim', [HATy - ViewWin/2,  HATy + ViewWin/2]);

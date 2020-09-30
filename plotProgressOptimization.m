@@ -42,8 +42,8 @@ try
             GRFData.Name = 'Ground reaction forces';
         end
         %%
-        if isempty(minCost) || data.cost.data < minCost
-            minCost = data.cost.data;
+        if isempty(minCost) || data.optimCost < minCost
+            minCost = data.optimCost;
             b_minCost = true;
         else
             b_minCost = false;
@@ -57,6 +57,7 @@ try
         plotInfo.colorProp = plotInfo.colorProp(1:3,:);
         plotInfo.lineWidthProp = {3;3;3};
         plotInfo.plotProp_entries = [plotInfo.lineVec(:),plotInfo.colorProp(:), plotInfo.lineWidthProp(:)];
+        plotInfo.plotWinterData = true;
         
         plotInfo.fillProp = {'FaceColor','FaceAlpha','EdgeColor','LineStyle'};
         faceAlpha = {0.2;0.2;0.2};
@@ -89,15 +90,15 @@ try
             warning('off');
                
             clf(gaitKinematics);
-            sgtitle(gaitKinematics,['Gait kinematics for cost of ',num2str(round(data.cost.data,1)),', with $v_{mean}$ = ', num2str(round(data.vMean.data,1)),'m/s','. $\tau_{stop}$ = ', num2str(data.sumTstop.data)]);
+            sgtitle(gaitKinematics,['Gait kinematics for cost of ',num2str(round(data.optimCost,1)),', with $v_{mean}$ = ', num2str(round(data.vMean.data,1)),'m/s','. $\tau_{stop}$ = ', num2str(data.sumTstop.data)]);
             plotAngularData(data.kinematics.angularData,data.kinematics.GaitPhaseData,plotInfo,GaitInfo,saveInfo,gaitKinematics);
                            
             clf(musclesStimulation);
-            sgtitle(musclesStimulation,['Muscle stimulation levels for cost of ',num2str(round(data.cost.data,1)),', with $v_{mean}$ = ', num2str(round(data.vMean.data,1)),'m/s','. $\tau_{stop}$ = ', num2str(data.sumTstop.data)]);
+            sgtitle(musclesStimulation,['Muscle stimulation levels for cost of ',num2str(round(data.optimCost,1)),', with $v_{mean}$ = ', num2str(round(data.vMean.data,1)),'m/s','. $\tau_{stop}$ = ', num2str(data.sumTstop.data)]);
             plotMusculoData(data.kinematics.musculoData,plotInfo,GaitInfo,saveInfo,musclesStimulation);
                             
             clf(GRFData);
-            sgtitle(GRFData,['Ground reaction forces for cost of ',num2str(round(data.cost.data,1)),', with $v_{mean}$ = ', num2str(round(data.vMean.data,1)),'m/s','. $\tau_{stop}$ = ', num2str(data.sumTstop.data)]);
+            sgtitle(GRFData,['Ground reaction forces for cost of ',num2str(round(data.optimCost,1)),', with $v_{mean}$ = ', num2str(round(data.vMean.data,1)),'m/s','. $\tau_{stop}$ = ', num2str(data.sumTstop.data)]);
             plotGRF(data.kinematics.GRFData,plotInfo,GaitInfo,saveInfo,GRFData);
             warning('on');
         end

@@ -1,4 +1,4 @@
-function [plotHandles,axesHandles] = plotTotalGRFDataInFigure(GRFDataFig,axesHandles,t,GRFhor_avg,GRFhor_sd,GRFv_avg,GRFv_sd,b_oneGaitPhase)
+function [plotHandles,axesHandles] = plotTotalGRFDataInFigure(GRFDataFig,axesHandles,t,GRFhor_avg,GRFhor_sd,GRFv_avg,GRFv_sd,b_oneGaitPhase,subplotStart)
 plotHandles = nan(2,2);
 if isempty(axesHandles)
     for i = 1:size(plotHandles,1)
@@ -9,9 +9,10 @@ if  nargin <= 7
     b_oneGaitPhase = true;
 end
 
+% subplotStart = dec2base(subplotStart,10) - '0';
 
 %%
-axesHandles(1) = subplot(2,1,1,axesHandles(1));
+axesHandles(1) = subplot(subplotStart(1),subplotStart(2),subplotStart(3),axesHandles(1));
 if ~isempty(GRFhor_sd)
     plotHandles(1,2) = fill(axesHandles(1),[t;flipud(t)],[GRFhor_avg-GRFhor_sd;flipud(GRFhor_avg+GRFhor_sd)],[0.8 0.8 0.8]);
 end
@@ -22,7 +23,8 @@ title(axesHandles(1),'Total x')
 ylabel(axesHandles(1),'N/kg');
 
 %%
-axesHandles(2) = subplot(2,1,2,axesHandles(2));
+subplotStart(3) = subplotStart(3) +1;
+axesHandles(2) = subplot(subplotStart(1),subplotStart(2),subplotStart(3),axesHandles(2));
 if ~isempty(GRFv_sd)
     plotHandles(2,2) = fill(axesHandles(2),[t;flipud(t)],[GRFv_avg-GRFv_sd;flipud(GRFv_avg+GRFv_sd)],[0.8 0.8 0.8]);
 end

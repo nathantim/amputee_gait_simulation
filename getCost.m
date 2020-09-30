@@ -1,4 +1,4 @@
-function [cost, dataStruct] = getCost(model,Gains,time,metabolicEnergy,sumOfStopTorques,HATPos,stepVelocities,stepTimes,stepLengths,inner_opt_settings, b_isParallel)
+function [cost, dataStruct] = getCost(model,Gains,time,metabolicEnergy,sumOfStopTorques,HATPosVel,stepVelocities,stepTimes,stepLengths,stepNumbers,CMGData,inner_opt_settings, b_isParallel)
 try
     if contains(model,'3R60')
          modelType = 'prosthetic';
@@ -11,12 +11,13 @@ try
          modelType = [modelType, '2D'];
     end
     
-    if nargin < 11
+    if nargin < 13
         b_isParallel = false;
     end
     OptimParams;
     dataStruct = struct('cost',struct('data',nan,'minimize',1,'info',''));
     % global dataQueueD
+    HATPos = sqrt(sum(HATPosVel.signals.values(end,[1,2]).^2));
     
     %%
     if HATPos > 101
@@ -43,6 +44,9 @@ try
     effort_costs = struct;
     
     muscle_exp_models = getExpenditureModels(model);
+    if isempty(muscle_exp_models)
+        error('No expenditure model in getCost');
+    end
     for i = 1:length(muscle_exp_models)
         effort_costs(i).name = (muscle_exp_models{i});
         effort_costs(i).metabolicEnergy = metabolicEnergy(:,i);
@@ -55,6 +59,7 @@ try
     opt_exp_model = inner_opt_settings.expenditure_model;
     costOfTransportForOpt =  effort_costs(contains(muscle_exp_models,opt_exp_model)).costOfTransport;
     if isempty(costOfTransportForOpt)
+        disp(effort_costs(:));
         error('Empty cost of transport')
     end
     
@@ -66,15 +71,33 @@ try
     end
     
     %% Calculate velocity cost
-    velCost = getVelMeasure(stepVelocities(:,1),stepTimes(:,1),min_velocity,max_velocity,initiation_steps) + ...
-        getVelMeasure(stepVelocities(:,2),stepTimes(:,2),min_velocity,max_velocity,initiation_steps);
-    
+%     velCost = getVelMeasure(stepVelocities(:,1),stepTimes(:,1),min_velocity,max_velocity,initiation_steps) + ...
+%         getVelMeasure(stepVelocities(:,2),stepTimes(:,2),min_velocity,max_velocity,initiation_steps);
+    [velCost,meanVel, ASIVel] = getVelMeasure2(HATPosVel,stepNumbers,min_velocity,max_velocity,initiation_steps);
     %     [distCost, dist_covered] = getDistMeasure(timeSetToRun,stepLengths,min_velocity,max_velocity,dist_slack);
     
     %% Calculate step info
     [meanStepLength, ASIStepLength] = getFilterdMean_and_ASI(stepLengths(:,1),stepLengths(:,2),initiation_steps);
     [meanStepTime, ASIStepTime] = getFilterdMean_and_ASI(stepTimes(:,1),stepTimes(:,2),initiation_steps);
-    [meanVel, ASIVel] = getFilterdMean_and_ASI(stepVelocities(:,1),stepVelocities(:,2),initiation_steps);
+%     [meanVel, ASIVel] = getFilterdMean_and_ASI(stepVelocities(:,1),stepVelocities(:,2),initiation_steps);
+    
+    %%
+    try
+        maxCMGTorque = max(CMGData.signals.values(:,8));
+        maxTotalTorque = abs(CMGData.time(idx),CMGData.signals.values(:,6));
+        maxCMGdeltaH = max(CMGData.signals.values(:,12));
+        controlRMSE = sqrt(sum((CMGData.signals.values(:,2)-CMGData.signals.values(:,3)).^2)); %/length(CMGData.signals.values(:,2))
+%         if maxCMGTorque == 0 
+%             cost = nan;
+%             disp('No trip');
+%             return
+%         end
+    catch 
+        maxCMGTorque = 0;
+        maxCMGdeltaH = 0;
+        controlRMSE = 0;
+    end
+    
     
     %%
     %     cost = 100000*timeCost  + 1000*(velCost + 0*distCost) + 0.1*costOfTransport;
@@ -84,8 +107,12 @@ try
     velFactor   = inner_opt_settings.velocityFactor;
     CoTFactor   = inner_opt_settings.CoTFactor;
     stopTFactor = inner_opt_settings.sumStopTorqueFactor;
+    CMGTorqueFactor = inner_opt_settings.CMGTorqueFactor;
+    CMGdeltaHFactor = inner_opt_settings.CMGdeltaHFactor;
+    ControlRMSEFactor = inner_opt_settings.ControlRMSEFactor;
     cost = timeFactor*timeCost  + velFactor*(velCost) + CoTFactor*costOfTransportForOpt ...
-                + stopTFactor*sumOfStopTorques;
+                + stopTFactor*sumOfStopTorques + CMGTorqueFactor*maxCMGTorque + CMGdeltaHFactor*maxCMGdeltaH ...
+                + ControlRMSEFactor*controlRMSE;
 
     if length(cost) ~= 1
         disp(cost);
@@ -99,7 +126,8 @@ try
         'E',struct('data',[effort_costs(:).metabolicEnergy]','minimize',1,'info',char({effort_costs(:).name})),'sumTstop',struct('data',sumOfStopTorques,'minimize',1,'info',''),...
         'HATPos',struct('data',HATPos,'minimize',0,'info',''),'vMean',struct('data',meanVel,'minimize',0,'info',''),'tStepMean',struct('data',meanStepTime,'minimize',2,'info',''),...
         'lStepMean',struct('data',meanStepLength,'minimize',2,'info',''),'lStepASI',struct('data',round(ASIStepLength,2),'minimize',2,'info',''),...
-        'tStepASI',struct('data',round(ASIStepTime,2),'minimize',2,'info',''),'velCost',struct('data',velCost,'minimize',1,'info',''),'timeVector',struct('data',time,'minimize',1,'info',''));
+        'tStepASI',struct('data',round(ASIStepTime,2),'minimize',2,'info',''),'velCost',struct('data',velCost,'minimize',1,'info',''),'timeVector',struct('data',time,'minimize',1,'info',''),...
+        'maxCMGTorque',struct('data',maxCMGTorque,'minimize',1,'info',''),'maxCMGdeltaH',struct('data',maxCMGdeltaH,'minimize',1,'info',''),'controlRMSE',struct('data',controlRMSE,'minimize',1,'info',''));
     %     dataStruct = struct('cost',struct('data',cost*rand,'minimize',1,'info',''),'costOfTransport',struct('data',[effort_costs(:).costOfTransport].*rand,'minimize',1,'info',{effort_costs(:).name}),...
     %         'metabolicEnergy',struct('data',[effort_costs(:).metabolicEnergy].*rand,'minimize',1,'info',{effort_costs(:).name}),'sumOfStopTorques',struct('data',sumOfStopTorques.*rand,'minimize',1,'info',''),...
     %         'HATPos',struct('data',HATPos.*rand,'minimize',0,'info',''),'vMean',struct('data',meanVel.*rand,'minimize',0,'info',''),'tStepMean',struct('data',meanStepTime.*rand,'minimize',2,'info',''),...
@@ -138,15 +166,20 @@ try
             HATPos                  = [exist_vars.HATPos;HATPos];
             GainsSave               = [exist_vars.GainsSave;GainsSave];
             timeCostSave            = [exist_vars.timeCostSave;timeCost];
+            maxCMGTorqueSave        = [exist_vars.maxCMGTorqueSave;maxCMGTorque];
+            maxCMGdeltaHSave        = [exist_vars.maxCMGdeltaHSave;maxCMGdeltaH];
         else
             costT = cost;
             metabolicEnergySave = metabolicEnergy;
             costOfTransportSave = [effort_costs.costOfTransport];
             timeCostSave            = [timeCost];
+            maxCMGTorqueSave    = [maxCMGTorque];
+            maxCMGdeltaHSave        = [maxCMGdeltaH];
+
         end
         
         save(filename,'metabolicEnergySave','meanVel','meanStepTime', 'meanStepLength','costOfTransportSave', ...
-            'costT','sumOfStopTorques','HATPos','GainsSave','ASIStepLength','ASIStepTime','ASIVel','timeCostSave')
+            'costT','maxCMGdeltaHSave','maxCMGTorqueSave','sumOfStopTorques','HATPos','GainsSave','ASIStepLength','ASIStepTime','ASIVel','timeCostSave')
     end
    
     
@@ -156,5 +189,6 @@ try
     
 % printOptInfo(dataStruct,true);
 catch ME
+    save('ErrorWorkspace');
     error('Error: %s\nIn %s.m line %d',ME.message,mfilename,ME.stack(1).line);
 end

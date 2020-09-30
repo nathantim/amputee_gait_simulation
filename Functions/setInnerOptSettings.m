@@ -7,6 +7,9 @@ inner_opt_settings.timeFactor = 100000;
 inner_opt_settings.velocityFactor = 100;
 inner_opt_settings.CoTFactor = 10; % cost of transport
 inner_opt_settings.sumStopTorqueFactor = 1E-2;
+inner_opt_settings.CMGTorqueFactor = 0;
+inner_opt_settings.CMGdeltaHFactor = 15;
+inner_opt_settings.ControlRMSEFactor = 0;
 
 inner_opt_settings.numTerrains = 6;
 inner_opt_settings.terrain_height = 0.015; % in m

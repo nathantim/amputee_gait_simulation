@@ -1,45 +1,62 @@
 % clc;
 %%
+% load('Results/Rough/Prosthetic2D_C3D.mat');
+% assignGains;
+
 tempstring = strsplit(opts.UserData,' ');
 dataFile = tempstring{end};
-InitialGuessFile = load(dataFile); 
-
-Gains = InitialGuessFile.Gains.*exp(bestever.x);
-% load('Results/Flat/GeyerHerrInit.mat');
-% load('Results/Flat/optandGeyerHerrInit.mat');
-% load('Results/Flat/SCONE.mat');
-% load('Results/Flat/v_0.5m_s.mat');
-% load('Results/Flat/v_0.8m_s.mat');
-% load('Results/Flat/v_1.1m_s.mat');
-% load('Results/Flat/v_1.4m_s.mat');
-% load('Results/Flat/optUmb10stanceswing1_3ms_prestim.mat');
-
-% compareenergies = load('compareEnergyCostTotal.mat');
+InitialGuess = load(dataFile); 
+% InitialGuess = InitialGuessFile.Gains([39:47,53:55,58,59,69,70,80,81,101:109,115:117,120:121,126,127,132,133]);
 
 % 
-% idx_minCost = find(compareenergies.cost==min(compareenergies.cost),1,'first');
-% Gains2 = compareenergies.Gains(idx_minCost,:)';
+idx1 = length(InitialGuess.GainsCoronal);
+idx2 = idx1 + length(InitialGuess.initConditionsCoronal);
+GainsCoronal = InitialGuess.GainsCoronal.*exp(bestever.x(1:idx1));
+initConditionsCoronal = InitialGuess.initConditionsCoronal.*exp(bestever.x((idx1+1):idx2));
+
+initConditionsSagittal = InitialGuess.initConditionsSagittal.*exp(bestever.x((idx2+1):end));
+GainsSagittal = InitialGuess.GainsSagittal;
+
+% compareenergies = load('compareEnergyCostTotal_Umb10_prost.mat');
+% 
+% % 
+% idx_minCost = find(round(compareenergies.cost,2)==93,1,'first');
+% Gains = compareenergies.Gains(idx_minCost,:)';
 % 
 
 %%
 % load('Results/RoughDist/SongGains_wC.mat');
 % load('Results/Flat/SongGains_02amp_wC.mat');
+% load('Results/Flat/Umb10nodimmuscleforce2D_C3D.mat');
+% load('Results/Rough/Prosthetic2D_C3D.mat');
+% load('Results/Rough/Umb10_0.9_ms_3D_partlyopt.mat');
 
-% load('Results/RoughDist/SongGains_wC_IC.mat');
-load('Results/Flat/SongGains_02_wC_IC.mat');
-% Gains(94) = 2*Gains(94);
-% Gains(101) = 1*Gains(101);
-% Gains(108) = 1*Gains(108);
-% Gains(109) = 0.01*Gains(109);
-assignGains;
-dt_visual = 1/50;
-setInit;
+% load('Results/Rough/Umb10_1.5cm_1.2ms_kneelim1_mstoptorque2.mat');
+% load('Results/Rough/Umb10_1.5cm_0.9ms_kneelim1_mstoptorque2_2Dopt.mat');
+
+
+
 
 %%
 model = 'NeuromuscularModel_3R60_3D';
 
+load_system(model);
+set_param(strcat(model,'/Body Mechanics Layer/Right Ankle Joint'),'SpringStiffness','3000','DampingCoefficient','1000');
+
 %%
 inner_opt_settings = setInnerOptSettings();
+assignGainsSagittal;
+assignGainsCoronal;
+
+
+dt_visual = 1/30;
+
+assignInit;
+[groundX, groundZ, groundTheta] = generateGround('flat');
+% [groundX, groundZ, groundTheta] = generateGround('const', .05,1);
+% [groundX, groundZ, groundTheta] = generateGround('const', inner_opt_settings.terrain_height, 1,true);
+%[groundX, groundZ, groundTheta] = generateGround('ramp');
+
 %open('NeuromuscularModel');
 % set_param(model,'SimulationMode','normal');
 % set_param(model,'StopTime','30');
@@ -52,8 +69,9 @@ toc;
 warning('on');
 
 %%
-[cost, dataStruct] = getCost(model,Gains,time,metabolicEnergy,sumOfStopTorques,HATPos,stepVelocities,stepTimes,stepLengths,0);
-printOptInfo(dataStruct);
+[~,dataStruct] = getCost(model,[],time,metabolicEnergy,sumOfStopTorques,HATPosVel,stepVelocities,stepTimes,stepLengths,stepNumbers,[],inner_opt_settings, 0);
+printOptInfo(dataStruct,true);
+
 %%
 % kinematics.angularData = angularData;
 % kinematics.GaitPhaseData = GaitPhaseData;
