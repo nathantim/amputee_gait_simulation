@@ -6,10 +6,10 @@
 tempstring = strsplit(opts.UserData,' ');
 dataFile = tempstring{end};
 InitialGuessFile = load(dataFile); 
-
-GainsSagittal = InitialGuessFile.GainsSagittal;
-GainsCoronal = InitialGuessFile.GainsCoronal.*exp(bestever.x);
-
+% 
+% GainsSagittal = InitialGuessFile.GainsSagittal;
+% GainsCoronal = InitialGuessFile.GainsCoronal.*exp(bestever.x);
+CMGGains = InitialGuessFile.CMGGains.*exp(bestever.x);
 
 % compareenergies = load('compareEnergyCostTotal_Umb10_prost.mat');
 % 
@@ -24,7 +24,7 @@ GainsCoronal = InitialGuessFile.GainsCoronal.*exp(bestever.x);
 
 % load('Results/Rough/Umb10_1.5cm_1.2ms_kneelim1_mstoptorque2.mat');
 % load('Results/Rough/Umb10_1.5cm_0.9ms_kneelim1_mstoptorque2_2Dopt.mat');
-
+load('Results/Rough/Umb10_1.5cm_1.2ms_kneelim1_mstoptorque2_CMGflat_4.mat');
 
 load('Results/Flat/SongGains_02_wC_IC.mat');
 
@@ -39,10 +39,11 @@ OptimParams;
 Prosthesis3R60Params;
 assignGainsSagittal;
 assignGainsCoronal;
-dt_visual = 1/30;
+dt_visual = -1;%1/50;
 set_param(strcat(model,'/Body Mechanics Layer/Right Ankle Joint'),'SpringStiffness','3000','DampingCoefficient','1000');
+set_param(strcat(model,'/Body Mechanics Layer/Obstacle'),'Commented','off');
 
-load('Results/optCMGgains_1_2ms_lowerDH_noKpKi.mat');
+% load('Results/optCMGgains_1_2ms_lowerDH_noKpKi_wLegClr.mat');
 assignCMGGains;
 % CMGParams;
 
@@ -58,6 +59,8 @@ setInitAmputee;
 % set_param(model,'SimulationMode','normal');
 % set_param(model,'StopTime','30');
 
+set_param(model, 'AccelVerboseBuild', 'off')
+save_system(model);
 %%
 warning('off');
 tic;
@@ -66,8 +69,9 @@ toc;
 warning('on');
 
 %%
-[cost, dataStruct] = getCost(model,[],time,metabolicEnergy,sumOfStopTorques,HATPosVel,stepVelocities,stepTimes,stepLengths,stepNumbers,CMGData,inner_opt_settings,0);
+[cost, dataStruct] = getCost(model,[],time,metabolicEnergy,sumOfStopTorques,HATPosVel,stepVelocities,stepTimes,stepLengths,stepNumbers,CMGData,selfCollision,inner_opt_settings,0);
 printOptInfo(dataStruct,true);
+% animPost3D(animData3D,'intact',false,'speed',1,'obstacle',true,'view','perspective','CMG',true,'createVideo',false,'info','wCMG_1.2ms_trip')
 
 %%
 % kinematics.angularData = angularData;

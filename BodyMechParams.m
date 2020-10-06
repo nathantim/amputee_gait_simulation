@@ -10,14 +10,17 @@
 %% obstacle
 obstacle_height = 0.08;
 obstacle_width = 0.15;
-obstacle_depth = 0.02;
+obstacle_depth = 0.05;
 % obstacle_x = 1.7; %no fall?
 % obstacle_x = 1.8; % fall
 % obstacle_x = 8.65; %fall for Prosthetic_2D 1.2 m/s
 % obstacle_x = 8.10; %fall for Prosthetic_2D 0.9 m/s
 % obstacle_x = 8.4; % fall
-obstacle_x = 7.9; %fall for Prosthetic_3D 1.2 m/s
-obstacle_y = -2.5; %fall for Prosthetic_2D 1.2 m/s
+obstacle_x = 8.78;  %8.75 %fall for Prosthetic_3D 1.2 m/s
+obstacle_y = -1.2; %fall for Prosthetic_2D 1.2 m/s
+obstacle_damping = 8E1;
+obstacle_stiffness = 5E1;
+
 %%
 % environment
 g = 9.80665;
@@ -90,16 +93,16 @@ shankProsthAnkleToCGDist = 0.25; % m
 shankCenterToCGDist = shankAnkleToCGDist - shankAnkleToCenterDist; %[m]
 shankAnkleToKneeDist = shankLength; %[m]
 shankMass = 3.5; %[kg]
-shankInertia_z = 0.05; %[kg*m^2] shank inertia with respect to axis ankle-CG-knee (scaled from other papers)
-shankInertia_x   = 0.003;
+shankInertia_x = 0.05; %[kg*m^2] shank inertia with respect to axis ankle-CG-knee (scaled from other papers)
 shankInertia_y   = 0.05;
+shankInertia_z   = 0.003;
 shankInertia = [shankInertia_x shankInertia_y shankInertia_z];
 
 % shank prosthesis
 shankProsthMass = 0.15; % kg
-shankProsthInertia_z = 0.002;
-shankProsthInertia_x =  1.2000e-04;
+shankProsthInertia_x = 0.002;
 shankProsthInertia_y = 0.002;
+shankProsthInertia_z =  1.2000e-04;
 shankProsthInertia = [shankProsthInertia_x shankProsthInertia_y shankProsthInertia_z];
 % -------------------------
 % 1.3 General Thigh Segment
@@ -115,17 +118,17 @@ thighCenterToCGDist = thighKneeToCG - thighKneeToCenterDist; %[m]
 thighKneeToHipDist = thighLength; %[m]
 thighMass  = 8.5; %[kg]
 thighAmpMass  = 7.5; %[kg] 8.5
-thighInertia_z = 0.15; %[kg*m^2]
-thighInertia_x   = 0.03;
-thighInertia_y   = 0.15;
+thighInertia_x   = 0.15;
+thighInertia_y = 0.15; %[kg*m^2]
+thighInertia_z   = 0.03;
 relThighSensorPos = 4/5;
 thighAmpInertia = [thighInertia_x thighInertia_y thighInertia_z];
 thighInertia = [thighInertia_x thighInertia_y thighInertia_z];
 
-thighInertiaLow = [thighInertia(1)*relThighSensorPos thighInertia(2)*(relThighSensorPos)^3  thighInertia(3)*(relThighSensorPos)^3];
-thighInertiaHigh = [thighInertia(1)*(1-relThighSensorPos) thighInertia(2)*(1-relThighSensorPos)^3  thighInertia(3)*(1-relThighSensorPos)^3];
-thighInertiaAmpLow = [thighInertia(1)*relThighSensorPos thighInertia(2)*(relThighSensorPos)^3  thighInertia(3)*(relThighSensorPos)^3];
-thighInertiaAmpHigh = [thighAmpInertia(1)*(1-relThighSensorPos) thighAmpInertia(2)*(1-relThighSensorPos)^3  thighAmpInertia(3)*(1-relThighSensorPos)^3];
+thighInertiaLow     = [thighInertia(1)*(relThighSensorPos)^3,      thighInertia(2)*(relThighSensorPos)^3,      thighInertia(3)*(relThighSensorPos)];
+thighInertiaHigh    = [thighInertia(1)*(1-relThighSensorPos)^3,    thighInertia(2)*(1-relThighSensorPos)^3,    thighInertia(3)*(1-relThighSensorPos)];
+thighInertiaAmpLow  = [thighAmpInertia(1)*(relThighSensorPos)^3,   thighAmpInertia(2)*(relThighSensorPos)^3,   thighAmpInertia(3)*(relThighSensorPos)];
+thighInertiaAmpHigh = [thighAmpInertia(1)*(1-relThighSensorPos)^3, thighAmpInertia(2)*(1-relThighSensorPos)^3, thighAmpInertia(3)*(1-relThighSensorPos)];
 
 % -----------------------------------------
 % 1.4 General Head-Arms-Trunk (HAT) Segment
@@ -140,9 +143,9 @@ hatLeftHipToCenterDistWidth = .1; %[m]
 hatLeftHipToCG = 0.35;
 hatCenterToCGDist = hatLeftHipToCG - hatHipToCenterDistLen; %[m]
 hatMass = 53.5; %[kg]
-hatInertia_z = 2.5; %[kg*m^2] 
-hatInertia_x = 1.0;
-hatInertia_y = 4.0;
+hatInertia_y = 2.5; %[kg*m^2] 
+hatInertia_z = 1.0;
+hatInertia_x = 4.0;
 hatInertia = [hatInertia_x hatInertia_y hatInertia_z];
 
 totalMass = 2*(footMass+shankMass+thighMass)+hatMass;

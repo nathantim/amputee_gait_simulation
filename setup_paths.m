@@ -11,7 +11,7 @@ addpath(mainfolderpath);
 
 addpath(genpath(strcat(mainfolderpath,'/Functions')));
 try
-    addpath(strcat(mainfolderpath,'/Animation'));
+    addpath(strcat(mainfolderpath,'/Animation3D'));
     addpath(strcat(mainfolderpath,'/Plot_figures'));
 catch
 end

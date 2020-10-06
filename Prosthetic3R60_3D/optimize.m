@@ -42,7 +42,7 @@ BodyMechParams;
 ControlParams;
 OptimParams;
 Prosthesis3R60Params;
-setInit;
+setInitAmputee;
  
 dt_visual = 1/30;
 [groundX, groundZ, groundTheta] = generateGround('flat');

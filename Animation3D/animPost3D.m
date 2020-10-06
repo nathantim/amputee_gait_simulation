@@ -122,7 +122,7 @@ end
     % joint radii (ankle, knee, and hip)
     rAJ  = 0.04; %[m]
     rKJ  = 0.05; %[m]
-    rHJ  = 0.075; %[m]
+    rHJ  = 0.078; %[m]
     rCMG = 0.04;
     % y-shift (arbitrary, since sagittal model displayed with 3D objects)
     yShift = 0;%0*rHJ; %[m]
@@ -150,18 +150,18 @@ end
     if obstacleFlag
         obstacle_height = 0.08;
         obstacle_width = 0.15;
-        obstacle_depth = 0.02;
-        xoffset = 8.85;
-        yoffset = -1;
-        zoffset = 0;
-        v = [xoffset, yoffset - obstacle_width/2, 0;...
-            xoffset, yoffset + obstacle_width/2, 0;...
-            xoffset, yoffset + obstacle_width/2, obstacle_height;...
-            xoffset, yoffset - obstacle_width/2, obstacle_height;...
-            xoffset + obstacle_depth, yoffset - obstacle_width/2, 0;...
-            xoffset + obstacle_depth, yoffset + obstacle_width/2, 0;...
-            xoffset + obstacle_depth, yoffset + obstacle_width/2, obstacle_height;...
-            xoffset + obstacle_depth, yoffset - obstacle_width/2, obstacle_height];
+        obstacle_depth = 0.05;
+        obstacle_x = 8.75;
+        obstacle_y = -1.2;
+        obstacle_z = 0;
+        v = [obstacle_x, obstacle_y - obstacle_width/2, 0;...
+            obstacle_x, obstacle_y + obstacle_width/2, 0;...
+            obstacle_x, obstacle_y + obstacle_width/2, obstacle_height;...
+            obstacle_x, obstacle_y - obstacle_width/2, obstacle_height;...
+            obstacle_x + obstacle_depth, obstacle_y - obstacle_width/2, 0;...
+            obstacle_x + obstacle_depth, obstacle_y + obstacle_width/2, 0;...
+            obstacle_x + obstacle_depth, obstacle_y + obstacle_width/2, obstacle_height;...
+            obstacle_x + obstacle_depth, obstacle_y - obstacle_width/2, obstacle_height];
         f = [ 1,2,3,4; ... %front
             5,6,7,8; ... % back
             1,5,8,4; ... % y- side
@@ -219,7 +219,7 @@ if videoFlag
         fileInfo = ['_',animInfo];
     end
     writerObj = VideoWriter(['SnapShots',filesep,dateNow,'-',intactInfo,fileInfo,'_',viewOpt],'MPEG-4');
-    writerObj.FrameRate = 1/frameRate;
+    writerObj.FrameRate = 1/frameRate*speed;
     open(writerObj);
 end
 %%%%%%%%%%
@@ -227,7 +227,7 @@ end
 %%%%%%%%%%
 x = zeros(animData.signals.dimensions,1);
 
-tframe = frameSkip/30/speed;
+tframe = frameSkip*frameRate/speed;
     for ii = 1:frameSkip:length(animData.time)
         tic;
         u = animData.signals.values(ii,:);
@@ -304,12 +304,14 @@ tframe = frameSkip/30/speed;
         end
         
         tpause = tframe - toc;
-%         pause(tpause)
+        pause(tpause)
     end
  
     if videoFlag
         close(writerObj);
     end
-
-    close(FigHndl);
+    try
+        close(FigHndl);
+    catch
+    end
 end

@@ -11,9 +11,11 @@ if b_oneGaitPhase
     
     meanDataInterp = mean(dataInterp,2);
     sdDataInterp = std(dataInterp,0,2);
+
 else
-    meanDataInterp = data;
+    meanDataInterp = data(stepStarts:stepEnds,:);
     sdDataInterp = [];
+    
 end
 
 % figure();
