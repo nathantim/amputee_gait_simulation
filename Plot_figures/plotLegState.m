@@ -1,4 +1,4 @@
-function plotLegState(GaitPhaseData,plotInfo,GaitInfo,saveInfo,legStateFigure,subplotStart,b_plotBothLegs)
+function plotLegState(GaitPhaseData,plotInfo,GaitInfo,saveInfo,legStateFigure,subplotStart,b_plotBothLegs,b_addTitle)
 if nargin < 5
     legStateFigure = [];
 end
@@ -15,6 +15,9 @@ end
 if nargin < 7
     b_plotBothLegs = true;
 end
+if nargin < 8
+    b_addTitle = true;
+end
 
 t = GaitPhaseData.time;
 %%
@@ -28,6 +31,30 @@ rightLegState   = GaitPhaseData.signals.values(:,2);
 [leftLegState_avg,leftLegState_sd] = interpData2perc(t,GaitInfo.tp,leftLegState,GaitInfo.start.leftV,GaitInfo.end.leftV,GaitInfo.b_oneGaitPhase);
 [rightLegState_avg,rightLegState_sd] = interpData2perc(t,GaitInfo.tp,rightLegState,GaitInfo.start.rightV,GaitInfo.end.rightV,GaitInfo.b_oneGaitPhase);
 
+% stance_perc = (find(round(leftLegState_avg)==2,1,'last')-1)*diff(GaitInfo.tp(1:2));
+% swing_perc = 100 - stance_perc;
+% early_stance_perc = (find(round(leftLegState_avg)==0,1,'last')-1)*diff(GaitInfo.tp(1:2));
+% late_stance_perc = (find(round(leftLegState_avg)==1,1,'last')-1)*diff(GaitInfo.tp(1:2))-early_stance_perc;
+% lift_off_perc = (find(round(leftLegState_avg)==2,1,'last')-1)*diff(GaitInfo.tp(1:2))-early_stance_perc-late_stance_perc;
+% swing_state_perc = (find(round(leftLegState_avg)==3,1,'last')-1)*diff(GaitInfo.tp(1:2))-early_stance_perc-late_stance_perc-lift_off_perc;
+% landing_perc = (find(round(leftLegState_avg)==4,1,'last')-1)*diff(GaitInfo.tp(1:2))-early_stance_perc-late_stance_perc-lift_off_perc-swing_state_perc;
+fprintf('Left leg: \nstance: %1.1f%%, swing: %1.1f%%\nearly-stance: %1.1f%%, late-stance: %1.1f%%, lift-off: %1.1f%%, swing-state: %1.1f%%, landing: %1.1f%% \n',...
+    GaitInfo.gaitstate.left.Stance,GaitInfo.gaitstate.left.Swing,GaitInfo.gaitstate.left.earlyStanceState,GaitInfo.gaitstate.left.lateStanceState,...
+    GaitInfo.gaitstate.left.liftoffState,GaitInfo.gaitstate.left.swingState,GaitInfo.gaitstate.left.landingState);
+
+if b_plotBothLegs
+%     stance_perc = (find(round(rightLegState_avg)==2,1,'last')-1)*diff(GaitInfo.tp(1:2));
+%     swing_perc = 100 - stance_perc;
+%     early_stance_perc = (find(round(rightLegState_avg)==0,1,'last')-1)*diff(GaitInfo.tp(1:2));
+%     late_stance_perc = (find(round(rightLegState_avg)==1,1,'last')-1)*diff(GaitInfo.tp(1:2))-early_stance_perc;
+%     lift_off_perc = (find(round(rightLegState_avg)==2,1,'last')-1)*diff(GaitInfo.tp(1:2))-early_stance_perc-late_stance_perc;
+%     swing_state_perc = (find(round(rightLegState_avg)==3,1,'last')-1)*diff(GaitInfo.tp(1:2))-early_stance_perc-late_stance_perc-lift_off_perc;
+%     landing_perc = (find(round(rightLegState_avg)==4,1,'last')-1)*diff(GaitInfo.tp(1:2))-early_stance_perc-late_stance_perc-lift_off_perc-swing_state_perc;
+    fprintf('Right leg: \nstance: %1.1f%%, swing: %1.1f%%\nearly-stance: %1.1f%%, late-stance: %1.1f%%, lift-off: %1.1f%%, swing-state: %1.1f%%, landing: %1.1f%% \n',...
+    GaitInfo.gaitstate.right.Stance,GaitInfo.gaitstate.right.Swing,GaitInfo.gaitstate.right.earlyStanceState,GaitInfo.gaitstate.right.lateStanceState,...
+    GaitInfo.gaitstate.right.liftoffState,GaitInfo.gaitstate.right.swingState,GaitInfo.gaitstate.right.landingState);
+ 
+end
 if ~plotInfo.showSD
     leftLegState_sd = [];
     rightLegState_sd = [];    
@@ -64,10 +91,12 @@ end
  %     stairs(legStatePlot,t_left_perc,round(leftLegState_avg));
  if b_plotBothLegs
      LegHandles(2,1) = stairs(legStatePlot,GaitInfo.tp,round(rightLegState_avg));
-     xlabel(legStatePlot,'%_{stride}','interpreter','tex');
+     xlabel(legStatePlot,'gait cycle ($\%$)');
  end
  %     stairs(legStatePlot,t_right_perc,rightLegState);
- title(legStatePlot,'Leg state')
+ if b_addTitle
+     title(legStatePlot,'Leg state');
+ end
  yticks(legStatePlot,0:1:4);
  yticklabels(legStatePlot,{'EarlyStance','LateStance','Lift-off','Swing','Landing'})
 % if b_oneGaitPhase

@@ -17,7 +17,7 @@ try
     if ~isempty(dataFieldnames) && length(dataFieldnames)>4 && data.timeCost.data == 0 
         % updateFigure = findobj('type','figure','Name','Optimization Parameters');
         gaitKinematics = findobj('type','figure','Name','Gait Kinematics');
-        musclesStimulation = findobj('type','figure','Name','Muscle stimulation levels');
+        musclesStimulation = findobj('type','figure','Name','Muscle activation levels');
         GRFData = findobj('type','figure','Name','Ground reaction forces');
         CMGData = findobj('type','figure','Name','CMG data');
         
@@ -35,7 +35,7 @@ try
         if isempty(musclesStimulation) || ~isvalid(musclesStimulation)
             musclesStimulation = figure();
             %     musclesStimulation.HitTest = 'off';
-            musclesStimulation.Name = 'Muscle stimulation levels';
+            musclesStimulation.Name = 'Muscle activation levels';
         end
         if isempty(GRFData) || ~isvalid(GRFData)
             GRFData = figure();
@@ -73,8 +73,7 @@ try
         plotInfo.fillProp_entries = [plotInfo.fillVal,faceAlpha,plotInfo.fillVal,plotInfo.edgeVec];
         t = data.kinematics.angularData.time;
         GaitInfo = getPartOfGaitData(1,data.kinematics.GaitPhaseData,t,data.kinematics.stepTimes);
-        GaitInfo.tp = (0:0.5:100)';
-        GaitInfo.b_oneGaitPhase = true;
+
         saveInfo.b_saveFigure = 0;
         saveInfo.info = data.modelType;
         
@@ -107,14 +106,15 @@ try
             clf(GRFData);
             sgtitle(GRFData,['Ground reaction forces for cost of ',num2str(round(data.optimCost,1)),', with $v_{mean}$ = ', num2str(round(data.vMean.data,1)),'m/s','. $\tau_{stop}$ = ', num2str(data.sumTstop.data)]);
             plotGRF(data.kinematics.GRFData,plotInfo,GaitInfo,saveInfo,GRFData);
+            warning('on');
             
             if ~isempty(CMGData)
                 clf(CMGData);
                 sgtitle(CMGData,['CMG data for cost of ',num2str(round(data.optimCost,1)),', with $v_{mean}$ = ', num2str(round(data.vMean.data,1)),'m/s','. $\tau_{stop}$ = ', num2str(data.sumTstop.data)]);
-                plotCMGData(data.kinematics.CMGData,saveInfo,CMGData);
+                plotCMGData(data.kinematics.CMGData,saveInfo,CMGData,false);
             end
  
-            warning('on');
+            
         end
         %         drawnow;
     else

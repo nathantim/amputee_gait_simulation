@@ -1,23 +1,26 @@
-function plotJointTorqueData(jointTorquesData,plotInfo,GaitInfo,saveInfo,torqueDataFigure,subplotStart,b_plotBothLegs)
+function [plotHandles,axesHandles] = plotJointTorqueData(jointTorquesData,plotInfo,GaitInfo,saveInfo,torqueDataFigure,axesHandles,subplotStart,legToPlot,b_addTitle)
 if nargin < 5
     torqueDataFigure = [];
 end
-if nargin < 6 || isempty(subplotStart)
+if nargin < 6
+    axesHandles = [];
+end
+if nargin < 7 || isempty(subplotStart)
 %     subplotStart = 141;
-    subplotStart = 411;
-    subplotStart = dec2base(subplotStart,10) - '0';
+    subplotStart = [1 4 1];
     setLegend = true;
 else
     setLegend = false;
 end
-if nargin < 7
-    b_plotBothLegs = true;
+if nargin < 8
+    legToPlot = 'both';
 end
-t = jointTorquesData.time;
+if nargin < 9
+    b_addTitle = true;
+end
+t = GaitInfo.t;
 
 %%
-t_left_perc = GaitInfo.time.left_perc;
-t_right_perc = GaitInfo.time.right_perc;
 jointTorquesData.signals.values = jointTorquesData.signals.values./getBodyMass();
 
 %%
@@ -66,33 +69,56 @@ if GaitInfo.b_oneGaitPhase && plotInfo.plotWinterData
       hipTorqueWinter_avg,hipTorqueWinter_sd,kneeTorqueWinter_avg,kneeTorqueWinter_sd,ankleTorqueWinter_avg,ankleTorqueWinter_sd] = getWinterData(GaitInfo.WinterDataSpeed);
 end
 %%
+ plotHandlesLeft = [];
+ plotHandlesRight = [];
+
 if ~GaitInfo.b_oneGaitPhase
     GaitInfo.tp = jointTorquesData.time;
 end
-[plotHandlesLeft,axesHandles] = plotTorqueDataInFigure(torqueDataFig,[],GaitInfo.tp,LhipTorque_avg,LhipTorque_sd,LhipRollTorque_avg,LhipRollTorque_sd,LkneeTorque_avg,LkneeTorque_sd,LankleTorque_avg,LankleTorque_sd,subplotStart,GaitInfo.b_oneGaitPhase);
-if b_plotBothLegs
-    [plotHandlesRight,axesHandles] = plotTorqueDataInFigure(torqueDataFig,axesHandles,GaitInfo.tp,RhipTorque_avg,RhipTorque_sd,RhipRollTorque_avg,RhipRollTorque_sd,RkneeTorque_avg,RkneeTorque_sd,RankleTorque_avg,RankleTorque_sd,subplotStart,GaitInfo.b_oneGaitPhase);
+if contains(legToPlot,'left') || contains(legToPlot,'both')
+[plotHandlesLeft,axesHandles] = plotTorqueDataInFigure(torqueDataFig,axesHandles,GaitInfo.tp,LhipTorque_avg,LhipTorque_sd,LhipRollTorque_avg,LhipRollTorque_sd,LkneeTorque_avg,LkneeTorque_sd,LankleTorque_avg,LankleTorque_sd,subplotStart,GaitInfo.b_oneGaitPhase,b_addTitle);
+end
+if contains(legToPlot,'right') || contains(legToPlot,'both')
+    [plotHandlesRight,axesHandles] = plotTorqueDataInFigure(torqueDataFig,axesHandles,GaitInfo.tp,RhipTorque_avg,RhipTorque_sd,RhipRollTorque_avg,RhipRollTorque_sd,RkneeTorque_avg,RkneeTorque_sd,RankleTorque_avg,RankleTorque_sd,subplotStart,GaitInfo.b_oneGaitPhase,false);
 end
 if GaitInfo.b_oneGaitPhase && plotInfo.plotWinterData
     [plotHandlesWinter,axesHandles] = plotTorqueDataInFigure(torqueDataFig,axesHandles,timeWinter,hipTorqueWinter_avg,hipTorqueWinter_sd,[],[],kneeTorqueWinter_avg,kneeTorqueWinter_sd, ...
         ankleTorqueWinter_avg,ankleTorqueWinter_sd,subplotStart);
 end
-
+if setLegend
+    if GaitInfo.b_oneGaitPhase
+        xlabel(axesHandles(end),'gait cycle ($\%$)');
+    else
+        xlabel(axesHandles(end),'s');
+    end
+end
 
 
 %%
-% set(flipud(legStatePlot.Children),plotInfo.plotProp,plotInfo.plotProp_entries(1:2,:));
+if contains(legToPlot,'both')
+    plotHandles = [plotHandlesLeft, plotHandlesRight];
+elseif contains(legToPlot,'left')
+    plotHandles = [plotHandlesLeft, plotHandlesRight];
+elseif contains(legToPlot,'right')
+    plotHandles = [plotHandlesLeft, plotHandlesRight];
+    
+else
+    error('Unknown leg');
+end
 
 
-for i= 1:size(plotHandlesLeft,1)
-    set(plotHandlesLeft(i,1),plotInfo.plotProp,plotInfo.plotProp_entries(1,:));
-    if b_plotBothLegs
-        set(plotHandlesRight(i,1),plotInfo.plotProp,plotInfo.plotProp_entries(2,:));
+for i= 1:max(size(plotHandlesLeft,1),size(plotHandlesRight,1))
+    
+    set(plotHandles(i,1),plotInfo.plotProp,plotInfo.plotProp_entries(1,:));
+    
+    if size(plotHandles,2)>2
+        set(plotHandles(i,3),plotInfo.plotProp,plotInfo.plotProp_entries(2,:));
     end
+    
     if plotInfo.showSD && GaitInfo.b_oneGaitPhase
-        set(plotHandlesLeft(i,2),plotInfo.fillProp,plotInfo.fillProp_entries(1,:));
-        if b_plotBothLegs
-            set(plotHandlesRight(i,2),plotInfo.fillProp,plotInfo.fillProp_entries(2,:));
+        set(plotHandles(i,2),plotInfo.fillProp,plotInfo.fillProp_entries(1,:));
+        if size(plotHandles,2)>2
+            set(plotHandles(i,4),plotInfo.fillProp,plotInfo.fillProp_entries(2,:));
         end
     end
     if GaitInfo.b_oneGaitPhase && plotInfo.plotWinterData && ~isnan(plotHandlesWinter(i,1))
@@ -107,14 +133,14 @@ end
 if setLegend && GaitInfo.b_oneGaitPhase && contains(saveInfo.info,'prosthetic') && plotInfo.plotWinterData 
     leg = legend([plotHandlesLeft(2,1),plotHandlesRight(2,1),plotHandlesWinter(2,1)],'Intact leg','Prosthetic leg', 'Winter data');
 %     leg = legend('Intact leg','Prosthetic leg',char(strcat(string(GaitInfo.WinterDataSpeed), ' gait Winter')) );
-elseif setLegend && GaitInfo.b_oneGaitPhase && plotInfo.plotWinterData && ~b_plotBothLegs
+elseif setLegend && GaitInfo.b_oneGaitPhase && plotInfo.plotWinterData && ~legToPlot
     leg = legend([plotHandlesLeft(2,1),plotHandlesRight(2,1),plotHandlesWinter(2,1)],'Model', 'Winter data');
 elseif setLegend && GaitInfo.b_oneGaitPhase && plotInfo.plotWinterData 
     leg = legend([plotHandlesLeft(2,1),plotHandlesRight(2,1),plotHandlesWinter(2,1)],'Left leg','Right leg', 'Winter data');
 elseif setLegend && contains(saveInfo.info,'prosthetic')
     leg = legend([plotHandlesLeft(2,1),plotHandlesRight(2,1)],'Intact leg','Prosthetic leg');
 %     leg = legend('Intact leg','Prosthetic leg');
-elseif setLegend && ~b_plotBothLegs
+elseif setLegend && ~legToPlot
     leg = [];
 elseif setLegend 
     leg = legend([plotHandlesLeft(2,1),plotHandlesRight(2,1)],'Left leg','Right leg');

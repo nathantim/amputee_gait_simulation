@@ -1,8 +1,24 @@
-function plotHealthyProstheticData(healthyData,prostheticData,info,b_saveTotalFig)
+function plotHealthyProstheticData(healthyData,prostheticData,prostheticCMGData,info,b_saveTotalFig)
 showSD = false;
 plotInOneFigure = true;
 plotWinterData = false;
+
+%For debug purposes
+b_plotLegState    = 0;
+b_plotAngles      = 0;
+b_plotTorques     = 0;
+b_plotPowers      = 0;
+b_plotGRF         = 1;
+b_plotMuscle      = 0;
+
 %%
+legStateFig     = [];
+angularDataFig  = [];
+torqueDataFig   = [];
+powerDataFig    = [];
+GRFDataFig      = [];
+musculoDataFig  = [];
+
 set(0, 'DefaultAxesTitleFontSizeMultiplier',1.5);
 set(0, 'DefaultAxesLabelFontSizeMultiplier',1.5);
 
@@ -14,17 +30,15 @@ b_oneGaitPhase = true;
 if b_saveTotalFig
     saveInfo.type = {'eps'};%{'jpeg','eps','emf'};
 end
-if nargin < 4
+if nargin < 5
     b_saveTotalFig = false;
 end
 saveInfo.info = info;
 
 
 healthyGaitInfo = getPartOfGaitData(b_oneGaitPhase,healthyData.GaitPhaseData,healthyData.angularData.time,healthyData.stepTimes);
-healthyGaitInfo.tp = (0:0.5:100)';
 prostheticGaitInfo = getPartOfGaitData(b_oneGaitPhase,prostheticData.GaitPhaseData,prostheticData.angularData.time,prostheticData.stepTimes);
-prostheticGaitInfo.tp = (0:0.5:100)';
-
+prostheticCMGGaitInfo = getPartOfGaitData(b_oneGaitPhase,prostheticCMGData.GaitPhaseData,prostheticCMGData.angularData.time,prostheticCMGData.stepTimes);
 
 %%
 plotInfo.showSD = showSD;%true;
@@ -46,138 +60,168 @@ plotInfo.fillProp_entries = [plotInfo.fillVal,faceAlpha,plotInfo.fillVal,plotInf
 set(0, 'DefaultAxesFontSize',20);
 
 %% Leg state
-legStateFig = figure();
-set(legStateFig, 'Position',[10,100,950,750]);
-subplotStart = [2 1 1];
-plotLegState(healthyData.GaitPhaseData,plotInfo,healthyGaitInfo,saveInfo,legStateFig,subplotStart,false)
-pos=get(gca,'position');  % retrieve the current values
-pos(1)= 2* pos(1);        % try reducing width 10%
-pos(4)= 0.8* pos(4);        % try reducing width 10%
-pos(3)= 0.8* pos(3);        % try reducing width 10%
-set(gca,'position',pos);
-
-subplotStart(3) = subplotStart(3)+subplotStart(2);
-plotLegState(prostheticData.GaitPhaseData,plotInfo,prostheticGaitInfo,saveInfo,legStateFig,subplotStart,true)
-
-pos=get(gca,'position');  % retrieve the current values
-pos(1)= 2* pos(1);        % try reducing width 10%
-pos(2)= 1.3* pos(2);        % try reducing width 10%
-pos(4)= 0.8* pos(4);        % try reducing width 10%
-pos(3)= 0.8* pos(3);        % try reducing width 10%
-set(gca,'position',pos);
-
-htxt = text(gca,-28,6,'Healthy model','FontSize',26,'Rotation',90);
-set(htxt,'Position',[-28, 6, 0]);
-ptxt = text(gca,-28,-0.3,'Amputee model','FontSize',26,'Rotation',90);
-set(ptxt,'Position',[-28, -0.3, 0]);
-atxt = text(gca,-38,8,'(a)','FontSize',20);
-set(atxt,'Position',[-38, 8, 0]);
-btxt = text(gca,-38,2,'(b)','FontSize',20);
-set(btxt,'Position',[-38, 2, 0]);
-legend('Intact leg','Prosthetic leg','FontSize', 21,'Location','southeast'); %'Position',[0.515 0.03 0.075 0.07]
+if b_plotLegState
+    legStateFig = figure();
+    set(legStateFig, 'Position',[10,100,950,750]);
+    subplotStart = [3 1 1];
+    fprintf('\n<strong>Healthy model:</strong> \n');
+    plotLegState(healthyData.GaitPhaseData,plotInfo,healthyGaitInfo,saveInfo,legStateFig,subplotStart,false,true)
+    pos=get(gca,'position');  % retrieve the current values
+    pos(1)= 2* pos(1);        % try reducing width 10%
+    % pos(4)= 0.8* pos(4);        % try reducing width 10%
+    pos(3)= 0.8* pos(3);        % try reducing width 10%
+    set(gca,'position',pos);
+    
+    subplotStart(3) = subplotStart(3)+subplotStart(2);
+    fprintf('<strong>Amputee model:</strong> \n');
+    plotLegState(prostheticData.GaitPhaseData,plotInfo,prostheticGaitInfo,saveInfo,legStateFig,subplotStart,true,false)
+    
+    pos=get(gca,'position');  % retrieve the current values
+    pos(1)= 2* pos(1);        % try reducing width 10%
+    % pos(2)= 1.3* pos(2);        % try reducing width 10%
+    % pos(4)= 0.8* pos(4);        % try reducing width 10%
+    pos(3)= 0.8* pos(3);        % try reducing width 10%
+    set(gca,'position',pos);
+    
+    subplotStart(3) = subplotStart(3)+subplotStart(2);
+    fprintf('<strong>Amputee model with CMG:</strong> \n');
+    plotLegState(prostheticCMGData.GaitPhaseData,plotInfo,prostheticCMGGaitInfo,saveInfo,legStateFig,subplotStart,true,false)
+    
+    pos=get(gca,'position');  % retrieve the current values
+    pos(1)= 2* pos(1);        % try reducing width 10%
+    % pos(2)= 1.3* pos(2);        % try reducing width 10%
+    % pos(4)= 0.8* pos(4);        % try reducing width 10%
+    pos(3)= 0.8* pos(3);        % try reducing width 10%
+    set(gca,'position',pos);
+    
+    htxt = text(gca,-28,6.3,'\underline{Healthy model}','interpreter','latex','FontSize',26,'Rotation',90);
+    set(htxt,'Position',[-28, 6.3, 0]);
+    ptxt = text(gca,-28,-0.3,'\underline{Amputee model}','interpreter','latex','FontSize',26,'Rotation',90);
+    set(ptxt,'Position',[-28, -0.3, 0]);
+    atxt = text(gca,-38,8,'(a)','FontSize',20);
+    set(atxt,'Position',[-38, 8, 0]);
+    btxt = text(gca,-38,2,'(b)','FontSize',20);
+    set(btxt,'Position',[-38, 2, 0]);
+    legend('Intact leg','Prosthetic leg','FontSize', 21,'Location','southeast'); %'Position',[0.515 0.03 0.075 0.07]
+    
+end
 
 %% Angular data
-angularDataFig = figure();
-set(angularDataFig, 'Position',[10,100,1700,800]);
-subplotStart = [2 4 1];
-plotAngularData(healthyData.angularData,healthyData.GaitPhaseData,plotInfo,healthyGaitInfo,saveInfo,angularDataFig,subplotStart,false,false);
-subplotStart(3) = subplotStart(3)+subplotStart(2);
-plotAngularData(prostheticData.angularData,prostheticData.GaitPhaseData,plotInfo,prostheticGaitInfo,saveInfo,angularDataFig,subplotStart,true,false);
-
-htxt = text(gca,-500,32,'Healthy model','FontSize',26,'Rotation',90);
-set(htxt,'Position',[-500, 32, 0]);
-ptxt = text(gca,-500,-40,'Amputee model','FontSize',26,'Rotation',90);
-set(ptxt,'Position',[-500, -40, 0]);
-atxt = text(gca,-535,55,'(a)','FontSize',20);
-set(atxt,'Position',[-535, 55, 0]);
-btxt = text(gca,-535,-15,'(b)','FontSize',20);
-set(btxt,'Position',[-535, -15, 0]);
-legend('Intact leg','Prosthetic leg','FontSize', 22,'Position',[0.50 0.02 0.075 0.07]);
+if b_plotAngles
+    angularDataFig = figure();
+    set(angularDataFig, 'Position',[10,100,1300,600]); % two
+    % set(angularDataFig, 'Position',[10,100,1700,800]); % three
+    subplotStart = [2 4 1];
+    [plotHealthyAngle, axesHealthyAngle] = plotAngularData(healthyData.angularData,healthyData.GaitPhaseData,plotInfo,healthyGaitInfo,saveInfo,angularDataFig,[],subplotStart,'left',false,true);
+    subplotStart(3) = subplotStart(3)+subplotStart(2);
+    [plotProstheticAngle, axesProstheticAngle] = plotAngularData(prostheticData.angularData,prostheticData.GaitPhaseData,plotInfo,prostheticGaitInfo,saveInfo,angularDataFig,[],subplotStart,'both',false,false);
+    % subplotStart(3) = subplotStart(3)+subplotStart(2);
+    % [plotCMGAngle, axesCMGAngle] = plotAngularData(prostheticCMGData.angularData,prostheticCMGData.GaitPhaseData,plotInfo,prostheticCMGGaitInfo,saveInfo,angularDataFig,[],subplotStart,'both',false,false);
+    
+    ylabelPosAngle = alignYlabels([axesHealthyAngle(1),axesProstheticAngle(1)]);%,axesCMGAngle(1)]);
+    axesAngle = [axesHealthyAngle,axesProstheticAngle];%,axesCMGAngle];
+    
+    xlabel(axesAngle(end),'gait cycle ($\%$) ');
+    addInfoTextFigure('Healthy model','a',axesHealthyAngle(1),ylabelPosAngle);
+    addInfoTextFigure('Amputee model','b',axesProstheticAngle(1),ylabelPosAngle);
+    % addInfoTextFigure('Amputee model CMG','c',axesCMGAngle(1),ylabelPosAngle);
+    
+    % legend(plotProstheticAngle(end,[1,3]),'Intact leg','Prosthetic leg','FontSize', 21,'Location','northeastoutside');
+    legend(plotProstheticAngle(end,[1,3]),'Intact leg','Prosthetic leg','FontSize', 21,'Position',[0.80 0.465 0.075 0.07]);  %two
+    % legend(plotProstheticAngle(end,[1,3]),'Intact leg','Prosthetic leg','FontSize', 21,'Position',[0.89 0.425 0.075 0.07]);  % three
+end
 
 %% Torque data
-torqueDataFig = figure();
-set(torqueDataFig, 'Position',[10,100,1700,800]);
-subplotStart = [2 4 1];
-plotJointTorqueData(healthyData.jointTorquesData,plotInfo,healthyGaitInfo,saveInfo,torqueDataFig,subplotStart,false);
-subplotStart(3) = subplotStart(3)+subplotStart(2);
-plotJointTorqueData(prostheticData.jointTorquesData,plotInfo,prostheticGaitInfo,saveInfo,torqueDataFig,subplotStart,true);
-
-htxt = text(gca,-515,2.9,'Healthy model','FontSize',26,'Rotation',90);
-set(htxt,'Position',[-515, 2.9, 0]);
-ptxt = text(gca,-515,-0.1,'Amputee model','FontSize',26,'Rotation',90);
-set(ptxt,'Position',[-515, -0.1, 0]);
-atxt = text(gca,-550,3.8,'(a)','FontSize',20);
-set(atxt,'Position',[-550, 3.8, 0]);
-btxt = text(gca,-550,1,'(b)','FontSize',20);
-set(btxt,'Position',[-550, 1.0, 0]);
-legend('Intact leg','Prosthetic leg','FontSize', 22,'Position',[0.50 0.02 0.075 0.07]);
+if b_plotTorques
+    torqueDataFig = figure();
+    set(torqueDataFig, 'Position',[10,100,1700,800]);
+    subplotStart = [2 4 1];
+    [plotHealthyTorque,axesHealthyTorque] = plotJointTorqueData(healthyData.jointTorquesData,plotInfo,healthyGaitInfo,saveInfo,torqueDataFig,[],subplotStart,'left',true);
+    subplotStart(3) = subplotStart(3)+subplotStart(2);
+    [plotProstheticTorque,axesProstheticTorque] = plotJointTorqueData(prostheticData.jointTorquesData,plotInfo,prostheticGaitInfo,saveInfo,torqueDataFig,[],subplotStart,'both',false);
+    
+    ylabelPosTorque = alignYlabels([axesHealthyTorque(1),axesProstheticTorque(1)]);%,axesCMGAngle(1)]);
+    axesTorque = [axesHealthyTorque,axesProstheticTorque];%,axesCMGAngle];
+    xlabel(axesTorque(end),'gait cycle ($\%$) ');
+    
+    addInfoTextFigure('Healthy model','a',axesHealthyTorque(1),ylabelPosTorque);
+    addInfoTextFigure('Amputee model','b',axesProstheticTorque(1),ylabelPosTorque);
+    
+    legend(plotProstheticTorque(end,[1,3]),'Intact leg','Prosthetic leg','FontSize', 21,'Position',[0.81 0.46 0.075 0.07]);
+    % legend(plotProstheticAngle(end,[1,3]),'Intact leg','Prosthetic leg','FontSize', 21,'Position',[0.80 0.465 0.075 0.07]);  %two
+end
 
 %% Power data
-powerDataFig = figure();
-set(powerDataFig, 'Position',[10,100,1700,800]);
-subplotStart = [2 4 1];
-plotJointPowerData(healthyData.angularData,healthyData.jointTorquesData,plotInfo,healthyGaitInfo,saveInfo,powerDataFig,subplotStart,false);
-subplotStart(3) = subplotStart(3)+subplotStart(2);
-plotJointPowerData(prostheticData.angularData,prostheticData.jointTorquesData,plotInfo,prostheticGaitInfo,saveInfo,powerDataFig,subplotStart,true);
-
-htxt = text(gca,-515,6.1,'Healthy model','FontSize',26,'Rotation',90);
-set(htxt,'Position',[-490, 6.1, 0]);
-ptxt = text(gca,-515,-3,'Amputee model','FontSize',26,'Rotation',90);
-set(ptxt,'Position',[-490, -2.3, 0]);
-atxt = text(gca,-525,8.8,'(a)','FontSize',20);
-set(atxt,'Position',[-525, 8.8, 0]);
-btxt = text(gca,-525,0.3,'(b)','FontSize',20);
-set(btxt,'Position',[-525, 0.3, 0]);
-legend('Intact leg','Prosthetic leg','FontSize', 22,'Position',[0.50 0.02 0.075 0.07]);
+if b_plotPowers
+    powerDataFig = figure();
+    set(powerDataFig, 'Position',[10,100,1700,800]);
+    subplotStart = [2 4 1];
+    [plotHealthyPower,axesHealthyPower] = plotJointPowerData(healthyData.angularData,healthyData.jointTorquesData,plotInfo,healthyGaitInfo,saveInfo,powerDataFig,[],subplotStart,'left',true);
+    subplotStart(3) = subplotStart(3)+subplotStart(2);
+    [plotProstheticPower,axesProstheticPower] = plotJointPowerData(prostheticData.angularData,prostheticData.jointTorquesData,plotInfo,prostheticGaitInfo,saveInfo,powerDataFig,[],subplotStart,'both',false);
+    
+    ylabelPosPower = 0.9*alignYlabels([axesHealthyPower(1),axesProstheticPower(1)]);%,axesCMGAngle(1)]);
+    axesPower = [axesHealthyPower,axesProstheticPower];%,axesCMGAngle];
+    xlabel(axesPower(end),'gait cycle ($\%$) ');
+    
+    xlabel(axesPower(end),'gait cycle ($\%$) ');
+    addInfoTextFigure('Healthy model','a',axesHealthyPower(1),ylabelPosPower);
+    addInfoTextFigure('Amputee model','b',axesProstheticPower(1),ylabelPosPower);
+    
+    legend(plotProstheticPower(end,[1,3]),'Intact leg','Prosthetic leg','FontSize', 21,'Position',[0.81 0.46 0.075 0.07]);
+end
 
 %% GRF data
-GRFDataFig = figure();
-set(GRFDataFig, 'Position',[10,100,1500,800]);
-subplotStart = [2 2 1];
-plotGRF(healthyData.GRFData,plotInfo,healthyGaitInfo,saveInfo,GRFDataFig,subplotStart,false);
-subplotStart(3) = subplotStart(3)+subplotStart(2);
-plotGRF(prostheticData.GRFData,plotInfo,prostheticGaitInfo,saveInfo,GRFDataFig,subplotStart,true);
-
-htxt = text(gca,-155,27,'Healthy model','FontSize',26,'Rotation',90);
-set(htxt,'Position',[-155, 27, 0]);
-ptxt = text(gca,-155,1,'Amputee model','FontSize',26,'Rotation',90);
-set(ptxt,'Position',[-155, -1, 0]);
-atxt = text(gca,-170,36,'(a)','FontSize',20);
-set(atxt,'Position',[-170, 36, 0]);
-btxt = text(gca,-170,2,'(b)','FontSize',20);
-set(btxt,'Position',[-170, 8, 0]);
-
-legend('Intact leg','Prosthetic leg','FontSize', 22,'Position',[0.45 0.02 0.075 0.07]);
+if b_plotGRF
+    GRFDataFig = figure();
+    set(GRFDataFig, 'Position',[10,100,1400,800]);
+    subplotStart = [2 3 1];
+    [plotHealthyGRF,axesHealthyGRF] = plotGRF(healthyData.GRFData,plotInfo,healthyGaitInfo,saveInfo,GRFDataFig,[],subplotStart,'left',true);
+    subplotStart(3) = subplotStart(3)+subplotStart(2);
+    [plotProstheticGRF,axesProstheticGRF] = plotGRF(prostheticData.GRFData,plotInfo,prostheticGaitInfo,saveInfo,GRFDataFig,[],subplotStart,'both',false);
+    
+    
+    ylabelPosGRF = 1.1*alignYlabels([axesHealthyGRF(1),axesProstheticGRF(1)]);%,axesCMGAngle(1)]);
+    axesGRF = [axesHealthyGRF,axesProstheticGRF];%,axesCMGAngle];
+    xlabel(axesGRF(end),'gait cycle ($\%$) ');
+    
+    xlabel(axesGRF(end),'gait cycle ($\%$) ');
+    addInfoTextFigure('Healthy model','a',axesHealthyGRF(1),ylabelPosGRF);
+    addInfoTextFigure('Amputee model','b',axesProstheticGRF(1),ylabelPosGRF);
+    
+    legend(plotProstheticGRF(end,[1,3]),'Intact leg','Prosthetic leg','FontSize', 21,'Position',[0.77 0.36 0.075 0.07]);
+end
 
 %% Musculo data
-% plotInfo.lineWidthProp = {4;4;4};
-set(0, 'DefaultAxesFontSize',18);
-musculoDataFig = figure();
-set(musculoDataFig, 'Position',[10,100,1900,600]);
-subplotStart = [2 11 1];
-plotMusculoData(healthyData.musculoData,plotInfo,healthyGaitInfo,saveInfo,musculoDataFig,subplotStart,false);
-subplotStart(3) = subplotStart(3)+subplotStart(2);
-plotMusculoData(prostheticData.musculoData,plotInfo,prostheticGaitInfo,saveInfo,musculoDataFig,subplotStart,true);
-
-htxt = text(gca,-1560,1.65,'Healthy model','FontSize',25,'Rotation',90);
-set(htxt,'Position',[-1560, 1.65, 0]);
-ptxt = text(gca,-1560,-0.2,'Amputee model','FontSize',25,'Rotation',90);
-set(ptxt,'Position',[-1560, -0.2, 0]);
-atxt = text(gca,-1650,2.4,'(a)','FontSize',20);
-set(atxt,'Position',[-1650, 2.4, 0]);
-btxt = text(gca,-1650,0.6,'(b)','FontSize',20);
-set(btxt,'Position',[-1650, 0.6, 0]);
-
-legend('Intact leg','Prosthetic leg','FontSize', 20,'Position',[0.50 0.045 0.075 0.03]);
+if b_plotMuscle
+    set(0, 'DefaultAxesFontSize',18);
+    musculoDataFig = figure();
+    set(musculoDataFig, 'Position',[10,100,1900,600]);
+    subplotStart = [2 11 1];
+    [plotHealthyMusc,axesHealthyMusc] = plotMusculoData(healthyData.musculoData,plotInfo,healthyGaitInfo,saveInfo,musculoDataFig,[],subplotStart,'left',true);
+    subplotStart(3) = subplotStart(3)+subplotStart(2);
+    [plotProstheticMusc,axesProstheticMusc] = plotMusculoData(prostheticData.musculoData,plotInfo,prostheticGaitInfo,saveInfo,musculoDataFig,[],subplotStart,'both',false);
+    
+    
+    ylabelPosMusc = 1.5*alignYlabels([axesHealthyMusc(1),axesProstheticMusc(1)]);%,axesCMGAngle(1)]);
+    axesMusc = [axesHealthyMusc,axesProstheticMusc];%,axesCMGAngle];
+    xlabel(axesMusc(end),'gait cycle ($\%$) ');
+    
+    xlabel(axesMusc(end),'gait cycle ($\%$) ');
+    addInfoTextFigure('Healthy model','a',axesHealthyMusc(1),ylabelPosMusc);
+    addInfoTextFigure('Amputee model','b',axesProstheticMusc(1),ylabelPosMusc);
+    
+    legend(plotProstheticMusc(end,[1,3]),'Intact leg','Prosthetic leg','FontSize', 20,'Position',[0.88 0.45 0.075 0.03]);
+end
 
 %% Save
-path = '../../Thesis Document/fig/'; 
-if b_saveTotalFig 
+path = '../../Thesis Document/fig/';
+if b_saveTotalFig
     for jj = 1:length(saveInfo.type)
-        saveFigure(legStateFig,'legState',saveInfo.type{jj},saveInfo.info,false,path)            
+        saveFigure(legStateFig,'legState',saveInfo.type{jj},saveInfo.info,false,path)
     end
     for jj = 1:length(saveInfo.type)
-        saveFigure(angularDataFig,'angularData',saveInfo.type{jj},saveInfo.info,false,path)            
+        saveFigure(angularDataFig,'angularData',saveInfo.type{jj},saveInfo.info,false,path)
     end
     for jj = 1:length(saveInfo.type)
         saveFigure(torqueDataFig,'torqueData',saveInfo.type{jj},saveInfo.info,false,path)
@@ -194,10 +238,5 @@ if b_saveTotalFig
 end
 
 startup;
-close(legStateFig);
-close(angularDataFig);
-close(torqueDataFig);
-close(powerDataFig);
-close(GRFDataFig);
-close(musculoDataFig);
+
 

@@ -1,7 +1,16 @@
-function [GaitInfo] = getPartOfGaitData(b_oneGaitPhase,GaitPhaseData,t,stepTimes)
-t_left = t;
-t_right = t;
+function [GaitInfo] = getPartOfGaitData(b_oneGaitPhase,GaitPhaseData,t,stepTimes,timeInterval)
+if nargin < 5 || isempty(timeInterval)
+    idxstart = 1;
+    idxend = length(t);
+else
+    b_oneGaitPhase = false;
+    idxstart = find( abs(t  - timeInterval(1)) == min(abs(t-timeInterval(1))) );
+    idxend = find(abs(t  - timeInterval(2)) == min(abs(t-timeInterval(2))) );
+end
+t_left = t(idxstart:idxend);
+t_right = t(idxstart:idxend);
 OptimParams;
+
 %%
 if (b_oneGaitPhase) && min(sum(stepTimes(:,1)),sum(stepTimes(:,2))) > 1
     leftLegState    = GaitPhaseData.signals.values(:,1);
@@ -42,18 +51,47 @@ if (b_oneGaitPhase) && min(sum(stepTimes(:,1)),sum(stepTimes(:,2))) > 1
     t_right = t_right(rightGaitPhaseStart:rightGaitPhaseEnd);
     t_left_perc = (t_left-t_left(1))./(t_left(end)-t_left(1))*100;
     t_right_perc = (t_right-t_right(1))./(t_right(end)-t_right(1))*100;
-else   
-    leftGaitPhaseEnd = length(t);
-    leftGaitPhaseStart = 1;
+    tp = (0:0.5:100)';
+    
+    %%
+    leftLegState    = GaitPhaseData.signals.values(:,1);
+    rightLegState   = GaitPhaseData.signals.values(:,2);
+    
+    
+    [leftLegState_avg,~] = interpData2perc(t,tp,leftLegState,leftGaitPhaseStartV,leftGaitPhaseEndV,b_oneGaitPhase);
+    [rightLegState_avg,~] = interpData2perc(t,tp,rightLegState,leftGaitPhaseStartV,rightGaitPhaseEndV,b_oneGaitPhase);
+    
+    gaitstate.left.Stance = (find(round(leftLegState_avg)==2,1,'last')-1)*diff(tp(1:2));
+    gaitstate.left.Swing = 100 - gaitstate.left.Stance;
+    gaitstate.left.earlyStanceState = (find(round(leftLegState_avg)==0,1,'last')-1)*diff(tp(1:2));
+    gaitstate.left.lateStanceState = (find(round(leftLegState_avg)==1,1,'last')-1)*diff(tp(1:2)) - gaitstate.left.earlyStanceState;
+    gaitstate.left.liftoffState = (find(round(leftLegState_avg)==2,1,'last')-1)*diff(tp(1:2)) - gaitstate.left.earlyStanceState - gaitstate.left.lateStanceState;
+    gaitstate.left.swingState = (find(round(leftLegState_avg)==3,1,'last')-1)*diff(tp(1:2)) - gaitstate.left.earlyStanceState - gaitstate.left.lateStanceState - gaitstate.left.liftoffState;
+    gaitstate.left.landingState = (find(round(leftLegState_avg)==4,1,'last')-1)*diff(tp(1:2)) - gaitstate.left.earlyStanceState - gaitstate.left.lateStanceState - gaitstate.left.liftoffState - gaitstate.left.swingState;
+    
+    gaitstate.right.Stance = (find(round(rightLegState_avg)==2,1,'last')-1)*diff(tp(1:2));
+    gaitstate.right.Swing = 100 - gaitstate.right.Stance;
+    gaitstate.right.earlyStanceState = (find(round(rightLegState_avg)==0,1,'last')-1)*diff(tp(1:2));
+    gaitstate.right.lateStanceState = (find(round(rightLegState_avg)==1,1,'last')-1)*diff(tp(1:2)) - gaitstate.right.earlyStanceState;
+    gaitstate.right.liftoffState = (find(round(rightLegState_avg)==2,1,'last')-1)*diff(tp(1:2)) - gaitstate.right.earlyStanceState - gaitstate.right.lateStanceState;
+    gaitstate.right.swingState = (find(round(rightLegState_avg)==3,1,'last')-1)*diff(tp(1:2)) - gaitstate.right.earlyStanceState - gaitstate.right.lateStanceState - gaitstate.right.liftoffState;
+    gaitstate.right.landingState = (find(round(rightLegState_avg)==4,1,'last')-1)*diff(tp(1:2)) - gaitstate.right.earlyStanceState - gaitstate.right.lateStanceState - gaitstate.right.liftoffState - gaitstate.right.swingState;
+    
+    %%
+else
+    leftGaitPhaseEnd = idxend;
+    leftGaitPhaseStart = idxstart;
     t_left_perc = t_left;
     t_right_perc = t_right;
-    rightGaitPhaseEnd = length(t);
-    rightGaitPhaseStart = 1;
+    rightGaitPhaseEnd = idxend;
+    rightGaitPhaseStart = idxstart;
     b_oneGaitPhase = false;
-    leftGaitPhaseStartV = 1;
-    leftGaitPhaseEndV = length(t);
-    rightGaitPhaseStartV = 1;
-    rightGaitPhaseEndV = length(t);
+    leftGaitPhaseStartV = idxstart;
+    leftGaitPhaseEndV = idxend;
+    rightGaitPhaseStartV = idxstart;
+    rightGaitPhaseEndV = idxend;
+    tp =  t(idxstart:idxend);
+    gaitstate = [];
 end
 
 %%
@@ -70,6 +108,9 @@ GaitInfo.time.left = t_left;
 GaitInfo.time.right = t_right;
 GaitInfo.time.left_perc = t_left_perc;
 GaitInfo.time.right_perc = t_right_perc;
+GaitInfo.tp = tp;
+GaitInfo.t = t;
+GaitInfo.gaitstate = gaitstate;
 
 %%
 tWinter = [1.45,1.2,0.96];
