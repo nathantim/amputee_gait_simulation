@@ -6,7 +6,7 @@ if isempty(axesHandles)
     end
 end
 
-if nargin < 9
+if nargin < 11
     b_addTitle = true;
 end
     
@@ -23,22 +23,22 @@ hold(axesHandles(axidx),'on');
 plotHandles(axidx,1) = plot(axesHandles(axidx),t,GRFx_avg);
 
 if b_addTitle
-    title(axesHandles(axidx),'Anterior-posterior GRF');
+    title(axesHandles(axidx),'Anterior-posterior');
 end
-ylabel(axesHandles(axidx),'Force (N/kg)');
+ylabel(axesHandles(axidx),'GRF (N/kg)');
 
 %% Y
 axidx = 2;
 subplotStart(3) = subplotStart(3) +1;
 axesHandles(axidx) = subplot(subplotStart(1),subplotStart(2),subplotStart(3),axesHandles(axidx));
-if ~isempty(GRFz_sd)
+if ~isempty(GRFy_sd)
     plotHandles(axidx,2) = fill(axesHandles(axidx),[t;flipud(t)],[GRFy_avg-GRFy_sd;flipud(GRFy_avg+GRFy_sd)],[0.8 0.8 0.8]);
 end
 hold(axesHandles(axidx),'on');
 plotHandles(axidx,1) = plot(axesHandles(axidx),t,GRFy_avg);
 
 if b_addTitle
-    title(axesHandles(axidx),'Medio-lateral GRF');
+    title(axesHandles(axidx),'Medio-lateral');
 end
 
 %% Vertical
@@ -52,7 +52,7 @@ hold(axesHandles(axidx),'on');
 plotHandles(axidx,1) = plot(axesHandles(axidx),t,GRFz_avg);
 
 if b_addTitle
-    title(axesHandles(axidx),'Vertical GRF');
+    title(axesHandles(axidx),'Vertical');
 end
 
 

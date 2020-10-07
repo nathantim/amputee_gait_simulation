@@ -5,6 +5,12 @@ end
 if nargin < 7
     axesHandles = [];
 end
+if nargin < 10
+   b_plotLegState = true; 
+end
+if nargin < 11
+    b_addTitle = true;
+end
 
 if nargin < 8 || isempty(subplotStart)
 %     subplotStart = 151;
@@ -21,12 +27,7 @@ end
 if nargin < 9
     legToPlot = 'both';
 end
-if nargin < 10
-   b_plotLegState = true; 
-end
-if nargin < 11
-    b_addTitle = true;
-end
+
 
 t = GaitInfo.t;
 
@@ -56,14 +57,13 @@ RhipRollAngles    = 180/pi*angularData.signals.values(:,17);
 % RankleAnglesVel = -180/pi*angularData.signals.values(GaitInfo.start.right:GaitInfo.end.right,14);
 warning('Unreasoned factor -1');
 
-leftLegState    = GaitPhaseData.signals.values(:,1);
-rightLegState   = GaitPhaseData.signals.values(:,2);
-
-
-
-[leftLegState_avg,leftLegState_sd] = interpData2perc(t,GaitInfo.tp,leftLegState,GaitInfo.start.leftV,GaitInfo.end.leftV,GaitInfo.b_oneGaitPhase);
-[rightLegState_avg,rightLegState_sd] = interpData2perc(t,GaitInfo.tp,rightLegState,GaitInfo.start.rightV,GaitInfo.end.rightV,GaitInfo.b_oneGaitPhase);
-
+if b_plotLegState
+    leftLegState    = GaitPhaseData.signals.values(:,1);
+    rightLegState   = GaitPhaseData.signals.values(:,2);
+    
+    [leftLegState_avg,leftLegState_sd] = interpData2perc(t,GaitInfo.tp,leftLegState,GaitInfo.start.leftV,GaitInfo.end.leftV,GaitInfo.b_oneGaitPhase);
+    [rightLegState_avg,rightLegState_sd] = interpData2perc(t,GaitInfo.tp,rightLegState,GaitInfo.start.rightV,GaitInfo.end.rightV,GaitInfo.b_oneGaitPhase);
+end
 [LhipAngles_avg,LhipAngles_sd] = interpData2perc(t,GaitInfo.tp,LhipAngles,GaitInfo.start.leftV,GaitInfo.end.leftV,GaitInfo.b_oneGaitPhase);
 [LhipRollAngles_avg,LhipRollAngles_sd] = interpData2perc(t,GaitInfo.tp,LhipRollAngles,GaitInfo.start.leftV,GaitInfo.end.leftV,GaitInfo.b_oneGaitPhase);
 [LkneeAngles_avg,LkneeAngles_sd] = interpData2perc(t,GaitInfo.tp,LkneeAngles,GaitInfo.start.leftV,GaitInfo.end.leftV,GaitInfo.b_oneGaitPhase);
@@ -87,8 +87,10 @@ if ~plotInfo.showSD
     
 end
 rangeTable = createRangeTable(GaitInfo,LhipRollAngles_avg,RhipRollAngles_avg,LhipAngles_avg,RhipAngles_avg,LkneeAngles_avg,RkneeAngles_avg,LankleAngles_avg,RankleAngles_avg);
-fprintf('Joint angle range:\n');
-disp(rangeTable);
+if ~isempty(rangeTable)
+    fprintf('Joint angle range:\n');
+    disp(rangeTable);
+end
 
 %%
 if isempty(angularDataFigure)
@@ -110,11 +112,11 @@ end
      legStatePlot = subplot(subplotStart(1),subplotStart(2),subplotStart(3),axes(angularDataFig));
      
      subplotStart(3) = subplotStart(3)+1;
-     if ~isempty(leftLegState_sd)
+     if ~isempty(leftLegState_sd) && (contains(legToPlot,'left') || contains(legToPlot,'both'))
          LegHandles(1,2) = fill(legStatePlot,[GaitInfo.tp;flipud(GaitInfo.tp)],[round(leftLegState_avg-leftLegState_sd);flipud(round(leftLegState_avg+leftLegState_sd))],[0.8 0.8 0.8]);
      end
      set(legStatePlot,'NextPlot','add');
-     if ~isempty(rightLegState_sd) && legToPlot
+     if ~isempty(rightLegState_sd) && (contains(legToPlot,'right') || contains(legToPlot,'both'))
          LegHandles(2,2) = fill(legStatePlot,[GaitInfo.tp;flipud(GaitInfo.tp)],[round(rightLegState_avg-rightLegState_sd);flipud(round(rightLegState_avg+rightLegState_sd))],[0.8 0.8 0.8]);
      end
      

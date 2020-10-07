@@ -51,13 +51,17 @@ plotInfo.edgeVec = {':';':';':'};% {[0.8 0.8 0.8],0.5,'none'};
 plotInfo.fillProp_entries = [plotInfo.fillVal,faceAlpha,plotInfo.fillVal,plotInfo.edgeVec];
 
 %%
-% plotAngularData(angularData,GaitPhaseData,plotInfo,GaitInfo,saveInfo,[]);
+GRFData.signals.values = GRFData.signals.values./getBodyMass();
+jointTorquesData.signals.values = jointTorquesData.signals.values./getBodyMass();
+
+%%
+plotAngularData(angularData,GaitPhaseData,plotInfo,GaitInfo,saveInfo,[]);
 % plotJointTorqueData(jointTorquesData,plotInfo,GaitInfo,saveInfo,[]);
 % plotJointPowerData(angularData,jointTorquesData,plotInfo,GaitInfo,saveInfo,[]);
 % plotMusculoData(musculoData,plotInfo,GaitInfo,saveInfo,[],[]);
 % plotGRF(GRFData,plotInfo,GaitInfo,saveInfo,[]);
 % set(0, 'DefaultAxesFontSize',18);
-plotCMGData(CMGData,plotInfo,GaitInfo,saveInfo,[])
+% plotCMGData(CMGData,plotInfo,GaitInfo,saveInfo,[])
 
 
 

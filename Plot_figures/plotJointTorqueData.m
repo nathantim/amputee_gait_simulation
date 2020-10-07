@@ -20,8 +20,6 @@ if nargin < 9
 end
 t = GaitInfo.t;
 
-%%
-jointTorquesData.signals.values = jointTorquesData.signals.values./getBodyMass();
 
 %%
 LhipTorque      =  jointTorquesData.signals.values(:,1);

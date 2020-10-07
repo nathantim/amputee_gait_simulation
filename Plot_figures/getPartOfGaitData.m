@@ -115,10 +115,14 @@ GaitInfo.gaitstate = gaitstate;
 %%
 tWinter = [1.45,1.2,0.96];
 speedsWinter = {'slow','normal','fast'};
-leftLegSteptimes = stepTimes(stepTimes(:,1)~=0,1);
-rightLegSteptimes = stepTimes(stepTimes(:,2)~=0,2);
-meanStepTime = mean([mean(leftLegSteptimes),mean(rightLegSteptimes)]);
-if isnan(meanStepTime)
+try
+    leftLegSteptimes = stepTimes(stepTimes(:,1)~=0,1);
+    rightLegSteptimes = stepTimes(stepTimes(:,2)~=0,2);
+    meanStepTime = mean([mean(leftLegSteptimes),mean(rightLegSteptimes)]);
+    if isnan(meanStepTime)
+        meanStepTime = 1.2;
+    end
+catch
     meanStepTime = 1.2;
 end
 % speed2select = find(abs(tWinter - meanStepTime) == min(abs(tWinter - meanStepTime)));

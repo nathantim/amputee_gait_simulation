@@ -22,9 +22,6 @@ end
 t = GaitInfo.t;
 
 %%
-jointTorquesData.signals.values = jointTorquesData.signals.values./getBodyMass();
-
-%%
 LhipTorque      =  jointTorquesData.signals.values(:,1);
 RhipTorque      =  jointTorquesData.signals.values(:,4);
 

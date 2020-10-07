@@ -21,7 +21,7 @@ end
 t = GaitInfo.t;
 
 %%
-GRFData.signals.values = GRFData.signals.values./getBodyMass();
+
 LGRFx = GRFData.signals.values(:,1);
 LGRFy = GRFData.signals.values(:,2);
 LGRFz = GRFData.signals.values(:,3);
@@ -50,40 +50,43 @@ if ~plotInfo.showSD
     RGRFz_sd = [];
 end
 if GaitInfo.b_oneGaitPhase && plotInfo.plotWinterData
-    [tWinter,~, ~, ~,~,~,~, vGRF_winter_avg,vGRF_winter_sd, hGRF_winter_avg,hGRF_winter_sd, ~,~,~,~,~,~] = getWinterData(GaitInfo.WinterDataSpeed);
-    if size(vGRF_winter_avg,2) > size(vGRF_winter_avg,2)
-        vGRF_winter_avg = vGRF_winter_avg';
-        hGRF_winter_avg = hGRF_winter_avg';
+    [tWinter,~, ~, ~,~,~,~, GRFz_winter_avg,GRFz_winter_sd, GRFx_winter_avg,GRFx_winter_sd, ~,~,~,~,~,~] = getWinterData(GaitInfo.WinterDataSpeed);
+    if size(GRFz_winter_avg,2) > size(GRFz_winter_avg,2)
+        GRFz_winter_avg = GRFz_winter_avg';
+        GRFx_winter_avg = GRFx_winter_avg';
+        
     end
+    GRFy_winter_avg = zeros(size(GRFx_winter_avg));
+    GRFy_winter_sd = [];
 end
 
 %%
- plotHandlesLeft = [];
- plotHandlesRight = [];
+plotHandlesLeft = [];
+plotHandlesRight = [];
 
 if isempty(GRFDataFigure)
     GRFDataFig = figure();
     set(GRFDataFig, 'Position',[10,50,800,600]);
 else
-   GRFDataFig = GRFDataFigure; 
-%    clf(GRFDataFig);
+    GRFDataFig = GRFDataFigure;
+    %    clf(GRFDataFig);
 end
 
 % sgtitle('Ground Reaction Forces')
 
 if ~GaitInfo.b_oneGaitPhase
-        GaitInfo.tp = GRFData.time;
+    GaitInfo.tp = GRFData.time;
 end
 
- 
- if contains(legToPlot,'left') || contains(legToPlot,'both')
-     [plotHandlesLeft,axesHandles] = plotTotalGRFDataInFigure(GRFDataFig,axesHandles,GaitInfo.tp,LGRFx_avg,LGRFx_sd,LGRFy_avg,LGRFy_sd,LGRFz_avg,LGRFz_sd,subplotStart,b_addTitle);
+
+if contains(legToPlot,'left') || contains(legToPlot,'both')
+    [plotHandlesLeft,axesHandles] = plotTotalGRFDataInFigure(GRFDataFig,axesHandles,GaitInfo.tp,LGRFx_avg,LGRFx_sd,LGRFy_avg,LGRFy_sd,LGRFz_avg,LGRFz_sd,subplotStart,b_addTitle);
 end
 if contains(legToPlot,'right') || contains(legToPlot,'both')
     [plotHandlesRight,axesHandles] = plotTotalGRFDataInFigure(GRFDataFig,axesHandles,GaitInfo.tp,RGRFx_avg,RGRFx_sd,RGRFy_avg,RGRFy_sd,RGRFz_avg,RGRFz_sd,subplotStart,false);
 end
 if GaitInfo.b_oneGaitPhase && plotInfo.plotWinterData
-    [plotHandlesWinter,axesHandles] = plotTotalGRFDataInFigure(GRFDataFig,axesHandles,tWinter,hGRF_winter_avg,hGRF_winter_sd,vGRF_winter_avg,vGRF_winter_sd,subplotStart);
+    [plotHandlesWinter,axesHandles] = plotTotalGRFDataInFigure(GRFDataFig,axesHandles,tWinter,GRFx_winter_avg,GRFx_winter_sd,GRFy_winter_avg,GRFy_winter_sd,GRFz_winter_avg,GRFz_winter_sd,subplotStart);
 end
 if setLegend
     if GaitInfo.b_oneGaitPhase
@@ -105,7 +108,7 @@ else
     error('Unknown leg');
 end
 
-    
+
 for i= 1:max(size(plotHandlesLeft,1),size(plotHandlesRight,1))
     
     set(plotHandles(i,1),plotInfo.plotProp,plotInfo.plotProp_entries(1,:));
@@ -122,24 +125,26 @@ for i= 1:max(size(plotHandlesLeft,1),size(plotHandlesRight,1))
     end
     if GaitInfo.b_oneGaitPhase && plotInfo.plotWinterData && ~isnan(plotHandlesWinter(i,1))
         set(plotHandlesWinter(i,1),plotInfo.plotProp,plotInfo.plotProp_entries(3,:));
-        set(plotHandlesWinter(i,2),plotInfo.fillProp,plotInfo.fillProp_entries(3,:));
+        if ~isnan(plotHandlesWinter(i,2))
+            set(plotHandlesWinter(i,2),plotInfo.fillProp,plotInfo.fillProp_entries(3,:));
+        end
     end
 end
 
 %%
-if setLegend && GaitInfo.b_oneGaitPhase && contains(saveInfo.info,'prosthetic') && plotInfo.plotWinterData 
+if setLegend && GaitInfo.b_oneGaitPhase && contains(saveInfo.info,'prosthetic') && plotInfo.plotWinterData
     leg = legend([plotHandlesLeft(2,1),plotHandlesRight(2,1),plotHandlesWinter(2,1)],'Intact leg','Prosthetic leg', 'Winter data');
-%     leg = legend('Intact leg','Prosthetic leg',char(strcat(string(GaitInfo.WinterDataSpeed), ' gait Winter')) );
+    %     leg = legend('Intact leg','Prosthetic leg',char(strcat(string(GaitInfo.WinterDataSpeed), ' gait Winter')) );
 elseif setLegend && GaitInfo.b_oneGaitPhase && plotInfo.plotWinterData && ~legToPlot
     leg = legend([plotHandlesLeft(2,1),plotHandlesRight(2,1),plotHandlesWinter(2,1)],'Model', 'Winter data');
-elseif setLegend && GaitInfo.b_oneGaitPhase && plotInfo.plotWinterData 
+elseif setLegend && GaitInfo.b_oneGaitPhase && plotInfo.plotWinterData
     leg = legend([plotHandlesLeft(2,1),plotHandlesRight(2,1),plotHandlesWinter(2,1)],'Left leg','Right leg', 'Winter data');
 elseif setLegend && contains(saveInfo.info,'prosthetic')
     leg = legend([plotHandlesLeft(2,1),plotHandlesRight(2,1)],'Intact leg','Prosthetic leg');
-%     leg = legend('Intact leg','Prosthetic leg');
+    %     leg = legend('Intact leg','Prosthetic leg');
 elseif setLegend && ~legToPlot
     leg = [];
-elseif setLegend 
+elseif setLegend
     leg = legend([plotHandlesLeft(2,1),plotHandlesRight(2,1)],'Left leg','Right leg');
 else
     leg = [];
