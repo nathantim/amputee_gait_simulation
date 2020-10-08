@@ -41,7 +41,7 @@ assignGainsSagittal;
 assignGainsCoronal;
 dt_visual = -1;%1/50;
 set_param(strcat(model,'/Body Mechanics Layer/Right Ankle Joint'),'SpringStiffness','3000','DampingCoefficient','1000');
-set_param(strcat(model,'/Body Mechanics Layer/Obstacle'),'Commented','off');
+set_param(strcat(model,'/Body Mechanics Layer/Obstacle'),'Commented','on');
 
 % load('Results/optCMGgains_1_2ms_lowerDH_noKpKi_wLegClr.mat');
 assignCMGGains;

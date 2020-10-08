@@ -73,13 +73,13 @@ try
     %% Calculate velocity cost
 %     velCost = getVelMeasure(stepVelocities(:,1),stepTimes(:,1),min_velocity,max_velocity,initiation_steps) + ...
 %         getVelMeasure(stepVelocities(:,2),stepTimes(:,2),min_velocity,max_velocity,initiation_steps);
-    velCost = getVelMeasure2(HATPosVel,stepNumbers,min_velocity,max_velocity,initiation_steps);
+    [velCost,meanVel, ASIVel] = getVelMeasure2(HATPosVel,stepNumbers,min_velocity,max_velocity,initiation_steps);
     %     [distCost, dist_covered] = getDistMeasure(timeSetToRun,stepLengths,min_velocity,max_velocity,dist_slack);
     
     %% Calculate step info
     [meanStepLength, ASIStepLength] = getFilterdMean_and_ASI(stepLengths(:,1),stepLengths(:,2),initiation_steps);
     [meanStepTime, ASIStepTime] = getFilterdMean_and_ASI(stepTimes(:,1),stepTimes(:,2),initiation_steps);
-    [meanVel, ASIVel] = getFilterdMean_and_ASI(stepVelocities(:,1),stepVelocities(:,2),initiation_steps);
+%     [meanVel, ASIVel] = getFilterdMean_and_ASI(stepVelocities(:,1),stepVelocities(:,2),initiation_steps);
     
     %%
     try
@@ -88,11 +88,11 @@ try
         maxCMGdeltaH = max(CMGData.signals.values(:,13));
         controlRMSE = sqrt(sum((CMGData.signals.values(:,2)-CMGData.signals.values(:,3)).^2)); %/length(CMGData.signals.values(:,2))
         tripWasActive = max(CMGData.signals.values(:,14));
-        if tripWasActive == 0 
-            cost = nan;
-            disp('No trip');
-            return
-        end
+%         if tripWasActive == 0 
+%             cost = nan;
+%             disp('No trip');
+%             return
+%         end
     catch 
         maxCMGTorque = 0;
         maxCMGdeltaH = 0;
