@@ -73,7 +73,8 @@ end
 
 if isempty(CMGDataFigure)
     CMGDataFig = figure();
-    set(CMGDataFig, 'Position',[10,50,650,1200]);
+    fullScreen = get(0,'screensize');
+    set(CMGDataFig, 'Position',[fullScreen(1:2)+20 fullScreen(3:4)*0.9]);
 else
     CMGDataFig = CMGDataFigure;
 end
@@ -81,6 +82,7 @@ subplotStart = [4,1,1];
 %%
 for i = 1:subplotStart(1)
     axesHandles(i) = axes(CMGDataFig);
+    
 %     set(axesHandles(i),'Position', [0.13
 end
 fontSizeLeg = 18;

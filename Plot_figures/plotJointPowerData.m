@@ -34,30 +34,30 @@ RankleTorque    =  jointTorquesData.signals.values(:,6);
 LhipRollTorque    =  jointTorquesData.signals.values(:,7);
 RhipRollTorque    =  jointTorquesData.signals.values(:,8);
 
-LhipAnglesVel   = angularData.signals.values(:,4);
-RhipAnglesVel   = angularData.signals.values(:,6);
+LhipPowerVel   = angularData.signals.values(:,4);
+RhipPowerVel   = angularData.signals.values(:,6);
 
-LkneeAnglesVel  = angularData.signals.values(:,8);
-RkneeAnglesVel  = angularData.signals.values(:,10);
+LkneePowerVel  = angularData.signals.values(:,8);
+RkneePowerVel  = angularData.signals.values(:,10);
 
-LankleAnglesVel = angularData.signals.values(:,12);
-RankleAnglesVel = angularData.signals.values(:,14);
+LanklePowerVel = angularData.signals.values(:,12);
+RanklePowerVel = angularData.signals.values(:,14);
 
-LhipRollAnglesVel    = angularData.signals.values(:,16);
-RhipRollAnglesVel    = angularData.signals.values(:,18);
+LhipRollPowerVel    = angularData.signals.values(:,16);
+RhipRollPowerVel    = angularData.signals.values(:,18);
 
 %%
-LhipPower      =  LhipTorque.*LhipAnglesVel;
-RhipPower      =  RhipTorque.*RhipAnglesVel;
+LhipPower      =  LhipTorque.*LhipPowerVel;
+RhipPower      =  RhipTorque.*RhipPowerVel;
 
-LkneePower     =  LkneeTorque.*LkneeAnglesVel;
-RkneePower     =  RkneeTorque.*RkneeAnglesVel;
+LkneePower     =  LkneeTorque.*LkneePowerVel;
+RkneePower     =  RkneeTorque.*RkneePowerVel;
 
-LanklePower    =  LankleTorque.*LankleAnglesVel;
-RanklePower    =  RankleTorque.*RankleAnglesVel;
+LanklePower    =  LankleTorque.*LanklePowerVel;
+RanklePower    =  RankleTorque.*RanklePowerVel;
 
-LhipRollPower    =  LhipRollTorque.*LhipRollAnglesVel;
-RhipRollPower    =  RhipRollTorque.*RhipRollAnglesVel;
+LhipRollPower    =  LhipRollTorque.*LhipRollPowerVel;
+RhipRollPower    =  RhipRollTorque.*RhipRollPowerVel;
 
 [LhipPower_avg,LhipPower_sd] = interpData2perc(t,GaitInfo.tp,LhipPower,GaitInfo.start.leftV,GaitInfo.end.leftV,GaitInfo.b_oneGaitPhase);
 [LhipRollPower_avg,LhipRollPower_sd] = interpData2perc(t,GaitInfo.tp,LhipRollPower,GaitInfo.start.leftV,GaitInfo.end.leftV,GaitInfo.b_oneGaitPhase);
@@ -79,11 +79,17 @@ if ~plotInfo.showSD
     RanklePower_sd = [];
     
 end
+rangeTable = createRangeTable(GaitInfo,LhipRollPower_avg,RhipRollPower_avg,LhipPower_avg,RhipPower_avg,LkneePower_avg,RkneePower_avg,LanklePower_avg,RanklePower_avg);
+if ~isempty(rangeTable)
+    fprintf('Joint power range (W/kg):\n');
+    disp(rangeTable);
+end
 
 %%
-if isempty(powerDataFigure)
+if isempty(powerDataFigure) && isempty(axesHandles)
     PowerDataFig = figure();
-%     set(angularDataFig, 'Position',[10,0,1000,1530]);
+    fullScreen = get(0,'screensize');
+    set(PowerDataFig, 'Position',[fullScreen(1:2)+20 fullScreen(3:4)*0.9]);
 else
     PowerDataFig = powerDataFigure; 
 end
@@ -116,55 +122,45 @@ if setLegend
     end
 end
 
-
+ plotHandles = [plotHandlesLeft, plotHandlesRight];
+ 
 %%
-if contains(legToPlot,'both')
-    plotHandles = [plotHandlesLeft, plotHandlesRight];
-elseif contains(legToPlot,'left')
-    plotHandles = [plotHandlesLeft, plotHandlesRight];
-elseif contains(legToPlot,'right')
-    plotHandles = [plotHandlesLeft, plotHandlesRight];
+for ii= 1:max(size(plotHandlesLeft,1),size(plotHandlesRight,1))
     
-else
-    error('Unknown leg');
-end
-
-for i= 1:max(size(plotHandlesLeft,1),size(plotHandlesRight,1))
-    
-    set(plotHandles(i,1),plotInfo.plotProp,plotInfo.plotProp_entries(1,:));
+    set(plotHandles(ii,1),plotInfo.plotProp,plotInfo.plotProp_entries(1,:));
     
     if size(plotHandles,2)>2
-        set(plotHandles(i,3),plotInfo.plotProp,plotInfo.plotProp_entries(2,:));
+        set(plotHandles(ii,3),plotInfo.plotProp,plotInfo.plotProp_entries(2,:));
     end
     
     if plotInfo.showSD && GaitInfo.b_oneGaitPhase
-        set(plotHandles(i,2),plotInfo.fillProp,plotInfo.fillProp_entries(1,:));
+        set(plotHandles(ii,2),plotInfo.fillProp,plotInfo.fillProp_entries(1,:));
         if size(plotHandles,2)>2
-            set(plotHandles(i,4),plotInfo.fillProp,plotInfo.fillProp_entries(2,:));
+            set(plotHandles(ii,4),plotInfo.fillProp,plotInfo.fillProp_entries(2,:));
         end
     end
-    if GaitInfo.b_oneGaitPhase && plotInfo.plotWinterData && ~isnan(plotHandlesWinter(i,1))
-        set(plotHandlesWinter(i,1),plotInfo.plotProp,plotInfo.plotProp_entries(3,:));
-        set(plotHandlesWinter(i,2),plotInfo.fillProp,plotInfo.fillProp_entries(3,:));
+    if GaitInfo.b_oneGaitPhase && plotInfo.plotWinterData && ~isnan(plotHandlesWinter(ii,1))
+        set(plotHandlesWinter(ii,1),plotInfo.plotProp,plotInfo.plotProp_entries(3,:));
+        set(plotHandlesWinter(ii,2),plotInfo.fillProp,plotInfo.fillProp_entries(3,:));
     end
 end
 
 
 % set(angularDataFig, 'Position',[10,40,1000,930]);
 
-if setLegend && GaitInfo.b_oneGaitPhase && contains(saveInfo.info,'prosthetic') && plotInfo.plotWinterData 
+if setLegend && GaitInfo.b_oneGaitPhase && contains(saveInfo.info,'prosthetic') && plotInfo.plotWinterData && contains(legToPlot,'both')
     leg = legend([plotHandlesLeft(2,1),plotHandlesRight(2,1),plotHandlesWinter(2,1)],'Intact leg','Prosthetic leg', 'Winter data');
 %     leg = legend('Intact leg','Prosthetic leg',char(strcat(string(GaitInfo.WinterDataSpeed), ' gait Winter')) );
-elseif setLegend && GaitInfo.b_oneGaitPhase && plotInfo.plotWinterData && ~legToPlot
+elseif setLegend && GaitInfo.b_oneGaitPhase && plotInfo.plotWinterData && ~contains(legToPlot,'both')
     leg = legend([plotHandlesLeft(2,1),plotHandlesRight(2,1),plotHandlesWinter(2,1)],'Model', 'Winter data');
-elseif setLegend && GaitInfo.b_oneGaitPhase && plotInfo.plotWinterData 
+elseif setLegend && GaitInfo.b_oneGaitPhase && plotInfo.plotWinterData  &&contains(legToPlot,'both')
     leg = legend([plotHandlesLeft(2,1),plotHandlesRight(2,1),plotHandlesWinter(2,1)],'Left leg','Right leg', 'Winter data');
-elseif setLegend && contains(saveInfo.info,'prosthetic')
+elseif setLegend && contains(saveInfo.info,'prosthetic') && contains(legToPlot,'both')
     leg = legend([plotHandlesLeft(2,1),plotHandlesRight(2,1)],'Intact leg','Prosthetic leg');
 %     leg = legend('Intact leg','Prosthetic leg');
-elseif setLegend && ~legToPlot
+elseif setLegend && ~contains(legToPlot,'both')
     leg = [];
-elseif setLegend 
+elseif setLegend  && contains(legToPlot,'both')
     leg = legend([plotHandlesLeft(2,1),plotHandlesRight(2,1)],'Left leg','Right leg');
 else
     leg = [];

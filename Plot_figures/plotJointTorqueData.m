@@ -54,11 +54,17 @@ if ~plotInfo.showSD
     RankleTorque_sd = [];
     
 end
+rangeTable = createRangeTable(GaitInfo,LhipRollTorque_avg,RhipRollTorque_avg,LhipTorque_avg,RhipTorque_avg,LkneeTorque_avg,RkneeTorque_avg,LankleTorque_avg,RankleTorque_avg);
+if ~isempty(rangeTable)
+    fprintf('Joint torque range (N/kg):\n');
+    disp(rangeTable);
+end
 
 %%
-if isempty(torqueDataFigure)
+if isempty(torqueDataFigure) && isempty(axesHandles)
     torqueDataFig = figure();
-%     set(angularDataFig, 'Position',[10,0,1000,1530]);
+    fullScreen = get(0,'screensize');
+    set(torqueDataFig, 'Position',[fullScreen(1:2)+20 fullScreen(3:4)*0.9]);
 else
     torqueDataFig = torqueDataFigure; 
 end
@@ -91,56 +97,46 @@ if setLegend
     end
 end
 
+ plotHandles = [plotHandlesLeft, plotHandlesRight];
+
 
 %%
-if contains(legToPlot,'both')
-    plotHandles = [plotHandlesLeft, plotHandlesRight];
-elseif contains(legToPlot,'left')
-    plotHandles = [plotHandlesLeft, plotHandlesRight];
-elseif contains(legToPlot,'right')
-    plotHandles = [plotHandlesLeft, plotHandlesRight];
+for ii= 1:max(size(plotHandlesLeft,1),size(plotHandlesRight,1))
     
-else
-    error('Unknown leg');
-end
-
-
-for i= 1:max(size(plotHandlesLeft,1),size(plotHandlesRight,1))
-    
-    set(plotHandles(i,1),plotInfo.plotProp,plotInfo.plotProp_entries(1,:));
+    set(plotHandles(ii,1),plotInfo.plotProp,plotInfo.plotProp_entries(1,:));
     
     if size(plotHandles,2)>2
-        set(plotHandles(i,3),plotInfo.plotProp,plotInfo.plotProp_entries(2,:));
+        set(plotHandles(ii,3),plotInfo.plotProp,plotInfo.plotProp_entries(2,:));
     end
     
     if plotInfo.showSD && GaitInfo.b_oneGaitPhase
-        set(plotHandles(i,2),plotInfo.fillProp,plotInfo.fillProp_entries(1,:));
+        set(plotHandles(ii,2),plotInfo.fillProp,plotInfo.fillProp_entries(1,:));
         if size(plotHandles,2)>2
-            set(plotHandles(i,4),plotInfo.fillProp,plotInfo.fillProp_entries(2,:));
+            set(plotHandles(ii,4),plotInfo.fillProp,plotInfo.fillProp_entries(2,:));
         end
     end
-    if GaitInfo.b_oneGaitPhase && plotInfo.plotWinterData && ~isnan(plotHandlesWinter(i,1))
-        set(plotHandlesWinter(i,1),plotInfo.plotProp,plotInfo.plotProp_entries(3,:));
-        set(plotHandlesWinter(i,2),plotInfo.fillProp,plotInfo.fillProp_entries(3,:));
+    if GaitInfo.b_oneGaitPhase && plotInfo.plotWinterData && ~isnan(plotHandlesWinter(ii,1))
+        set(plotHandlesWinter(ii,1),plotInfo.plotProp,plotInfo.plotProp_entries(3,:));
+        set(plotHandlesWinter(ii,2),plotInfo.fillProp,plotInfo.fillProp_entries(3,:));
     end
 end
 
 
 % set(angularDataFig, 'Position',[10,40,1000,930]);
 
-if setLegend && GaitInfo.b_oneGaitPhase && contains(saveInfo.info,'prosthetic') && plotInfo.plotWinterData 
+if setLegend && GaitInfo.b_oneGaitPhase && contains(saveInfo.info,'prosthetic') && plotInfo.plotWinterData && contains(legToPlot,'both')
     leg = legend([plotHandlesLeft(2,1),plotHandlesRight(2,1),plotHandlesWinter(2,1)],'Intact leg','Prosthetic leg', 'Winter data');
 %     leg = legend('Intact leg','Prosthetic leg',char(strcat(string(GaitInfo.WinterDataSpeed), ' gait Winter')) );
-elseif setLegend && GaitInfo.b_oneGaitPhase && plotInfo.plotWinterData && ~legToPlot
+elseif setLegend && GaitInfo.b_oneGaitPhase && plotInfo.plotWinterData && ~contains(legToPlot,'both')
     leg = legend([plotHandlesLeft(2,1),plotHandlesRight(2,1),plotHandlesWinter(2,1)],'Model', 'Winter data');
-elseif setLegend && GaitInfo.b_oneGaitPhase && plotInfo.plotWinterData 
+elseif setLegend && GaitInfo.b_oneGaitPhase && plotInfo.plotWinterData  && contains(legToPlot,'both')
     leg = legend([plotHandlesLeft(2,1),plotHandlesRight(2,1),plotHandlesWinter(2,1)],'Left leg','Right leg', 'Winter data');
-elseif setLegend && contains(saveInfo.info,'prosthetic')
+elseif setLegend && contains(saveInfo.info,'prosthetic') && contains(legToPlot,'both')
     leg = legend([plotHandlesLeft(2,1),plotHandlesRight(2,1)],'Intact leg','Prosthetic leg');
 %     leg = legend('Intact leg','Prosthetic leg');
-elseif setLegend && ~legToPlot
+elseif setLegend && ~contains(legToPlot,'both')
     leg = [];
-elseif setLegend 
+elseif setLegend && contains(legToPlot,'both')
     leg = legend([plotHandlesLeft(2,1),plotHandlesRight(2,1)],'Left leg','Right leg');
 else
     leg = [];

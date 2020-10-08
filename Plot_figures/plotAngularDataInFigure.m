@@ -30,9 +30,12 @@ set(axesHandles(axidx),'XLim',[t(1),t(end)]);
 % h = get(axesHandles(axidx),'Children');
 % set(axesHandles(axidx),'Children',h) % 
 if b_addTitle
-    title(axesHandles(axidx),'Hip abduction');
+    title(axesHandles(axidx),{'Hip'; 'abduction'});
+    %     title(axesHandles(axidx),'Hip abduction');
+    ylabel(axesHandles(axidx),'Angle (deg)');
+
 end
-ylabel(axesHandles(axidx),'Angle (deg)');
+
 
 %%
 subplotStart(3) = subplotStart(3) +1;
@@ -48,7 +51,8 @@ set(axesHandles(axidx),'XLim',[t(1),t(end)]);
 % h = get(axesHandles(1),'Children');
 % set(axesHandles(1),'Children',h) % 
 if b_addTitle
-    title(axesHandles(axidx),'Hip flexion');
+    title(axesHandles(axidx),{'Hip';'flexion'});
+%     title(axesHandles(axidx),'Hip flexion');
 end
 % ylabel(axesHandles(axidx),'deg');
 
@@ -66,7 +70,8 @@ set(axesHandles(axidx),'XLim',[t(1),t(end)]);
 % h = get(axesHandles(axidx),'Children');
 % set(axesHandles(axidx),'Children',flipud(h))
 if b_addTitle
-    title(axesHandles(axidx),'Knee flexion');
+    title(axesHandles(axidx),{'Knee';'flexion'});
+%     title(axesHandles(axidx),'Knee flexion');
 end
 % ylabel(axesHandles(axidx),'deg');
 
@@ -83,7 +88,8 @@ set(axesHandles(axidx),'XLim',[t(1),t(end)]);
 % h = get(axesHandles(axidx),'Children');
 % set(axesHandles(axidx),'Children',flipud(h))
 if b_addTitle
-    title(axesHandles(axidx),'Ankle dorsiflexion');
+    title(axesHandles(axidx),{'Ankle';'dorsiflexion'});
+%     title(axesHandles(axidx),'Ankle dorsiflexion');
 end
 % ylabel(axesHandles(axidx),'deg');
 

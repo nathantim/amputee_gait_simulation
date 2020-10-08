@@ -1,5 +1,6 @@
-function plotData(angularData,musculoData,GRFData,jointTorquesData,GaitPhaseData,stepTimes,CMGData,info,timeInterval,b_saveFigure,plotWinterData,showSD,b_oneGaitPhase)
+function plotData(angularData,musculoData,GRFData,jointTorquesData,GaitPhaseData,stepTimes,CMGData,info,timeInterval,b_saveFigure,plotFukuchiData,showSD,b_oneGaitPhase)
 %%
+set(0, 'DefaultAxesFontSize',16);
 set(0, 'DefaultAxesTitleFontSizeMultiplier',1.5);
 set(0, 'DefaultAxesLabelFontSizeMultiplier',1.5);
 
@@ -23,7 +24,7 @@ if nargin < 12
    showSD = false; 
 end
 if nargin < 11
-    plotWinterData = false;
+    plotFukuchiData = false;
 end
 saveInfo.info = info;
 t = angularData.time;
@@ -42,7 +43,8 @@ plotInfo.lineVec = plotInfo.lineVec(1:3,:);
 plotInfo.colorProp = plotInfo.colorProp(1:3,:);
 plotInfo.lineWidthProp = {3;3;3};
 plotInfo.plotProp_entries = [plotInfo.lineVec(:),plotInfo.colorProp(:), plotInfo.lineWidthProp(:)];
-plotInfo.plotWinterData = plotWinterData;
+plotInfo.plotWinterData = false;
+plotInfo.plotFukuchiData = plotFukuchiData;
 
 plotInfo.fillProp = {'FaceColor','FaceAlpha','EdgeColor','LineStyle'};
 faceAlpha = {0.2;0.2;0.2};
@@ -51,18 +53,47 @@ plotInfo.edgeVec = {':';':';':'};% {[0.8 0.8 0.8],0.5,'none'};
 plotInfo.fillProp_entries = [plotInfo.fillVal,faceAlpha,plotInfo.fillVal,plotInfo.edgeVec];
 
 %%
-GRFData.signals.values = GRFData.signals.values./getBodyMass();
-jointTorquesData.signals.values = jointTorquesData.signals.values./getBodyMass();
+if ~isempty(GRFData)
+    GRFData.signals.values = GRFData.signals.values./getBodyMass();
+end
+if ~isempty(jointTorquesData)
+    jointTorquesData.signals.values = jointTorquesData.signals.values./getBodyMass();
+end
 
 %%
-plotAngularData(angularData,GaitPhaseData,plotInfo,GaitInfo,saveInfo,[]);
-% plotJointTorqueData(jointTorquesData,plotInfo,GaitInfo,saveInfo,[]);
-% plotJointPowerData(angularData,jointTorquesData,plotInfo,GaitInfo,saveInfo,[]);
-% plotMusculoData(musculoData,plotInfo,GaitInfo,saveInfo,[],[]);
-% plotGRF(GRFData,plotInfo,GaitInfo,saveInfo,[]);
+[plotState, axesState] = plotLegState(GaitPhaseData,plotInfo,GaitInfo,saveInfo);
+[plotAngle,axesAngle] = plotAngularData(angularData,plotInfo,GaitInfo,saveInfo,[]);
+[plotTorque,axesTorque] = plotJointTorqueData(jointTorquesData,plotInfo,GaitInfo,saveInfo,[]);
+[plotPower,axesPower] = plotJointPowerData(angularData,jointTorquesData,plotInfo,GaitInfo,saveInfo,[]);
+[plotMusc,axesMusc] = plotMusculoData(musculoData,plotInfo,GaitInfo,saveInfo);
+[plotGRF,axesGRF] = plotGRFData(GRFData,plotInfo,GaitInfo,saveInfo,[]);
 % set(0, 'DefaultAxesFontSize',18);
 % plotCMGData(CMGData,plotInfo,GaitInfo,saveInfo,[])
 
+if plotInfo.plotFukuchiData && b_oneGaitPhase
+   FukuchiData = load('../Plot_figures/Data/FukuchiData.mat','gaitData'); 
+   fieldNames = fieldnames(FukuchiData.gaitData);
+   
+   if contains(saveInfo.info,'0.5ms')
+       FukuchiData2Plot = FukuchiData.gaitData.(fieldNames{contains(fieldNames,'0_5')});
+   elseif contains(saveInfo.info,'0.9ms')
+       FukuchiData2Plot = FukuchiData.gaitData.(fieldNames{contains(fieldNames,'0_9')});
+   elseif contains(saveInfo.info,'1.2ms')
+       FukuchiData2Plot = FukuchiData.gaitData.(fieldNames{contains(fieldNames,'1_2')});
+   else
+       warning('Unknown velocity')
+   end
+   plotInfoTemp = plotInfo;
+   plotInfoTemp.plotProp_entries = plotInfoTemp.plotProp_entries(end,:);
+   GaitInfoFukuchi = getPartOfGaitData(false,[],FukuchiData2Plot.angularData.time,[]);
+   [plotAngleFukuchi,axesAngleFukuchi] = plotAngularData(FukuchiData2Plot.angularData,plotInfoTemp,GaitInfoFukuchi,saveInfo,[],axesAngle,[],'right');
+   set(plotAngleFukuchi(2,1),'DisplayName','Fukuchi');
+   [plotTorqueFukuchi,axesTorqueFukuchi] = plotJointTorqueData(FukuchiData2Plot.jointTorquesData,plotInfoTemp,GaitInfoFukuchi,saveInfo,[],axesTorque,[],'right');
+[plotGRFFukuchi,axesGRFFukuchi] = plotGRFData(FukuchiData2Plot.GRFData,plotInfoTemp,GaitInfoFukuchi,saveInfo,[],axesGRF,[],'right');
+    set(plotAngleFukuchi(2,1),'DisplayName','Fukuchi');
+    set(plotTorqueFukuchi(2,1),'DisplayName','Fukuchi');
+    set(plotGRFFukuchi(2,1),'DisplayName','Fukuchi');
+end
 
 
 %

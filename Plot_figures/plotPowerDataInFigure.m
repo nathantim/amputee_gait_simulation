@@ -29,9 +29,11 @@ end
 % h = get(axesHandles(axidx),'Children');
 % set(axesHandles(axidx),'Children',h) % 
 if b_addTitle
-    title(axesHandles(axidx),'Hip abduction');
+    title(axesHandles(axidx),{'Hip'; 'abduction'});
+    %     title(axesHandles(axidx),'Hip abduction');
+    ylabel(axesHandles(axidx),'Power (W/kg)');
 end
-ylabel(axesHandles(axidx),'Power (W/kg)');
+
 
 %%
 subplotStart(3) = subplotStart(3) +1;
@@ -47,7 +49,8 @@ plotHandles(axidx,1) = plot(axesHandles(axidx),t,hipPower_avg);
 % h = get(axesHandles(1),'Children');
 % set(axesHandles(1),'Children',h) % 
 if b_addTitle
-title(axesHandles(axidx),'Hip flexion');
+    title(axesHandles(axidx),{'Hip';'flexion'});
+    %     title(axesHandles(axidx),'Hip flexion');
 end
 % ylabel(axesHandles(axidx),'W/kg');
 
@@ -65,7 +68,8 @@ plotHandles(axidx,1) = plot(axesHandles(axidx),t,kneePower_avg);
 % h = get(axesHandles(axidx),'Children');
 % set(axesHandles(axidx),'Children',flipud(h))
 if b_addTitle
-    title(axesHandles(axidx),'Knee flexion');
+    title(axesHandles(axidx),{'Knee';'flexion'});
+%     title(axesHandles(axidx),'Knee flexion');
 end
 % ylabel(axesHandles(axidx),'W/kg');
 
@@ -82,7 +86,8 @@ plotHandles(axidx,1) = plot(axesHandles(axidx),t,anklePower_avg);
 % h = get(axesHandles(axidx),'Children');
 % set(axesHandles(axidx),'Children',flipud(h))
 if b_addTitle
-    title(axesHandles(axidx),'Ankle dorsiflexion');
+    title(axesHandles(axidx),{'Ankle';'dorsiflexion'});
+%     title(axesHandles(axidx),'Ankle dorsiflexion');
 end
 % ylabel(axesHandles(axidx),'W/kg');
 

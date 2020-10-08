@@ -6,8 +6,7 @@ if nargin < 5
     axesHandles = [];
 end
 if nargin < 6 || isempty(subplotStart)
-    subplotStart = 621;
-    subplotStart = dec2base(subplotStart,10) - '0';
+    subplotStart = [6 2 1];
     setLegend = true;
 else
     setLegend = false;
@@ -137,9 +136,10 @@ end
  plotHandlesLeft = [];
  plotHandlesRight = [];
 
-if isempty(musculoDataFigure)
+if isempty(musculoDataFigure) && isempty(axesHandles)
     musculoDataFig = figure();
-    set(musculoDataFig, 'Position',[10,40,1200,930]);
+    fullScreen = get(0,'screensize');
+    set(musculoDataFig, 'Position',[fullScreen(1:2)+20 fullScreen(3:4)*0.9]);
 else
     musculoDataFig = musculoDataFigure;
 %     clf(musculoDataFig);
@@ -165,41 +165,28 @@ if setLegend
     end
 end
 
-%%
-if contains(legToPlot,'both')
-    plotHandles = [plotHandlesLeft, plotHandlesRight];
-elseif contains(legToPlot,'left')
-    plotHandles = [plotHandlesLeft, plotHandlesRight];
-elseif contains(legToPlot,'right')
-    plotHandles = [plotHandlesLeft, plotHandlesRight];
+ plotHandles = [plotHandlesLeft, plotHandlesRight];
+ 
+%% 
+for ii= 1:size(plotHandles,1)
     
-else
-    error('Unknown leg');
-end
-
-    
-for i= 1:max(size(plotHandlesLeft,1),size(plotHandlesRight,1))
-    
-    set(plotHandles(i,1),plotInfo.plotProp,plotInfo.plotProp_entries(1,:));
+    set(plotHandles(ii,1),plotInfo.plotProp,plotInfo.plotProp_entries(1,:));
     
     if size(plotHandles,2)>2
-        set(plotHandles(i,3),plotInfo.plotProp,plotInfo.plotProp_entries(2,:));
+        set(plotHandles(ii,3),plotInfo.plotProp,plotInfo.plotProp_entries(2,:));
     end
     
     if plotInfo.showSD && GaitInfo.b_oneGaitPhase
-        set(plotHandles(i,2),plotInfo.fillProp,plotInfo.fillProp_entries(1,:));
-        if size(plotHandles,2)>2
-            set(plotHandles(i,4),plotInfo.fillProp,plotInfo.fillProp_entries(2,:));
+        set(plotHandles(ii,2),plotInfo.fillProp,plotInfo.fillProp_entries(1,:));
+        if size(plotHandles,2)>2 && ~isnan(plotHandles(ii,4))
+            set(plotHandles(ii,4),plotInfo.fillProp,plotInfo.fillProp_entries(2,:));
         end
     end
-    if GaitInfo.b_oneGaitPhase && plotInfo.plotWinterData && ~isnan(plotHandlesWinter(i,1))
-        set(plotHandlesWinter(i,1),plotInfo.plotProp,plotInfo.plotProp_entries(3,:));
-        set(plotHandlesWinter(i,2),plotInfo.fillProp,plotInfo.fillProp_entries(3,:));
-    end
+   
 end
 
 %%
-if contains(saveInfo.info,'prosthetic') || contains(legToPlot,'both')
+if contains(saveInfo.info,'prosthetic') && contains(legToPlot,'both')
     leg = legend([plotHandlesLeft(end,1),plotHandlesRight(end,1)],'Intact leg','Prosthetic leg');
 elseif contains(legToPlot,'both')
     leg = legend([plotHandlesLeft(end,1),plotHandlesRight(end,1)],'Left leg','Right leg');

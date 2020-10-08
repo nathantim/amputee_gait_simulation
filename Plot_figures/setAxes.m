@@ -1,12 +1,12 @@
-function axesPos = setAxes(axes,xOffset, xShift, yOffset, yShift, width, hwratio)
+function axesPos = setAxes(axes,numAxCol,xOffset, xShift, yOffset, yShift, width, hwratio)
 
 for jj = 1:length(axes)
-    if jj <= length(axes)/2
+    if jj <= (length(axes)-numAxCol)
         set(axes(jj),'XTickLabel',{});
     end
     prevPos = get(axes(jj),'Position');
-        axesPos(jj,:) = [xOffset + (mod(jj-1,length(axes)/2))*xShift ...
-            yOffset + prevPos(2)+(jj<=length(axes)/2)*yShift ...
+        axesPos(jj,:) = [xOffset + (mod(jj-1,numAxCol))*xShift ...
+            yOffset + prevPos(2)+(floor((jj-1)/numAxCol))*yShift ...
             width width/hwratio];
 
     set(axes(jj),'Position',axesPos(jj,:));

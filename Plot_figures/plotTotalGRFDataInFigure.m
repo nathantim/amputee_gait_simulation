@@ -23,9 +23,10 @@ hold(axesHandles(axidx),'on');
 plotHandles(axidx,1) = plot(axesHandles(axidx),t,GRFx_avg);
 
 if b_addTitle
-    title(axesHandles(axidx),'Anterior-posterior');
+    title(axesHandles(axidx),{'Anterior';'posterior'});
+    ylabel(axesHandles(axidx),'GRF (N/kg)');
 end
-ylabel(axesHandles(axidx),'GRF (N/kg)');
+
 
 %% Y
 axidx = 2;
@@ -38,7 +39,7 @@ hold(axesHandles(axidx),'on');
 plotHandles(axidx,1) = plot(axesHandles(axidx),t,GRFy_avg);
 
 if b_addTitle
-    title(axesHandles(axidx),'Medio-lateral');
+    title(axesHandles(axidx),{'Medio';'lateral'});
 end
 
 %% Vertical
