@@ -1,13 +1,12 @@
 function plotHealthyProstheticData(realHealthyData,healthyData,prostheticData,prostheticCMGData,info,b_saveTotalFig)
 showSD = false;
-plotInOneFigure = true;
 plotWinterData = false;
 
 %For debug purposes
-b_plotLegState    = 0;
+b_plotLegState    = 1;
 b_plotAngles      = 0;
 b_plotTorques     = 0;
-b_plotPowers      = 1;
+b_plotPowers      = 0;
 b_plotGRF         = 0;
 b_plotMuscle      = 0;
 
@@ -35,10 +34,10 @@ end
 saveInfo.info = info;
 
 
-healthyGaitInfo = getPartOfGaitData(b_oneGaitPhase,healthyData.GaitPhaseData,healthyData.angularData.time,healthyData.stepTimes);
-prostheticGaitInfo = getPartOfGaitData(b_oneGaitPhase,prostheticData.GaitPhaseData,prostheticData.angularData.time,prostheticData.stepTimes);
-prostheticCMGGaitInfo = getPartOfGaitData(b_oneGaitPhase,prostheticCMGData.GaitPhaseData,prostheticCMGData.angularData.time,prostheticCMGData.stepTimes);
-realHealthyDataGaitInfo = getPartOfGaitData(false,[],realHealthyData.angularData.time,[]);
+healthyGaitInfo         = getPartOfGaitData(b_oneGaitPhase, healthyData.GaitPhaseData,      healthyData.angularData.time,       healthyData.stepTimes);
+prostheticGaitInfo      = getPartOfGaitData(b_oneGaitPhase, prostheticData.GaitPhaseData,   prostheticData.angularData.time,    prostheticData.stepTimes);
+prostheticCMGGaitInfo   = getPartOfGaitData(b_oneGaitPhase, prostheticCMGData.GaitPhaseData,prostheticCMGData.angularData.time, prostheticCMGData.stepTimes);
+realHealthyDataGaitInfo = getPartOfGaitData(false,          [],                             realHealthyData.angularData.time,   []);
 
 %% Normalize data:
 healthyData.jointTorquesData.signals.values = healthyData.jointTorquesData.signals.values./getBodyMass();
@@ -56,6 +55,7 @@ plotInfo.colorProp = plotInfo.colorProp(1:3,:);
 plotInfo.lineWidthProp = {3;3;3};
 plotInfo.plotProp_entries = [plotInfo.lineVec(:),plotInfo.colorProp(:), plotInfo.lineWidthProp(:)];
 plotInfo.plotWinterData = plotWinterData;
+plotInfo.showTables = true;
 
 plotInfo.fillProp = {'FaceColor','FaceAlpha','EdgeColor','LineStyle'};
 faceAlpha = {0.2;0.2;0.2};

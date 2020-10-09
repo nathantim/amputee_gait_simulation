@@ -54,10 +54,15 @@ if ~plotInfo.showSD
     RankleTorque_sd = [];
     
 end
-rangeTable = createRangeTable(GaitInfo,LhipRollTorque_avg,RhipRollTorque_avg,LhipTorque_avg,RhipTorque_avg,LkneeTorque_avg,RkneeTorque_avg,LankleTorque_avg,RankleTorque_avg);
-if ~isempty(rangeTable)
-    fprintf('Joint torque range (N/kg):\n');
-    disp(rangeTable);
+
+if plotInfo.showTables
+    varNames = {'LHipAbduction (Nm/kg)','RHipAbduction (Nm/kg)','LHipFlexion (Nm/kg)','RHipFlexion (Nm/kg)',...
+                'LKneeFlexion (Nm/kg)','RKneeFlexion (Nm/kg)','LAnkleDorsiflexion (Nm/kg)','RAnkleDorsiflexion (Nm/kg)'};
+    rangeTable = createRangeTable(GaitInfo,varNames,LhipRollTorque_avg,RhipRollTorque_avg,LhipTorque_avg,RhipTorque_avg,LkneeTorque_avg,RkneeTorque_avg,LankleTorque_avg,RankleTorque_avg);
+    if ~isempty(rangeTable)
+%         fprintf('Joint torque range (Nm/kg):\n');
+        disp(rangeTable);
+    end
 end
 
 %%
@@ -83,7 +88,10 @@ if contains(legToPlot,'left') || contains(legToPlot,'both')
 [plotHandlesLeft,axesHandles] = plotTorqueDataInFigure(torqueDataFig,axesHandles,GaitInfo.tp,LhipTorque_avg,LhipTorque_sd,LhipRollTorque_avg,LhipRollTorque_sd,LkneeTorque_avg,LkneeTorque_sd,LankleTorque_avg,LankleTorque_sd,subplotStart,GaitInfo.b_oneGaitPhase,b_addTitle);
 end
 if contains(legToPlot,'right') || contains(legToPlot,'both')
-    [plotHandlesRight,axesHandles] = plotTorqueDataInFigure(torqueDataFig,axesHandles,GaitInfo.tp,RhipTorque_avg,RhipTorque_sd,RhipRollTorque_avg,RhipRollTorque_sd,RkneeTorque_avg,RkneeTorque_sd,RankleTorque_avg,RankleTorque_sd,subplotStart,GaitInfo.b_oneGaitPhase,false);
+    if ~isempty(axesHandles)
+        b_addTitle = false;
+    end
+    [plotHandlesRight,axesHandles] = plotTorqueDataInFigure(torqueDataFig,axesHandles,GaitInfo.tp,RhipTorque_avg,RhipTorque_sd,RhipRollTorque_avg,RhipRollTorque_sd,RkneeTorque_avg,RkneeTorque_sd,RankleTorque_avg,RankleTorque_sd,subplotStart,GaitInfo.b_oneGaitPhase,b_addTitle);
 end
 if GaitInfo.b_oneGaitPhase && plotInfo.plotWinterData
     [plotHandlesWinter,axesHandles] = plotTorqueDataInFigure(torqueDataFig,axesHandles,timeWinter,hipTorqueWinter_avg,hipTorqueWinter_sd,[],[],kneeTorqueWinter_avg,kneeTorqueWinter_sd, ...

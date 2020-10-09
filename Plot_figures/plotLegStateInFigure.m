@@ -18,7 +18,8 @@ if ~isempty(legState_sd)
 %  subplotStart(3) = subplotStart(3)+1;
 hold(axesHandles(axidx),'on');
 
- plotHandles(axidx,1) = stairs(axesHandles(axidx),t,round(legState_avg));
+% Substracting 0.3 is done to make sure that during rounding off everything below .8 is rounded off to the lower integer.  
+ plotHandles(axidx,1) = stairs(axesHandles(axidx),t,round(legState_avg-0.3));
 
  if b_addTitle
      title(axesHandles(axidx),'Leg state');

@@ -49,6 +49,54 @@ if ~plotInfo.showSD
     RGRFy_sd = [];
     RGRFz_sd = [];
 end
+
+if plotInfo.showTables
+    varNames = {'LGRFx (N/kg)','RGRFx (N/kg)','LGRFy (N/kg)','RGRFy (N/kg)','LGRFz (N/kg)','RGRFz (N/kg)'};
+    rangeTableGRF = createRangeTable(GaitInfo,varNames,LGRFx_avg,RGRFx_avg,LGRFy_avg,RGRFy_avg,LGRFz_avg,RGRFz_avg);
+    if ~isempty(rangeTableGRF)
+%         fprintf('GRF range (N/kg):\n');
+        disp(rangeTableGRF);
+    end
+    
+    LGRFx = GRFData.signals.values(:,1);
+    
+LGRFy = GRFData.signals.values(:,2);
+LGRFz = GRFData.signals.values(:,3);
+
+RGRFx = GRFData.signals.values(:,4);
+RGRFy = GRFData.signals.values(:,5);
+RGRFz = GRFData.signals.values(:,6);
+    
+
+
+[LGRimpxBrake,LGRimpxProp]  = getImpulse(GRFData.time,GaitInfo.start.leftV,GaitInfo.end.leftV,LGRFx);
+% Medial force is positive, hence * -1
+[LGRimpyBrake,LGRimpyProp]  = getImpulse(GRFData.time,GaitInfo.start.leftV,GaitInfo.end.leftV,-LGRFy);
+[~,LGRimpzProp]             = getImpulse(GRFData.time,GaitInfo.start.leftV,GaitInfo.end.leftV,LGRFz);
+
+[RGRimpxBrake,RGRimpxProp]  = getImpulse(GRFData.time,GaitInfo.start.rightV,GaitInfo.end.rightV,RGRFx);
+% Medial force is positive, hence * -1
+[RGRimpyBrake,RGRimpyProp]  = getImpulse(GRFData.time,GaitInfo.start.rightV,GaitInfo.end.rightV,-RGRFy);
+[~,RGRimpzProp]             = getImpulse(GRFData.time,GaitInfo.start.rightV,GaitInfo.end.rightV,RGRFz);
+
+
+[impxBrakestruct]   = getFilterdMean_and_ASI(LGRimpxBrake,RGRimpxBrake);
+[impxPropstruct]    = getFilterdMean_and_ASI(LGRimpxProp,RGRimpxProp);
+[impyBrakestruct]   = getFilterdMean_and_ASI(LGRimpyBrake,RGRimpyBrake);
+[impyPropstruct]    = getFilterdMean_and_ASI(LGRimpyProp,RGRimpyProp);
+[impzPropstruct]    = getFilterdMean_and_ASI(LGRimpzProp,RGRimpzProp);
+
+    
+    rowNames = {'x','y','z'};
+    varNames = {'L braking impulse (N%/kg)','R braking impulse (N%/kg)', 'Braking ASI (%)', 'L prop impulse (N%/kg)','R prop impulse (N%/kg)', 'Prop ASI (%)'};%,'L mean propel impulse (N%/kg)','R mean propel impulse (N%/kg)'};
+    vars = {impxBrakestruct.leftTxt, impxBrakestruct.rightTxt, impxBrakestruct.ASItxt, impxPropstruct.leftTxt, impxPropstruct.rightTxt, impxPropstruct.ASItxt; ... 
+            impyBrakestruct.leftTxt, impyBrakestruct.rightTxt, impyBrakestruct.ASItxt, impyPropstruct.leftTxt, impyPropstruct.rightTxt, impyPropstruct.ASItxt; ... 
+            '-', '-', '-', impzPropstruct.leftTxt, impzPropstruct.rightTxt, impzPropstruct.ASItxt};
+    disp(table(vars(:,1),vars(:,2),vars(:,3),vars(:,4),vars(:,5),vars(:,6),'VariableNames',varNames,'RowNames',rowNames));
+    
+end
+
+%%
 if GaitInfo.b_oneGaitPhase && plotInfo.plotWinterData
     [tWinter,~, ~, ~,~,~,~, GRFz_winter_avg,GRFz_winter_sd, GRFx_winter_avg,GRFx_winter_sd, ~,~,~,~,~,~] = getWinterData(GaitInfo.WinterDataSpeed);
     if size(GRFz_winter_avg,2) > size(GRFz_winter_avg,2)
@@ -84,7 +132,10 @@ if contains(legToPlot,'left') || contains(legToPlot,'both')
     [plotHandlesLeft,axesHandles] = plotTotalGRFDataInFigure(GRFDataFig,axesHandles,GaitInfo.tp,LGRFx_avg,LGRFx_sd,LGRFy_avg,LGRFy_sd,LGRFz_avg,LGRFz_sd,subplotStart,b_addTitle);
 end
 if contains(legToPlot,'right') || contains(legToPlot,'both')
-    [plotHandlesRight,axesHandles] = plotTotalGRFDataInFigure(GRFDataFig,axesHandles,GaitInfo.tp,RGRFx_avg,RGRFx_sd,RGRFy_avg,RGRFy_sd,RGRFz_avg,RGRFz_sd,subplotStart,false);
+    if ~isempty(axesHandles)
+        b_addTitle = false;
+    end
+    [plotHandlesRight,axesHandles] = plotTotalGRFDataInFigure(GRFDataFig,axesHandles,GaitInfo.tp,RGRFx_avg,RGRFx_sd,RGRFy_avg,RGRFy_sd,RGRFz_avg,RGRFz_sd,subplotStart,b_addTitle);
 end
 if GaitInfo.b_oneGaitPhase && plotInfo.plotWinterData
     [plotHandlesWinter,axesHandles] = plotTotalGRFDataInFigure(GRFDataFig,axesHandles,tWinter,GRFx_winter_avg,GRFx_winter_sd,GRFy_winter_avg,GRFy_winter_sd,GRFz_winter_avg,GRFz_winter_sd,subplotStart);

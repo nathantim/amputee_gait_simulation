@@ -77,8 +77,8 @@ try
     %     [distCost, dist_covered] = getDistMeasure(timeSetToRun,stepLengths,min_velocity,max_velocity,dist_slack);
     
     %% Calculate step info
-    [meanStepLength, ASIStepLength] = getFilterdMean_and_ASI(stepLengths(:,1),stepLengths(:,2),initiation_steps);
-    [meanStepTime, ASIStepTime] = getFilterdMean_and_ASI(stepTimes(:,1),stepTimes(:,2),initiation_steps);
+    stepLengthASIstruct = getFilterdMean_and_ASI(findpeaks(stepLengths(:,1)),findpeaks(stepLengths(:,2)),initiation_steps);
+    stepTimeASIstruct = getFilterdMean_and_ASI(findpeaks(stepTimes(:,1)),findpeaks(stepTimes(:,2)),initiation_steps);
 %     [meanVel, ASIVel] = getFilterdMean_and_ASI(stepVelocities(:,1),stepVelocities(:,2),initiation_steps);
     
     %%
@@ -131,21 +131,12 @@ try
     
     dataStruct = struct('modelType',modelType,'timeCost',struct('data',timeCost,'minimize',1,'info',''),'cost',struct('data',cost,'minimize',1,'info',''),'CoT',struct('data',[effort_costs(:).costOfTransport]','minimize',1,'info',char({effort_costs(:).name})),...
         'E',struct('data',[effort_costs(:).metabolicEnergy]','minimize',1,'info',char({effort_costs(:).name})),'sumTstop',struct('data',sumOfStopTorques,'minimize',1,'info',''),...
-        'HATPos',struct('data',HATPos,'minimize',0,'info',''),'vMean',struct('data',meanVel,'minimize',0,'info',''),'tStepMean',struct('data',meanStepTime,'minimize',2,'info',''),...
-        'lStepMean',struct('data',meanStepLength,'minimize',2,'info',''),'lStepASI',struct('data',round(ASIStepLength,2),'minimize',2,'info',''),...
-        'tStepASI',struct('data',round(ASIStepTime,2),'minimize',2,'info',''),'velCost',struct('data',velCost,'minimize',1,'info',''),'timeVector',struct('data',time,'minimize',1,'info',''),...
+        'HATPos',struct('data',HATPos,'minimize',0,'info',''),'vMean',struct('data',meanVel,'minimize',0,'info',''),...
+        'stepLengthASIstruct',struct('data',stepLengthASIstruct,'minimize',2,'info',''),...
+        'stepTimeASIstruct',struct('data',stepTimeASIstruct,'minimize',2,'info',''),'velCost',struct('data',velCost,'minimize',1,'info',''),'timeVector',struct('data',time,'minimize',1,'info',''),...
         'maxCMGTorque',struct('data',maxCMGTorque,'minimize',1,'info',''),'maxCMGdeltaH',struct('data',maxCMGdeltaH,'minimize',1,'info',''),'controlRMSE',struct('data',controlRMSE,'minimize',1,'info',''),...
         'numberOfCollisions',struct('data',numberOfCollisions,'minimize',1,'info',''));
-    %     dataStruct = struct('cost',struct('data',cost*rand,'minimize',1,'info',''),'costOfTransport',struct('data',[effort_costs(:).costOfTransport].*rand,'minimize',1,'info',{effort_costs(:).name}),...
-    %         'metabolicEnergy',struct('data',[effort_costs(:).metabolicEnergy].*rand,'minimize',1,'info',{effort_costs(:).name}),'sumOfStopTorques',struct('data',sumOfStopTorques.*rand,'minimize',1,'info',''),...
-    %         'HATPos',struct('data',HATPos.*rand,'minimize',0,'info',''),'vMean',struct('data',meanVel.*rand,'minimize',0,'info',''),'tStepMean',struct('data',meanStepTime.*rand,'minimize',2,'info',''),...
-    %         'lStepMean',struct('data',meanStepLength.*rand,'minimize',2,'info',''),'lStepASI',struct('data',round(ASIStepLength.*rand,2),'minimize',2,'info',''),...
-    %         'tStepASI',struct('data',round(ASIStepTime.*rand,2),'minimize',2,'info',''));
-    %     if exist('dataQueueD','var') && ~isempty(dataQueueD)
-    %         send(dataQueueD,dataStruct);
-    %     end
-    %     try
-    %         save('dataStruct.mat','dataStruct');
+
     if b_isParallel && timeCost == 0
         GainsSave = Gains;
         if size(GainsSave,1)>size(GainsSave,2)
@@ -162,11 +153,8 @@ try
             exist_vars = load(filename);
             metabolicEnergySave     = [exist_vars.metabolicEnergySave;metabolicEnergy];
             meanVel                 = [exist_vars.meanVel;meanVel];
-            meanStepTime            = [exist_vars.meanStepTime;meanStepTime];
-            meanStepLength          = [exist_vars.meanStepLength;meanStepLength];
-            ASIStepLength           = [exist_vars.ASIStepLength;ASIStepLength];
-            ASIStepTime             = [exist_vars.ASIStepTime;ASIStepTime];
-            ASIVel                  = [exist_vars.ASIVel;ASIVel];
+            stepLengthASImean       = [exist_vars.ASIStepLength;stepLengthASIstruct.ASImean];
+            stepTimeASImean         = [exist_vars.ASIStepTime;stepTimeASIstruct.ASImean];
             costOfTransportSave     = [exist_vars.costOfTransportSave; [effort_costs.costOfTransport] ];
             costT                   = [exist_vars.costT;cost];
             %             sumOfIdealTorques       = [exist_vars.sumOfIdealTorques;sumOfIdealTorques];
@@ -188,8 +176,8 @@ try
 
         end
         
-        save(filename,'metabolicEnergySave','meanVel','meanStepTime', 'meanStepLength','costOfTransportSave', ...
-            'costT','dateSave','maxCMGdeltaHSave','maxCMGTorqueSave','sumOfStopTorques','HATPos','GainsSave','ASIStepLength','ASIStepTime','ASIVel','timeCostSave')
+        save(filename,'metabolicEnergySave','meanVel','stepTimeASImean', 'stepLengthASImean','costOfTransportSave', ...
+            'costT','dateSave','maxCMGdeltaHSave','maxCMGTorqueSave','sumOfStopTorques','HATPos','GainsSave','timeCostSave')
     end
    
     

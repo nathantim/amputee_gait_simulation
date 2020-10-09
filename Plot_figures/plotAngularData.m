@@ -24,28 +24,19 @@ t = GaitInfo.t;
 
 %%
 
-% HATAngle    = 2*180/pi*angularData.signals.values(GaitInfo.start.left:GaitInfo.end.left,1);
-% HATAngleVel = 180/pi*angularData.signals.values(GaitInfo.start.left:GaitInfo.end.left,2);
 
 LhipAngles      = -180/pi*angularData.signals.values(:,3);
-% LhipAnglesVel   = -180/pi*angularData.signals.values(GaitInfo.start.left:GaitInfo.end.left,4);
 RhipAngles      = -180/pi*angularData.signals.values(:,5);
-% RhipAnglesVel   = -180/pi*angularData.signals.values(GaitInfo.start.right:GaitInfo.end.right,6);
 
 LkneeAngles     = 180/pi*angularData.signals.values(:,7);
-% LkneeAnglesVel  = 180/pi*angularData.signals.values(GaitInfo.start.left:GaitInfo.end.left,8);
 RkneeAngles     = 180/pi*angularData.signals.values(:,9);
-% RkneeAnglesVel  = 180/pi*angularData.signals.values(GaitInfo.start.right:GaitInfo.end.right,10);
 
 LankleAngles    = -180/pi*angularData.signals.values(:,11);
-% LankleAnglesVel = -180/pi*angularData.signals.values(GaitInfo.start.left:GaitInfo.end.left,12);
 RankleAngles    = -180/pi*angularData.signals.values(:,13);
 
 LhipRollAngles    = 180/pi*angularData.signals.values(:,15);
-% LankleAnglesVel = -180/pi*angularData.signals.values(GaitInfo.start.left:GaitInfo.end.left,12);
 RhipRollAngles    = 180/pi*angularData.signals.values(:,17);
 
-% RankleAnglesVel = -180/pi*angularData.signals.values(GaitInfo.start.right:GaitInfo.end.right,14);
 warning('Unreasoned factor -1');
 
 
@@ -69,12 +60,15 @@ if ~plotInfo.showSD
     RankleAngles_sd = [];
     
 end
-rangeTable = createRangeTable(GaitInfo,LhipRollAngles_avg,RhipRollAngles_avg,LhipAngles_avg,RhipAngles_avg,LkneeAngles_avg,RkneeAngles_avg,LankleAngles_avg,RankleAngles_avg);
-if ~isempty(rangeTable)
-    fprintf('Joint angle range (deg):\n');
-    disp(rangeTable);
+if plotInfo.showTables
+    varNames = {'LHipAbduction (deg)','RHipAbduction (deg)','LHipFlexion (deg)','RHipFlexion (deg)',...
+                'LKneeFlexion (deg)','RKneeFlexion (deg)','LAnkleDorsiflexion (deg)','RAnkleDorsiflexion (deg)'};
+    rangeTable = createRangeTable(GaitInfo,varNames,LhipRollAngles_avg,RhipRollAngles_avg,LhipAngles_avg,RhipAngles_avg,LkneeAngles_avg,RkneeAngles_avg,LankleAngles_avg,RankleAngles_avg);
+    if ~isempty(rangeTable)
+%         fprintf('Joint angle range (deg):\n');
+        disp(rangeTable);
+    end
 end
-
 %%
 if isempty(angularDataFigure) && isempty(axesHandles)
     angularDataFig = figure();
@@ -105,7 +99,10 @@ end
  [plotHandlesLeft,axesHandles] = plotAngularDataInFigure(angularDataFig,axesHandles,GaitInfo.tp,LhipAngles_avg,LhipAngles_sd,LhipRollAngles_avg,LhipRollAngles_sd,LkneeAngles_avg,LkneeAngles_sd,LankleAngles_avg,LankleAngles_sd,subplotStart,GaitInfo.b_oneGaitPhase,b_addTitle);
  end
  if contains(legToPlot,'right') || contains(legToPlot,'both')
-     [plotHandlesRight,axesHandles] = plotAngularDataInFigure(angularDataFig,axesHandles,GaitInfo.tp,RhipAngles_avg,RhipAngles_sd,RhipRollAngles_avg,RhipRollAngles_sd,RkneeAngles_avg,RkneeAngles_sd,RankleAngles_avg,RankleAngles_sd,subplotStart,GaitInfo.b_oneGaitPhase,false);
+     if ~isempty(axesHandles)
+        b_addTitle = false;
+    end
+     [plotHandlesRight,axesHandles] = plotAngularDataInFigure(angularDataFig,axesHandles,GaitInfo.tp,RhipAngles_avg,RhipAngles_sd,RhipRollAngles_avg,RhipRollAngles_sd,RkneeAngles_avg,RkneeAngles_sd,RankleAngles_avg,RankleAngles_sd,subplotStart,GaitInfo.b_oneGaitPhase,b_addTitle);
  end
  if GaitInfo.b_oneGaitPhase && plotInfo.plotWinterData
      [plotHandlesWinter,axesHandles] = plotAngularDataInFigure(angularDataFig,axesHandles,timeWinter,hipAngleWinter_avg,hipAngleWinter_sd,[],[],kneeAngleWinter_avg,kneeAngleWinter_sd, ...

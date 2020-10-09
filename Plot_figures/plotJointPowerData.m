@@ -79,10 +79,14 @@ if ~plotInfo.showSD
     RanklePower_sd = [];
     
 end
-rangeTable = createRangeTable(GaitInfo,LhipRollPower_avg,RhipRollPower_avg,LhipPower_avg,RhipPower_avg,LkneePower_avg,RkneePower_avg,LanklePower_avg,RanklePower_avg);
-if ~isempty(rangeTable)
-    fprintf('Joint power range (W/kg):\n');
-    disp(rangeTable);
+if plotInfo.showTables
+     varNames = {'LHipAbduction (W/kg)','RHipAbduction (W/kg)','LHipFlexion (W/kg)','RHipFlexion (W/kg)',...
+                'LKneeFlexion (W/kg)','RKneeFlexion (W/kg)','LAnkleDorsiflexion (W/kg)','RAnkleDorsiflexion (W/kg)'};
+    rangeTable = createRangeTable(GaitInfo,varNames,LhipRollPower_avg,RhipRollPower_avg,LhipPower_avg,RhipPower_avg,LkneePower_avg,RkneePower_avg,LanklePower_avg,RanklePower_avg);
+    if ~isempty(rangeTable)
+%         fprintf('Joint power range (W/kg):\n');
+        disp(rangeTable);
+    end
 end
 
 %%
@@ -108,7 +112,10 @@ if contains(legToPlot,'left') || contains(legToPlot,'both')
     [plotHandlesLeft,axesHandles] = plotPowerDataInFigure(PowerDataFig,axesHandles,GaitInfo.tp,LhipPower_avg,LhipPower_sd,LhipRollPower_avg,LhipRollPower_sd,LkneePower_avg,LkneePower_sd,LanklePower_avg,LanklePower_sd,subplotStart,GaitInfo.b_oneGaitPhase,b_addTitle);
 end
 if  contains(legToPlot,'right') || contains(legToPlot,'both')
-    [plotHandlesRight,axesHandles] = plotPowerDataInFigure(PowerDataFig,axesHandles,GaitInfo.tp,RhipPower_avg,RhipPower_sd,RhipRollPower_avg,RhipRollPower_sd,RkneePower_avg,RkneePower_sd,RanklePower_avg,RanklePower_sd,subplotStart,GaitInfo.b_oneGaitPhase,false);
+    if ~isempty(axesHandles)
+        b_addTitle = false;
+    end
+    [plotHandlesRight,axesHandles] = plotPowerDataInFigure(PowerDataFig,axesHandles,GaitInfo.tp,RhipPower_avg,RhipPower_sd,RhipRollPower_avg,RhipRollPower_sd,RkneePower_avg,RkneePower_sd,RanklePower_avg,RanklePower_sd,subplotStart,GaitInfo.b_oneGaitPhase,b_addTitle);
 end
 % if GaitInfo.b_oneGaitPhase && plotInfo.plotWinterData
 %     [plotHandlesWinter,axesHandles] = plotPowerDataInFigure(PowerDataFig,axesHandles,timeWinter,hipPowerWinter_avg,hipPowerWinter_sd,[],[],kneePowerWinter_avg,kneePowerWinter_sd, ...

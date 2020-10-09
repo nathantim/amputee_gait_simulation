@@ -31,9 +31,13 @@ t = angularData.time;
 
 GaitInfo = getPartOfGaitData(b_oneGaitPhase,GaitPhaseData,t,stepTimes,timeInterval);
 
-% if ~b_oneGaitPhase
-%     getSteps(t,GaitPhaseData,stepTimes);
-% end
+axesState = [];
+axesAngle = [];
+axesTorque = [];
+axesPower = [];
+axesMusc = [];
+axesGRF = [];
+
 %%
 plotInfo.showSD = showSD;%true;
 plotInfo.plotProp = {'LineStyle','Color','LineWidth'};
@@ -51,6 +55,7 @@ faceAlpha = {0.2;0.2;0.2};
 plotInfo.fillVal = {'#0072BD';	'#D95319';'#7E2F8E'};% {[0.8 0.8 0.8],0.5,'none'};
 plotInfo.edgeVec = {':';':';':'};% {[0.8 0.8 0.8],0.5,'none'};
 plotInfo.fillProp_entries = [plotInfo.fillVal,faceAlpha,plotInfo.fillVal,plotInfo.edgeVec];
+plotInfo.showTables = true;
 
 %%
 if ~isempty(GRFData)
@@ -60,17 +65,18 @@ if ~isempty(jointTorquesData)
     jointTorquesData.signals.values = jointTorquesData.signals.values./getBodyMass();
 end
 
-%%
+%%'
 [plotState, axesState] = plotLegState(GaitPhaseData,plotInfo,GaitInfo,saveInfo);
-[plotAngle,axesAngle] = plotAngularData(angularData,plotInfo,GaitInfo,saveInfo,[]);
-[plotTorque,axesTorque] = plotJointTorqueData(jointTorquesData,plotInfo,GaitInfo,saveInfo,[]);
-[plotPower,axesPower] = plotJointPowerData(angularData,jointTorquesData,plotInfo,GaitInfo,saveInfo,[]);
-[plotMusc,axesMusc] = plotMusculoData(musculoData,plotInfo,GaitInfo,saveInfo);
-[plotGRF,axesGRF] = plotGRFData(GRFData,plotInfo,GaitInfo,saveInfo,[]);
+% [plotAngle,axesAngle] = plotAngularData(angularData,plotInfo,GaitInfo,saveInfo,[]);
+% [plotTorque,axesTorque] = plotJointTorqueData(jointTorquesData,plotInfo,GaitInfo,saveInfo,[]);
+% [plotPower,axesPower] = plotJointPowerData(angularData,jointTorquesData,plotInfo,GaitInfo,saveInfo,[]);
+% [plotMusc,axesMusc] = plotMusculoData(musculoData,plotInfo,GaitInfo,saveInfo);
+% [plotGRF,axesGRF] = plotGRFData(GRFData,plotInfo,GaitInfo,saveInfo,[]);
 % set(0, 'DefaultAxesFontSize',18);
 % plotCMGData(CMGData,plotInfo,GaitInfo,saveInfo,[])
 
 if plotInfo.plotFukuchiData && b_oneGaitPhase
+    disp('Fukuchi Data');
    FukuchiData = load('../Plot_figures/Data/FukuchiData.mat','gaitData'); 
    fieldNames = fieldnames(FukuchiData.gaitData);
    
@@ -84,6 +90,7 @@ if plotInfo.plotFukuchiData && b_oneGaitPhase
        warning('Unknown velocity')
    end
    plotInfoTemp = plotInfo;
+   plotInfoTemp.showTables = false;
    plotInfoTemp.plotProp_entries = plotInfoTemp.plotProp_entries(end,:);
    GaitInfoFukuchi = getPartOfGaitData(false,[],FukuchiData2Plot.angularData.time,[]);
    [plotAngleFukuchi,axesAngleFukuchi] = plotAngularData(FukuchiData2Plot.angularData,plotInfoTemp,GaitInfoFukuchi,saveInfo,[],axesAngle,[],'right');
