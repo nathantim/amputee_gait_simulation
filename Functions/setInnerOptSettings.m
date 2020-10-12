@@ -11,7 +11,7 @@ inner_opt_settings.CMGTorqueFactor = 0;
 inner_opt_settings.CMGdeltaHFactor = 15;
 inner_opt_settings.ControlRMSEFactor = 0;
 
-inner_opt_settings.numTerrains = 6;
+inner_opt_settings.numTerrains = 4;
 inner_opt_settings.terrain_height = 0.015; % in m
 if usejava('desktop')
     inner_opt_settings.numParWorkers = 4;
@@ -32,6 +32,7 @@ if nargin > 0
     opts.TolFun = 1e-2;
     opts.EvalParallel = 'yes';
     opts.LogPlot = 'off';
+%     opts.CMA.active = 1;
     if (min_velocity == target_velocity && max_velocity == target_velocity)
         opts.TargetVel = target_velocity;
     end
