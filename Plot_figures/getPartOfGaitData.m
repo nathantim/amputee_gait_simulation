@@ -65,8 +65,8 @@ if (b_oneGaitPhase) && min(sum(stepTimes(:,1)),sum(stepTimes(:,2))) > 1
     rightStanceSwing(rightStanceSwing <= GaitState.LiftOff) = 1;
     rightStanceSwing(rightStanceSwing > GaitState.LiftOff) = 0;
     
-    [leftStanceSwing_avg,~] = interpData2perc(t,tp,leftStanceSwing,leftGaitPhaseStartV,leftGaitPhaseEndV,b_oneGaitPhase);
-[rightStanceSwing_avg,~] = interpData2perc(t,tp,rightLegState,rightGaitPhaseStartV,rightGaitPhaseEndV,b_oneGaitPhase);
+%     [leftStanceSwing_avg,~] = interpData2perc(t,tp,leftStanceSwing,leftGaitPhaseStartV,leftGaitPhaseEndV,b_oneGaitPhase);
+% [rightStanceSwing_avg,~] = interpData2perc(t,tp,rightLegState,rightGaitPhaseStartV,rightGaitPhaseEndV,b_oneGaitPhase);
 
 
     
@@ -135,6 +135,7 @@ GaitInfo.time.right_perc = t_right_perc;
 GaitInfo.tp = tp;
 GaitInfo.t = t;
 GaitInfo.gaitstate = gaitstate;
+GaitInfo.initiation_steps = initiation_steps;
 
 %%
 tWinter = [1.45,1.2,0.96];

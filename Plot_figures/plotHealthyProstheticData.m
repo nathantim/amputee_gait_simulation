@@ -3,12 +3,13 @@ showSD = false;
 plotWinterData = false;
 
 %For debug purposes
-b_plotLegState    = 1;
-b_plotAngles      = 0;
-b_plotTorques     = 0;
-b_plotPowers      = 0;
-b_plotGRF         = 0;
+b_plotLegState    = 0;
+b_plotAngles      = 1;
+b_plotTorques     = 1;
+b_plotPowers      = 1;
+b_plotGRF         = 1;
 b_plotMuscle      = 0;
+b_showTables      = 1;
 
 %%
 legStateFig     = [];
@@ -17,9 +18,6 @@ torqueDataFig   = [];
 powerDataFig    = [];
 GRFDataFig      = [];
 musculoDataFig  = [];
-
-
-
 
 saveInfo = struct;
 saveInfo.b_saveFigure = 0;
@@ -40,10 +38,14 @@ prostheticCMGGaitInfo   = getPartOfGaitData(b_oneGaitPhase, prostheticCMGData.Ga
 realHealthyDataGaitInfo = getPartOfGaitData(false,          [],                             realHealthyData.angularData.time,   []);
 
 %% Normalize data:
-healthyData.jointTorquesData.signals.values = healthyData.jointTorquesData.signals.values./getBodyMass();
-prostheticData.jointTorquesData.signals.values = prostheticData.jointTorquesData.signals.values./getBodyMass();
-healthyData.GRFData.signals.values = healthyData.GRFData.signals.values./getBodyMass();
-prostheticData.GRFData.signals.values = prostheticData.GRFData.signals.values./getBodyMass();
+healthyData.jointTorquesData.signals.values             = healthyData.jointTorquesData.signals.values./getBodyMass();
+healthyData.GRFData.signals.values                      = healthyData.GRFData.signals.values./getBodyMass();
+
+prostheticData.jointTorquesData.signals.values          = prostheticData.jointTorquesData.signals.values./getBodyMass();
+prostheticData.GRFData.signals.values                   = prostheticData.GRFData.signals.values./getBodyMass();
+
+prostheticCMGGaitInfo.jointTorquesData.signals.values   = prostheticData.jointTorquesData.signals.values./getBodyMass();
+prostheticCMGGaitInfo.GRFData.signals.values            = prostheticData.GRFData.signals.values./getBodyMass();
 
 %%
 plotInfo.showSD = showSD;%true;
@@ -55,7 +57,7 @@ plotInfo.colorProp = plotInfo.colorProp(1:3,:);
 plotInfo.lineWidthProp = {3;3;3};
 plotInfo.plotProp_entries = [plotInfo.lineVec(:),plotInfo.colorProp(:), plotInfo.lineWidthProp(:)];
 plotInfo.plotWinterData = plotWinterData;
-plotInfo.showTables = true;
+plotInfo.showTables = b_showTables;
 
 plotInfo.fillProp = {'FaceColor','FaceAlpha','EdgeColor','LineStyle'};
 faceAlpha = {0.2;0.2;0.2};
@@ -66,6 +68,28 @@ plotInfo.fillProp_entries = [plotInfo.fillVal,faceAlpha,plotInfo.fillVal,plotInf
 set(0, 'DefaultAxesFontSize',16);
 set(0, 'DefaultAxesTitleFontSizeMultiplier',1.5);
 set(0, 'DefaultAxesLabelFontSizeMultiplier',1.5);
+
+%% Step lengths and times
+if plotInfo.showTables
+    healthyStepLengthASIstruct      = getFilterdMean_and_ASI(findpeaks(healthyData.stepLengths(:,1)),findpeaks(healthyData.stepLengths(:,2)),healthyGaitInfo.initiation_steps);
+    healthyStepTimeASIstruct        = getFilterdMean_and_ASI(findpeaks(healthyData.stepTimes(:,1)),findpeaks(healthyData.stepTimes(:,2)),healthyGaitInfo.initiation_steps);
+    
+    prostheticStepLengthASIstruct   = getFilterdMean_and_ASI(findpeaks(prostheticData.stepLengths(:,1)),findpeaks(prostheticData.stepLengths(:,2)),prostheticGaitInfo.initiation_steps);
+    prostheticStepTimeASIstruct     = getFilterdMean_and_ASI(findpeaks(prostheticData.stepTimes(:,1)),findpeaks(prostheticData.stepTimes(:,2)),prostheticGaitInfo.initiation_steps);
+    
+    cmgStepLengthASIstruct          = getFilterdMean_and_ASI(findpeaks(prostheticCMGData.stepLengths(:,1)),findpeaks(prostheticCMGData.stepLengths(:,2)),prostheticCMGGaitInfo.initiation_steps);
+    cmgStepTimeASIstruct            = getFilterdMean_and_ASI(findpeaks(prostheticCMGData.stepTimes(:,1)),findpeaks(prostheticCMGData.stepTimes(:,2)),prostheticCMGGaitInfo.initiation_steps);
+    
+    rowNames = {'Healthy','Prosthetic I','Prosthetic P','CMG I', 'CMG P'};
+    varNames = {'l_step (m)','l_step ASI (%)','t_step (s)','t_step ASI (%)'};%,'L mean propel impulse (N%/kg)','R mean propel impulse (N%/kg)'};
+    vars = {healthyStepLengthASIstruct.leftTxt, healthyStepLengthASIstruct.ASItxt,healthyStepTimeASIstruct.leftTxt, healthyStepTimeASIstruct.ASItxt; ...
+        prostheticStepLengthASIstruct.leftTxt, prostheticStepLengthASIstruct.ASItxt,prostheticStepTimeASIstruct.leftTxt, prostheticStepTimeASIstruct.ASItxt; ...
+        prostheticStepLengthASIstruct.rightTxt, prostheticStepLengthASIstruct.ASItxt,prostheticStepTimeASIstruct.rightTxt, prostheticStepTimeASIstruct.ASItxt; ...
+        cmgStepLengthASIstruct.leftTxt, cmgStepLengthASIstruct.ASItxt,cmgStepTimeASIstruct.leftTxt, cmgStepTimeASIstruct.ASItxt; ...
+        cmgStepLengthASIstruct.rightTxt, cmgStepLengthASIstruct.ASItxt,cmgStepTimeASIstruct.rightTxt, cmgStepTimeASIstruct.ASItxt};
+    disp(table(vars(:,1),vars(:,2),vars(:,3),vars(:,4),'VariableNames',varNames,'RowNames',rowNames));
+    
+end
 
 %% Leg state
 if b_plotLegState

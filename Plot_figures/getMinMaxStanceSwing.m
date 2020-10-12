@@ -1,6 +1,6 @@
 function [totalRange, stanceRange, swingRange] = getMinMaxStanceSwing(gaitstates,tp,data)
 % t in %
-endStanceIdx = find(tp == gaitstates.Stance);
+endStanceIdx = find(abs(tp-gaitstates.Stance) == min(abs(tp-gaitstates.Stance)));
 
 stanceRange = [min(data(1:endStanceIdx)), max(data(1:endStanceIdx))];
 swingRange  = [min(data(endStanceIdx+1:end)), max(data(endStanceIdx+1:end))];
