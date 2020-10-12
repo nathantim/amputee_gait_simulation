@@ -17,9 +17,9 @@ try
     if ~isempty(dataFieldnames) && length(dataFieldnames)>4 && data.timeCost.data == 0
         % updateFigure = findobj('type','figure','Name','Optimization Parameters');
         gaitKinematics = findobj('type','figure','Name','Gait Kinematics');
-        musclesActivation = findobj('type','figure','Name','Muscle activation levels');
+%         musclesActivation = findobj('type','figure','Name','Muscle activation levels');
         GRFData = findobj('type','figure','Name','Ground reaction forces');
-        CMGData = findobj('type','figure','Name','CMG data');
+%         CMGData = findobj('type','figure','Name','CMG data');
         
         % if isempty(updateFigure) || ~isvalid(updateFigure)
         %     updateFigure = figure();
@@ -32,22 +32,22 @@ try
             gaitKinematics.Name = 'Gait Kinematics';
             minCost = inf;
         end
-        if isempty(musclesActivation) || ~isvalid(musclesActivation)
-            musclesActivation = figure();
-            %     musclesStimulation.HitTest = 'off';
-            musclesActivation.Name = 'Muscle activation levels';
-        end
+%         if isempty(musclesActivation) || ~isvalid(musclesActivation)
+%             musclesActivation = figure();
+%             %     musclesStimulation.HitTest = 'off';
+%             musclesActivation.Name = 'Muscle activation levels';
+%         end
         if isempty(GRFData) || ~isvalid(GRFData)
             GRFData = figure();
             %     GRFData.HitTest = 'off';
             GRFData.Name = 'Ground reaction forces';
         end
-        if (isempty(CMGData) || ~isvalid(CMGData) ) && size(data.kinematics.CMGData.signals.values,1)>1
-            CMGData = figure();
-            CMGData.Name = 'CMG data';
-        else
-            CMGData = [];
-        end
+%         if (isempty(CMGData) || ~isvalid(CMGData) ) && size(data.kinematics.CMGData.signals.values,1)>1
+%             CMGData = figure();
+%             CMGData.Name = 'CMG data';
+%         else
+%             CMGData = [];
+%         end
         %%
         if isempty(minCost) || data.optimCost < minCost
             minCost = data.optimCost;
@@ -65,7 +65,8 @@ try
         plotInfo.colorProp = plotInfo.colorProp(1:3,:);
         plotInfo.lineWidthProp = {3;3;3};
         plotInfo.plotProp_entries = [plotInfo.lineVec(:),plotInfo.colorProp(:), plotInfo.lineWidthProp(:)];
-        plotInfo.plotWinterData = true;
+        plotInfo.plotWinterData = false;
+        plotInfo.plotFukuchiData = true;
         plotInfo.showTables = false;
         plotInfo.fillProp = {'FaceColor','FaceAlpha','EdgeColor','LineStyle'};
         faceAlpha = {0.2;0.2;0.2};
@@ -100,9 +101,9 @@ try
             sgtitle(gaitKinematics,['Gait kinematics for cost of ',num2str(round(data.optimCost,1)),', with $v_{mean}$ = ', num2str(round(data.vMean.data,1)),'m/s','. $\tau_{stop}$ = ', num2str(data.sumTstop.data)]);
             [~,axesAngle] = plotAngularData(data.kinematics.angularData,plotInfo,GaitInfo,saveInfo,gaitKinematics);
             
-            clf(musclesActivation);
-            sgtitle(musclesActivation,['Muscle activation levels for cost of ',num2str(round(data.optimCost,1)),', with $v_{mean}$ = ', num2str(round(data.vMean.data,1)),'m/s','. $\tau_{stop}$ = ', num2str(data.sumTstop.data)]);
-            [plotMusc,axesMusc] = plotMusculoData(data.kinematics.musculoData,plotInfo,GaitInfo,saveInfo,musclesActivation);
+%             clf(musclesActivation);
+%             sgtitle(musclesActivation,['Muscle activation levels for cost of ',num2str(round(data.optimCost,1)),', with $v_{mean}$ = ', num2str(round(data.vMean.data,1)),'m/s','. $\tau_{stop}$ = ', num2str(data.sumTstop.data)]);
+%             [plotMusc,axesMusc] = plotMusculoData(data.kinematics.musculoData,plotInfo,GaitInfo,saveInfo,musclesActivation);
             
             clf(GRFData);
             sgtitle(GRFData,['Ground reaction forces for cost of ',num2str(round(data.optimCost,1)),', with $v_{mean}$ = ', num2str(round(data.vMean.data,1)),'m/s','. $\tau_{stop}$ = ', num2str(data.sumTstop.data)]);

@@ -4,8 +4,8 @@ muscle = {'HAB','HAD','HFL','GLU','HAM','RF','HAM','RF','VAS','BFSH','GAS','GAS'
 muscleapp = {'', '', '','','h','h','k','k','','','k','a','',''};
 properpre = {'r','r','r','phimax','phimin','phiref','rho'};
 properapp = {'', 'max','min','','','',''};
-rowhead = {'$r_{0} (\\unit{cm})$','$r_{\\mathrm{max}} (\\unit{cm})$','$r_{\\mathrm{min}} (\\unit{cm})$', '$\\varphi_{\\mathrm{max}} (\\unit{\\degree})$',...
-    '$\\varphi_{\\text{min}} (\\unit{\\degree})$','$\\varphi_{0} (\\unit{\\degree}) $','$\\rho$'};
+rowhead = {'$r_{0}$ (cm)','$r_{\\text{max}}$ (cm)','$r_{\\text{min}}$ (cm)', '$\\varphi_{\\text{max}}$ (deg)',...
+    '$\\varphi_{\\text{min}}$ (deg)','$\\varphi_{0}$ (deg)','$\\rho$'};
 
 textarr = '';
 for j = 1:length(rowhead)

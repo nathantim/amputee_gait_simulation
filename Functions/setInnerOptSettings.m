@@ -10,6 +10,7 @@ inner_opt_settings.sumStopTorqueFactor = 1E-2;
 inner_opt_settings.CMGTorqueFactor = 0;
 inner_opt_settings.CMGdeltaHFactor = 15;
 inner_opt_settings.ControlRMSEFactor = 0;
+inner_opt_settings.selfCollisionFactor = 1000;
 
 inner_opt_settings.numTerrains = 4;
 inner_opt_settings.terrain_height = 0.015; % in m
@@ -24,7 +25,7 @@ if nargin > 0
     opts = cmaes;
     %opts.PopSize = numvars;
     opts.Resume = 'yes';
-    opts.MaxIter = 2000;
+    opts.MaxIter = 300;
     % opts.StopFitness = -inf;
     opts.StopFitness = 0;
     opts.DispModulo = 1;
@@ -32,7 +33,6 @@ if nargin > 0
     opts.TolFun = 1e-2;
     opts.EvalParallel = 'yes';
     opts.LogPlot = 'off';
-%     opts.CMA.active = 1;
     if (min_velocity == target_velocity && max_velocity == target_velocity)
         opts.TargetVel = target_velocity;
     end

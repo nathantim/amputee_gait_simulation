@@ -1,12 +1,15 @@
-function [plotHandles,axesHandles] = plotPowerDataInFigure(powerDataFig,axesHandles,t,hipPower_avg,hipPower_sd,hipRollPower_avg,hipRollPower_sd,kneePower_avg,kneePower_sd,anklePower_avg,anklePower_sd,subplotStart,b_oneGaitPhase)
+function [plotHandles,axesHandles] = plotPowerDataInFigure(powerDataFig,axesHandles,t,hipPower_avg,hipPower_sd,hipRollPower_avg,hipRollPower_sd,kneePower_avg,kneePower_sd,anklePower_avg,anklePower_sd,subplotStart,b_oneGaitPhase,b_addTitle)
 plotHandles = nan(4,2);
 if isempty(axesHandles)
     for i = 1:size(plotHandles,1)
         axesHandles(i) = axes(powerDataFig);
     end
 end
-if  nargin <= 12
+if  nargin < 13
     b_oneGaitPhase = true;
+end
+if nargin < 14
+    b_addTitle = true;
 end
 
 % subplotStart = dec2base(subplotStart,10) - '0';
@@ -25,9 +28,12 @@ end
 
 % h = get(axesHandles(axidx),'Children');
 % set(axesHandles(axidx),'Children',h) % 
+if b_addTitle
+    title(axesHandles(axidx),{'Hip'; 'abduction'});
+    %     title(axesHandles(axidx),'Hip abduction');
+    ylabel(axesHandles(axidx),'Power (W/kg)');
+end
 
-title(axesHandles(axidx),'Hip abduction')
-ylabel(axesHandles(axidx),'W/kg');
 
 %%
 subplotStart(3) = subplotStart(3) +1;
@@ -42,9 +48,11 @@ plotHandles(axidx,1) = plot(axesHandles(axidx),t,hipPower_avg);
 
 % h = get(axesHandles(1),'Children');
 % set(axesHandles(1),'Children',h) % 
-
-title(axesHandles(axidx),'Hip flexion')
-ylabel(axesHandles(axidx),'W/kg');
+if b_addTitle
+    title(axesHandles(axidx),{'Hip';'flexion'});
+    %     title(axesHandles(axidx),'Hip flexion');
+end
+% ylabel(axesHandles(axidx),'W/kg');
 
 
 %%
@@ -59,8 +67,11 @@ plotHandles(axidx,1) = plot(axesHandles(axidx),t,kneePower_avg);
 
 % h = get(axesHandles(axidx),'Children');
 % set(axesHandles(axidx),'Children',flipud(h))
-title(axesHandles(axidx),'Knee flexion')
-ylabel(axesHandles(axidx),'W/kg');
+if b_addTitle
+    title(axesHandles(axidx),{'Knee';'flexion'});
+%     title(axesHandles(axidx),'Knee flexion');
+end
+% ylabel(axesHandles(axidx),'W/kg');
 
 %%
 subplotStart(3) = subplotStart(3) +1;
@@ -74,12 +85,10 @@ plotHandles(axidx,1) = plot(axesHandles(axidx),t,anklePower_avg);
 
 % h = get(axesHandles(axidx),'Children');
 % set(axesHandles(axidx),'Children',flipud(h))
-title(axesHandles(axidx),'Ankle dorsiflexion')
-ylabel(axesHandles(axidx),'W/kg');
-
-
-if b_oneGaitPhase
-    xlabel(axesHandles(4),'%_{stride}','interpreter','tex')
-else
-    xlabel(axesHandles(4),'s')
+if b_addTitle
+    title(axesHandles(axidx),{'Ankle';'dorsiflexion'});
+%     title(axesHandles(axidx),'Ankle dorsiflexion');
 end
+% ylabel(axesHandles(axidx),'W/kg');
+
+

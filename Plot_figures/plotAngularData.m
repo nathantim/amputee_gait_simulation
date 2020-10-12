@@ -1,64 +1,44 @@
-function plotAngularData(angularData,GaitPhaseData,plotInfo,GaitInfo,saveInfo,angularDataFigure,subplotStart,b_plotBothLegs,b_plotLegState)
-if nargin < 6
+function [plotHandles,axesHandles] = plotAngularData(angularData,plotInfo,GaitInfo,saveInfo,angularDataFigure,axesHandles,subplotStart,legToPlot,b_addTitle)
+if nargin < 5
     angularDataFigure = [];
 end
-if nargin < 9
-   b_plotLegState = true; 
+if nargin < 6
+    axesHandles = [];
 end
+if nargin < 9
+    b_addTitle = true;
+end
+
 if nargin < 7 || isempty(subplotStart)
-%     subplotStart = 151;
-    if b_plotLegState
-        subplotStart = [5 1 1];
-    else
-        subplotStart = [4 1 1];
-    end
+    subplotStart = [1 4 1];
     setLegend = true;
-    
 else
     setLegend = false;
 end
 if nargin < 8
-    b_plotBothLegs = true;
+    legToPlot = 'both';
 end
 
-t = angularData.time;
-%%
-t_left_perc = GaitInfo.time.left_perc;
-t_right_perc = GaitInfo.time.right_perc;
+
+t = GaitInfo.t;
 
 %%
 
-% HATAngle    = 2*180/pi*angularData.signals.values(GaitInfo.start.left:GaitInfo.end.left,1);
-% HATAngleVel = 180/pi*angularData.signals.values(GaitInfo.start.left:GaitInfo.end.left,2);
 
 LhipAngles      = -180/pi*angularData.signals.values(:,3);
-% LhipAnglesVel   = -180/pi*angularData.signals.values(GaitInfo.start.left:GaitInfo.end.left,4);
 RhipAngles      = -180/pi*angularData.signals.values(:,5);
-% RhipAnglesVel   = -180/pi*angularData.signals.values(GaitInfo.start.right:GaitInfo.end.right,6);
 
 LkneeAngles     = 180/pi*angularData.signals.values(:,7);
-% LkneeAnglesVel  = 180/pi*angularData.signals.values(GaitInfo.start.left:GaitInfo.end.left,8);
 RkneeAngles     = 180/pi*angularData.signals.values(:,9);
-% RkneeAnglesVel  = 180/pi*angularData.signals.values(GaitInfo.start.right:GaitInfo.end.right,10);
 
 LankleAngles    = -180/pi*angularData.signals.values(:,11);
-% LankleAnglesVel = -180/pi*angularData.signals.values(GaitInfo.start.left:GaitInfo.end.left,12);
 RankleAngles    = -180/pi*angularData.signals.values(:,13);
 
 LhipRollAngles    = 180/pi*angularData.signals.values(:,15);
-% LankleAnglesVel = -180/pi*angularData.signals.values(GaitInfo.start.left:GaitInfo.end.left,12);
 RhipRollAngles    = 180/pi*angularData.signals.values(:,17);
 
-% RankleAnglesVel = -180/pi*angularData.signals.values(GaitInfo.start.right:GaitInfo.end.right,14);
 warning('Unreasoned factor -1');
 
-leftLegState    = GaitPhaseData.signals.values(:,1);
-rightLegState   = GaitPhaseData.signals.values(:,2);
-
-
-
-[leftLegState_avg,leftLegState_sd] = interpData2perc(t,GaitInfo.tp,leftLegState,GaitInfo.start.leftV,GaitInfo.end.leftV,GaitInfo.b_oneGaitPhase);
-[rightLegState_avg,rightLegState_sd] = interpData2perc(t,GaitInfo.tp,rightLegState,GaitInfo.start.rightV,GaitInfo.end.rightV,GaitInfo.b_oneGaitPhase);
 
 [LhipAngles_avg,LhipAngles_sd] = interpData2perc(t,GaitInfo.tp,LhipAngles,GaitInfo.start.leftV,GaitInfo.end.leftV,GaitInfo.b_oneGaitPhase);
 [LhipRollAngles_avg,LhipRollAngles_sd] = interpData2perc(t,GaitInfo.tp,LhipRollAngles,GaitInfo.start.leftV,GaitInfo.end.leftV,GaitInfo.b_oneGaitPhase);
@@ -70,8 +50,6 @@ rightLegState   = GaitPhaseData.signals.values(:,2);
 [RankleAngles_avg,RankleAngles_sd] = interpData2perc(t,GaitInfo.tp,RankleAngles,GaitInfo.start.rightV,GaitInfo.end.rightV,GaitInfo.b_oneGaitPhase);
 
 if ~plotInfo.showSD
-    leftLegState_sd = [];
-    rightLegState_sd = [];
     LhipAngles_sd = [];
     LhipRollAngles_sd = [];
     LkneeAngles_sd = [];
@@ -82,11 +60,20 @@ if ~plotInfo.showSD
     RankleAngles_sd = [];
     
 end
-
+if plotInfo.showTables
+    varNames = {'LHipAbduction (deg)','RHipAbduction (deg)','LHipFlexion (deg)','RHipFlexion (deg)',...
+                'LKneeFlexion (deg)','RKneeFlexion (deg)','LAnkleDorsiflexion (deg)','RAnkleDorsiflexion (deg)'};
+    rangeTable = createRangeTable(GaitInfo,varNames,LhipRollAngles_avg,RhipRollAngles_avg,LhipAngles_avg,RhipAngles_avg,LkneeAngles_avg,RkneeAngles_avg,LankleAngles_avg,RankleAngles_avg);
+    if ~isempty(rangeTable)
+%         fprintf('Joint angle range (deg):\n');
+        disp(rangeTable);
+    end
+end
 %%
-if isempty(angularDataFigure)
+if isempty(angularDataFigure) && isempty(axesHandles)
     angularDataFig = figure();
-    set(angularDataFig, 'Position',[10,0,1000,1530]);
+    fullScreen = get(0,'screensize');
+    set(angularDataFig, 'Position',[fullScreen(1:2)+20 fullScreen(3:4)*0.9]);
 else
    
     angularDataFig = angularDataFigure; 
@@ -99,99 +86,75 @@ end
 %%
 
  %%
- if b_plotLegState
-     legStatePlot = subplot(subplotStart(1),subplotStart(2),subplotStart(3),axes(angularDataFig));
-     if ~GaitInfo.b_oneGaitPhase
-         GaitInfo.tp = GaitPhaseData.time;
-     end
-     subplotStart(3) = subplotStart(3)+1;
-     if ~isempty(leftLegState_sd)
-         LegHandles(1,2) = fill(legStatePlot,[GaitInfo.tp;flipud(GaitInfo.tp)],[round(leftLegState_avg-leftLegState_sd);flipud(round(leftLegState_avg+leftLegState_sd))],[0.8 0.8 0.8]);
-     end
-     set(legStatePlot,'NextPlot','add');
-     if ~isempty(rightLegState_sd) && b_plotBothLegs
-         LegHandles(2,2) = fill(legStatePlot,[GaitInfo.tp;flipud(GaitInfo.tp)],[round(rightLegState_avg-rightLegState_sd);flipud(round(rightLegState_avg+rightLegState_sd))],[0.8 0.8 0.8]);
-     end
-     
-     LegHandles(1,1) = stairs(legStatePlot,GaitInfo.tp,round(leftLegState_avg));
-     %     stairs(legStatePlot,t_left_perc,round(leftLegState_avg));
-     if b_plotBothLegs
-         LegHandles(2,1) = stairs(legStatePlot,GaitInfo.tp,round(rightLegState_avg));
-     end
-     %     stairs(legStatePlot,t_right_perc,rightLegState);
-     title(legStatePlot,'Leg state')
-     yticks(legStatePlot,0:1:4);
-     yticklabels(legStatePlot,{'EarlyStance','LateStance','Lift-off','Swing','Landing'})
- end
+ 
  %     subplot(5,1,2);
  %     HATAnglePlot = plot(t_left_perc,HATAngle);
  %     title('HAT angle')
  %     ylabel('rad');
  %%
+ plotHandlesLeft = [];
+ plotHandlesRight = [];
  
- 
- if ~GaitInfo.b_oneGaitPhase
-     GaitInfo.tp = angularData.time;
+ if contains(legToPlot,'left') || contains(legToPlot,'both')
+ [plotHandlesLeft,axesHandles] = plotAngularDataInFigure(angularDataFig,axesHandles,GaitInfo.tp,LhipAngles_avg,LhipAngles_sd,LhipRollAngles_avg,LhipRollAngles_sd,LkneeAngles_avg,LkneeAngles_sd,LankleAngles_avg,LankleAngles_sd,subplotStart,GaitInfo.b_oneGaitPhase,b_addTitle);
  end
- [plotHandlesLeft,axesHandles] = plotAngularDataInFigure(angularDataFig,[],GaitInfo.tp,LhipAngles_avg,LhipAngles_sd,LhipRollAngles_avg,LhipRollAngles_sd,LkneeAngles_avg,LkneeAngles_sd,LankleAngles_avg,LankleAngles_sd,subplotStart,GaitInfo.b_oneGaitPhase);
- if b_plotBothLegs
-     [plotHandlesRight,axesHandles] = plotAngularDataInFigure(angularDataFig,axesHandles,GaitInfo.tp,RhipAngles_avg,RhipAngles_sd,RhipRollAngles_avg,RhipRollAngles_sd,RkneeAngles_avg,RkneeAngles_sd,RankleAngles_avg,RankleAngles_sd,subplotStart,GaitInfo.b_oneGaitPhase);
+ if contains(legToPlot,'right') || contains(legToPlot,'both')
+     if ~isempty(axesHandles)
+        b_addTitle = false;
+    end
+     [plotHandlesRight,axesHandles] = plotAngularDataInFigure(angularDataFig,axesHandles,GaitInfo.tp,RhipAngles_avg,RhipAngles_sd,RhipRollAngles_avg,RhipRollAngles_sd,RkneeAngles_avg,RkneeAngles_sd,RankleAngles_avg,RankleAngles_sd,subplotStart,GaitInfo.b_oneGaitPhase,b_addTitle);
  end
  if GaitInfo.b_oneGaitPhase && plotInfo.plotWinterData
      [plotHandlesWinter,axesHandles] = plotAngularDataInFigure(angularDataFig,axesHandles,timeWinter,hipAngleWinter_avg,hipAngleWinter_sd,[],[],kneeAngleWinter_avg,kneeAngleWinter_sd, ...
          ankleAngleWinter_avg,ankleAngleWinter_sd,subplotStart);
  end
+if setLegend
+    if GaitInfo.b_oneGaitPhase
+        xlabel(axesHandles(end),'gait cycle ($\%$)');
+    else
+        xlabel(axesHandles(end),'s');
+    end
+end
 
-
+ plotHandles = [plotHandlesLeft, plotHandlesRight];
 
 %%
-% set(flipud(legStatePlot.Children),plotInfo.plotProp,plotInfo.plotProp_entries(1:2,:));
-if b_plotLegState
-    for j = 1:size(LegHandles,1)
-        set(LegHandles(j,1),plotInfo.plotProp,plotInfo.plotProp_entries(j,:));
-        if plotInfo.showSD && GaitInfo.b_oneGaitPhase
-            set(LegHandles(j,2),plotInfo.fillProp,plotInfo.fillProp_entries(j,:));
-        end
+for ii= 1:max(size(plotHandlesLeft,1),size(plotHandlesRight,1))
+    
+    set(plotHandles(ii,1),plotInfo.plotProp,plotInfo.plotProp_entries(1,:));
+    
+    if size(plotHandles,2)>2
+        set(plotHandles(ii,3),plotInfo.plotProp,plotInfo.plotProp_entries(2,:));
     end
-end
-
-if exist('HATAnglePlot','var') == 1
-    set(HATAnglePlot,plotInfo.plotProp,plotInfo.plotProp_entries(1,:));
-end
-
-for i= 1:size(plotHandlesLeft,1)
-    set(plotHandlesLeft(i,1),plotInfo.plotProp,plotInfo.plotProp_entries(1,:));
-    if b_plotBothLegs
-        set(plotHandlesRight(i,1),plotInfo.plotProp,plotInfo.plotProp_entries(2,:));
-    end
+    
     if plotInfo.showSD && GaitInfo.b_oneGaitPhase
-        set(plotHandlesLeft(i,2),plotInfo.fillProp,plotInfo.fillProp_entries(1,:));
-        if b_plotBothLegs
-            set(plotHandlesRight(i,2),plotInfo.fillProp,plotInfo.fillProp_entries(2,:));
+        set(plotHandles(ii,2),plotInfo.fillProp,plotInfo.fillProp_entries(1,:));
+        if size(plotHandles,2)>2
+            set(plotHandles(ii,4),plotInfo.fillProp,plotInfo.fillProp_entries(2,:));
         end
     end
-    if GaitInfo.b_oneGaitPhase && plotInfo.plotWinterData && ~isnan(plotHandlesWinter(i,1))
-        set(plotHandlesWinter(i,1),plotInfo.plotProp,plotInfo.plotProp_entries(3,:));
-        set(plotHandlesWinter(i,2),plotInfo.fillProp,plotInfo.fillProp_entries(3,:));
+    if GaitInfo.b_oneGaitPhase && plotInfo.plotWinterData && ~isnan(plotHandlesWinter(ii,1))
+        set(plotHandlesWinter(ii,1),plotInfo.plotProp,plotInfo.plotProp_entries(3,:));
+        set(plotHandlesWinter(ii,2),plotInfo.fillProp,plotInfo.fillProp_entries(3,:));
     end
 end
 
 
 % set(angularDataFig, 'Position',[10,40,1000,930]);
 
-if setLegend && GaitInfo.b_oneGaitPhase && contains(saveInfo.info,'prosthetic') && plotInfo.plotWinterData 
+if setLegend && GaitInfo.b_oneGaitPhase && contains(saveInfo.info,'prosthetic') && plotInfo.plotWinterData && contains(legToPlot,'both')
     leg = legend([plotHandlesLeft(2,1),plotHandlesRight(2,1),plotHandlesWinter(2,1)],'Intact leg','Prosthetic leg', 'Winter data');
 %     leg = legend('Intact leg','Prosthetic leg',char(strcat(string(GaitInfo.WinterDataSpeed), ' gait Winter')) );
-elseif setLegend && GaitInfo.b_oneGaitPhase && plotInfo.plotWinterData && ~b_plotBothLegs
+elseif setLegend && GaitInfo.b_oneGaitPhase && plotInfo.plotWinterData && ~legToPlot
     leg = legend([plotHandlesLeft(2,1),plotHandlesRight(2,1),plotHandlesWinter(2,1)],'Model', 'Winter data');
-elseif setLegend && GaitInfo.b_oneGaitPhase && plotInfo.plotWinterData 
+elseif setLegend && GaitInfo.b_oneGaitPhase && plotInfo.plotWinterData && contains(legToPlot,'both')
     leg = legend([plotHandlesLeft(2,1),plotHandlesRight(2,1),plotHandlesWinter(2,1)],'Left leg','Right leg', 'Winter data');
-elseif setLegend && contains(saveInfo.info,'prosthetic')
+elseif setLegend && contains(saveInfo.info,'prosthetic') && contains(legToPlot,'both')
     leg = legend([plotHandlesLeft(2,1),plotHandlesRight(2,1)],'Intact leg','Prosthetic leg');
 %     leg = legend('Intact leg','Prosthetic leg');
-elseif setLegend && ~b_plotBothLegs
+elseif setLegend && ~contains(legToPlot,'both')
     leg = [];
-elseif setLegend 
+elseif setLegend && contains(legToPlot,'both')
     leg = legend([plotHandlesLeft(2,1),plotHandlesRight(2,1)],'Left leg','Right leg');
 else
     leg = [];

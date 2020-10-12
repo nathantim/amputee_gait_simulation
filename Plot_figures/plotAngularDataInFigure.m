@@ -1,12 +1,15 @@
-function [plotHandles,axesHandles] = plotAngularDataInFigure(angularDataFig,axesHandles,t,hipAngle_avg,hipAngle_sd,hipRollAngle_avg,hipRollAngle_sd,kneeAngle_avg,kneeAngle_sd,ankleAngle_avg,ankleAngle_sd,subplotStart,b_oneGaitPhase)
+function [plotHandles,axesHandles] = plotAngularDataInFigure(angularDataFig,axesHandles,t,hipAngle_avg,hipAngle_sd,hipRollAngle_avg,hipRollAngle_sd,kneeAngle_avg,kneeAngle_sd,ankleAngle_avg,ankleAngle_sd,subplotStart,b_oneGaitPhase,b_addTitle)
 plotHandles = nan(4,2);
 if isempty(axesHandles)
     for i = 1:size(plotHandles,1)
         axesHandles(i) = axes(angularDataFig);
     end
 end
-if  nargin <= 12
+if  nargin < 13
     b_oneGaitPhase = true;
+end
+if nargin < 14
+   b_addTitle = true; 
 end
 
 % subplotStart = dec2base(subplotStart,10) - '0';
@@ -21,13 +24,18 @@ hold(axesHandles(axidx),'on');
 if ~isempty(hipRollAngle_avg)
     plotHandles(axidx,1) = plot(axesHandles(axidx),t,hipRollAngle_avg);
 end
+set(axesHandles(axidx),'XLim',[t(1),t(end)]);
 
 
 % h = get(axesHandles(axidx),'Children');
 % set(axesHandles(axidx),'Children',h) % 
+if b_addTitle
+    title(axesHandles(axidx),{'Hip'; 'abduction'});
+    %     title(axesHandles(axidx),'Hip abduction');
+    ylabel(axesHandles(axidx),'Angle (deg)');
 
-title(axesHandles(axidx),'Hip abduction')
-ylabel(axesHandles(axidx),'deg');
+end
+
 
 %%
 subplotStart(3) = subplotStart(3) +1;
@@ -38,13 +46,15 @@ if ~isempty(hipAngle_sd)
 end
 hold(axesHandles(axidx),'on');
 plotHandles(axidx,1) = plot(axesHandles(axidx),t,hipAngle_avg);
-
+set(axesHandles(axidx),'XLim',[t(1),t(end)]);
 
 % h = get(axesHandles(1),'Children');
 % set(axesHandles(1),'Children',h) % 
-
-title(axesHandles(axidx),'Hip flexion')
-ylabel(axesHandles(axidx),'deg');
+if b_addTitle
+    title(axesHandles(axidx),{'Hip';'flexion'});
+%     title(axesHandles(axidx),'Hip flexion');
+end
+% ylabel(axesHandles(axidx),'deg');
 
 
 %%
@@ -56,11 +66,14 @@ if ~isempty(kneeAngle_sd)
 end
 hold(axesHandles(axidx),'on');
 plotHandles(axidx,1) = plot(axesHandles(axidx),t,kneeAngle_avg);
-
+set(axesHandles(axidx),'XLim',[t(1),t(end)]);
 % h = get(axesHandles(axidx),'Children');
 % set(axesHandles(axidx),'Children',flipud(h))
-title(axesHandles(axidx),'Knee flexion')
-ylabel(axesHandles(axidx),'deg');
+if b_addTitle
+    title(axesHandles(axidx),{'Knee';'flexion'});
+%     title(axesHandles(axidx),'Knee flexion');
+end
+% ylabel(axesHandles(axidx),'deg');
 
 %%
 subplotStart(3) = subplotStart(3) +1;
@@ -71,15 +84,14 @@ if ~isempty(ankleAngle_sd)
 end
 hold(axesHandles(axidx),'on');
 plotHandles(axidx,1) = plot(axesHandles(axidx),t,ankleAngle_avg);
-
+set(axesHandles(axidx),'XLim',[t(1),t(end)]);
 % h = get(axesHandles(axidx),'Children');
 % set(axesHandles(axidx),'Children',flipud(h))
-title(axesHandles(axidx),'Ankle dorsiflexion')
-ylabel(axesHandles(axidx),'deg');
-
-
-if b_oneGaitPhase
-    xlabel(axesHandles(4),'%_{stride}','interpreter','tex')
-else
-    xlabel(axesHandles(4),'s')
+if b_addTitle
+    title(axesHandles(axidx),{'Ankle';'dorsiflexion'});
+%     title(axesHandles(axidx),'Ankle dorsiflexion');
 end
+% ylabel(axesHandles(axidx),'deg');
+
+
+
