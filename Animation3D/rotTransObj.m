@@ -2,9 +2,10 @@
 % Rotate and Translate Ojects
 % ---------------------------
 
-function rotTransObj( Object, LowXYZ, TopXYZ, LowXYZold, TopXYZold, yaw)
+function rotTransObj( Object, LowXYZ, TopXYZ, LowXYZold, TopXYZold, yaw, yawOld)
 if nargin < 6
     yaw = 0;
+    yawOld = 0;
 end
 if size(LowXYZ,1) == 1
     LowXYZ = LowXYZ';
@@ -37,15 +38,16 @@ newUnit = ((TopXYZ-LowXYZ)./magNew);
 x = oldUnit;
 y = newUnit;
 RotMat = eye(3) + y*x' - x*y' + 1/(1+dot(x,y))*(y*x' - x*y')^2;
-RotYaw = [cos(yaw) sin(yaw) 0;...
-    -sin(yaw) cos(yaw) 0;...
+RotYaw = [cos(yaw-yawOld) sin(yaw-yawOld) 0;...
+    -sin(yaw-yawOld) cos(yaw-yawOld) 0;...
     0          0       1];
+
 % xAct = RotYaw(1,1)*xAct + RotYaw(1,2)*yAct;
 % xAct = RotYaw(2,1)*xAct + RotYaw(2,2)*xAct;
-
-xNew = RotMat(1,1)*xAct + RotMat(1,2)*yAct + RotMat(1,3)*zAct + LowXYZ(1);
-yNew = RotMat(2,1)*xAct + RotMat(2,2)*yAct + RotMat(2,3)*zAct + LowXYZ(2);
-zNew = RotMat(3,1)*xAct + RotMat(3,2)*yAct + RotMat(3,3)*zAct + LowXYZ(3);
+totalRotMat = RotYaw*RotMat;
+xNew = totalRotMat(1,1)*xAct + totalRotMat(1,2)*yAct + totalRotMat(1,3)*zAct + LowXYZ(1);
+yNew = totalRotMat(2,1)*xAct + totalRotMat(2,2)*yAct + totalRotMat(2,3)*zAct + LowXYZ(2);
+zNew = totalRotMat(3,1)*xAct + totalRotMat(3,2)*yAct + totalRotMat(3,3)*zAct + LowXYZ(3);
 
 
 %     newVec =  R*[xAct;yAct;zAct] + LowXYZ;

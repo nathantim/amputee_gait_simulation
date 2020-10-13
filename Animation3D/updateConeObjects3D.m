@@ -127,7 +127,12 @@ if t==0
     
 else
     % rotate and shift cones to their new angles and positions
-    yaw = 0;%u(34);
+    lHip = u(4:6);
+    rHip = u(19:21);
+    lHipOld = x(4:6);
+    rHipOld = x(19:21);
+    yaw = atan2(lHip(1)-rHip(1),lHip(2)-rHip(2));
+    yawOld = atan2(lHipOld(1)-rHipOld(1),lHipOld(2)-rHipOld(2));
     lowHATu =(u(4:6)+u(19:21))./2;
     magHATu = sqrt(sum( (u(1:3)-lowHATu).^2));
     unitHATu = ((u(1:3)-lowHATu))./magHATu;
@@ -137,7 +142,7 @@ else
     unitHATx = ((x(1:3)-lowHATx))./magHATx;
     topHATx = unitHATx*HAT_Length + lowHATx;
     
-    rotTransObj( HAT_ConeObj, lowHATu,   topHATu,   lowHATx,   topHATx, yaw)
+    rotTransObj( HAT_ConeObj, lowHATu,   topHATu,   lowHATx,   topHATx, yaw, yawOld)
     rotTransObj(  L_ThighObj, u(7:9),   u(4:6),   x(7:9),   x(4:6))
     rotTransObj(  L_ShankObj, u(10:12),   u(7:9),   x(10:12),   x(7:9))
     rotTransObj(   L_BallObj, u(13:15), u(10:12),  x(13:15), x(10:12))
