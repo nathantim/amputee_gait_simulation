@@ -2,23 +2,23 @@
 %%
 
 
-% tempstring = strsplit(opts.UserData,' ');
-% dataFile = tempstring{end};
-% % dataFile =  'Results/Rough/Umb10_1.5cm_0.9ms_difffoot_higherabd_inter.mat';
-% InitialGuess = load(dataFile); 
-% % % InitialGuess = InitialGuessFile.Gains([39:47,53:55,58,59,69,70,80,81,101:109,115:117,120:121,126,127,132,133]);
+tempstring = strsplit(opts.UserData,' ');
+dataFile = tempstring{end};
+% dataFile =  'Results/Rough/Umb10_1.5cm_0.9ms_difffoot_higherabd_inter.mat';
+InitialGuess = load(dataFile); 
+% % InitialGuess = InitialGuessFile.Gains([39:47,53:55,58,59,69,70,80,81,101:109,115:117,120:121,126,127,132,133]);
+% 
 % % 
-% % % 
-% idx1 = length(InitialGuess.GainsSagittal);
-% idx2 = idx1 + length(InitialGuess.initConditionsSagittal);
-% idx3 = idx2 + length(InitialGuess.GainsCoronal);
-% idx4 = idx3 + length(InitialGuess.initConditionsCoronal);
-% 
-% GainsSagittal = InitialGuess.GainsSagittal.*exp(bestever.x(1:idx1));
-% initConditionsSagittal = InitialGuess.initConditionsSagittal.*exp(bestever.x(idx1+1:idx2));
-% 
-% GainsCoronal = InitialGuess.GainsCoronal.*exp(bestever.x(idx2+1:idx3));
-% initConditionsCoronal = InitialGuess.initConditionsCoronal.*exp(bestever.x((idx3+1):idx4));
+idx1 = length(InitialGuess.GainsSagittal);
+idx2 = idx1 + length(InitialGuess.initConditionsSagittal);
+idx3 = idx2 + length(InitialGuess.GainsCoronal);
+idx4 = idx3 + length(InitialGuess.initConditionsCoronal);
+
+GainsSagittal = InitialGuess.GainsSagittal.*exp(bestever.x(1:idx1));
+initConditionsSagittal = InitialGuess.initConditionsSagittal.*exp(bestever.x(idx1+1:idx2));
+
+GainsCoronal = InitialGuess.GainsCoronal.*exp(bestever.x(idx2+1:idx3));
+initConditionsCoronal = InitialGuess.initConditionsCoronal.*exp(bestever.x((idx3+1):idx4));
 
 
 
@@ -39,7 +39,7 @@
 % load('Results/Rough/Umb10_1.5cm_1.2ms_kneelim1_mstoptorque2.mat');
 % load('Results/Rough/Umb10_1.5cm_0.9ms_kneelim1_mstoptorque2_2Dopt.mat');
 
-load('Results/Rough/Umb10_1.2ms_difffoot_higherabd.mat');
+% load('Results/Rough/Umb10_1.2ms_difffoot_higherabd.mat');
 
 
 %%
