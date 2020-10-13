@@ -155,10 +155,10 @@ try
                 plotInfoTemp = plotInfo;
                 plotInfoTemp.plotProp_entries = plotInfoTemp.plotProp_entries(end,:);
                 GaitInfoFukuchi = getPartOfGaitData(false,[],FukuchiData2Plot.angularData.time,[]);
-                [plotAngleFukuchi,~] = plotAngularData(FukuchiData2Plot.angularData,plotInfoTemp,GaitInfoFukuchi,saveInfo,[],axesAngle,[],'right');
+                [plotAngleFukuchi,~] = plotAngularData(FukuchiData2Plot.angularData,plotInfoTemp,GaitInfoFukuchi,saveInfo,[],axesAngle,[1 4 1],'right');
                 set(plotAngleFukuchi(2,1),'DisplayName','Fukuchi');
-                [plotTorqueFukuchi,~] = plotJointTorqueData(FukuchiData2Plot.jointTorquesData,plotInfoTemp,GaitInfoFukuchi,saveInfo,[],axesTorque,[],'right');
-                [plotGRFFukuchi,~] = plotGRFData(FukuchiData2Plot.GRFData,plotInfoTemp,GaitInfoFukuchi,saveInfo,[],axesGRF,[],'right');
+                [plotTorqueFukuchi,~] = plotJointTorqueData(FukuchiData2Plot.jointTorquesData,plotInfoTemp,GaitInfoFukuchi,saveInfo,[],axesTorque,[1 4 1],'right');
+                [plotGRFFukuchi,~] = plotGRFData(FukuchiData2Plot.GRFData,plotInfoTemp,GaitInfoFukuchi,saveInfo,[],axesGRF,[1 3 1],'right');
                 set(plotAngleFukuchi(2,1),'DisplayName','Fukuchi');
                 set(plotTorqueFukuchi(2,1),'DisplayName','Fukuchi');
                 set(plotGRFFukuchi(2,1),'DisplayName','Fukuchi');
