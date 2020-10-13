@@ -68,13 +68,14 @@ end
 %%'
 [plotState, axesState] = plotLegState(GaitPhaseData,plotInfo,GaitInfo,saveInfo);
 [plotAngle,axesAngle] = plotAngularData(angularData,plotInfo,GaitInfo,saveInfo,[]);
-% [plotTorque,axesTorque] = plotJointTorqueData(jointTorquesData,plotInfo,GaitInfo,saveInfo,[]);
-% [plotPower,axesPower] = plotJointPowerData(angularData,jointTorquesData,plotInfo,GaitInfo,saveInfo,[]);
+[plotTorque,axesTorque] = plotJointTorqueData(jointTorquesData,plotInfo,GaitInfo,saveInfo,[]);
+[plotPower,axesPower] = plotJointPowerData(angularData,jointTorquesData,plotInfo,GaitInfo,saveInfo,[]);
 % [plotMusc,axesMusc] = plotMusculoData(musculoData,plotInfo,GaitInfo,saveInfo);
-% [plotGRF,axesGRF] = plotGRFData(GRFData,plotInfo,GaitInfo,saveInfo,[]);
+[plotGRF,axesGRF] = plotGRFData(GRFData,plotInfo,GaitInfo,saveInfo,[]);
 % set(0, 'DefaultAxesFontSize',18);
-% plotCMGData(CMGData,plotInfo,GaitInfo,saveInfo,[])
-
+if ~isempty(CMGData)
+    plotCMGData(CMGData,plotInfo,GaitInfo,saveInfo,[]);
+end
 if plotInfo.plotFukuchiData && b_oneGaitPhase
     disp('Fukuchi Data');
    FukuchiData = load('../Plot_figures/Data/FukuchiData.mat','gaitData'); 

@@ -19,9 +19,10 @@ ASI = getAsymmetry(leftValues(end-(step2cal-1):end), rightValues(end-(step2cal-1
 ASImean = mean(ASI);
 ASIstd = std(ASI);
 
-leftTxt  = [num2str(round(leftMean,2)), ' (' num2str(round(leftStd,2)) ')'];
-rightTxt = [num2str(round(rightMean,2)), ' (' num2str(round(rightStd,2)) ')'];
-ASItxt          = [num2str(round(ASImean,2)), ' (' num2str(round(ASIstd,2)) ')'];
+numSig = 3;
+leftTxt  = [num2str(round(leftMean,numSig, 'decimals')), ' (' num2str(round(leftStd,numSig, 'decimals')) ')'];
+rightTxt = [num2str(round(rightMean,numSig, 'decimals')), ' (' num2str(round(rightStd,numSig, 'decimals')) ')'];
+ASItxt          = [num2str(round(ASImean,numSig, 'decimals')), ' (' num2str(round(ASIstd,numSig, 'decimals')) ')'];
 
 ASIstruct = struct('leftMean',leftMean,'leftStd',leftStd, ...
                    'rightMean',rightMean,'rightStd',rightStd,...
