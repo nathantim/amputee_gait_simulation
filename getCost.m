@@ -153,8 +153,8 @@ try
             exist_vars = load(filename);
             metabolicEnergySave     = [exist_vars.metabolicEnergySave;metabolicEnergy];
             meanVel                 = [exist_vars.meanVel;meanVel];
-            stepLengthASImean       = [exist_vars.ASIStepLength;stepLengthASIstruct.ASImean];
-            stepTimeASImean         = [exist_vars.ASIStepTime;stepTimeASIstruct.ASImean];
+            stepLengthASImean       = [exist_vars.stepLengthASImean;stepLengthASIstruct.ASImean];
+            stepTimeASImean         = [exist_vars.stepTimeASImean;stepTimeASIstruct.ASImean];
             costOfTransportSave     = [exist_vars.costOfTransportSave; [effort_costs.costOfTransport] ];
             costT                   = [exist_vars.costT;cost];
             %             sumOfIdealTorques       = [exist_vars.sumOfIdealTorques;sumOfIdealTorques];
@@ -172,6 +172,8 @@ try
             timeCostSave            = [timeCost];
             maxCMGTorqueSave    = [maxCMGTorque];
             maxCMGdeltaHSave        = [maxCMGdeltaH];
+             stepLengthASImean       = [stepLengthASIstruct.ASImean];
+            stepTimeASImean         = [stepTimeASIstruct.ASImean];
             dateSave = {char(datestr(now,'yyyy-mm-dd_HH-MM'))};
 
         end

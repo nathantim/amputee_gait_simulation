@@ -13,8 +13,8 @@ clear all; close all; clc;
 % initial_gains_filename = 'Results/Flat/Umb10nodimmuscleforce2D_C3D.mat';
 % initial_gains_filename = 'Results/Rough/Umb10_1.5cm_1.2ms_kneelim1_mstoptorque2.mat';
 % initial_gains_filename = 'Results/Rough/Umb10_1.5cm_0.9ms_opt_1.2mscoronal.mat';
-% initial_gains_filename = 'Results/Rough/Umb10_1.5cm_0.9ms_ConlyOpt.mat';
-initial_gains_filename = 'Results/Rough/Umb10_1.5cm_0.9ms_difffoot_higherabd_inter.mat';
+initial_gains_filename = 'Results/Rough/Umb10_1.2ms_difffoot_higherabd.mat';
+% initial_gains_filename = 'Results/Rough/Umb10_1.5cm_0.9ms_difffoot_higherabd_inter.mat';
 
 initial_gains_file = load(initial_gains_filename);
 load('Results/Flat/SongGains_02_wC_IC.mat');
@@ -51,6 +51,8 @@ setInitAmputee;
 
 dt_visual = 1/30;
 [groundX, groundZ, groundTheta] = generateGround('flat');
+
+set_param(model, 'AccelVerboseBuild', 'off');
 save_system(model)
 
 %% Build the Rapid Accelerator target once
@@ -63,7 +65,7 @@ sigma0 = 1/8;
 % sigma0 = 1/3;
 
 opts.DiagonalOnly = 50;
-opts.SaveFilename = 'vcmaes_1.5cm_0.5ms_Umb10_wInit_diff_footshanksmass_higherabd.mat';
+opts.SaveFilename = 'vcmaes_1.5cm_0.5ms_Umb10_wInit_diff_footshanksmass_higherabd12.mat';
 opts.UserDat2 = strcat(opts.UserDat2,"; ", "sigma0: ", string(sigma0), "; ampHipFlexFactor: ", string(ampHipFlexFactor) , "; ampHipExtFactor: ", string(ampHipExtFactor), "; ampHipAbdFactor: ", string(ampHipAbdFactor), "; ampHipAddFactor: ", string(ampHipAddFactor) );
 
 %% Show settings

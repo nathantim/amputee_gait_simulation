@@ -2,7 +2,7 @@ function [plotHandles,axesHandles] = plotMusculoData(musculoData,plotInfo,GaitIn
 if nargin < 5
     musculoDataFigure = [];
 end
-if nargin < 5
+if nargin < 6
     axesHandles = [];
 end
 if nargin < 6 || isempty(subplotStart)

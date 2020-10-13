@@ -37,6 +37,7 @@ stepLengths = get(simout, 'stepLengths');
 stepNumbers = get(simout, 'stepNumbers');
 angularData = get(simout, 'angularData');
 GaitPhaseData = get(simout,'GaitPhaseData');
+jointTorquesData = get(simout, 'jointTorquesData');
 musculoData = get(simout, 'musculoData');
 GRFData = get(simout, 'GRFData');
 selfCollision = get(simout, 'selfCollision');
@@ -53,6 +54,7 @@ kinematics.stepTimes = stepTimes;
 kinematics.musculoData = musculoData;
 kinematics.GRFData = GRFData;
 kinematics.CMGData = CMGData;
+kinematics.jointTorquesData = jointTorquesData;
 %     if ~bisProperDistCovered(stepTimes.time(end),stepLengths,min_velocity,max_velocity,dist_slack)
 %         cost = nan;
 %         disp('Not enough distance covered')
