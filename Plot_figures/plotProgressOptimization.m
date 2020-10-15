@@ -131,14 +131,7 @@ try
                 sgtitle(GRFData,['Ground reaction forces for cost of ',num2str(round(data.optimCost,1)),', with $v_{mean}$ = ', num2str(round(data.vMean.data,1)),'m/s','. $\tau_{stop}$ = ', num2str(data.sumTstop.data)]);
                 [~,axesGRF] = plotGRFData(data.kinematics.GRFData,plotInfo,GaitInfo,saveInfo,GRFData);
             end
-            warning('on');
-            
-            if ~isempty(CMGData) && b_plotCMG
-                clf(CMGData);
-                sgtitle(CMGData,['CMG data for cost of ',num2str(round(data.optimCost,1)),', with $v_{mean}$ = ', num2str(round(data.vMean.data,1)),'m/s','. $\tau_{stop}$ = ', num2str(data.sumTstop.data)]);
-                plotCMGData(data.kinematics.CMGData,saveInfo,CMGData,false);
-            end
-            
+                        
             if plotInfo.plotFukuchiData && b_oneGaitPhase
                 FukuchiData = load('../Plot_figures/Data/FukuchiData.mat','gaitData');
                 fieldNames = fieldnames(FukuchiData.gaitData);
@@ -163,10 +156,15 @@ try
                 set(plotTorqueFukuchi(2,1),'DisplayName','Fukuchi');
                 set(plotGRFFukuchi(2,1),'DisplayName','Fukuchi');
             end
+            warning('on');
+            
+            if ~isempty(CMGData) && b_plotCMG
+                clf(CMGData);
+                sgtitle(CMGData,['CMG data for cost of ',num2str(round(data.optimCost,1)),', with $v_{mean}$ = ', num2str(round(data.vMean.data,1)),'m/s','. $\tau_{stop}$ = ', num2str(data.sumTstop.data)]);
+                plotCMGData(data.kinematics.CMGData,saveInfo,CMGData,false);
+            end
+            
         end
-        %         drawnow;
-    else
-        %         disp('empty data struct');
     end
     
     drawnow;
