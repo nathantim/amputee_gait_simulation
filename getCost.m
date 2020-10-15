@@ -148,7 +148,7 @@ try
             workerID = [];
             warning(strcat(char(ME.message)," In ", mfilename, " line ", num2str(ME.stack(1).line)));
         end
-        filename = char(strcat('compareEnergyCost',num2str(workerID),'.mat'));
+        filename = [inner_opt_settings.optimizationDir filesep char(strcat('compareEnergyCost',num2str(workerID),'.mat'))];
         if exist(filename,'file') == 2
             exist_vars = load(filename);
             metabolicEnergySave     = [exist_vars.metabolicEnergySave;metabolicEnergy];

@@ -1,45 +1,59 @@
 % clc;
-%%
-
-tempstring = strsplit(opts.UserData,' ');
-dataFile = tempstring{end};
-InitialGuessFile = load(dataFile); 
-% 
-% GainsCoronal = InitialGuessFile.GainsCoronal.*exp(bestever.x);
-% GainsSagittal = InitialGuessFile.GainsSagittal;
-
-Gains = [InitialGuessFile.GainsSagittal;InitialGuessFile.GainsCoronal].*exp(bestever.x);
-GainsCoronal = Gains(length(InitialGuessFile.GainsSagittal)+1:end);
-GainsSagittal = Gains(1:length(InitialGuessFile.GainsSagittal));
-
-% load('Results/Flat/GeyerHerrInit.mat');
-
-% compareenergies = load('compareEnergyCostTotal.mat');
-
-% 
-% idx_minCost = find(compareenergies.cost==min(compareenergies.cost),1,'first');
-% Gains2 = compareenergies.Gains(idx_minCost,:)';
-% 
-
-%%
-% load('Results/RoughDist/SongGains_wC.mat');
-% load('Results/RoughDist/SongGains_wC_IC.mat');
-% load('Results/Flat/song3Dopt.mat' );
-% load('Results/Rough/Umb10_1.5cm_0.9ms_kneelim1_mstoptorque2.mat');
-
-load('Results/Flat/SongGains_02_wC_IC.mat');
-
-assignGainsSagittal;
-assignGainsCoronal;
-dt_visual = 1/50;
+%% Check results from vcmaes file
+if true
+    inner_opt_settings = setInnerOptSettings('yes');
+    disp(inner_opt_settings.optimizationDir);
+    
+    load([inner_opt_settings.optimizationDir filesep 'vcmaes.mat']);
+    
+    tempstring = strsplit(opts.UserData,' ');
+    dataFile = tempstring{end};
+    % dataFile =  'Results/Rough/Umb10_1.5cm_0.9ms_difffoot_higherabd_inter.mat';
+    InitialGuess = load(dataFile);
+    % % InitialGuess = InitialGuessFile.Gains([39:47,53:55,58,59,69,70,80,81,101:109,115:117,120:121,126,127,132,133]);
+    %
+    % %
+    idx1 = length(InitialGuess.GainsSagittal);
+    idx2 = idx1 + length(InitialGuess.initConditionsSagittal);
+    idx3 = idx2 + length(InitialGuess.GainsCoronal);
+    idx4 = idx3 + length(InitialGuess.initConditionsCoronal);
+    
+    GainsSagittal = InitialGuess.GainsSagittal.*exp(bestever.x(1:idx1));
+    initConditionsSagittal = InitialGuess.initConditionsSagittal.*exp(bestever.x(idx1+1:idx2));
+    
+    GainsCoronal = InitialGuess.GainsCoronal.*exp(bestever.x(idx2+1:idx3));
+    initConditionsCoronal = InitialGuess.initConditionsCoronal.*exp(bestever.x((idx3+1):idx4));
+    
+    run([inner_opt_settings.optimizationDir, filesep, 'BodyMechParamsCapture']);
+    run([inner_opt_settings.optimizationDir, filesep, 'ControlParamsCapture']);
+    run([inner_opt_settings.optimizationDir, filesep, 'OptimParamsCapture']);
+    
+else
+    BodyMechParams;
+    ControlParams;
+    OptimParams;
+    %%
+    % load('Results/Rough/SongGains_wC.mat');
+    % load('Results/Rough/SongGains_wC_IC.mat');
+    % load('Results/Flat/song3Dopt.mat' );
+    % load('Results/Rough/Umb10_1.5cm_0.9ms_kneelim1_mstoptorque2.mat');
+    
+    % load('Results/Flat/SongGains_02_wC_IC.mat');
+    % load('Results/Rough/1.3msinter.mat');
+end
 
 %%
 model = 'NeuromuscularModel3D';
 
 %%
-inner_opt_settings = setInnerOptSettings();
+% inner_opt_settings = setInnerOptSettings();
 [groundX, groundZ, groundTheta] = generateGround('flat');
-setInitAmputee;
+
+dt_visual = 1/30;
+
+assignGainsSagittal;
+assignGainsCoronal;
+assignInit;
 %open('NeuromuscularModel');
 % set_param(model,'SimulationMode','normal');
 % set_param(model,'StopTime','30');
@@ -54,7 +68,7 @@ toc;
 warning('on');
 
 %%
-[cost, dataStruct] = getCost(model,[],time,metabolicEnergy,sumOfStopTorques,HATPos,stepVelocities,stepTimes,stepLengths,inner_opt_settings,0);
+[cost, dataStruct] = getCost(model,[],time,metabolicEnergy,sumOfStopTorques,HATPosVel,stepVelocities,stepTimes,stepLengths,stepNumbers,[],selfCollision,inner_opt_settings,0);
 printOptInfo(dataStruct,true);
 
 %%
