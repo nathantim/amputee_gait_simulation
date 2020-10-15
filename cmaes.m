@@ -2896,8 +2896,7 @@ function f=frand(x)
 
 % CHANGES
 % 
-% 20/07/27: Make it possible to set opts.Resume to 'yes' eventhough file
-%               does not yet exist. It will create one.
+% 20/10/15: Make it possible to use a designated map for all cmaes files
 % 12/04/28: (3.61) stopIter is relative to countiter after resume (thanks to Tom Holden)
 % 12/04/28: (3.61) some syncing from 3.32.integer branch (cmean introduced, ...)
 % 12/02/19: "future" setting of ccum, correcting for large mueff, is default now
