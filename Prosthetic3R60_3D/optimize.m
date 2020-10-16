@@ -17,8 +17,6 @@ optimizationInfo = '';
 % initial_gains_filename = ['Results' filesep 'Rough' filesep 'Umb10_1.2ms_difffoot_higherabd.mat'];
 initial_gains_filename = ['Results' filesep 'Rough' filesep 'Umb10_0.9ms_difffoot_higherabd_inter2.mat'];
 
-initial_gains_file = load(initial_gains_filename);
-
 %%
 global model rtp InitialGuess inner_opt_settings
 
@@ -36,18 +34,19 @@ catch ME
     warning(ME.message);
 end
 
-InitialGuess = [initial_gains_file.GainsSagittal;initial_gains_file.initConditionsSagittal;...
-				initial_gains_file.GainsCoronal; initial_gains_file.initConditionsCoronal];
-
 %% initialze parameters
-[inner_opt_settings,opts] = setInnerOptSettings(0,initial_gains_filename,optimizationInfo);
+[inner_opt_settings,opts] = setInnerOptSettings(b_resume,initial_gains_filename,optimizationInfo);
 
+InitialGuessFile = load([inner_opt_settings.optimizationDir filesep 'initial_gains.mat']);
+InitialGuess = [InitialGuessFile.GainsSagittal;InitialGuessFile.initConditionsSagittal;...
+				InitialGuessFile.GainsCoronal; InitialGuessFile.initConditionsCoronal];
+            
 run([inner_opt_settings.optimizationDir, filesep, 'BodyMechParamsCapture']);
 run([inner_opt_settings.optimizationDir, filesep, 'ControlParamsCapture']);
 run([inner_opt_settings.optimizationDir, filesep, 'Prosthesis3R60ParamsCapture']);
 run([inner_opt_settings.optimizationDir, filesep, 'OptimParamsCapture']);
 
-setInitAmputee;
+setInitVar;
 
 dt_visual = 1/30;
 [groundX, groundZ, groundTheta] = generateGround('flat');
