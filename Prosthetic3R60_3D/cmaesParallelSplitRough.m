@@ -230,7 +230,7 @@ function costs = cmaesParallelSplitRough(gainsPop)
     %calculate mean across terrains
     costs = reshape(costs,numTerrains,popSize); % size(costs) = [numTerrrains, popSize]
     isinvalid = sum(isnan(costs))>1;
-    costs = nanmean(costs);
+    costs = nanmean(costs,1);
     costs(isinvalid) = nan;
     
     %% send the best outcome of the best gains for plotting, only flat terrain

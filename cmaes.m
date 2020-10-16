@@ -301,7 +301,7 @@ if isequal(fitfun, 'displayoptions')
  return; 
 end
 
-input.fitfun = fitfun; % record used input
+inputVars.fitfun = fitfun; % record used input
 if isempty(fitfun)
   % fitfun = definput.fitfun; 
   % warning(['Objective function not determined, ''' fitfun ''' used']);
@@ -316,7 +316,7 @@ if nargin < 2
   xstart = [];
 end
 
-input.xstart = xstart;
+inputVars.xstart = xstart;
 if isempty(xstart)
   % xstart = definput.xstart;  % objective variables initial point
   % warning('Initial search point, and problem dimension, not determined');
@@ -330,7 +330,7 @@ if isa(insigma, 'struct')
   error(['Third argument SIGMA must be (or eval to) a scalar '...
 	   'or a column vector of size(X0,1)']);
 end
-input.sigma = insigma;
+inputVars.sigma = insigma;
 if isempty(insigma)
   if all(size(myeval(xstart)) > 1)
     insigma = std(xstart, 0, 2); 
