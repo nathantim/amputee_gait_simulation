@@ -1,8 +1,6 @@
 %% set initial conditions
 % conditions from Song
-load('Results/Flat/SongGains_02_wC_IC.mat');
-warning('Check init conditions');
-vxInit             = (0.9); %[m/s]
+vxInit             = (target_velocity); %[m/s]
 vzInit = 0; % not optimize
 xInit      = .2; % not optimize
 yInit      = -hatLeftHipToCenterDistWidth;% not optimize
@@ -27,24 +25,29 @@ initialTargetAngle  = 70*pi/180;
 initialTargetAngleR = 90*pi/180;
 
 LTargetAngleInit    = initialTargetAngle;
-LPreStimHFLinit     = LPreStimHFLst;
-LPreStimGLUinit     = LPreStimGLUst;
-LPreStimHAMinit     = LPreStimHAMst;
-LPreStimRFinit      = LPreStimRFst;
-LPreStimVASinit     = LPreStimVASst;
-LPreStimBFSHinit    = LPreStimBFSHst;
-LPreStimGASinit     = LPreStimGASst;
-LPreStimSOLinit     = LPreStimSOLst;
-LPreStimTAinit      = LPreStimTAst;
+LPreStimHFLinit     = PreStimHFLst;
+LPreStimGLUinit     = PreStimGLUst;
+LPreStimHAMinit     = PreStimHAMst;
+LPreStimRFinit      = PreStimRFst;
+LPreStimVASinit     = PreStimVASst;
+LPreStimBFSHinit    = PreStimBFSHst;
+LPreStimGASinit     = PreStimGASst;
+LPreStimSOLinit     = PreStimSOLst;
+LPreStimTAinit      = PreStimTAst;
 LTargetAngleRInit   = initialTargetAngleR;
-LPreStimHABinit     = LPreStimHABst;
-LPreStimHADinit     = LPreStimHADst;
+LPreStimHABinit     = PreStimHABst;
+LPreStimHADinit     = PreStimHADst;
 
 RTargetAngleInit    = initialTargetAngle;
-RPreStimHFLinit     = RPreStimHFLsw;
-RPreStimGLUinit     = RPreStimGLUsw;
-RPreStimHAMinit     = RPreStimHAMsw;
-RPreStimRFinit      = RPreStimRFsw;
+RPreStimHFLinit     = PreStimHFLsw;
+RPreStimGLUinit     = PreStimGLUsw;
+RPreStimHAMinit     = PreStimHAMsw;
+RPreStimRFinit      = PreStimRFsw;
+RPreStimVASinit     = PreStimVASst;
+RPreStimBFSHinit    = PreStimBFSHst;
+RPreStimGASinit     = PreStimGASst;
+RPreStimSOLinit     = PreStimSOLst;
+RPreStimTAinit      = PreStimTAst;
 RTargetAngleRInit   = initialTargetAngleR;
-RPreStimHABinit     = RPreStimHABsw;
-RPreStimHADinit     = RPreStimHADsw;
+RPreStimHABinit     = PreStimHABsw;
+RPreStimHADinit     = PreStimHADsw;

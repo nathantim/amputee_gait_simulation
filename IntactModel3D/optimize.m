@@ -17,10 +17,8 @@ optimizationInfo = 'equal_shank';
 % initial_gains_filename = ['Results' filesep 'Rough' filesep '2Dopt_1.2_ms_part3D.mat'];
 % initial_gains_filename = ['Results' filesep 'Rough' filesep 'Umb10_1.5cm_0.9ms_kneelim1_mstoptorque2_2Dopt.mat'];
 % initial_gains_filename = ['Results' filesep 'Rough' filesep 'Umb10_1.5cm_0.9ms_kneelim1_mstoptorque2.mat'];
-initial_gains_filename = ['Results' filesep 'Rough' filesep '1.3msinter.mat'];
-load(initial_gains_filename);
+initial_gains_filename = ['Results' filesep 'Rough' filesep '0.9msinter.mat'];
 
-initial_gains_file = load(initial_gains_filename);
 
 % GainsSagittal = initial_gains_file.GainsSagittal;
 % initConditionsSagittal = initial_gains_file.initConditionsSagittal;
@@ -44,19 +42,20 @@ catch ME
     warning(ME.message);
 end
 
-% InitialGuess = initial_gains_file.Gains;
-InitialGuess = [initial_gains_file.GainsSagittal;initial_gains_file.initConditionsSagittal;...
-				initial_gains_file.GainsCoronal; initial_gains_file.initConditionsCoronal];
 
 %% initialze parameters
 [inner_opt_settings,opts] = setInnerOptSettings(b_resumeOptimization,initial_gains_filename,optimizationInfo);
-
+    
+InitialGuessFile = load([inner_opt_settings.optimizationDir filesep 'initial_gains.mat']);
+InitialGuess = [InitialGuessFile.GainsSagittal;InitialGuessFile.initConditionsSagittal;...
+				InitialGuessFile.GainsCoronal; InitialGuessFile.initConditionsCoronal];
+    
 run([inner_opt_settings.optimizationDir, filesep, 'BodyMechParamsCapture']);
 run([inner_opt_settings.optimizationDir, filesep, 'ControlParamsCapture']);
 run([inner_opt_settings.optimizationDir, filesep, 'OptimParamsCapture']);
 
 
-setInitAmputee;
+setInitVar;
  
 dt_visual = 1/30;
 [groundX, groundZ, groundTheta] = generateGround('flat');

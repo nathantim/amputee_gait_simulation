@@ -36,10 +36,7 @@ g = 9.80665;
 phiAnkleLowLimit =  -20*pi/180; %[rad]
 phiAnkleUpLimit  = 40*pi/180; %[rad]
 
-phiKneeUpLimit  = 1*pi/180; %[rad] % used previously
-% phiKneeUpLimit  = -1.5*pi/180; %[rad]
-% phiKneeUpLimit  = 5*pi/180; %[rad]
-warning('Knee limit check, now: %d deg.', phiKneeUpLimit*180/pi);
+phiKneeUpLimit  = 1*pi/180; %[rad] 
 
 phiHipUpLimit  = 50*pi/180; %[rad]
 
