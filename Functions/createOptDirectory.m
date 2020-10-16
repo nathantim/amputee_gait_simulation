@@ -24,7 +24,7 @@ if contains(num2str(opts.Resume),'no') || min(opts.Resume) == 0
     init_gains_name = strsplit(string(opts.UserData),filesep);
     init_gains_name = init_gains_name{end};
     opts.UserData = ['Gains filename: ' optDirectory, filesep init_gains_name];
-    moveAndRenameFile([modelDir filesep init_gains], [optDirectory, filesep init_gains_name]);
+    moveAndRenameFile([modelDir filesep init_gains], [optDirectory, filesep 'initial_gains.mat']);
     moveAndRenameFile([baseDir filesep 'BodyMechParams.m'], [optDirectory, filesep,'BodyMechParamsCapture.m']);
     moveAndRenameFile([modelDir filesep 'ControlParams.m'], [optDirectory, filesep,'ControlParamsCapture.m']);
     moveAndRenameFile([baseDir filesep 'Prosthesis3R60Params.m'], [optDirectory, filesep,'Prosthesis3R60ParamsCapture.m']);

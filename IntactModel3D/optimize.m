@@ -9,6 +9,7 @@ clear all; close all; clc;
 
 %%
 b_resumeOptimization = char(input("Do you want to resume a previous optimization? (yes/no)   ",'s'));
+optimizationInfo = 'equal_shank';
 
 %%
 % initial_gains_filename = ['Results' filesep 'Flat' filesep 'SongGains_02amp_wC.mat'];
@@ -26,9 +27,6 @@ initial_gains_file = load(initial_gains_filename);
 % GainsCoronal = initial_gains_file.GainsCoronal; 
 % initConditionsCoronal = initial_gains_file.initConditionsCoronal;
 
-         
-%%
-optimizationInfo = 'equal_shank';
 
 %%
 global model rtp InitialGuess inner_opt_settings
@@ -57,7 +55,7 @@ run([inner_opt_settings.optimizationDir, filesep, 'BodyMechParamsCapture']);
 run([inner_opt_settings.optimizationDir, filesep, 'ControlParamsCapture']);
 run([inner_opt_settings.optimizationDir, filesep, 'OptimParamsCapture']);
 
-% initSignals;
+
 setInitAmputee;
  
 dt_visual = 1/30;
@@ -85,7 +83,7 @@ disp(inner_opt_settings);
 disp(initial_gains_filename);
 fprintf('Target velocity: %1.1f m/s \n',inner_opt_settings.target_velocity);
 
-parpool(inner_opt_settings.numParWorkers);
+% parpool(inner_opt_settings.numParWorkers);
 
 %% run cmaes
 [xmin, fmin, counteval, stopflag, out, bestever] = cmaes(optfunc, x0, sigma0, opts)

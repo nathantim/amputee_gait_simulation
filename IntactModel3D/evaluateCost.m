@@ -1,18 +1,16 @@
-% clc;
+if  (input("Do you want to clear the data? (1/0)   "))
+%     close all;  
+    clearvars;  clc;
+end
+
 %% Check results from vcmaes file
 if true
     inner_opt_settings = setInnerOptSettings('yes');
     disp(inner_opt_settings.optimizationDir);
     
-    load([inner_opt_settings.optimizationDir filesep 'vcmaes.mat']);
-    
-    tempstring = strsplit(opts.UserData,' ');
-    dataFile = tempstring{end};
-    % dataFile =  'Results/Rough/Umb10_1.5cm_0.9ms_difffoot_higherabd_inter.mat';
-    InitialGuess = load(dataFile);
-    % % InitialGuess = InitialGuessFile.Gains([39:47,53:55,58,59,69,70,80,81,101:109,115:117,120:121,126,127,132,133]);
-    %
-    % %
+    load([inner_opt_settings.optimizationDir filesep 'variablescmaes.mat']);
+    InitialGuess = load([inner_opt_settings.optimizationDir filesep 'initial_gains.mat']);
+
     idx1 = length(InitialGuess.GainsSagittal);
     idx2 = idx1 + length(InitialGuess.initConditionsSagittal);
     idx3 = idx2 + length(InitialGuess.GainsCoronal);
@@ -57,7 +55,7 @@ assignInit;
 %open('NeuromuscularModel');
 % set_param(model,'SimulationMode','normal');
 % set_param(model,'StopTime','30');
-
+set_param(model, 'AccelVerboseBuild', 'off');
 
 %%
 
