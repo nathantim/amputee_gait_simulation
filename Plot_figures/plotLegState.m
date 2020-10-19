@@ -34,15 +34,21 @@ rightLegState   = GaitPhaseData.signals.values(:,2);
 [rightLegState_avg,rightLegState_sd] = interpData2perc(t,GaitInfo.tp,rightLegState,GaitInfo.start.rightV,GaitInfo.end.rightV,GaitInfo.b_oneGaitPhase,'previous');
 
 if plotInfo.showTables && ~isempty(GaitInfo.gaitstate)
-    rowNames = {'Stance'};
+    rowNames = {'Stance','Double Stance (leg to other leg)'};
     if contains(saveInfo.info,'prosthetic')
-        varNames = {'Left (%)','Right (%)', 'ASI (%)'};%,'L mean propel impulse (N%/kg)','R mean propel impulse (N%/kg)'};
-        vars = {GaitInfo.gaitstate.left.meanstdtxt, GaitInfo.gaitstate.right.meanstdtxt, GaitInfo.gaitstate.ASItxt};
-        disp(table(vars(:,1),vars(:,2),vars(:,3),'VariableNames',varNames,'RowNames',rowNames));
+        varNames = {'Left (%)','Right (%)', 'ASI_% (%)', 'Left (s)','Right (s)', 'ASI_s (%)'};%,'L mean propel impulse (N%/kg)','R mean propel impulse (N%/kg)'};
+        vars = {GaitInfo.gaitstate.left.stanceMeanstdtxt_perc, GaitInfo.gaitstate.right.stanceMeanstdtxt_perc, GaitInfo.gaitstate.stanceASItxt_perc, ...
+                GaitInfo.gaitstate.left.stanceMeanstdtxt, GaitInfo.gaitstate.right.stanceMeanstdtxt, GaitInfo.gaitstate.stanceASItxt; ...
+                GaitInfo.gaitstate.left.doubleStanceMeanstdtxt_perc, GaitInfo.gaitstate.right.doubleStanceMeanstdtxt_perc, GaitInfo.gaitstate.doubleStanceASItxt_perc, ...
+                GaitInfo.gaitstate.left.doubleStanceMeanstdtxt, GaitInfo.gaitstate.right.doubleStanceMeanstdtxt, GaitInfo.gaitstate.doubleStanceASItxt};
+        disp(table(vars(:,1),vars(:,2),vars(:,3),vars(:,4),vars(:,5),vars(:,6),'VariableNames',varNames,'RowNames',rowNames));
     else
-        varNames = {'Total(%)', 'ASI (%)'};%,'L mean propel impulse (N%/kg)','R mean propel impulse (N%/kg)'};
-        vars = {GaitInfo.gaitstate.meanstdtxt, GaitInfo.gaitstate.ASItxt};
-        disp(table(vars(:,1),vars(:,2),'VariableNames',varNames,'RowNames',rowNames));
+        varNames = {'Total (%)', 'ASI_% (%)', 'Total (s)', 'ASI_s (%)'};%,'L mean propel impulse (N%/kg)','R mean propel impulse (N%/kg)'};
+        vars = {GaitInfo.gaitstate.stanceMeanstdtxt_perc, GaitInfo.gaitstate.stanceASItxt_perc, ...
+                GaitInfo.gaitstate.stanceMeanstdtxt, GaitInfo.gaitstate.stanceASItxt;...
+                GaitInfo.gaitstate.doubleStanceMeanstdtxt_perc, GaitInfo.gaitstate.doubleStanceASItxt_perc, ...
+                GaitInfo.gaitstate.doubleStanceMeanstdtxt, GaitInfo.gaitstate.doubleStanceASItxt};
+        disp(table(vars(:,1),vars(:,2),vars(:,3),vars(:,4),'VariableNames',varNames,'RowNames',rowNames));
     end
 end
 if ~plotInfo.showSD

@@ -89,16 +89,17 @@ if plotInfo.showTables
     vars = {impxBrakestruct.leftTxt, impxBrakestruct.rightTxt, impxBrakestruct.ASItxt, impxPropstruct.leftTxt, impxPropstruct.rightTxt, impxPropstruct.ASItxt; ... 
             impyBrakestruct.leftTxt, impyBrakestruct.rightTxt, impyBrakestruct.ASItxt, impyPropstruct.leftTxt, impyPropstruct.rightTxt, impyPropstruct.ASItxt; ... 
             '-', '-', '-', impzPropstruct.leftTxt, impzPropstruct.rightTxt, impzPropstruct.ASItxt};
-    disp(table(vars(:,1),vars(:,2),vars(:,3),vars(:,4),vars(:,5),vars(:,6),'VariableNames',varNames,'RowNames',rowNames));
+    impulseTable = (table(vars(:,1),vars(:,2),vars(:,3),vars(:,4),vars(:,5),vars(:,6),'VariableNames',varNames,'RowNames',rowNames));
     else
        rowNames = {'x','y','z'};
        varNames = {'Total braking impulse (N%/kg)', 'Braking ASI (%)', 'Total prop impulse (N%/kg)', 'Prop ASI (%)'};%,'L mean propel impulse (N%/kg)','R mean propel impulse (N%/kg)'};
        vars = {impxBrakestruct.totalTxt, impxBrakestruct.ASItxt, impxPropstruct.totalTxt, impxPropstruct.ASItxt; ...
            impyBrakestruct.totalTxt, impyBrakestruct.ASItxt, impyPropstruct.totalTxt, impyPropstruct.ASItxt; ...
            '-', '-', impzPropstruct.totalTxt, impzPropstruct.ASItxt};
-       disp(table(vars(:,1),vars(:,2),vars(:,3),vars(:,4),'VariableNames',varNames,'RowNames',rowNames));
+       impulseTable = (table(vars(:,1),vars(:,2),vars(:,3),vars(:,4),'VariableNames',varNames,'RowNames',rowNames));
      
     end
+    disp(impulseTable);
 end
 
 %%
@@ -202,4 +203,5 @@ if saveInfo.b_saveFigure
     for j = 1:length(saveInfo.type)
         saveFigure(GRFDataFig,'GRFData',saveInfo.type{j},saveInfo.info)
     end
+    
 end
