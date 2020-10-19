@@ -3,8 +3,8 @@ if nargin < 3 || isempty(initiation_steps)
     initiation_steps = 0;
 end
 
-leftValues = leftSignal;
-rightValues = rightSignal;
+leftValues = reshape(leftSignal,1,length(leftSignal));
+rightValues = reshape(rightSignal,1,length(rightSignal));
 
 step2cal    = min(length(leftValues),length(rightValues))-initiation_steps;
 
