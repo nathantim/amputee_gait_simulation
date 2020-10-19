@@ -89,6 +89,7 @@ if plotInfo.showTables
     end
     LanklePowerStance =  LanklePower.* GaitInfo.gaitstate.left.StanceV;
     RanklePowerStance =  RanklePower.* GaitInfo.gaitstate.right.StanceV;
+    rowNames = {'max Power'};
     
     for ii = 1:length(GaitInfo.start.leftV)
         startIdx = GaitInfo.start.leftV(ii);
@@ -96,20 +97,21 @@ if plotInfo.showTables
         maxLanklePowerStance(ii)   = max(LanklePowerStance(startIdx:endIdx));
     end
     maxLanklePowerStance = reshape(maxLanklePowerStance,1,length(maxLanklePowerStance));
-
-    if ~contains(saveInfo.info,'prosthetic')
-        for ii = 1:length(GaitInfo.start.rightV)
-            startIdx = GaitInfo.start.rightV(ii);
-            endIdx = GaitInfo.end.rightV(ii);
-            maxRanklePowerStance(ii)   = max(RanklePowerStance(startIdx:endIdx));
-        end
-        maxRanklePowerStance = reshape(maxRanklePowerStance,1,length(maxRanklePowerStance));
-        anklePowerStance = [maxLanklePowerStance,maxRanklePowerStance];
-    else
-        anklePowerStance = maxLanklePowerStance;
+    
+    for ii = 1:length(GaitInfo.start.rightV)
+        startIdx = GaitInfo.start.rightV(ii);
+        endIdx = GaitInfo.end.rightV(ii);
+        maxRanklePowerStance(ii)   = max(RanklePowerStance(startIdx:endIdx));
     end
-        
-    fprintf('Max average intact ankle power in W/kg: %1.3f  (%1.3f)\n',mean(anklePowerStance), std(anklePowerStance))
+    maxRanklePowerStance = reshape(maxRanklePowerStance,1,length(maxRanklePowerStance));
+    powerASI = getFilterdMean_and_ASI(maxLanklePowerStance,maxRanklePowerStance);
+    
+    varNames = {'L or Intact (W/kg)','R (W/kg)', 'ASI (%)'};%,'L mean propel impulse (N%/kg)','R mean propel impulse (N%/kg)'};
+    vars = {powerASI.leftTxt, powerASI.rightTxt, powerASI.ASItxt};
+    anklePowerTab = (table(vars(:,1),vars(:,2),vars(:,3),'VariableNames',varNames,'RowNames',rowNames));
+    disp(anklePowerTab);
+    
+    
 end
 
 %%
@@ -118,7 +120,7 @@ if isempty(powerDataFigure) && isempty(axesHandles)
     fullScreen = get(0,'screensize');
     set(PowerDataFig, 'Position',[fullScreen(1:2)+20 fullScreen(3:4)*0.9]);
 else
-    PowerDataFig = powerDataFigure; 
+    PowerDataFig = powerDataFigure;
 end
 % if GaitInfo.b_oneGaitPhase && plotInfo.plotWinterData 
 %     [timeWinter, ~,~,~,~,~,~, ~,~,~,~, ...
