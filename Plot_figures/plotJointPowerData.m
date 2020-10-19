@@ -106,12 +106,19 @@ if plotInfo.showTables
     maxRanklePowerStance = reshape(maxRanklePowerStance,1,length(maxRanklePowerStance));
     powerASI = getFilterdMean_and_ASI(maxLanklePowerStance,maxRanklePowerStance);
     
-    varNames = {'L or Intact (W/kg)','R (W/kg)', 'ASI (%)'};%,'L mean propel impulse (N%/kg)','R mean propel impulse (N%/kg)'};
-    vars = {powerASI.leftTxt, powerASI.rightTxt, powerASI.ASItxt};
-    anklePowerTab = (table(vars(:,1),vars(:,2),vars(:,3),'VariableNames',varNames,'RowNames',rowNames));
+    if contains(saveInfo.info,'prosthetic')
+        varNames = {'Intact (W/kg)','Prosthetic (W/kg)', 'ASI (%)'};%,'L mean propel impulse (N%/kg)','R mean propel impulse (N%/kg)'};
+        vars = {powerASI.leftTxt, powerASI.rightTxt, powerASI.ASItxt};
+        anklePowerTab = (table(vars(:,1),vars(:,2),vars(:,3),'VariableNames',varNames,'RowNames',rowNames));
+        
+    else
+        varNames = {'Total (W/kg)', 'ASI (%)'};%,'L mean propel impulse (N%/kg)','R mean propel impulse (N%/kg)'};
+        vars = {powerASI.totalTxt, powerASI.ASItxt};
+        anklePowerTab = (table(vars(:,1),vars(:,2),'VariableNames',varNames,'RowNames',rowNames));
+        
+    end
     disp(anklePowerTab);
-    
-    
+
 end
 
 %%
