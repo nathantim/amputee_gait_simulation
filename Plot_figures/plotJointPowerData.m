@@ -87,6 +87,29 @@ if plotInfo.showTables
 %         fprintf('Joint power range (W/kg):\n');
         disp(rangeTable);
     end
+    LanklePowerStance =  LanklePower.* GaitInfo.gaitstate.left.StanceV;
+    RanklePowerStance =  RanklePower.* GaitInfo.gaitstate.right.StanceV;
+    
+    for ii = 1:length(GaitInfo.start.leftV)
+        startIdx = GaitInfo.start.leftV(ii);
+        endIdx = GaitInfo.end.leftV(ii);
+        maxLanklePowerStance(ii)   = max(LanklePowerStance(startIdx:endIdx));
+    end
+    maxLanklePowerStance = reshape(maxLanklePowerStance,1,length(maxLanklePowerStance));
+
+    if ~contains(saveInfo.info,'prosthetic')
+        for ii = 1:length(GaitInfo.start.rightV)
+            startIdx = GaitInfo.start.rightV(ii);
+            endIdx = GaitInfo.end.rightV(ii);
+            maxRanklePowerStance(ii)   = max(RanklePowerStance(startIdx:endIdx));
+        end
+        maxRanklePowerStance = reshape(maxRanklePowerStance,1,length(maxRanklePowerStance));
+        anklePowerStance = [maxLanklePowerStance,maxRanklePowerStance];
+    else
+        anklePowerStance = maxLanklePowerStance;
+    end
+        
+    fprintf('Max average ankle power in W/kg: %1.3f  (%1.3f)\n',mean(anklePowerStance), std(anklePowerStance))
 end
 
 %%

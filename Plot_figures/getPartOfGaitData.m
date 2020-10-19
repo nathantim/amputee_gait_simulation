@@ -89,6 +89,7 @@ if (b_oneGaitPhase) && min(sum(stepTimes(:,1)),sum(stepTimes(:,2))) > 1
     [doubleStanceASI] = getFilterdMean_and_ASI(LDoubleStance,RDoubleStance);
     [doubleStanceASI_perc] = getFilterdMean_and_ASI(LDoubleStance_perc,RDoubleStance_perc);
 
+    gaitstate.left.StanceV = (leftLegState <= GaitState.LiftOff);
     gaitstate.left.stanceMeanstdtxt = stanceASI.leftTxt;
     gaitstate.left.Stance = stanceASI.leftMean;
     gaitstate.left.DoubleStance = doubleStanceASI.leftMean;
@@ -100,6 +101,7 @@ if (b_oneGaitPhase) && min(sum(stepTimes(:,1)),sum(stepTimes(:,2))) > 1
     gaitstate.left.DoubleStance_perc = doubleStanceASI_perc.leftMean;
     gaitstate.left.doubleStanceMeanstdtxt_perc = doubleStanceASI_perc.leftTxt;
     
+    gaitstate.right.StanceV = (rightLegState <= GaitState.LiftOff);
     gaitstate.right.Stance = stanceASI.rightMean;
     gaitstate.right.stanceMeanstdtxt = stanceASI.rightTxt;
     gaitstate.right.DoubleStance = doubleStanceASI.rightMean;
