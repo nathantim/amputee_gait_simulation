@@ -81,9 +81,7 @@ end
  plotHandlesLeft = [];
  plotHandlesRight = [];
 
-if ~GaitInfo.b_oneGaitPhase
-    GaitInfo.tp = jointTorquesData.time;
-end
+
 if contains(legToPlot,'left') || contains(legToPlot,'both')
 [plotHandlesLeft,axesHandles] = plotTorqueDataInFigure(torqueDataFig,axesHandles,GaitInfo.tp,LhipTorque_avg,LhipTorque_sd,LhipRollTorque_avg,LhipRollTorque_sd,LkneeTorque_avg,LkneeTorque_sd,LankleTorque_avg,LankleTorque_sd,subplotStart,GaitInfo.b_oneGaitPhase,b_addTitle);
 end

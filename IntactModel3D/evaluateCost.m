@@ -1,6 +1,7 @@
 if  (input("Do you want to clear the data? (1/0)   "))
 %     close all;  
-    clearvars;  clc;
+    clearvars;  
+%     clc;
 end
 
 %% Check results from vcmaes file
@@ -47,7 +48,7 @@ model = 'NeuromuscularModel3D';
 % inner_opt_settings = setInnerOptSettings();
 [groundX, groundZ, groundTheta] = generateGround('flat');
 
-dt_visual = 1/30;
+dt_visual = 1/1000;
 
 assignGainsSagittal;
 assignGainsCoronal;

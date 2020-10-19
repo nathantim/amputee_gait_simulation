@@ -34,11 +34,16 @@ rightLegState   = GaitPhaseData.signals.values(:,2);
 [rightLegState_avg,rightLegState_sd] = interpData2perc(t,GaitInfo.tp,rightLegState,GaitInfo.start.rightV,GaitInfo.end.rightV,GaitInfo.b_oneGaitPhase,'previous');
 
 if plotInfo.showTables && ~isempty(GaitInfo.gaitstate)
-     rowNames = {'Stance'};
-    varNames = {'Left (%)','Right (%)', 'ASI (%)'};%,'L mean propel impulse (N%/kg)','R mean propel impulse (N%/kg)'};
-    vars = {GaitInfo.gaitstate.left.meanstdtxt, GaitInfo.gaitstate.right.meanstdtxt, GaitInfo.gaitstate.ASItxt};
-    disp(table(vars(:,1),vars(:,2),vars(:,3),'VariableNames',varNames,'RowNames',rowNames));
-    
+    rowNames = {'Stance'};
+    if contains(saveInfo.info,'prosthetic')
+        varNames = {'Left (%)','Right (%)', 'ASI (%)'};%,'L mean propel impulse (N%/kg)','R mean propel impulse (N%/kg)'};
+        vars = {GaitInfo.gaitstate.left.meanstdtxt, GaitInfo.gaitstate.right.meanstdtxt, GaitInfo.gaitstate.ASItxt};
+        disp(table(vars(:,1),vars(:,2),vars(:,3),'VariableNames',varNames,'RowNames',rowNames));
+    else
+        varNames = {'Total(%)', 'ASI (%)'};%,'L mean propel impulse (N%/kg)','R mean propel impulse (N%/kg)'};
+        vars = {GaitInfo.gaitstate.meanstdtxt, GaitInfo.gaitstate.ASItxt};
+        disp(table(vars(:,1),vars(:,2),'VariableNames',varNames,'RowNames',rowNames));
+    end
 end
 if ~plotInfo.showSD
     leftLegState_sd = [];
@@ -58,9 +63,6 @@ else
     legStateDataFig = legStateFigure;
 end
 % set(0, 'DefaultAxesFontSize',12);
-if ~GaitInfo.b_oneGaitPhase
-    GaitInfo.tp = GaitPhaseData.time;
-end
 
 %     stairs(legStatePlot,t_right_perc,rightLegState);
 if contains(legToPlot,'left') || contains(legToPlot,'both')

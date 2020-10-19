@@ -7,7 +7,7 @@ b_plotLegState    = 1;
 b_plotAngles      = 0;
 b_plotTorques     = 0;
 b_plotPowers      = 0;
-b_plotGRF         = 0;
+b_plotGRF         = 1;
 b_plotMuscle      = 0;
 
 %%
@@ -33,11 +33,17 @@ if nargin < 5
 end
 saveInfo.info = info;
 
+healthySaveInfo = saveInfo;
+healthySaveInfo.info = [healthySaveInfo.info, 'healthy'];
 
-healthyGaitInfo         = getPartOfGaitData(b_oneGaitPhase, healthyData.GaitPhaseData,      healthyData.angularData.time,       healthyData.stepTimes);
-prostheticGaitInfo      = getPartOfGaitData(b_oneGaitPhase, prostheticData.GaitPhaseData,   prostheticData.angularData.time,    prostheticData.stepTimes);
-prostheticCMGGaitInfo   = getPartOfGaitData(b_oneGaitPhase, prostheticCMGData.GaitPhaseData,prostheticCMGData.angularData.time, prostheticCMGData.stepTimes);
-realHealthyDataGaitInfo = getPartOfGaitData(false,          [],                             realHealthyData.angularData.time,   []);
+prostheticSaveInfo = saveInfo;
+prostheticSaveInfo.info = [prostheticSaveInfo.info, 'prosthetic'];
+
+
+healthyGaitInfo         = getPartOfGaitData(healthyData.angularData.time,       healthyData.GaitPhaseData,          healthyData.stepTimes,          healthySaveInfo, b_oneGaitPhase);
+prostheticGaitInfo      = getPartOfGaitData(prostheticData.angularData.time,    prostheticData.GaitPhaseData,       prostheticData.stepTimes,       prostheticSaveInfo, b_oneGaitPhase);
+prostheticCMGGaitInfo   = getPartOfGaitData(prostheticCMGData.angularData.time, prostheticCMGData.GaitPhaseData,    prostheticCMGData.stepTimes,    prostheticSaveInfo, b_oneGaitPhase);
+realHealthyDataGaitInfo = getPartOfGaitData(realHealthyData.angularData.time,   [],                                 [],                             healthySaveInfo, false);
 
 %% Normalize data:
 healthyData.jointTorquesData.signals.values = healthyData.jointTorquesData.signals.values./getBodyMass();
@@ -45,6 +51,10 @@ prostheticData.jointTorquesData.signals.values = prostheticData.jointTorquesData
 healthyData.GRFData.signals.values = healthyData.GRFData.signals.values./getBodyMass();
 prostheticData.GRFData.signals.values = prostheticData.GRFData.signals.values./getBodyMass();
 
+%%
+realHealthyData.angularData.time = realHealthyData.angularData.time./100;
+realHealthyData.jointTorquesData.time = realHealthyData.jointTorquesData.time./100;
+realHealthyData.GRFData.time = realHealthyData.GRFData.time./100;
 %%
 plotInfo.showSD = showSD;%true;
 plotInfo.plotProp = {'LineStyle','Color','LineWidth'};
@@ -75,15 +85,15 @@ if b_plotLegState
     set(legStateFig, 'Position',figurePositionState);
     subplotStart = [3 1 1];
     fprintf('\n<strong>Healthy model:</strong> \n');
-    [plotHealthyState, axesHealthyState] = plotLegState(healthyData.GaitPhaseData,plotInfo,healthyGaitInfo,saveInfo,legStateFig,[],subplotStart,'left',true);
+    [plotHealthyState, axesHealthyState] = plotLegState(healthyData.GaitPhaseData,plotInfo,healthyGaitInfo,healthySaveInfo,legStateFig,[],subplotStart,'left',true);
     
     subplotStart(3) = subplotStart(3)+subplotStart(2);
     fprintf('<strong>Amputee model:</strong> \n');
-    [plotProstheticState, axesProstheticState] = plotLegState(prostheticData.GaitPhaseData,plotInfo,prostheticGaitInfo,saveInfo,legStateFig,[],subplotStart,'both',false);
+    [plotProstheticState, axesProstheticState] = plotLegState(prostheticData.GaitPhaseData,plotInfo,prostheticGaitInfo,prostheticSaveInfo,legStateFig,[],subplotStart,'both',false);
 
     subplotStart(3) = subplotStart(3)+subplotStart(2);
     fprintf('<strong>Amputee model with CMG:</strong> \n');
-    [plotCMGState, axesCMGState] = plotLegState(prostheticCMGData.GaitPhaseData,plotInfo,prostheticCMGGaitInfo,saveInfo,legStateFig,[],subplotStart,'both',false);
+    [plotCMGState, axesCMGState] = plotLegState(prostheticCMGData.GaitPhaseData,plotInfo,prostheticCMGGaitInfo,prostheticSaveInfo,legStateFig,[],subplotStart,'both',false);
     
     axesState = [axesHealthyState,axesProstheticState,axesCMGState];
     
@@ -111,16 +121,16 @@ if b_plotAngles
     set(angularDataFig, 'Position',figurePositionAngle); % two
     % set(angularDataFig, 'Position',[10,100,1700,800]); % three
     subplotStart = [2 4 1];
-    [plotHealthyAngle, axesHealthyAngle] = plotAngularData(healthyData.angularData,plotInfo,healthyGaitInfo,saveInfo,angularDataFig,[],subplotStart,'left',true);
-    [plotRealHealthyAngle, axesRealHealthyAngle] = plotAngularData(realHealthyData.angularData,plotInfo,realHealthyDataGaitInfo,saveInfo,angularDataFig,axesHealthyAngle,subplotStart,'right',true);
+    [plotHealthyAngle, axesHealthyAngle] = plotAngularData(healthyData.angularData,plotInfo,healthyGaitInfo,healthySaveInfo,angularDataFig,[],subplotStart,'left',true);
+    [plotRealHealthyAngle, axesRealHealthyAngle] = plotAngularData(realHealthyData.angularData,plotInfo,realHealthyDataGaitInfo,healthySaveInfo,angularDataFig,axesHealthyAngle,subplotStart,'right',true);
     for ii = 1:length(plotRealHealthyAngle)
         set(plotRealHealthyAngle(ii,1),plotInfo.plotProp,plotInfo.plotProp_entries(2,:));
     end
     
     subplotStart(3) = subplotStart(3)+subplotStart(2);
-    [plotProstheticAngle, axesProstheticAngle] = plotAngularData(prostheticData.angularData,plotInfo,prostheticGaitInfo,saveInfo,angularDataFig,[],subplotStart,'both',false);
+    [plotProstheticAngle, axesProstheticAngle] = plotAngularData(prostheticData.angularData,plotInfo,prostheticGaitInfo,prostheticSaveInfo,angularDataFig,[],subplotStart,'both',false);
     % subplotStart(3) = subplotStart(3)+subplotStart(2);
-    % [plotCMGAngle, axesCMGAngle] = plotAngularData(prostheticCMGData.angularData,prostheticCMGData.GaitPhaseData,plotInfo,prostheticCMGGaitInfo,saveInfo,angularDataFig,[],subplotStart,'both',false,false);
+    % [plotCMGAngle, axesCMGAngle] = plotAngularData(prostheticCMGData.angularData,prostheticCMGData.GaitPhaseData,plotInfo,prostheticCMGGaitInfo,prostheticSaveInfo,angularDataFig,[],subplotStart,'both',false,false);
     
     axesAngle = [axesHealthyAngle,axesProstheticAngle];%,axesCMGAngle];
     
@@ -147,14 +157,14 @@ if b_plotTorques
     subplotStart = [2 4 1];
     
     
-    [plotHealthyTorque,axesHealthyTorque] = plotJointTorqueData(healthyData.jointTorquesData,plotInfo,healthyGaitInfo,saveInfo,torqueDataFig,[],subplotStart,'left',true);
-    [plotRealHealthyTorque,axesRealHealthyTorque] = plotJointTorqueData(realHealthyData.jointTorquesData,plotInfo,realHealthyDataGaitInfo,saveInfo,torqueDataFig,axesHealthyTorque,subplotStart,'right',true);
+    [plotHealthyTorque,axesHealthyTorque] = plotJointTorqueData(healthyData.jointTorquesData,plotInfo,healthyGaitInfo,healthySaveInfo,torqueDataFig,[],subplotStart,'left',true);
+    [plotRealHealthyTorque,axesRealHealthyTorque] = plotJointTorqueData(realHealthyData.jointTorquesData,plotInfo,realHealthyDataGaitInfo,healthySaveInfo,torqueDataFig,axesHealthyTorque,subplotStart,'right',true);
     for ii = 1:length(plotRealHealthyTorque)
         set(plotRealHealthyTorque(ii,1),plotInfo.plotProp,plotInfo.plotProp_entries(2,:));
     end
     
     subplotStart(3) = subplotStart(3)+subplotStart(2);
-    [plotProstheticTorque,axesProstheticTorque] = plotJointTorqueData(prostheticData.jointTorquesData,plotInfo,prostheticGaitInfo,saveInfo,torqueDataFig,[],subplotStart,'both',false);
+    [plotProstheticTorque,axesProstheticTorque] = plotJointTorqueData(prostheticData.jointTorquesData,plotInfo,prostheticGaitInfo,prostheticSaveInfo,torqueDataFig,[],subplotStart,'both',false);
     
     axesTorque = [axesHealthyTorque,axesProstheticTorque];%,axesCMGAngle];
     xlabel(axesTorque(end),'gait cycle ($\%$) ');
@@ -177,9 +187,9 @@ if b_plotPowers
     hwratioPower = figurePositionPower(end)/figurePositionPower(end-1);
     set(powerDataFig, 'Position',figurePositionPower);
     subplotStart = [2 4 1];
-    [plotHealthyPower,axesHealthyPower] = plotJointPowerData(healthyData.angularData,healthyData.jointTorquesData,plotInfo,healthyGaitInfo,saveInfo,powerDataFig,[],subplotStart,'left',true);
+    [plotHealthyPower,axesHealthyPower] = plotJointPowerData(healthyData.angularData,healthyData.jointTorquesData,plotInfo,healthyGaitInfo,healthySaveInfo,powerDataFig,[],subplotStart,'left',true);
     subplotStart(3) = subplotStart(3)+subplotStart(2);
-    [plotProstheticPower,axesProstheticPower] = plotJointPowerData(prostheticData.angularData,prostheticData.jointTorquesData,plotInfo,prostheticGaitInfo,saveInfo,powerDataFig,[],subplotStart,'both',false);
+    [plotProstheticPower,axesProstheticPower] = plotJointPowerData(prostheticData.angularData,prostheticData.jointTorquesData,plotInfo,prostheticGaitInfo,prostheticSaveInfo,powerDataFig,[],subplotStart,'both',false);
     
     axesPower = [axesHealthyPower,axesProstheticPower];%,axesCMGAngle];
     xlabel(axesPower(end),'gait cycle ($\%$) ');
@@ -202,14 +212,14 @@ if b_plotGRF
     set(GRFDataFig, 'Position',figurePositionGRF);
     subplotStart = [2 3 1];
     
-    [plotHealthyGRF,axesHealthyGRF] = plotGRFData(healthyData.GRFData,plotInfo,healthyGaitInfo,saveInfo,GRFDataFig,[],subplotStart,'left',true);
-    [plotRealHealthyGRF,axesRealHealthyGRF] = plotGRFData(realHealthyData.GRFData,plotInfo,realHealthyDataGaitInfo,saveInfo,GRFDataFig,axesHealthyGRF,subplotStart,'right',true);
+    [plotHealthyGRF,axesHealthyGRF] = plotGRFData(healthyData.GRFData,plotInfo,healthyGaitInfo,healthySaveInfo,GRFDataFig,[],subplotStart,'left',true);
+    [plotRealHealthyGRF,axesRealHealthyGRF] = plotGRFData(realHealthyData.GRFData,plotInfo,realHealthyDataGaitInfo,healthySaveInfo,GRFDataFig,axesHealthyGRF,subplotStart,'right',true);
     for ii = 1:length(plotRealHealthyGRF)
         set(plotRealHealthyGRF(ii,1),plotInfo.plotProp,plotInfo.plotProp_entries(2,:));
     end
     
     subplotStart(3) = subplotStart(3)+subplotStart(2);
-    [plotProstheticGRF,axesProstheticGRF] = plotGRFData(prostheticData.GRFData,plotInfo,prostheticGaitInfo,saveInfo,GRFDataFig,[],subplotStart,'both',false);
+    [plotProstheticGRF,axesProstheticGRF] = plotGRFData(prostheticData.GRFData,plotInfo,prostheticGaitInfo,prostheticSaveInfo,GRFDataFig,[],subplotStart,'both',false);
     
     
     axesGRF = [axesHealthyGRF,axesProstheticGRF];%,axesCMGAngle];
@@ -231,9 +241,9 @@ if b_plotMuscle
     musculoDataFig = figure();
     set(musculoDataFig, 'Position',[10,100,1900,600]);
     subplotStart = [2 11 1];
-    [plotHealthyMusc,axesHealthyMusc] = plotMusculoData(healthyData.musculoData,plotInfo,healthyGaitInfo,saveInfo,musculoDataFig,[],subplotStart,'left',true);
+    [plotHealthyMusc,axesHealthyMusc] = plotMusculoData(healthyData.musculoData,plotInfo,healthyGaitInfo,healthySaveInfo,musculoDataFig,[],subplotStart,'left',true);
     subplotStart(3) = subplotStart(3)+subplotStart(2);
-    [plotProstheticMusc,axesProstheticMusc] = plotMusculoData(prostheticData.musculoData,plotInfo,prostheticGaitInfo,saveInfo,musculoDataFig,[],subplotStart,'both',false);
+    [plotProstheticMusc,axesProstheticMusc] = plotMusculoData(prostheticData.musculoData,plotInfo,prostheticGaitInfo,prostheticSaveInfo,musculoDataFig,[],subplotStart,'both',false);
     
     
     ylabelPosMusc = 1.5*alignYlabel([axesHealthyMusc(1),axesProstheticMusc(1)]);%,axesCMGAngle(1)]);

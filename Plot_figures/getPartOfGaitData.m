@@ -1,5 +1,5 @@
-function [GaitInfo] = getPartOfGaitData(b_oneGaitPhase,GaitPhaseData,t,stepTimes,timeInterval)
-if nargin < 5 || isempty(timeInterval)
+function [GaitInfo] = getPartOfGaitData(t,GaitPhaseData,stepTimes,saveInfo,b_oneGaitPhase,timeInterval)
+if nargin < 6 || isempty(timeInterval)
     idxstart = 1;
     idxend = length(t);
 else
@@ -84,22 +84,15 @@ if (b_oneGaitPhase) && min(sum(stepTimes(:,1)),sum(stepTimes(:,2))) > 1
     gaitstate.left.Stance = stanceASI.leftMean;
     gaitstate.left.Swing = 100 - gaitstate.left.Stance;
     gaitstate.left.meanstdtxt = stanceASI.leftTxt;
-%     gaitState.left.SwingStancetxt = '
-%     gaitstate.left.earlyStanceState = (find(round(leftLegState_avg)==0,1,'last')-1)*diff(tp(1:2));
-%     gaitstate.left.lateStanceState = (find(round(leftLegState_avg)==1,1,'last')-1)*diff(tp(1:2)) - gaitstate.left.earlyStanceState;
-%     gaitstate.left.liftoffState = (find(round(leftLegState_avg)==2,1,'last')-1)*diff(tp(1:2)) - gaitstate.left.earlyStanceState - gaitstate.left.lateStanceState;
-%     gaitstate.left.swingState = (find(round(leftLegState_avg)==3,1,'last')-1)*diff(tp(1:2)) - gaitstate.left.earlyStanceState - gaitstate.left.lateStanceState - gaitstate.left.liftoffState;
-%     gaitstate.left.landingState = (find(round(leftLegState_avg)==4,1,'last')-1)*diff(tp(1:2)) - gaitstate.left.earlyStanceState - gaitstate.left.lateStanceState - gaitstate.left.liftoffState - gaitstate.left.swingState;
     
     gaitstate.right.Stance = stanceASI.rightMean;
     gaitstate.right.Swing = 100 - gaitstate.right.Stance;
     gaitstate.right.meanstdtxt = stanceASI.rightTxt;
     gaitstate.ASItxt = stanceASI.ASItxt;
-%     gaitstate.right.earlyStanceState = (find(round(rightLegState_avg)==0,1,'last')-1)*diff(tp(1:2));
-%     gaitstate.right.lateStanceState = (find(round(rightLegState_avg)==1,1,'last')-1)*diff(tp(1:2)) - gaitstate.right.earlyStanceState;
-%     gaitstate.right.liftoffState = (find(round(rightLegState_avg)==2,1,'last')-1)*diff(tp(1:2)) - gaitstate.right.earlyStanceState - gaitstate.right.lateStanceState;
-%     gaitstate.right.swingState = (find(round(rightLegState_avg)==3,1,'last')-1)*diff(tp(1:2)) - gaitstate.right.earlyStanceState - gaitstate.right.lateStanceState - gaitstate.right.liftoffState;
-%     gaitstate.right.landingState = (find(round(rightLegState_avg)==4,1,'last')-1)*diff(tp(1:2)) - gaitstate.right.earlyStanceState - gaitstate.right.lateStanceState - gaitstate.right.liftoffState - gaitstate.right.swingState;
+    
+    gaitstate.Stance = stanceASI.totalMean;
+    gaitstate.Swing = 100 - gaitstate.Stance;
+    gaitstate.meanstdtxt = stanceASI.totalTxt;
     
     %%
 else

@@ -17,8 +17,8 @@ optimizationInfo = 'equal_shank';
 % initial_gains_filename = ['Results' filesep 'Rough' filesep '2Dopt_1.2_ms_part3D.mat'];
 % initial_gains_filename = ['Results' filesep 'Rough' filesep 'Umb10_1.5cm_0.9ms_kneelim1_mstoptorque2_2Dopt.mat'];
 % initial_gains_filename = ['Results' filesep 'Rough' filesep 'Umb10_1.5cm_0.9ms_kneelim1_mstoptorque2.mat'];
-initial_gains_filename = ['Results' filesep 'Rough' filesep '0.9msinter.mat'];
-
+% initial_gains_filename = ['Results' filesep 'Rough' filesep '0.9msinter.mat'];
+initial_gains_filename = ['Results' filesep 'Rough' filesep '1.2msinter.mat'];
 
 % GainsSagittal = initial_gains_file.GainsSagittal;
 % initConditionsSagittal = initial_gains_file.initConditionsSagittal;
@@ -71,7 +71,7 @@ x0 = zeros(numvars,1);
 sigma0 = 1/8;
 % sigma0 = 1/3;
 
-opts.DiagonalOnly = 50;
+opts.DiagonalOnly = 30;
 
 opts.UserDat2 = strcat(opts.UserDat2,"; ", "sigma0: ", string(sigma0) );
 

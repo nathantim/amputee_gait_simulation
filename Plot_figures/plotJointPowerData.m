@@ -105,9 +105,7 @@ end
  plotHandlesLeft = [];
  plotHandlesRight = [];
 
-if ~GaitInfo.b_oneGaitPhase
-    GaitInfo.tp = jointPowersData.time;
-end
+
 if contains(legToPlot,'left') || contains(legToPlot,'both')
     [plotHandlesLeft,axesHandles] = plotPowerDataInFigure(PowerDataFig,axesHandles,GaitInfo.tp,LhipPower_avg,LhipPower_sd,LhipRollPower_avg,LhipRollPower_sd,LkneePower_avg,LkneePower_sd,LanklePower_avg,LanklePower_sd,subplotStart,GaitInfo.b_oneGaitPhase,b_addTitle);
 end

@@ -1,5 +1,10 @@
 function [cost, dataStruct] = getCost(model,Gains,time,metabolicEnergy,sumOfStopTorques,HATPosVel,stepVelocities,stepTimes,stepLengths,stepNumbers,CMGData,selfCollision,inner_opt_settings, b_isParallel)
 try
+    if nargin < 13
+        b_isParallel = false;
+    end
+    OptimParams;
+    
     if contains(model,'3R60')
          modelType = 'prosthetic';
     else
@@ -10,11 +15,8 @@ try
     else
          modelType = [modelType, '2D'];
     end
+    modelType = [modelType, char(num2str(inner_opt_settings.target_velocity))];
     
-    if nargin < 13
-        b_isParallel = false;
-    end
-    OptimParams;
     dataStruct = struct('cost',struct('data',nan,'minimize',1,'info',''));
     % global dataQueueD
     HATPos = sqrt(sum(HATPosVel.signals.values(end,[1,2]).^2));

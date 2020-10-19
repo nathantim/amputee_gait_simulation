@@ -59,15 +59,12 @@ if plotInfo.showTables
     end
     
     LGRFx = GRFData.signals.values(:,1);
+    LGRFy = GRFData.signals.values(:,2);
+    LGRFz = GRFData.signals.values(:,3);
     
-LGRFy = GRFData.signals.values(:,2);
-LGRFz = GRFData.signals.values(:,3);
-
-RGRFx = GRFData.signals.values(:,4);
-RGRFy = GRFData.signals.values(:,5);
-RGRFz = GRFData.signals.values(:,6);
-    
-
+    RGRFx = GRFData.signals.values(:,4);
+    RGRFy = GRFData.signals.values(:,5);
+    RGRFz = GRFData.signals.values(:,6);
 
 [LGRimpxBrake,LGRimpxProp]  = getImpulse(GRFData.time,GaitInfo.start.leftV,GaitInfo.end.leftV,LGRFx);
 % Medial force is positive, hence * -1
@@ -86,14 +83,22 @@ RGRFz = GRFData.signals.values(:,6);
 [impyPropstruct]    = getFilterdMean_and_ASI(LGRimpyProp,RGRimpyProp);
 [impzPropstruct]    = getFilterdMean_and_ASI(LGRimpzProp,RGRimpzProp);
 
-    
+    if contains(saveInfo.info,'prosthetic')
     rowNames = {'x','y','z'};
     varNames = {'L braking impulse (N%/kg)','R braking impulse (N%/kg)', 'Braking ASI (%)', 'L prop impulse (N%/kg)','R prop impulse (N%/kg)', 'Prop ASI (%)'};%,'L mean propel impulse (N%/kg)','R mean propel impulse (N%/kg)'};
     vars = {impxBrakestruct.leftTxt, impxBrakestruct.rightTxt, impxBrakestruct.ASItxt, impxPropstruct.leftTxt, impxPropstruct.rightTxt, impxPropstruct.ASItxt; ... 
             impyBrakestruct.leftTxt, impyBrakestruct.rightTxt, impyBrakestruct.ASItxt, impyPropstruct.leftTxt, impyPropstruct.rightTxt, impyPropstruct.ASItxt; ... 
             '-', '-', '-', impzPropstruct.leftTxt, impzPropstruct.rightTxt, impzPropstruct.ASItxt};
     disp(table(vars(:,1),vars(:,2),vars(:,3),vars(:,4),vars(:,5),vars(:,6),'VariableNames',varNames,'RowNames',rowNames));
-    
+    else
+       rowNames = {'x','y','z'};
+       varNames = {'Total braking impulse (N%/kg)', 'Braking ASI (%)', 'Total prop impulse (N%/kg)', 'Prop ASI (%)'};%,'L mean propel impulse (N%/kg)','R mean propel impulse (N%/kg)'};
+       vars = {impxBrakestruct.totalTxt, impxBrakestruct.ASItxt, impxPropstruct.totalTxt, impxPropstruct.ASItxt; ...
+           impyBrakestruct.totalTxt, impyBrakestruct.ASItxt, impyPropstruct.totalTxt, impyPropstruct.ASItxt; ...
+           '-', '-', impzPropstruct.totalTxt, impzPropstruct.ASItxt};
+       disp(table(vars(:,1),vars(:,2),vars(:,3),vars(:,4),'VariableNames',varNames,'RowNames',rowNames));
+     
+    end
 end
 
 %%
@@ -123,9 +128,6 @@ end
 
 % sgtitle('Ground Reaction Forces')
 
-if ~GaitInfo.b_oneGaitPhase
-    GaitInfo.tp = GRFData.time;
-end
 
 
 if contains(legToPlot,'left') || contains(legToPlot,'both')

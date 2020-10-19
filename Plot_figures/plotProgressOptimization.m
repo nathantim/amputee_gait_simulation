@@ -90,10 +90,11 @@ try
         plotInfo.edgeVec = {':';':';':'};% {[0.8 0.8 0.8],0.5,'none'};
         plotInfo.fillProp_entries = [plotInfo.fillVal,faceAlpha,plotInfo.fillVal,plotInfo.edgeVec];
         t = data.kinematics.angularData.time;
-        GaitInfo = getPartOfGaitData(b_oneGaitPhase,data.kinematics.GaitPhaseData,t,data.kinematics.stepTimes);
-        
         saveInfo.b_saveFigure = 0;
-        saveInfo.info = [data.modelType '0.9ms'];
+        saveInfo.info = data.modelType;
+        
+        GaitInfo = getPartOfGaitData(t,data.kinematics.GaitPhaseData,data.kinematics.stepTimes,saveInfo,b_oneGaitPhase);
+        
         
         %%
         if b_minCost
@@ -147,14 +148,19 @@ try
                 end
                 plotInfoTemp = plotInfo;
                 plotInfoTemp.plotProp_entries = plotInfoTemp.plotProp_entries(end,:);
-                GaitInfoFukuchi = getPartOfGaitData(false,[],FukuchiData2Plot.angularData.time,[]);
-                [plotAngleFukuchi,~] = plotAngularData(FukuchiData2Plot.angularData,plotInfoTemp,GaitInfoFukuchi,saveInfo,[],axesAngle,[1 4 1],'right');
-                set(plotAngleFukuchi(2,1),'DisplayName','Fukuchi');
-                [plotTorqueFukuchi,~] = plotJointTorqueData(FukuchiData2Plot.jointTorquesData,plotInfoTemp,GaitInfoFukuchi,saveInfo,[],axesTorque,[1 4 1],'right');
-                [plotGRFFukuchi,~] = plotGRFData(FukuchiData2Plot.GRFData,plotInfoTemp,GaitInfoFukuchi,saveInfo,[],axesGRF,[1 3 1],'right');
-                set(plotAngleFukuchi(2,1),'DisplayName','Fukuchi');
-                set(plotTorqueFukuchi(2,1),'DisplayName','Fukuchi');
-                set(plotGRFFukuchi(2,1),'DisplayName','Fukuchi');
+                GaitInfoFukuchi = getPartOfGaitData(FukuchiData2Plot.angularData.time,[],[],saveInfo,false);
+                if ~isempty(axesAngle)
+                    [plotAngleFukuchi,~] = plotAngularData(FukuchiData2Plot.angularData,plotInfoTemp,GaitInfoFukuchi,saveInfo,[],axesAngle,[1 4 1],'right');
+                    set(plotAngleFukuchi(2,1),'DisplayName','Fukuchi');
+                end
+                if ~isempty(axesTorque)
+                    [plotTorqueFukuchi,~] = plotJointTorqueData(FukuchiData2Plot.jointTorquesData,plotInfoTemp,GaitInfoFukuchi,saveInfo,[],axesTorque,[1 4 1],'right');
+                    set(plotTorqueFukuchi(2,1),'DisplayName','Fukuchi');
+                end
+                if ~isempty(axesGRF)
+                    [plotGRFFukuchi,~] = plotGRFData(FukuchiData2Plot.GRFData,plotInfoTemp,GaitInfoFukuchi,saveInfo,[],axesGRF,[1 3 1],'right');
+                    set(plotGRFFukuchi(2,1),'DisplayName','Fukuchi');
+                end
             end
             warning('on');
             
