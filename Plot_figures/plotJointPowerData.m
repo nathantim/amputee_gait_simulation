@@ -109,7 +109,7 @@ if plotInfo.showTables
         anklePowerStance = maxLanklePowerStance;
     end
         
-    fprintf('Max average ankle power in W/kg: %1.3f  (%1.3f)\n',mean(anklePowerStance), std(anklePowerStance))
+    fprintf('Max average intact ankle power in W/kg: %1.3f  (%1.3f)\n',mean(anklePowerStance), std(anklePowerStance))
 end
 
 %%
