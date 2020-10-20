@@ -9,7 +9,7 @@ clear all; close all; clc;
 
 %%
 b_resumeOptimization = char(input("Do you want to resume a previous optimization? (yes/no)   ",'s'));
-optimizationInfo = 'equal_shank';
+optimizationInfo = 'diff_stc';
 
 %%
 % initial_gains_filename = ['Results' filesep 'Flat' filesep 'SongGains_02amp_wC.mat'];
@@ -17,8 +17,8 @@ optimizationInfo = 'equal_shank';
 % initial_gains_filename = ['Results' filesep 'Rough' filesep '2Dopt_1.2_ms_part3D.mat'];
 % initial_gains_filename = ['Results' filesep 'Rough' filesep 'Umb10_1.5cm_0.9ms_kneelim1_mstoptorque2_2Dopt.mat'];
 % initial_gains_filename = ['Results' filesep 'Rough' filesep 'Umb10_1.5cm_0.9ms_kneelim1_mstoptorque2.mat'];
-% initial_gains_filename = ['Results' filesep 'Rough' filesep '0.9msinter.mat'];
-initial_gains_filename = ['Results' filesep 'Rough' filesep '1.2msinter.mat'];
+initial_gains_filename = ['Results' filesep 'Rough' filesep 'Umb10_0.9ms.mat'];
+% initial_gains_filename = ['Results' filesep 'Rough' filesep '1.2msinter.mat'];
 
 % GainsSagittal = initial_gains_file.GainsSagittal;
 % initConditionsSagittal = initial_gains_file.initConditionsSagittal;
