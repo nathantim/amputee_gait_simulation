@@ -36,13 +36,13 @@ if contains(num2str(opts.Resume),'no') || min(opts.Resume) == 0
     
     
 elseif contains(num2str(opts.Resume),'yes') || min(opts.Resume) == 1
-    folderNameContains = [num2str(inner_opt_settings.target_velocity) 'ms_' optimizationInfo];
-    
-    existFolders = dir([modelDir, filesep, 'Results']);
-    existFoldersNames = {existFolders.name};
-    
-    folderName = existFoldersNames{ find((contains(existFoldersNames,folderNameContains)) == 1,1,'last') };
-    optDirectory = [modelDir, filesep, 'Results', filesep, folderName];
+%     folderNameContains = [num2str(inner_opt_settings.target_velocity) 'ms_' optimizationInfo];
+%     
+%     existFolders = dir([modelDir, filesep, 'Results']);
+%     existFoldersNames = {existFolders.name};
+%     
+%     folderName = existFoldersNames{ find((contains(existFoldersNames,folderNameContains)) == 1,1,'last') };
+    optDirectory = uigetdir; %[modelDir, filesep, 'Results', filesep, folderName];
     
     prevSettings = load([optDirectory filesep 'settings.mat']);
     opts = prevSettings.opts;
