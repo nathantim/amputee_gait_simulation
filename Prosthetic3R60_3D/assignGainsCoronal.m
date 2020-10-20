@@ -29,7 +29,7 @@ LsimbiconLegAngle0_C = GainsCoronal(10);
 LsimbiconGainD_C     = GainsCoronal(11);
 LsimbiconGainV_C     = GainsCoronal(12);
 
-LheadingGain =              0*GainsCoronal(13);
+LheadingGain =              GainsCoronal(13);
             
         
 %% transition from stance to swing
@@ -72,7 +72,7 @@ RsimbiconLegAngle0_C = GainsCoronal(29);
 RsimbiconGainD_C     = GainsCoronal(30);
 RsimbiconGainV_C     = GainsCoronal(31);
 
-RheadingGain =              0*GainsCoronal(32);
+RheadingGain =              GainsCoronal(32);
 
 %% transition from stance to swing
 RtransSupst_C        = GainsCoronal(33);
