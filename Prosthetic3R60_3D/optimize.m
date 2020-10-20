@@ -51,6 +51,8 @@ run([inner_opt_settings.optimizationDir, filesep, 'OptimParamsCapture']);
 setInitVar;
 
 dt_visual = 1/30;
+animFrameRate = 30;
+
 [groundX, groundZ, groundTheta] = generateGround('flat');
 
 set_param(model, 'AccelVerboseBuild', 'off');

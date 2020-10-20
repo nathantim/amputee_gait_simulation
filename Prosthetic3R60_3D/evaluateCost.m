@@ -61,6 +61,7 @@ set_param(strcat(model,'/Body Mechanics Layer/Right Ankle Joint'),'SpringStiffne
 [groundX, groundZ, groundTheta] = generateGround('flat');
 
 dt_visual = 1/1000;
+animFrameRate = 30;
 
 assignGainsSagittal;
 assignGainsCoronal;
