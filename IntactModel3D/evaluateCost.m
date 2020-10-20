@@ -49,6 +49,7 @@ model = 'NeuromuscularModel3D';
 [groundX, groundZ, groundTheta] = generateGround('flat');
 
 dt_visual = 1/1000;
+animFrameRate = 30;
 
 assignGainsSagittal;
 assignGainsCoronal;
