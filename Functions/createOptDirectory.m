@@ -42,7 +42,7 @@ elseif contains(num2str(opts.Resume),'yes') || min(opts.Resume) == 1
 %     existFoldersNames = {existFolders.name};
 %     
 %     folderName = existFoldersNames{ find((contains(existFoldersNames,folderNameContains)) == 1,1,'last') };
-    optDirectory = uigetdir; %[modelDir, filesep, 'Results', filesep, folderName];
+    optDirectory = uigetdir([modelDir, filesep, 'Results']); %[modelDir, filesep, 'Results', filesep, folderName];
     
     prevSettings = load([optDirectory filesep 'settings.mat']);
     opts = prevSettings.opts;
