@@ -1,4 +1,4 @@
-setInitAmputee;
+setInitVar;
 
 vxInit              = initConditionsSagittal(1); 
 LphiHip0            = initConditionsSagittal(2);

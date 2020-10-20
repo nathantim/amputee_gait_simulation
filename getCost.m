@@ -192,5 +192,5 @@ try
 % printOptInfo(dataStruct,true);
 catch ME
     save('ErrorWorkspace');
-    error('Error: %s\nIn %s.m line %d',ME.message,mfilename,ME.stack(1).line);
+    error('Error: %s\nIn %s.m line %d',ME.message,ME.stack(1).name,ME.stack(1).line);
 end

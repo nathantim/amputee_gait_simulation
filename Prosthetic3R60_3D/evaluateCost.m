@@ -60,7 +60,7 @@ set_param(strcat(model,'/Body Mechanics Layer/Right Ankle Joint'),'SpringStiffne
 % inner_opt_settings = setInnerOptSettings();
 [groundX, groundZ, groundTheta] = generateGround('flat');
 
-dt_visual = 1/30;
+dt_visual = 1/1000;
 
 assignGainsSagittal;
 assignGainsCoronal;

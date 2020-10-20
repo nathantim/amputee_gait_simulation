@@ -25,29 +25,63 @@ initialTargetAngle  = 70*pi/180;
 initialTargetAngleR = 90*pi/180;
 
 LTargetAngleInit    = initialTargetAngle;
-LPreStimHFLinit     = PreStimHFLst;
-LPreStimGLUinit     = PreStimGLUst;
-LPreStimHAMinit     = PreStimHAMst;
-LPreStimRFinit      = PreStimRFst;
-LPreStimVASinit     = PreStimVASst;
-LPreStimBFSHinit    = PreStimBFSHst;
-LPreStimGASinit     = PreStimGASst;
-LPreStimSOLinit     = PreStimSOLst;
-LPreStimTAinit      = PreStimTAst;
 LTargetAngleRInit   = initialTargetAngleR;
-LPreStimHABinit     = PreStimHABst;
-LPreStimHADinit     = PreStimHADst;
+
+try
+    LPreStimHFLinit     = PreStimHFLst;
+    LPreStimGLUinit     = PreStimGLUst;
+    LPreStimHAMinit     = PreStimHAMst;
+    LPreStimRFinit      = PreStimRFst;
+    LPreStimVASinit     = PreStimVASst;
+    LPreStimBFSHinit    = PreStimBFSHst;
+    LPreStimGASinit     = PreStimGASst;
+    LPreStimSOLinit     = PreStimSOLst;
+    LPreStimTAinit      = PreStimTAst;
+    
+    LPreStimHABinit     = PreStimHABst;
+    LPreStimHADinit     = PreStimHADst;
+catch
+    LPreStimHFLinit     = LPreStimHFLst;
+    LPreStimGLUinit     = LPreStimGLUst;
+    LPreStimHAMinit     = LPreStimHAMst;
+    LPreStimRFinit      = LPreStimRFst;
+    LPreStimVASinit     = LPreStimVASst;
+    LPreStimBFSHinit    = LPreStimBFSHst;
+    LPreStimGASinit     = LPreStimGASst;
+    LPreStimSOLinit     = LPreStimSOLst;
+    LPreStimTAinit      = LPreStimTAst;
+    
+    LPreStimHABinit     = LPreStimHABst;
+    LPreStimHADinit     = LPreStimHADst;
+end
 
 RTargetAngleInit    = initialTargetAngle;
-RPreStimHFLinit     = PreStimHFLsw;
-RPreStimGLUinit     = PreStimGLUsw;
-RPreStimHAMinit     = PreStimHAMsw;
-RPreStimRFinit      = PreStimRFsw;
-RPreStimVASinit     = PreStimVASst;
-RPreStimBFSHinit    = PreStimBFSHst;
-RPreStimGASinit     = PreStimGASst;
-RPreStimSOLinit     = PreStimSOLst;
-RPreStimTAinit      = PreStimTAst;
 RTargetAngleRInit   = initialTargetAngleR;
-RPreStimHABinit     = PreStimHABsw;
-RPreStimHADinit     = PreStimHADsw;
+
+try
+    RPreStimHFLinit     = PreStimHFLsw;
+    RPreStimGLUinit     = PreStimGLUsw;
+    RPreStimHAMinit     = PreStimHAMsw;
+    RPreStimRFinit      = PreStimRFsw;
+    RPreStimVASinit     = PreStimVASst;
+    RPreStimBFSHinit    = PreStimBFSHst;
+    RPreStimGASinit     = PreStimGASst;
+    RPreStimSOLinit     = PreStimSOLst;
+    RPreStimTAinit      = PreStimTAst;
+    
+    RPreStimHABinit     = PreStimHABsw;
+    RPreStimHADinit     = PreStimHADsw;
+catch
+    RPreStimHFLinit     = RPreStimHFLsw;
+    RPreStimGLUinit     = RPreStimGLUsw;
+    RPreStimHAMinit     = RPreStimHAMsw;
+    RPreStimRFinit      = RPreStimRFsw;
+    RPreStimVASinit     = RPreStimVASst;
+    RPreStimBFSHinit    = RPreStimBFSHst;
+    RPreStimGASinit     = RPreStimGASst;
+    RPreStimSOLinit     = RPreStimSOLst;
+    RPreStimTAinit      = RPreStimTAst;
+    
+    RPreStimHABinit     = RPreStimHABsw;
+    RPreStimHADinit     = RPreStimHADsw;
+end
