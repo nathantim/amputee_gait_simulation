@@ -35,8 +35,10 @@ if nargin > 0
     %opts.PopSize = numvars;
     if contains(num2str(b_resume),'yes') || min(opts.Resume) == 1 
         opts.Resume = 'yes';
-    else
+    elseif contains(num2str(b_resume),'no') || min(opts.Resume) == 0 
         opts.Resume = 'no';
+    elseif contains(num2str(b_resume),'eval') || min(opts.Resume) == -1 
+        opts.Resume = 'eval';
     end
     opts.MaxIter = 300;
     % opts.StopFitness = -inf;

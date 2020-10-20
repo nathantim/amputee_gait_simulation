@@ -29,58 +29,63 @@ LsimbiconLegAngle0_C = GainsCoronal(10);
 LsimbiconGainD_C     = GainsCoronal(11);
 LsimbiconGainV_C     = GainsCoronal(12);
 
+LheadingGain =              0*GainsCoronal(13);
+            
+        
 %% transition from stance to swing
-LtransSupst_C        = GainsCoronal(13);
-Ltranssw_C           = GainsCoronal(14);
+LtransSupst_C        = GainsCoronal(14);
+Ltranssw_C           = GainsCoronal(15);
 
 %% Prestimulations
 % Stance
-LPreStimHABst        = GainsCoronal(15);
-LPreStimHADst        = GainsCoronal(16);
+LPreStimHABst        = GainsCoronal(16);
+LPreStimHADst        = GainsCoronal(17);
 
 % Swing
-LPreStimHABsw        = GainsCoronal(17);
-LPreStimHADsw        = GainsCoronal(18);
+LPreStimHABsw        = GainsCoronal(18);
+LPreStimHADsw        = GainsCoronal(19);
 
 
 %% Right
 %% Coronal 
 %stance
 % M1: realize compliant leg
-RGainFHABst          = GainsCoronal(19);
+RGainFHABst          = GainsCoronal(20);
 
 % M3: balance trunk
-RGainPhiHATHABst     = GainsCoronal(20);
-RGainDphiHATHABst    = GainsCoronal(21);
-RGainPhiHATHADst     = GainsCoronal(22);
-RGainDphiHATHADst    = GainsCoronal(23);
+RGainPhiHATHABst     = GainsCoronal(21);
+RGainDphiHATHABst    = GainsCoronal(22);
+RGainPhiHATHADst     = GainsCoronal(23);
+RGainDphiHATHADst    = GainsCoronal(24);
 
 % M4: compensate swing leg
-RGainSHABcHABst      = GainsCoronal(24);
-RGainSHADcHADst      = GainsCoronal(25);
+RGainSHABcHABst      = GainsCoronal(25);
+RGainSHADcHADst      = GainsCoronal(26);
 
 % swing
 % M6: swing hip
-RGainLHABsw          = GainsCoronal(26);
-RGainLHADsw          = GainsCoronal(27);
+RGainLHABsw          = GainsCoronal(27);
+RGainLHADsw          = GainsCoronal(28);
 
 %% Target leg angle stuff
-RsimbiconLegAngle0_C = GainsCoronal(28);
-RsimbiconGainD_C     = GainsCoronal(29);
-RsimbiconGainV_C     = GainsCoronal(30);
+RsimbiconLegAngle0_C = GainsCoronal(29);
+RsimbiconGainD_C     = GainsCoronal(30);
+RsimbiconGainV_C     = GainsCoronal(31);
+
+RheadingGain =              0*GainsCoronal(32);
 
 %% transition from stance to swing
-RtransSupst_C        = GainsCoronal(31);
-Rtranssw_C           = GainsCoronal(32);
+RtransSupst_C        = GainsCoronal(33);
+Rtranssw_C           = GainsCoronal(34);
 
 %% Prestimulations
 % Stance
-RPreStimHABst        = GainsCoronal(33);
-RPreStimHADst        = GainsCoronal(34);
+RPreStimHABst        = GainsCoronal(35);
+RPreStimHADst        = GainsCoronal(36);
 
 % Swing
-RPreStimHABsw        = GainsCoronal(35);
-RPreStimHADsw        = GainsCoronal(36);
+RPreStimHABsw        = GainsCoronal(37);
+RPreStimHADsw        = GainsCoronal(38);
 
 
 

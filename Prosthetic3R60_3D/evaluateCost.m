@@ -4,7 +4,7 @@ if  (input("Do you want to clear the data? (1/0)   "))
 end
 
 %%
-if true
+if input("Load from optimization folder? (1/0)   " )
     inner_opt_settings = setInnerOptSettings('yes');
     disp(inner_opt_settings.optimizationDir);
     
@@ -39,13 +39,14 @@ else
     ControlParams;
     Prosthesis3R60Params;
     OptimParams;
-    
+    inner_opt_settings = setInnerOptSettings('eval');
     % load('Results/Rough/Umb10_0.9_ms_3D_partlyopt.mat');
     
     % load('Results/Rough/Umb10_1.5cm_1.2ms_kneelim1_mstoptorque2.mat');
     % load('Results/Rough/Umb10_0.9ms_difffoot_higherabd_inter2.mat');
-    
-    % load('Results/Rough/Umb10_1.2ms_difffoot_higherabd.mat');
+   
+   
+    load('Results/Rough/Umb10_1.2ms.mat');
 end
 
 
@@ -67,6 +68,9 @@ assignGainsSagittal;
 assignGainsCoronal;
 assignInit;
 
+%  LheadingGain = 0*0.02;
+%     RheadingGain = 0*-0.02;
+
 % [groundX, groundZ, groundTheta] = generateGround('const', .05,1);
 % [groundX, groundZ, groundTheta] = generateGround('const', inner_opt_settings.terrain_height, 1,true);
 %[groundX, groundZ, groundTheta] = generateGround('ramp');
@@ -76,6 +80,7 @@ assignInit;
 % set_param(model,'StopTime','30');
 
 set_param(model, 'AccelVerboseBuild', 'off');
+
 
 %%
 warning('off');

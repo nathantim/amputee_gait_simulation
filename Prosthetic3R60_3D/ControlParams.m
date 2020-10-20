@@ -8,6 +8,8 @@
 %
 termination_height = 0.5;
 
+LheadingGain = 0.04;
+RheadingGain = -0.04;
 %% %
 
 

@@ -133,14 +133,17 @@ else
     rHipOld = x(19:21);
     yaw = atan2(lHip(1)-rHip(1),lHip(2)-rHip(2));
     yawOld = atan2(lHipOld(1)-rHipOld(1),lHipOld(2)-rHipOld(2));
-    lowHATu =(u(4:6)+u(19:21))./2;
-    magHATu = sqrt(sum( (u(1:3)-lowHATu).^2));
-    unitHATu = ((u(1:3)-lowHATu))./magHATu;
-    topHATu = unitHATu*HAT_Length + lowHATu;
+    
     lowHATx =(x(4:6)+x(19:21))./2;
-    magHATx = sqrt(sum( (x(1:3)-lowHATx).^2));
+    magHATx = norm(x(1:3)-lowHATx);
     unitHATx = ((x(1:3)-lowHATx))./magHATx;
     topHATx = unitHATx*HAT_Length + lowHATx;
+    
+    lowHATu =(u(4:6)+u(19:21))./2;
+    magHATu = norm(u(1:3)-lowHATu);
+    unitHATu = ((u(1:3)-lowHATu))./magHATu;
+    topHATu = unitHATu*HAT_Length + lowHATu;
+    
     
     rotTransObj( HAT_ConeObj, lowHATu,   topHATu,   lowHATx,   topHATx, yaw, yawOld)
     rotTransObj(  L_ThighObj, u(7:9),   u(4:6),   x(7:9),   x(4:6))

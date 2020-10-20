@@ -51,7 +51,8 @@ try
 %                 meanVel,sumOfStopTorques, meanStepTime, meanStepLength, timeCost, velCost, maxCMGTorque);
 %         end
         
-        
+    else
+        disp(cost);
     end
 catch ME
     warning(ME.message)
