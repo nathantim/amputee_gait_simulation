@@ -1,5 +1,5 @@
 % literature velocity: [0.5,0.9,1.2]
-target_velocity = 1.2;
+target_velocity = 0.9;
 min_velocity = target_velocity;
 % min_velocity = 0.5;
 max_velocity = target_velocity; 
