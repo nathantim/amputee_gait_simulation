@@ -57,20 +57,23 @@ if (b_oneGaitPhase) && min(sum(stepTimes(:,1)),sum(stepTimes(:,2))) > 1
     leftLegState    = GaitPhaseData.signals.values(:,1);
     rightLegState   = GaitPhaseData.signals.values(:,2);
 
-    leftStanceSwing = (leftLegState <= GaitState.LiftOff);
+    leftStance = (leftLegState <= GaitState.LiftOff);
     leftDoubleStance = (leftLegState == GaitState.LiftOff);
+    leftSwing = (leftLegState > GaitState.LiftOff);
     
-    rightStanceSwing = (rightLegState <= GaitState.LiftOff);
+    rightStance = (rightLegState <= GaitState.LiftOff);
     rightDoubleStance = (rightLegState == GaitState.LiftOff);
+    rightSwing = (rightLegState > GaitState.LiftOff);
     
     
     for ii = 1:length(leftGaitPhaseStartV)
         startIdx = leftGaitPhaseStartV(ii);
         endIdx = leftGaitPhaseEndV(ii);
         tpart = t(startIdx:endIdx);
-        Lstance_perc(ii)        = 100*sum(leftStanceSwing(startIdx:endIdx))/length(leftStanceSwing(startIdx:endIdx));
-        Lstance(ii)             = tpart(find(leftStanceSwing(startIdx:endIdx)==1,1,'last')) - tpart(find(leftStanceSwing(startIdx:endIdx)==1,1,'first'));
-        
+        Lstance_perc(ii)        = 100*sum(leftStance(startIdx:endIdx))/length(leftStance(startIdx:endIdx));
+        Lstance(ii)             = tpart(find(leftStance(startIdx:endIdx)==1,1,'last')) - tpart(find(leftStance(startIdx:endIdx)==1,1,'first'));
+        Lswing_perc(ii)        = 100*sum(leftSwing(startIdx:endIdx))/length(leftSwing(startIdx:endIdx));
+        Lswing(ii)              = tpart(find(leftSwing(startIdx:endIdx)==1,1,'last')) - tpart(find(leftSwing(startIdx:endIdx)==1,1,'first'));
         LDoubleStance_perc(ii)  = 100*sum(leftDoubleStance(startIdx:endIdx))/length(leftDoubleStance(startIdx:endIdx));
         LDoubleStance(ii)       = tpart(find(leftDoubleStance(startIdx:endIdx)==1,1,'last')) - tpart(find(leftDoubleStance(startIdx:endIdx)==1,1,'first'));
     end
@@ -78,56 +81,70 @@ if (b_oneGaitPhase) && min(sum(stepTimes(:,1)),sum(stepTimes(:,2))) > 1
         startIdx = rightGaitPhaseStartV(ii);
         endIdx = rightGaitPhaseEndV(ii);
         tpart = t(startIdx:endIdx);
-        Rstance_perc(ii)        = 100*sum(rightStanceSwing(startIdx:endIdx))/length(rightStanceSwing(startIdx:endIdx));
-        Rstance(ii)             = tpart(find(rightStanceSwing(startIdx:endIdx)==1,1,'last')) - tpart(find(rightStanceSwing(startIdx:endIdx)==1,1,'first'));
-        
+        Rstance_perc(ii)        = 100*sum(rightStance(startIdx:endIdx))/length(rightStance(startIdx:endIdx));
+        Rstance(ii)             = tpart(find(rightStance(startIdx:endIdx)==1,1,'last')) - tpart(find(rightStance(startIdx:endIdx)==1,1,'first'));
+        Rswing_perc(ii)        = 100*sum(rightSwing(startIdx:endIdx))/length(rightSwing(startIdx:endIdx));
+        Rswing(ii)              = tpart(find(rightSwing(startIdx:endIdx)==1,1,'last')) - tpart(find(rightSwing(startIdx:endIdx)==1,1,'first'));
         RDoubleStance_perc(ii) = 100*sum(rightDoubleStance(startIdx:endIdx))/length(rightDoubleStance(startIdx:endIdx));
         RDoubleStance(ii)       = tpart(find(rightDoubleStance(startIdx:endIdx)==1,1,'last')) - tpart(find(rightDoubleStance(startIdx:endIdx)==1,1,'first'));
     end
     [stanceASI] = getFilterdMean_and_ASI(Lstance,Rstance);
     [stanceASI_perc] = getFilterdMean_and_ASI(Lstance_perc,Rstance_perc);
+    [swingASI] = getFilterdMean_and_ASI(Lswing,Rswing);
+    [swingASI_perc] = getFilterdMean_and_ASI(Lswing_perc,Rswing_perc);
     [doubleStanceASI] = getFilterdMean_and_ASI(LDoubleStance,RDoubleStance);
     [doubleStanceASI_perc] = getFilterdMean_and_ASI(LDoubleStance_perc,RDoubleStance_perc);
 
     gaitstate.left.StanceV = (leftLegState <= GaitState.LiftOff);
     gaitstate.left.stanceMeanstdtxt = stanceASI.leftTxt;
+    gaitstate.left.swingMeanstdtxt = swingASI.leftTxt;
     gaitstate.left.Stance = stanceASI.leftMean;
+    gaitstate.left.Swing = swingASI.leftMean;
     gaitstate.left.DoubleStance = doubleStanceASI.leftMean;
     gaitstate.left.doubleStanceMeanstdtxt = doubleStanceASI.leftTxt;
     
     gaitstate.left.Stance_perc = stanceASI_perc.leftMean;
-    gaitstate.left.Swing_perc = 100 - gaitstate.left.Stance_perc;
+    gaitstate.left.Swing_perc = swingASI_perc.leftMean;
     gaitstate.left.stanceMeanstdtxt_perc = stanceASI_perc.leftTxt;
+    gaitstate.left.swingMeanstdtxt_perc = swingASI_perc.leftTxt;
     gaitstate.left.DoubleStance_perc = doubleStanceASI_perc.leftMean;
     gaitstate.left.doubleStanceMeanstdtxt_perc = doubleStanceASI_perc.leftTxt;
     
     gaitstate.right.StanceV = (rightLegState <= GaitState.LiftOff);
     gaitstate.right.Stance = stanceASI.rightMean;
+    gaitstate.right.Swing = swingASI.rightMean;
     gaitstate.right.stanceMeanstdtxt = stanceASI.rightTxt;
+    gaitstate.right.swingMeanstdtxt = swingASI.rightTxt;
     gaitstate.right.DoubleStance = doubleStanceASI.rightMean;
     gaitstate.right.doubleStanceMeanstdtxt = doubleStanceASI.rightTxt;
     
     gaitstate.right.Stance_perc = stanceASI_perc.rightMean;
-    gaitstate.right.Swing_perc = 100 - gaitstate.right.Stance_perc;
+    gaitstate.right.Swing_perc = swingASI_perc.rightMean;
     gaitstate.right.stanceMeanstdtxt_perc = stanceASI_perc.rightTxt;
+    gaitstate.right.swingMeanstdtxt_perc = swingASI_perc.rightTxt;
     gaitstate.right.DoubleStance_perc = doubleStanceASI_perc.rightMean;
     gaitstate.right.doubleStanceMeanstdtxt_perc = doubleStanceASI_perc.rightTxt;
     
     gaitstate.stanceASItxt = stanceASI.ASItxt;
+    gaitstate.swingASItxt = swingASI.ASItxt;
     gaitstate.doubleStanceASItxt = doubleStanceASI.ASItxt;
     
     gaitstate.stanceASItxt_perc = stanceASI_perc.ASItxt;
+    gaitstate.swingASItxt_perc = swingASI_perc.ASItxt;
     gaitstate.doubleStanceASItxt_perc = doubleStanceASI_perc.ASItxt;
     
     gaitstate.Stance = stanceASI.totalMean;
+    gaitstate.Stance = swingASI.totalMean;
     gaitstate.DoubleStance = doubleStanceASI.totalMean;
     gaitstate.stanceMeanstdtxt = stanceASI.totalTxt;
+    gaitstate.swingMeanstdtxt = swingASI.totalTxt;
     gaitstate.doubleStanceMeanstdtxt = doubleStanceASI.totalTxt;
     
     gaitstate.Stance_perc = stanceASI_perc.totalMean;
-    gaitstate.Swing_perc = 100 - gaitstate.Stance_perc;
+    gaitstate.Swing_perc = swingASI_perc.totalMean;
     gaitstate.DoubleStance_perc = doubleStanceASI_perc.totalMean;
     gaitstate.stanceMeanstdtxt_perc = stanceASI_perc.totalTxt;
+    gaitstate.swingMeanstdtxt_perc = swingASI_perc.totalTxt;
     gaitstate.doubleStanceMeanstdtxt_perc = doubleStanceASI_perc.totalTxt;
     
     %%

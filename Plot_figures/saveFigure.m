@@ -1,4 +1,4 @@
-function saveFigure(fig,name,type,info,b_withDate,path)
+function saveFigure(fig,name,saveType,info,b_withDate,path)
 if ~isempty(fig)
     set(fig,'PaperOrientation','landscape')
     set(fig,'PaperType','a2')
@@ -20,11 +20,13 @@ if ~isempty(fig)
         dateNow = [];
         
     end
-    if contains(type,'eps')
-        %     addontype = 'epsc';
-        saveas(fig,char(strcat(path,dateNow,name,'_',info,'.',type)), 'epsc');
-    else
-        saveas(fig,char(strcat(path,dateNow,name,'_',info,'.',type)));
+    for ii = 1:length(saveType)
+        if contains(saveType{ii},'eps')
+            %     addontype = 'epsc';
+            saveas(fig,char(strcat(path,dateNow,name,'_',info,'.',saveType{ii})), 'epsc');
+        else
+            saveas(fig,char(strcat(path,dateNow,name,'_',info,'.',saveType{ii})));
+        end
     end
     
     close(fig)
