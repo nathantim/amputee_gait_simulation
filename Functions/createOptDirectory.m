@@ -46,6 +46,7 @@ elseif contains(num2str(opts.Resume),'yes') || min(opts.Resume) == 1
     
     prevSettings = load([optDirectory filesep 'settings.mat']);
     opts = prevSettings.opts;
+    opts.Resume = 'yes';
     inner_opt_settings = prevSettings.inner_opt_settings;
     
 elseif contains(num2str(opts.Resume),'eval')

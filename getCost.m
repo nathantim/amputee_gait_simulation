@@ -15,12 +15,12 @@ try
     else
          modelType = [modelType, '2D'];
     end
-    modelType = [modelType, char(num2str(inner_opt_settings.target_velocity))];
+    modelType = [modelType, char(num2str(inner_opt_settings.target_velocity)) 'ms'];
     
     dataStruct = struct('cost',struct('data',nan,'minimize',1,'info',''));
-    % global dataQueueD
-    HATPos = sqrt(sum(HATPosVel.signals.values(end,[1,2]).^2));
-    
+    % x pos only
+    HATPos = HATPosVel.signals.values(end,1);%norm(HATPosVel.signals.values(end,[1,2]));
+%     HATPos = norm(HATPosVel.signals.values(end,[1,2]));
     %%
     if HATPos > 101
         cost = nan;
