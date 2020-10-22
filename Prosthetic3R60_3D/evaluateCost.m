@@ -45,8 +45,8 @@ else
     % load('Results/Rough/Umb10_1.5cm_1.2ms_kneelim1_mstoptorque2.mat');
     % load('Results/Rough/Umb10_0.9ms_difffoot_higherabd_inter2.mat');
    
-   
-    load('Results/Rough/Umb10_1.2ms.mat');
+%     load('Results/Rough/Umb10_0.9ms_wheading.mat');
+    load('Results/Rough/Umb10_1.2ms_wheading.mat');
 end
 
 
@@ -64,12 +64,18 @@ set_param(strcat(model,'/Body Mechanics Layer/Right Ankle Joint'),'SpringStiffne
 dt_visual = 1/1000;
 animFrameRate = 30;
 
+%  LheadingGain = 0.03;
+%  RheadingGain = -0.03;
+%   LheadingIntGain = 0.0005;
+%  RheadingIntGain = -0.0005;
+ 
+% GainsCoronal = [GainsCoronal(1:12); LheadingGain;LheadingIntGain; GainsCoronal(14:31);RheadingGain;RheadingIntGain;GainsCoronal(33:end)];
+
 assignGainsSagittal;
 assignGainsCoronal;
 assignInit;
 
- LheadingGain = 0.005;
- RheadingGain = 0.005;
+
 
 % [groundX, groundZ, groundTheta] = generateGround('const', .05,1);
 % [groundX, groundZ, groundTheta] = generateGround('const', inner_opt_settings.terrain_height, 1,true);
