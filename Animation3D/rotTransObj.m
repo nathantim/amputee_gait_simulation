@@ -2,12 +2,12 @@
 % Rotate and Translate Ojects
 % ---------------------------
 
-function rotTransObj( Object, LowXYZ, TopXYZ, LowXYZold, TopXYZold, Lhip, Rhip)
+function rotTransObj( Object, LowXYZ, TopXYZ, LowXYZold, TopXYZold, yaw, yawOld)
 if nargin < 6
-    Lhip = [];
+    yaw = 0;
 end
 if nargin < 7
-    Rhip = [];
+    yawOld = 0;
 end
 if size(LowXYZ,1) == 1
     LowXYZ = LowXYZ';
@@ -36,62 +36,40 @@ magNew = norm(TopXYZ-LowXYZ);
 if abs(magOld-magNew) > 1E-2
     warning('Dissimilar magnitudes, error of: %d',abs(magOld-magNew));
 end
-RotYaw = 1;%[cos(yaw-yawOld) -sin(yaw-yawOld) 0;...
-%     sin(yaw-yawOld) cos(yaw-yawOld) 0;...
-%     0          0       1];
 
-oldUnit = RotYaw*((TopXYZold-LowXYZold)./magOld);
-newUnit = RotYaw*((TopXYZ-LowXYZ)./magNew);
+
+oldUnit = (TopXYZold-LowXYZold)./magOld;
+newUnit = (TopXYZ-LowXYZ)./magNew;
 
 x = oldUnit;
 y = newUnit;
 RotMat = eye(3) + y*x' - x*y' + 1/(1+dot(x,y))*(y*x' - x*y')^2;
 
+xNew = RotMat(1,1)*xAct + RotMat(1,2)*yAct + RotMat(1,3)*zAct + LowXYZ(1);
+yNew = RotMat(2,1)*xAct + RotMat(2,2)*yAct + RotMat(2,3)*zAct + LowXYZ(2);
+zNew = RotMat(3,1)*xAct + RotMat(3,2)*yAct + RotMat(3,3)*zAct + LowXYZ(3);
 
-% RotYaw = 1;%[cos(yaw-yawOld), 0, -sin(yaw-yawOld);...
-%     0, 1, 0;...
-%     sin(yaw-yawOld) 0 cos(yaw-yawOld)];
-
-% xAct = RotYaw(1,1)*xAct + RotYaw(1,2)*yAct;
-% xAct = RotYaw(2,1)*xAct + RotYaw(2,2)*xAct;
-totalRotMat = RotMat;
-% abs(totalRotMat*(TopXYZold-LowXYZold) + (LowXYZ) - (TopXYZ))
-xNew = totalRotMat(1,1)*xAct + totalRotMat(1,2)*yAct + totalRotMat(1,3)*zAct + LowXYZ(1);
-yNew = totalRotMat(2,1)*xAct + totalRotMat(2,2)*yAct + totalRotMat(2,3)*zAct + LowXYZ(2);
-zNew = totalRotMat(3,1)*xAct + totalRotMat(3,2)*yAct + totalRotMat(3,3)*zAct + LowXYZ(3);
-
-
-%     newVec =  R*[xAct;yAct;zAct] + LowXYZ;
 % update cone object
-if max(abs(totalRotMat*(TopXYZold-LowXYZold) + (LowXYZ) - (TopXYZ))) > 1E-2
+if max(abs(RotMat*(TopXYZold-LowXYZold) + (LowXYZ) - (TopXYZ))) > 1E-2
     warning('Wrong rotation matrix, max error of: %d',max(abs(RotMat*(TopXYZold-LowXYZold) + (LowXYZ) - (TopXYZ))));
 end
 set(Object, 'XData', xNew, 'yData', yNew, 'ZData', zNew);
-% disp(yaw-yawOld)
-if ~isempty(Lhip)
+
+if ~isempty(yaw)
     %%
-    xData = get(Object, 'XData');
-    lowxData = xData(1,:);
-    
-    yData = get(Object, 'YData');
-    lowyData = yData(1,:);
-    idxLeft = find(lowyData == max(lowyData));
-    idxRight = find(lowyData == min(lowyData));
-    left = [lowxData(idxLeft),lowyData(idxLeft)];
-    right = [lowxData(idxRight),lowyData(idxRight)];
-    
-    ang = (atan((Lhip(1)-Rhip(1))/(Lhip(2)-Rhip(2)))-atan((left(1)-right(1))/(left(2)-right(2))) )*180/pi;
-    %     set(Object, 'XData',get(Object, 'XData')-diffX , 'yData', get(Object, 'YData') - diffY);
     direction = ((TopXYZ-LowXYZ)./norm((TopXYZ-LowXYZ)));
-    rotate(Object,direction,-ang);
+    rotate(Object,direction,yaw-yawOld);
     
     xData = get(Object, 'XData');
     lowxData = xData(1,:);
     yData = get(Object, 'YData');
     lowyData = yData(1,:);
+    zData = get(Object, 'ZData');
+    lowzData = zData(1,:);
     diffX = mean(lowxData,'all') - LowXYZ(1);
     diffY = mean(lowyData,'all') - LowXYZ(2);
-    set(Object, 'XData',get(Object, 'XData')-diffX , 'yData', get(Object, 'YData') - diffY);
+    diffZ = mean(lowzData,'all') - LowXYZ(3);
+    set(Object, 'XData',get(Object, 'XData')-diffX , 'yData', get(Object, 'YData') - diffY, 'ZData', get(Object, 'ZData') - diffZ);
     %%
     %
 end
