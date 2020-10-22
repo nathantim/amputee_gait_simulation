@@ -15,8 +15,8 @@ optimizationInfo = 'with_heading_HATPos_x';
 % initial_gains_filename = ['Results' filesep 'Rough' filesep 'Umb10_1.5cm_1.2ms_kneelim1_mstoptorque2.mat'];
 % initial_gains_filename = ['Results' filesep 'Rough' filesep 'Umb10_1.5cm_0.9ms_opt_1.2mscoronal.mat'];
 % initial_gains_filename = ['Results' filesep 'Rough' filesep 'Umb10_1.2ms_difffoot_higherabd.mat'];
-initial_gains_filename = ['Results' filesep 'Rough' filesep 'Umb10_0.9ms.mat'];
-% initial_gains_filename = ['Results' filesep 'Rough' filesep 'Umb10_1.2ms_inter.mat'];
+% initial_gains_filename = ['Results' filesep 'Rough' filesep 'Umb10_0.9ms.mat'];
+initial_gains_filename = ['Results' filesep 'Rough' filesep 'Umb10_1.2ms.mat'];
 
 
 %%
@@ -67,7 +67,7 @@ x0 = zeros(numvars,1);
 sigma0 = 1/8;
 % sigma0 = 1/3;
 
-opts.DiagonalOnly = 50;
+opts.DiagonalOnly = 30;
 % opts.SaveFilename = 'vcmaes_1.0cm_0.9ms_Umb10_wInit_diff_footshanksmass_higherabd_diffCoT.mat';
 opts.UserDat2 = strcat(opts.UserDat2,"; ", "sigma0: ", string(sigma0), "; ampHipFlexFactor: ", string(ampHipFlexFactor) , "; ampHipExtFactor: ", string(ampHipExtFactor), "; ampHipAbdFactor: ", string(ampHipAbdFactor), "; ampHipAddFactor: ", string(ampHipAddFactor) );
 

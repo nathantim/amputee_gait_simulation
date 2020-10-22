@@ -46,7 +46,7 @@ else
     % load('Results/Rough/Umb10_0.9ms_difffoot_higherabd_inter2.mat');
    
    
-    load('Results/Rough/Umb10_0.9ms.mat');
+    load('Results/Rough/Umb10_1.2ms.mat');
 end
 
 
@@ -68,8 +68,8 @@ assignGainsSagittal;
 assignGainsCoronal;
 assignInit;
 
-%  LheadingGain = 0;
-%  RheadingGain = 0;
+ LheadingGain = 0.005;
+ RheadingGain = 0.005;
 
 % [groundX, groundZ, groundTheta] = generateGround('const', .05,1);
 % [groundX, groundZ, groundTheta] = generateGround('const', inner_opt_settings.terrain_height, 1,true);
