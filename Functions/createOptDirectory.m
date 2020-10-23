@@ -50,7 +50,7 @@ elseif contains(num2str(opts.Resume),'yes') || min(opts.Resume) == 1
     inner_opt_settings = prevSettings.inner_opt_settings;
     
 elseif contains(num2str(opts.Resume),'eval')
-    % evaluation
+    inner_opt_settings.optimizationDir = ' ';
 else
     error('Unknown resume value');
 end

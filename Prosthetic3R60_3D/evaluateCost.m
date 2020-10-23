@@ -27,26 +27,17 @@ if input("Load from optimization folder? (1/0)   " )
     run([inner_opt_settings.optimizationDir, filesep, 'Prosthesis3R60ParamsCapture']);
     run([inner_opt_settings.optimizationDir, filesep, 'OptimParamsCapture']);
     
-    
-    % compareenergies = load('compareEnergyCostTotal_Umb10_prost.mat');
-    %
-    % %
-    % idx_minCost = find(round(compareenergies.cost,2)==93,1,'first');
-    % Gains = compareenergies.Gains(idx_minCost,:)';
-    
 else
     BodyMechParams;
     ControlParams;
     Prosthesis3R60Params;
     OptimParams;
     inner_opt_settings = setInnerOptSettings('eval');
-    % load('Results/Rough/Umb10_0.9_ms_3D_partlyopt.mat');
     
-    % load('Results/Rough/Umb10_1.5cm_1.2ms_kneelim1_mstoptorque2.mat');
-    % load('Results/Rough/Umb10_0.9ms_difffoot_higherabd_inter2.mat');
-   
-%     load('Results/Rough/Umb10_0.9ms_wheading.mat');
-    load('Results/Rough/Umb10_1.2ms_wheading.mat');
+    %     load(['Results' filesep 'Rough' filesep 'Umb10_0.9ms_wheading.mat']);
+    %     load(['Results' filesep 'Rough' filesep 'Umb10_1.2ms_wheading.mat']);
+    load(['Results' filesep 'Rough' filesep 'Umb10_1.2ms_wheading_inter.mat'])
+    
 end
 
 
@@ -61,15 +52,8 @@ set_param(strcat(model,'/Body Mechanics Layer/Right Ankle Joint'),'SpringStiffne
 % inner_opt_settings = setInnerOptSettings();
 [groundX, groundZ, groundTheta] = generateGround('flat');
 
-dt_visual = 1/1000;
+dt_visual = 1/30;
 animFrameRate = 30;
-
-%  LheadingGain = 0.03;
-%  RheadingGain = -0.03;
-%   LheadingIntGain = 0.0005;
-%  RheadingIntGain = -0.0005;
- 
-% GainsCoronal = [GainsCoronal(1:12); LheadingGain;LheadingIntGain; GainsCoronal(14:31);RheadingGain;RheadingIntGain;GainsCoronal(33:end)];
 
 assignGainsSagittal;
 assignGainsCoronal;
@@ -86,32 +70,52 @@ assignInit;
 % set_param(model,'StopTime','30');
 
 set_param(model, 'AccelVerboseBuild', 'off');
+save_system(model);
+
+%%
+if contains(get_param(model,'SimulationMode'),'rapid')
+    rtp = Simulink.BlockDiagram.buildRapidAcceleratorTarget(model);
+    
+    for jj = 0:(input("Number of terrains to test:   ")-1)
+            if jj == 0
+                [~, groundZ, groundTheta] = generateGround('flat',[],4*jj,false);
+            else
+                [~, groundZ, groundTheta] = generateGround('const', inner_opt_settings.terrain_height, 4*jj,false);
+            end
+            paramSets{jj+1} = ...
+                Simulink.BlockDiagram.modifyTunableParameters(rtp, ...
+                'groundZ',     groundZ, ...
+                'groundTheta', groundTheta);
+    end   
+else
+    paramStruct = [];
+end
+
+%%
+parfor ii = 1:length(paramSets)
+    tic;
+    simout(ii) = sim(model,...
+        'RapidAcceleratorParameterSets',paramSets{ii},...
+        'RapidAcceleratorUpToDateCheck','off',...
+        'TimeOut',20*60,...
+        'SaveOutput','on');
+    toc;
+end
+
 
 
 %%
-warning('off');
-tic;
-sim(model)
-toc;
-warning('on');
+for idx = 1:length(simout)
+   [cost(idx), dataStruct(idx)] = getCost(model,[],simout(idx).time,simout(idx).metabolicEnergy,simout(idx).sumOfStopTorques,simout(idx).HATPosVel,simout(idx).stepVelocities,simout(idx).stepTimes,simout(idx).stepLengths,simout(idx).stepNumbers,[],simout(idx).selfCollision,inner_opt_settings,0);
+    printOptInfo(dataStruct(idx),true); 
+end
 
+
+ animPost3D(simout(1).animData3D,'intact',false,'speed',1,'obstacle',false,'view','perspective','CMG',false,...
+                'showFigure',false,'createVideo',false,'info','prosthetic1.2ms_y','saveLocation',inner_opt_settings.optimizationDir);
+            
+plotData(simout(1).angularData,simout(1).musculoData,simout(1).GRFData,simout(1).jointTorquesData,simout(1).GaitPhaseData,simout(1).stepTimes,[],'prosthetic3D_1.2ms_yaw',[],0,1,1)
 %%
-% [cost, dataStruct] = getCost(model,[],time,metabolicEnergy,sumOfStopTorques,HATPosVel,stepVelocities,stepTimes,stepLengths,stepNumbers,[],inner_opt_settings,0);
-[cost, dataStruct] = getCost(model,[],time,metabolicEnergy,sumOfStopTorques,HATPosVel,stepVelocities,stepTimes,stepLengths,stepNumbers,[],selfCollision,inner_opt_settings,0);
-
-printOptInfo(dataStruct,true);
-
-%%
-% kinematics.angularData = angularData;
-% kinematics.GaitPhaseData = GaitPhaseData;
-% kinematics.time = time;
-% kinematics.stepTimes = stepTimes;
-% kinematics.musculoData = musculoData;
-% kinematics.GRFData = GRFData;
-% dataStruct.kinematics = kinematics;
-% save('dataStruct.mat','dataStruct')
-%
-% %%
 set(0, 'DefaultFigureHitTest','on');
 set(0, 'DefaultAxesHitTest','on','DefaultAxesPickableParts','all');
 set(0, 'DefaultLineHitTest','on','DefaultLinePickableParts','all');

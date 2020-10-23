@@ -30,7 +30,8 @@ if isempty(p)
     addParamValue(p,'showFrameNum',false,validBoolFcn);
     addParamValue(p,'showTime',true,validBoolFcn);
     addParamValue(p,'followModel',true,validBoolFcn);
-
+    addParamValue(p,'showFigure',true,validBoolFcn);
+    
     validTimeRangeFcn = @(i) isnumeric(i) && length(i) == 2 && i(1) <= i(2);
     addParamValue(p,'saveFramesInTimeRange',[],validTimeRangeFcn);
 
@@ -38,6 +39,7 @@ if isempty(p)
     addParamValue(p,'label','',validLabelFcn);
     addParamValue(p,'view','',validLabelFcn);
     addParamValue(p,'info','',validLabelFcn);
+    addParamValue(p,'saveLocation','',validLabelFcn);
 
 end
 parse(p,varargin{:});
@@ -47,9 +49,14 @@ frameSkip = p.Results.frameSkip;
 speed = p.Results.speed;
 intactFlag = p.Results.intact;
 obstacleFlag = p.Results.obstacle;
+showFigure = p.Results.showFigure;
 CMGFlag = p.Results.CMG;
 txtLabel = p.Results.label;
 animInfo = p.Results.info;
+saveLocation = p.Results.saveLocation;
+if isempty(strtrim(saveLocation))
+    saveLocation = 'SnapShots';
+end
 showFrameNum = p.Results.showFrameNum;
 showTime = p.Results.showTime;
 followModel = p.Results.followModel;
@@ -81,6 +88,14 @@ end
 
     animInit(FigName);% initialize animation figure
     FigHndl = findobj('Type', 'figure',  'Name', FigName);% store figure handle for repeated access
+    if ~showFigure
+%         set(FigHndl,'visible','off')
+        set(FigHndl,'WindowState','minimized')
+%         pause(0.0001)  %//This is important
+%         jFrame.setMinimized(true);
+    else
+%         set(FigHndl,'visible','on')
+    end
     figDim = get(FigHndl,'Position');
     winHeight = ViewWin*figDim(4)/figDim(3);
     xlim([-3 ViewWin-3])
@@ -218,7 +233,7 @@ if videoFlag
     if ~isempty(animInfo)
         fileInfo = ['_',animInfo];
     end
-    writerObj = VideoWriter(['SnapShots',filesep,dateNow,'-',intactInfo,fileInfo,'_',viewOpt],'MPEG-4');
+    writerObj = VideoWriter([saveLocation,filesep,dateNow,'-',intactInfo,fileInfo,'_',viewOpt],'MPEG-4');
     writerObj.FrameRate = 1/frameRate;
     open(writerObj);
 end
@@ -229,7 +244,7 @@ x = zeros(animData.signals.dimensions,1);
 
 tframe = frameSkip/30/speed;
     for ii = 1:frameSkip:length(animData.time)
-        tic;
+%         tic;
         u = animData.signals.values(ii,:);
         t = animData.time(ii);
         
@@ -303,7 +318,7 @@ tframe = frameSkip/30/speed;
             writeVideo(writerObj, getframe(FigHndl));
         end
         
-        tpause = tframe - toc;
+        tpause = 0;%tframe - toc;
 %         pause(tpause)
     end
  

@@ -41,6 +41,7 @@ jointTorquesData = get(simout, 'jointTorquesData');
 musculoData = get(simout, 'musculoData');
 GRFData = get(simout, 'GRFData');
 selfCollision = get(simout, 'selfCollision');
+animData3D = get(simout,'animData3D');
 try
     CMGData = get(simout, 'CMGData');
 catch
@@ -72,6 +73,7 @@ try
                                 HATPosVel,stepVelocities,stepTimes,stepLengths,...
                                  stepNumbers, CMGData, selfCollision, inner_opt_settings,true);
     dataStruct.kinematics = kinematics;
+    dataStruct.animData3D = animData3D;
 catch ME
     save('error_getCost.mat');
     error('Error not possible to evaluate getCost: %s\nIn %s.m line %d',ME.message,mfilename,ME.stack(1).line);

@@ -20,10 +20,10 @@ function costs = cmaesParallelSplitRough(gainsPop)
 
     %create param sets
     gainind = 1;
-    for i = 1:numTerrains:(numTerrains*popSize)
+    for ii = 1:numTerrains:(numTerrains*popSize)
         %set gains
         Gains = InitialGuess.*exp(gainsPop(:,gainind));
-        paramSets{i} = Simulink.BlockDiagram.modifyTunableParameters(rtp, ...
+        paramSets{ii} = Simulink.BlockDiagram.modifyTunableParameters(rtp, ...
             'LGainFGLUst',               Gains( 1), ...
             'LGainFVASst',               Gains( 2), ...
             'LGainFSOLst',               Gains( 3), ...
@@ -193,14 +193,14 @@ function costs = cmaesParallelSplitRough(gainsPop)
             'RPreStimHADinit',           Gains(167));
 
         %set ground heights
-        for j = 0:(numTerrains-1)
-            if j == 0
-                [~, groundZ, groundTheta] = generateGround('flat',[],4*j,false);
+        for jj = 0:(numTerrains-1)
+            if jj == 0
+                [~, groundZ, groundTheta] = generateGround('flat',[],4*jj,false);
             else
-                [~, groundZ, groundTheta] = generateGround('const', terrain_height, 4*j,false);
+                [~, groundZ, groundTheta] = generateGround('const', terrain_height, 4*jj,false);
             end
-            paramSets{i+j} = ...
-                Simulink.BlockDiagram.modifyTunableParameters(paramSets{i}, ...
+            paramSets{ii+jj} = ...
+                Simulink.BlockDiagram.modifyTunableParameters(paramSets{ii}, ...
                 'groundZ',     groundZ, ...
                 'groundTheta', groundTheta);
         end
@@ -210,16 +210,16 @@ function costs = cmaesParallelSplitRough(gainsPop)
 
     %simulate each sample and store cost
     try
-        parfor (i = 1:length(paramSets),inner_opt_settings.numParWorkers)
-            localGains = InitialGuess.*exp(gainsPop(:,ceil(i/numTerrains)));
-            [costs(i),dataStructlocal] = evaluateCostParallel(paramSets{i},model,localGains,inner_opt_settings);
+        parfor (ii = 1:length(paramSets),inner_opt_settings.numParWorkers)
+            localGains = InitialGuess.*exp(gainsPop(:,ceil(ii/numTerrains)));
+            [costs(ii),dataStructlocal] = evaluateCostParallel(paramSets{ii},model,localGains,inner_opt_settings);
             if inner_opt_settings.visual
                 printOptInfo(dataStructlocal,true);
             end
             try
                 if max(contains(fieldnames(dataStructlocal),'timeCost')) 
                     if  dataStructlocal.timeCost.data == 0
-                        dataStruct(i) = dataStructlocal;
+                        dataStruct(ii) = dataStructlocal;
                     end
                 end
             catch ME
