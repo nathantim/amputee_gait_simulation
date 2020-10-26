@@ -34,49 +34,38 @@ else
     OptimParams;
     inner_opt_settings = setInnerOptSettings('eval');
     
-    %     load(['Results' filesep 'Rough' filesep 'Umb10_0.9ms_wheading.mat']);
-    %     load(['Results' filesep 'Rough' filesep 'Umb10_1.2ms_wheading.mat']);
-    load(['Results' filesep 'Rough' filesep 'Umb10_1.2ms_wheading_inter.mat'])
+%     load(['Results' filesep 'Rough' filesep 'Umb10_0.9ms_wheading.mat'])
+    load(['Results' filesep 'Rough' filesep 'Umb10_1.2ms_wheading.mat'])
     
 end
 
-
+terrains2Test = input("Number of terrains to test:   ");
 
 %%
 model = 'NeuromuscularModel_3R60_3D';
 
 load_system(model);
-set_param(strcat(model,'/Body Mechanics Layer/Right Ankle Joint'),'SpringStiffness','3000','DampingCoefficient','1000');
+% set_param(model, 'OptimizationLevel','level2');
+% set_param(strcat(model,'/Body Mechanics Layer/Right Ankle Joint'),'SpringStiffness','3000','DampingCoefficient','1000');
 
 %%
-% inner_opt_settings = setInnerOptSettings();
 [groundX, groundZ, groundTheta] = generateGround('flat');
 
-dt_visual = 1/30;
+dt_visual = 1/1000;
 animFrameRate = 30;
 
 assignGainsSagittal;
 assignGainsCoronal;
 assignInit;
 
-
-
-% [groundX, groundZ, groundTheta] = generateGround('const', .05,1);
-% [groundX, groundZ, groundTheta] = generateGround('const', inner_opt_settings.terrain_height, 1,true);
-%[groundX, groundZ, groundTheta] = generateGround('ramp');
-
-%open('NeuromuscularModel');
-% set_param(model,'SimulationMode','normal');
-% set_param(model,'StopTime','30');
-
-set_param(model, 'AccelVerboseBuild', 'off');
-save_system(model);
+% set_param(model, 'AccelVerboseBuild', 'off');
+% save_system(model);
 
 %%
 if contains(get_param(model,'SimulationMode'),'rapid')
     rtp = Simulink.BlockDiagram.buildRapidAcceleratorTarget(model);
     
-    for jj = 0:(input("Number of terrains to test:   ")-1)
+    for jj = 0:(terrains2Test-1)
             if jj == 0
                 [~, groundZ, groundTheta] = generateGround('flat',[],4*jj,false);
             else
@@ -102,17 +91,14 @@ parfor ii = 1:length(paramSets)
     toc;
 end
 
-
-
 %%
 for idx = 1:length(simout)
    [cost(idx), dataStruct(idx)] = getCost(model,[],simout(idx).time,simout(idx).metabolicEnergy,simout(idx).sumOfStopTorques,simout(idx).HATPosVel,simout(idx).stepVelocities,simout(idx).stepTimes,simout(idx).stepLengths,simout(idx).stepNumbers,[],simout(idx).selfCollision,inner_opt_settings,0);
     printOptInfo(dataStruct(idx),true); 
 end
 
-
  animPost3D(simout(1).animData3D,'intact',false,'speed',1,'obstacle',false,'view','perspective','CMG',false,...
-                'showFigure',false,'createVideo',false,'info','prosthetic1.2ms_y','saveLocation',inner_opt_settings.optimizationDir);
+                'showFigure',true,'createVideo',false,'info','prosthetic1.2ms_y','saveLocation',inner_opt_settings.optimizationDir);
             
 plotData(simout(1).angularData,simout(1).musculoData,simout(1).GRFData,simout(1).jointTorquesData,simout(1).GaitPhaseData,simout(1).stepTimes,[],'prosthetic3D_1.2ms_yaw',[],0,1,1)
 %%
