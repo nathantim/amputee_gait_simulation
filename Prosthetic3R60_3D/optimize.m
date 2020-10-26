@@ -1,6 +1,8 @@
 try 
-    save_system;
-    disp('Saved loaded system');
+    if input('Do you want to save loaded model?')
+        save_system;
+        disp('Saved loaded system');
+    end
 catch
     disp('No system loaded to be saved.');
 end
@@ -9,14 +11,14 @@ clear all; close all; clc;
 
 %%
 b_resumeOptimization = char(input("Do you want to resume a previous optimization? (yes/no)   ",'s'));
-optimizationInfo = 'with_yheading';
+optimizationInfo = 'higherTs';
 
 %%
 % initial_gains_filename = ['Results' filesep 'Rough' filesep 'Umb10_1.5cm_1.2ms_kneelim1_mstoptorque2.mat'];
 % initial_gains_filename = ['Results' filesep 'Rough' filesep 'Umb10_1.5cm_0.9ms_opt_1.2mscoronal.mat'];
 % initial_gains_filename = ['Results' filesep 'Rough' filesep 'Umb10_1.2ms_difffoot_higherabd.mat'];
 % initial_gains_filename = ['Results' filesep 'Rough' filesep 'Umb10_0.9ms.mat'];
-initial_gains_filename = ['Results' filesep 'Rough' filesep 'Umb10_1.2ms_wheading.mat'];
+initial_gains_filename = ['Results' filesep 'Rough' filesep 'Umb10_0.9ms_wheading.mat'];
 
 
 %%
@@ -26,10 +28,9 @@ global model rtp InitialGuess inner_opt_settings
 model = 'NeuromuscularModel_3R60_3D';
 optfunc = 'cmaesParallelSplitRough';
 load_system(model);
-set_param(strcat(model,'/Body Mechanics Layer/Right Ankle Joint'),'SpringStiffness','3000','DampingCoefficient','1000');
-% % set_param(strcat(model,'/Body Mechanics Layer/Right Ankle Joint'),'SpringStiffness','20','DampingCoefficient','4');
-set_param(model,'SimulationMode','rapid');
-set_param(model,'StopTime','30');
+% set_param(strcat(model,'/Body Mechanics Layer/Right Ankle Joint'),'SpringStiffness','3000','DampingCoefficient','1000');
+% set_param(model,'SimulationMode','rapid');
+% set_param(model,'StopTime','30');
 try
     set_param(strcat(model,'/Body Mechanics Layer/Obstacle'),'Commented','on');
 catch ME
@@ -50,13 +51,13 @@ run([inner_opt_settings.optimizationDir, filesep, 'OptimParamsCapture']);
 
 setInitVar;
 
-dt_visual = 1/30;
+dt_visual = 1/1000;
 animFrameRate = 30;
 
 [groundX, groundZ, groundTheta] = generateGround('flat');
 
-set_param(model, 'AccelVerboseBuild', 'off');
-save_system(model)
+% set_param(model, 'AccelVerboseBuild', 'off');
+% save_system(model)
 
 %% Build the Rapid Accelerator target once
 rtp = Simulink.BlockDiagram.buildRapidAcceleratorTarget(model);
