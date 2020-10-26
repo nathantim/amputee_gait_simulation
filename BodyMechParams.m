@@ -36,10 +36,7 @@ g = 9.80665;
 phiAnkleLowLimit =  -20*pi/180; %[rad]
 phiAnkleUpLimit  = 40*pi/180; %[rad]
 
-phiKneeUpLimit  = 1*pi/180; %[rad] % used previously
-% phiKneeUpLimit  = -1.5*pi/180; %[rad]
-% phiKneeUpLimit  = 5*pi/180; %[rad]
-warning('Knee limit check, now: %d deg.', phiKneeUpLimit*180/pi);
+phiKneeUpLimit  = 1*pi/180; %[rad] 
 
 phiHipUpLimit  = 50*pi/180; %[rad]
 
@@ -74,13 +71,13 @@ footCenterlineToHeel = 0.05/2; %[m]
 
 %foot inertial properties
 footMass  = 1.25; %[kg] 1.25
-footProsthMass = 1; %kg
+footProsthMass = 0.55; %kg
 footInertia_z = 0.005; %[kg*m^2] foot inertia about y-axis with (harmut's value)
 %footInertia = 0.0112; %[kg*m^2] foot inertia about y-axis from Winter Data
 footInertia_x   = 0.0007;
 footInertia_y   = 0.005;
 footInertia = [footInertia_x footInertia_y footInertia_z];
-footProsthInertia = 1/10*footInertia;
+footProsthInertia = 1/3*footInertia;
 
 % -------------------------
 % 1.2 General Shank Segment
@@ -89,7 +86,7 @@ footProsthInertia = 1/10*footInertia;
 shankLength = 0.5; %[m]
 shankAnkleToCenterDist  = shankLength/2; %[m]
 shankAnkleToCGDist = 0.3; %[m]
-shankProsthAnkleToCGDist = 0.25; % m
+shankProsthAnkleToCGDist = 0.3;%0.25; % m
 shankCenterToCGDist = shankAnkleToCGDist - shankAnkleToCenterDist; %[m]
 shankAnkleToKneeDist = shankLength; %[m]
 shankMass = 3.5; %[kg]
@@ -99,7 +96,7 @@ shankInertia_z   = 0.003;
 shankInertia = [shankInertia_x shankInertia_y shankInertia_z];
 
 % shank prosthesis
-shankProsthMass = 0.15; % kg
+shankProsthMass = 0.2; % kg
 shankProsthInertia_x = 0.002;
 shankProsthInertia_y = 0.002;
 shankProsthInertia_z =  1.2000e-04;
@@ -328,8 +325,8 @@ eref =  0.04; %[lslack] tendon reference strain
 % Force factors for maximum amputated leg muscle force
 ampHipFlexFactor = 0.65;
 ampHipExtFactor = 0.6;
-ampHipAbdFactor = 0.7;
-ampHipAddFactor = 0.5;
+ampHipAbdFactor = 0.8;
+ampHipAddFactor = 0.6;
 Lfactor = (34.87/46);
 
 % hip abductor (HAB)

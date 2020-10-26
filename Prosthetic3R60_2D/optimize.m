@@ -8,29 +8,26 @@ bdclose('all');
 clear all; close all; clc;
 
 %%
-% initial_gains_filename = 'Results/Flat/SongGains_02amp.mat';
-% initial_gains_filename = 'Results/Flat/Umb10dimmuscleforce.mat';
-load('Results/Rough/Umb10_1.5cm_1.2ms_kneelim1_mstoptorque2_wCMG.mat');
-initial_gains_filename = 'Results/littleoptCMGgains.mat';
+initial_gains_filename = 'Results/Rough/Umb10_1.5cm_0.9ms_intermediate.mat';
+% initial_gains_filename = 'Results/Rough/Umb10_1.5cm_0.9ms_kneelim1.mat';
 
 initial_gains_file = load(initial_gains_filename);
-load('Results/Flat/SongGains_02_wC_IC.mat');
 
 %%
 global model rtp InitialGuess inner_opt_settings
 
 %% specifiy model and intial parameters
 model = 'NeuromuscularModel_3R60_2D';
-optfunc = 'cmaesParallelSplitRoughCMG';
+optfunc = 'cmaesParallelSplitRough';
 load_system(model);
 set_param(model, 'AccelVerboseBuild', 'on')
-set_param(strcat(model,'/Body Mechanics Layer/Obstacle'),'Commented','off');
-set_param(strcat(model,'/Body Mechanics Layer/Right Ankle Joint'),'SpringStiffness','300','DampingCoefficient','100');
+set_param(strcat(model,'/Body Mechanics Layer/Obstacle'),'Commented','on');
+set_param(strcat(model,'/Body Mechanics Layer/Right Ankle Joint'),'SpringStiffness','3000','DampingCoefficient','1000');
 % % set_param(strcat(model,'/Body Mechanics Layer/Right Ankle Joint'),'SpringStiffness','20','DampingCoefficient','4');
 set_param(model,'SimulationMode','rapid');
 set_param(model,'StopTime','30');
 
-InitialGuess = initial_gains_file.CMGGains;
+InitialGuess = [initial_gains_file.GainsSagittal;initial_gains_file.initConditionsSagittal];
 
 %% initialze parameters
 [inner_opt_settings,opts] = setInnerOptSettings(initial_gains_filename);
@@ -39,13 +36,14 @@ BodyMechParams;
 ControlParams;
 OptimParams;
 Prosthesis3R60Params;
-CMGParams;
-assignGains;
-setInit;
- 
+% initSignals;
+setInitAmputee;
+
+
 dt_visual = 1/30;
-[groundX, groundZ, groundTheta] = generateGround('const', inner_opt_settings.terrain_height,1,true);
-load_system(model)
+[groundX, groundZ, groundTheta] = generateGround('flat');
+% [groundX, groundZ, groundTheta] = generateGround('const', inner_opt_settings.terrain_height,1,true);
+save_system(model)
 
 %% Build the Rapid Accelerator target once
 rtp = Simulink.BlockDiagram.buildRapidAcceleratorTarget(model);
@@ -56,13 +54,16 @@ x0 = zeros(numvars,1);
 sigma0 = 1/8;
 % sigma0 = 1/3;
 
-opts.SaveFilename = 'vcmaes_1.5cm_1.2ms_Umb10_CMGopts_wmass.mat';
+opts.SaveFilename = 'vcmaes_1.5cm_0.9ms_Umb10_kneelim1_mstoptorque2_wInit_2.mat';
 
 %% Show settings
 clc;
 disp(opts);
 disp(inner_opt_settings);
 fprintf('Target velocity: %1.1f m/s \n',target_velocity);
+fprintf('Amputated hip flexors diminish factor:   %1.2f \n',ampHipFlexFactor);
+fprintf('Amputated hip extensor diminish factor: %1.2f \n',ampHipExtFactor);
+
 parpool(inner_opt_settings.numParWorkers);
 
 %% run cmaes

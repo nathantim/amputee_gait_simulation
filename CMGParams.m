@@ -4,6 +4,7 @@ CMGt = 0.005; % thickness in m
 CMGmass = 1; % kg
 
 GMantposOffset = 0;%0.015; % m
+CMGdist2ShankCG = 0.05; %m
 maxGMangle = 1000000;%60 *pi/180; % rad
 maxTflywheelmotor = 1.83E-3; % Nm
 maxGMTorque = 15; % Nm

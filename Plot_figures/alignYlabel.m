@@ -1,4 +1,4 @@
-function [ylabelPosXMin] = alignYlabel(axesHandles)
+function [ylabelExtXMin] = alignYlabel(axesHandles)
 % Input: 
 %   axesHandles: All the most left axes of the figure
 % Output:
@@ -14,6 +14,7 @@ function [ylabelPosXMin] = alignYlabel(axesHandles)
 
 %% Find positioning of ylabel
 ylabelPosXMin = 99;
+ylabelExtXMin = 99;
 axPos = nan(length(axesHandles),4);
 allAxesLabeled = true;
 
@@ -23,11 +24,16 @@ for ii = 1:length(axesHandles)
     axPos(ii,:) = get(axesHandles(ii),'Position');
     set(axesHandles(ii),'Units','Normalized')
     
+    
     % Find horizontal positioning of ylabel
     set(get(axesHandles(ii),'YLabel'),'Units','Normalized');
+    set(get(axesHandles(ii),'YLabel'),'HorizontalAlignment','center')
+    set(get(axesHandles(ii),'YLabel'),'VerticalAlignment','bottom')
     ylabelPos = get(get(axesHandles(ii),'YLabel'),'Position');
-    if ylabelPos(1) < ylabelPosXMin
+    ylabelExt = get(get(axesHandles(ii),'YLabel'),'Extent');
+    if ylabelExt(1) < ylabelExtXMin
         ylabelPosXMin = ylabelPos(1);
+        ylabelExtXMin = ylabelExt(1);
     end
     allAxesLabeled = allAxesLabeled & (~isempty(get(get(axesHandles(ii),'YLabel'),'String')));
 end

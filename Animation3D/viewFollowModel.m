@@ -8,7 +8,8 @@ function viewFollowModel(u, ViewWin)
     % get HAT x,y pos
     HATx = u(1);
     HATy = u(2);
-
+    
+    betweenHips = mean([u(4:5);u(19:20)],1);
     % shift to align with hip
-    set(gca, 'XLim', [HATx - ViewWin/2,  HATx + ViewWin/2]);
-    set(gca, 'YLim', [HATy - ViewWin/2,  HATy + ViewWin/2]);
+    set(gca, 'XLim', [betweenHips(1) - ViewWin/2,  betweenHips(1) + ViewWin/2]);
+    set(gca, 'YLim', [betweenHips(2) - ViewWin/2,  betweenHips(2) + ViewWin/2]);

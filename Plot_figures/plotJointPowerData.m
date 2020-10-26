@@ -87,6 +87,50 @@ if plotInfo.showTables
 %         fprintf('Joint power range (W/kg):\n');
         disp(rangeTable);
     end
+    
+    LkneePowerStance    =  LkneePower.* GaitInfo.gaitstate.left.StanceV;
+    RkneePowerStance    =  RkneePower.* GaitInfo.gaitstate.right.StanceV;
+    LanklePowerStance   =  LanklePower.* GaitInfo.gaitstate.left.StanceV;
+    RanklePowerStance   =  RanklePower.* GaitInfo.gaitstate.right.StanceV;
+    
+    rowNames = {'knee max Power';'ankle max Power'};
+    
+    for ii = 1:length(GaitInfo.start.leftV)
+        startIdx = GaitInfo.start.leftV(ii);
+        endIdx = GaitInfo.end.leftV(ii);
+        maxLkneePowerStance(ii)   = max(LkneePowerStance(startIdx:endIdx));
+        maxLanklePowerStance(ii)   = max(LanklePowerStance(startIdx:endIdx));
+    end
+    maxLkneePowerStance = reshape(maxLkneePowerStance,1,length(maxLkneePowerStance));
+    maxLanklePowerStance = reshape(maxLanklePowerStance,1,length(maxLanklePowerStance));
+    
+    for ii = 1:length(GaitInfo.start.rightV)
+        startIdx = GaitInfo.start.rightV(ii);
+        endIdx = GaitInfo.end.rightV(ii);
+        maxRkneePowerStance(ii)   = max(RkneePowerStance(startIdx:endIdx));
+        maxRanklePowerStance(ii)   = max(RanklePowerStance(startIdx:endIdx));
+    end
+    maxRkneePowerStance = reshape(maxRkneePowerStance,1,length(maxRkneePowerStance));
+    maxRanklePowerStance = reshape(maxRanklePowerStance,1,length(maxRanklePowerStance));
+        
+    powerKneeASI = getFilterdMean_and_ASI(maxLkneePowerStance,maxRkneePowerStance);
+    powerAnkleASI = getFilterdMean_and_ASI(maxLanklePowerStance,maxRanklePowerStance);
+    
+    if contains(saveInfo.info,'prosthetic')
+        varNames = {'Intact (W/kg)','Prosthetic (W/kg)', 'ASI (%)'};%,'L mean propel impulse (N%/kg)','R mean propel impulse (N%/kg)'};
+        vars = {powerKneeASI.leftTxt, powerKneeASI.rightTxt, powerKneeASI.ASItxt; ...
+                powerAnkleASI.leftTxt, powerAnkleASI.rightTxt, powerAnkleASI.ASItxt};
+        anklePowerTab = (table(vars(:,1),vars(:,2),vars(:,3),'VariableNames',varNames,'RowNames',rowNames));
+        
+    else
+        varNames = {'Total (W/kg)', 'ASI (%)'};%,'L mean propel impulse (N%/kg)','R mean propel impulse (N%/kg)'};
+        vars = {powerKneeASI.totalTxt, powerKneeASI.ASItxt; ...
+                powerAnkleASI.totalTxt, powerAnkleASI.ASItxt};
+        anklePowerTab = (table(vars(:,1),vars(:,2),'VariableNames',varNames,'RowNames',rowNames));
+        
+    end
+    disp(anklePowerTab);
+
 end
 
 %%
@@ -95,7 +139,7 @@ if isempty(powerDataFigure) && isempty(axesHandles)
     fullScreen = get(0,'screensize');
     set(PowerDataFig, 'Position',[fullScreen(1:2)+20 fullScreen(3:4)*0.9]);
 else
-    PowerDataFig = powerDataFigure; 
+    PowerDataFig = powerDataFigure;
 end
 % if GaitInfo.b_oneGaitPhase && plotInfo.plotWinterData 
 %     [timeWinter, ~,~,~,~,~,~, ~,~,~,~, ...
@@ -105,9 +149,7 @@ end
  plotHandlesLeft = [];
  plotHandlesRight = [];
 
-if ~GaitInfo.b_oneGaitPhase
-    GaitInfo.tp = jointPowersData.time;
-end
+
 if contains(legToPlot,'left') || contains(legToPlot,'both')
     [plotHandlesLeft,axesHandles] = plotPowerDataInFigure(PowerDataFig,axesHandles,GaitInfo.tp,LhipPower_avg,LhipPower_sd,LhipRollPower_avg,LhipRollPower_sd,LkneePower_avg,LkneePower_sd,LanklePower_avg,LanklePower_sd,subplotStart,GaitInfo.b_oneGaitPhase,b_addTitle);
 end

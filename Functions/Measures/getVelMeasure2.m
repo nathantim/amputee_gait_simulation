@@ -2,14 +2,14 @@ function [velMeasure, avgHATVel,ASIVel] = getVelMeasure2(HATPosVel,stepNumbers,m
 velMeasure = nan;
 avgHATVel = nan;
 ASIVel = 0;
-idxfirst = round(max(find(stepNumbers(:,1)==initiation_steps,1,'first'),find(stepNumbers(:,2)==initiation_steps,1,'first'))/30);
+idxfirst = (max(find(stepNumbers(:,1)==initiation_steps,1,'first'),find(stepNumbers(:,2)==initiation_steps,1,'first')));
 
 if isempty(idxfirst)
     velMeasure = 9999999999;
     avgHATVel = nan;
     return    
 else
-    avgHATVel = sqrt( sum(mean(HATPosVel.signals.values(idxfirst:end,[4,5]),1).^2) );
+    avgHATVel = mean( sqrt( sum(HATPosVel.signals.values(idxfirst:end,[4,5]).^2,2)) );
 end
 
 if min_velocity == max_velocity

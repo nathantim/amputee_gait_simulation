@@ -1,4 +1,4 @@
-function bodyMass = getBodyMassN()
+function bodyMass = getBodyMass()
 BodyMechParams;
 
 bodyMass = totalMass;

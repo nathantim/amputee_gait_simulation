@@ -25,7 +25,7 @@ end
 % end
 
 % at the initial time step t=0, scale cone objects to their actual length
-HAT_Length = 2*sqrt( (u(1)-u(4))^2 + (u(2)-u(5))^2 + (u(3)-u(6))^2 );
+HAT_Length = sqrt( (u(1)-u(4))^2 + (u(2)-u(5))^2 + (u(3)-u(6))^2 );
 
 if t==0
     % set HAT length
@@ -61,7 +61,7 @@ if t==0
     
     if (~intactFlag)
         % set right shank length
-        R_KneeProsthLength = sqrt( (u(22)-u(34))^2 + (u(23)-u(35))^2 + (u(24)-u(36))^2 );
+        R_KneeProsthLength = sqrt( (u(22)-u(35))^2 + (u(23)-u(36))^2 + (u(24)-u(37))^2 );
         set(R_KneeProsthObj, 'ZData', get(R_KneeProsthObj, 'ZData') * R_KneeProsthLength);
         x(24) = R_KneeProsthLength;
         
@@ -70,14 +70,14 @@ if t==0
 %             set(CMGlinkObj, 'ZData', get(CMGlinkObj, 'ZData') * CMGlinkLength);
 %             x(36) = CMGlinkLength;
             % set right shank length
-            R_ShankLength = sqrt( (u(37)-u(25))^2 + (u(38)-u(26))^2 + (u(39)-u(27))^2 ) - rCMG;
+            R_ShankLength = sqrt( (u(38)-u(25))^2 + (u(39)-u(26))^2 + (u(40)-u(27))^2 ) - rCMG;
             set(R_ShankObj, 'ZData', get(R_ShankObj, 'ZData') * R_ShankLength);
-            x(39) = R_ShankLength;
+            x(40) = R_ShankLength;
         else
             % set right shank length
-            R_ShankLength = sqrt( (u(34)-u(25))^2 + (u(35)-u(26))^2 + (u(36)-u(27))^2 );
+            R_ShankLength = sqrt( (u(35)-u(25))^2 + (u(36)-u(26))^2 + (u(37)-u(27))^2 );
             set(R_ShankObj, 'ZData', get(R_ShankObj, 'ZData') * R_ShankLength);
-            x(36) = R_ShankLength;
+            x(37) = R_ShankLength;
         end        
     else
         % set right shank length
@@ -97,10 +97,10 @@ if t==0
     
     % rotate and shift cones to their new angles and positions
     lowHATu =(u(4:6)+u(19:21))./2;
-    magHATu = sqrt(sum( (u(1:3)-lowHATu).^2));
-    unitHATu = ((u(1:3)-lowHATu))./magHATu;
-    topHATu = unitHATu*HAT_Length + lowHATu;
-    rotTransObj( HAT_ConeObj, lowHATu,   topHATu,   zeros(1,3),   x(1:3))
+%     magHATu = sqrt(sum( (u(1:3)-lowHATu).^2));
+%     unitHATu = ((u(1:3)-lowHATu))./magHATu;
+%     topHATu = unitHATu*HAT_Length + lowHATu;
+    rotTransObj( HAT_ConeObj, lowHATu,   u(1:3),   zeros(1,3),   x(1:3))
     rotTransObj(  L_ThighObj, u(7:9),   u(4:6),   zeros(1,3),   x(4:6))
     rotTransObj(  L_ShankObj, u(10:12),   u(7:9),   zeros(1,3),   x(7:9))
     rotTransObj(   L_BallObj, u(13:15), u(10:12),  zeros(1,3), x(10:12))
@@ -110,12 +110,12 @@ if t==0
     rotTransObj(  R_ThighObj, u(22:24), u(19:21), zeros(1,3), x(19:21))
     
     if (~intactFlag)
-        rotTransObj(  R_KneeProsthObj, u(34:36),   u(22:24),   zeros(1,3),   x(22:24))
+        rotTransObj(  R_KneeProsthObj, u(35:37),   u(22:24),   zeros(1,3),   x(22:24))
         if CMGFlag
 %             rotTransObj(  CMGlinkObj, u(37:39),   u(34:36),   zeros(1,3),   x(34:36))
-            rotTransObj(  R_ShankObj, u(25:27),   u(37:39),   zeros(1,3),   x(37:39))
+            rotTransObj(  R_ShankObj, u(25:27),   u(38:40),   zeros(1,3),   x(38:40))
         else
-            rotTransObj(  R_ShankObj, u(25:27),   u(34:36),   zeros(1,3),   x(34:36))
+            rotTransObj(  R_ShankObj, u(25:27),   u(35:37),   zeros(1,3),   x(35:37))
         end
     else
         rotTransObj(  R_ShankObj, u(25:27),   u(22:24),   zeros(1,3),   x(22:24))
@@ -127,16 +127,19 @@ if t==0
     
 else
     % rotate and shift cones to their new angles and positions
-    lowHATu =(u(4:6)+u(19:21))./2;
-    magHATu = sqrt(sum( (u(1:3)-lowHATu).^2));
-    unitHATu = ((u(1:3)-lowHATu))./magHATu;
-    topHATu = unitHATu*HAT_Length + lowHATu;
-    lowHATx =(x(4:6)+x(19:21))./2;
-    magHATx = sqrt(sum( (x(1:3)-lowHATx).^2));
-    unitHATx = ((x(1:3)-lowHATx))./magHATx;
-    topHATx = unitHATx*HAT_Length + lowHATx;
+
+    yaw = 180/pi*u(34);
+    yawOld = 180/pi*x(34);
+
     
-    rotTransObj( HAT_ConeObj, lowHATu,   topHATu,   lowHATx,   topHATx)
+    lowHATx =(x(4:6)+x(19:21))./2;
+
+    
+    lowHATu =(u(4:6)+u(19:21))./2;
+
+    
+    
+    rotTransObj( HAT_ConeObj, lowHATu,   u(1:3),   lowHATx,   x(1:3), yaw, yawOld)
     rotTransObj(  L_ThighObj, u(7:9),   u(4:6),   x(7:9),   x(4:6))
     rotTransObj(  L_ShankObj, u(10:12),   u(7:9),   x(10:12),   x(7:9))
     rotTransObj(   L_BallObj, u(13:15), u(10:12),  x(13:15), x(10:12))
@@ -144,12 +147,12 @@ else
     rotTransObj(  R_ThighObj, u(22:24), u(19:21), x(22:24), x(19:21))
     
     if (~intactFlag)
-        rotTransObj(  R_KneeProsthObj, u(34:36),   u(22:24),   x(34:36),   x(22:24))
+        rotTransObj(  R_KneeProsthObj, u(35:37),   u(22:24),   x(35:37),   x(22:24))
         if CMGFlag
 %             rotTransObj(  CMGlinkObj, u(37:39),   u(34:36),   x(37:39),   x(34:36))
             rotTransObj(  R_ShankObj, u(25:27),   u(37:39),   x(25:27),   x(37:39))
         else
-        rotTransObj(  R_ShankObj, u(25:27),   u(34:36),   x(25:27),   x(34:36))
+        rotTransObj(  R_ShankObj, u(25:27),   u(35:37),   x(25:27),   x(35:37))
         end
     else
         rotTransObj(  R_ShankObj, u(25:27),   u(22:24),   x(25:27),   x(22:24))

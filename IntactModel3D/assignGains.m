@@ -3,7 +3,7 @@ ControlParams;
 OptimParams;
 
 %  load('SongGains_02_wC.mat');
- thetaHATref = 0;
+%  thetaHATref = 0;
 %% stance gains
 % M1
 GainFGLUst          = Gains( 1);
@@ -135,7 +135,7 @@ PreStimHABsw       	= Gains(81);
 PreStimHADsw        = Gains(82);
 
 
-[groundX, groundZ, groundTheta] = generateGround('flat');
+% [groundX, groundZ, groundTheta] = generateGround('flat');
 % [groundX, groundZ, groundTheta] = generateGround('const', .05,1);
 %[groundX, groundZ, groundTheta] = generateGround('ramp');
 

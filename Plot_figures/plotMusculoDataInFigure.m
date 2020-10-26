@@ -27,11 +27,12 @@ hold(axesHandles(axidx),'on');
 plotHandles(axidx,1) = plot(axesHandles(axidx),t,HAB_avg);
 if b_addTitle
     title(axesHandles(axidx),'HAB');
+    ylabel(axesHandles(axidx),'Activation (-)');
 end
 if (max(HAB_avg)<1)
     ylim(axesHandles(axidx),[0,1])
 end
-ylabel(axesHandles(axidx),'Activation (-)');
+
 % ylabel('rad/s')
 
 subplotStart(3) = subplotStart(3) +1;

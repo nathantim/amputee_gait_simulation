@@ -1,89 +1,110 @@
-% clc;
-%%
-% load('Results/Rough/Prosthetic2D_C3D.mat');
-% assignGains;
-
-tempstring = strsplit(opts.UserData,' ');
-dataFile = tempstring{end};
-InitialGuessFile = load(dataFile); 
-% 
-% GainsSagittal = InitialGuessFile.GainsSagittal;
-% GainsCoronal = InitialGuessFile.GainsCoronal.*exp(bestever.x);
-CMGGains = InitialGuessFile.CMGGains.*exp(bestever.x);
-
-% compareenergies = load('compareEnergyCostTotal_Umb10_prost.mat');
-% 
-% % 
-% idx_minCost = find(round(compareenergies.cost,2)==93,1,'first');
-% Gains = compareenergies.Gains(idx_minCost,:)';
-% 
+if  (input("Do you want to clear the data? (1/0)   "))
+%     close all;  
+    clearvars;  clc;
+end
 
 %%
-% load('Results/Rough/Prosthetic2D_C3D.mat');
-% load('Results/Rough/Umb10_0.9_ms_3D_partlyopt.mat');
+if input("Load from optimization folder? (1/0)   " )
+    inner_opt_settings = setInnerOptSettings('yes');
+    disp(inner_opt_settings.optimizationDir);
+    
+    load([inner_opt_settings.optimizationDir filesep 'variablescmaes.mat']);
+    InitialGuess = load([inner_opt_settings.optimizationDir filesep 'initial_gains.mat']);
+    
+    idx1 = length(InitialGuess.GainsSagittal);
+    idx2 = idx1 + length(InitialGuess.initConditionsSagittal);
+    idx3 = idx2 + length(InitialGuess.GainsCoronal);
+    idx4 = idx3 + length(InitialGuess.initConditionsCoronal);
+    
+    GainsSagittal = InitialGuess.GainsSagittal.*exp(bestever.x(1:idx1));
+    initConditionsSagittal = InitialGuess.initConditionsSagittal.*exp(bestever.x(idx1+1:idx2));
+    
+    GainsCoronal = InitialGuess.GainsCoronal.*exp(bestever.x(idx2+1:idx3));
+    initConditionsCoronal = InitialGuess.initConditionsCoronal.*exp(bestever.x((idx3+1):idx4));
+    
+    run([inner_opt_settings.optimizationDir, filesep, 'BodyMechParamsCapture']);
+    run([inner_opt_settings.optimizationDir, filesep, 'ControlParamsCapture']);
+    run([inner_opt_settings.optimizationDir, filesep, 'Prosthesis3R60ParamsCapture']);
+    run([inner_opt_settings.optimizationDir, filesep, 'CMGParams']);
+    run([inner_opt_settings.optimizationDir, filesep, 'OptimParamsCapture']);
 
-% load('Results/Rough/Umb10_1.5cm_1.2ms_kneelim1_mstoptorque2.mat');
-% load('Results/Rough/Umb10_1.5cm_0.9ms_kneelim1_mstoptorque2_2Dopt.mat');
-load('Results/Rough/Umb10_1.5cm_1.2ms_kneelim1_mstoptorque2_CMGflat_4.mat');
+else
+    BodyMechParams;
+    ControlParams;
+    Prosthesis3R60Params;
+    OptimParams;
+    CMGParams;
+    setInitVar;
+    inner_opt_settings = setInnerOptSettings('eval');
+    
+%     load(['Results' filesep 'Rough' filesep 'Umb10_0.9ms_wheading.mat'])
+    load(['Results' filesep 'Rough' filesep 'Umb10_1.2ms_wheading.mat'])
+    
+end
 
-load('Results/Flat/SongGains_02_wC_IC.mat');
-
+terrains2Test = input("Number of terrains to test:   ");
 
 %%
 model = 'NeuromuscularModel_3R60_3D';
 
 load_system(model);
-BodyMechParams;
-ControlParams;
-OptimParams;
-Prosthesis3R60Params;
+% set_param(model, 'OptimizationLevel','level2');
+% set_param(strcat(model,'/Body Mechanics Layer/Right Ankle Joint'),'SpringStiffness','3000','DampingCoefficient','1000');
+
+%%
+[groundX, groundZ, groundTheta] = generateGround('flat');
+
+dt_visual = 1/1000;
+animFrameRate = 30;
+
 assignGainsSagittal;
 assignGainsCoronal;
-dt_visual = -1;%1/50;
-set_param(strcat(model,'/Body Mechanics Layer/Right Ankle Joint'),'SpringStiffness','3000','DampingCoefficient','1000');
-set_param(strcat(model,'/Body Mechanics Layer/Obstacle'),'Commented','on');
+assignInit;
 
-% load('Results/optCMGgains_1_2ms_lowerDH_noKpKi_wLegClr.mat');
-assignCMGGains;
-% CMGParams;
+% set_param(model, 'AccelVerboseBuild', 'off');
+% save_system(model);
 
 %%
-inner_opt_settings = setInnerOptSettings();
-setInitAmputee;
-[groundX, groundZ, groundTheta] = generateGround('flat');
-% [groundX, groundZ, groundTheta] = generateGround('const', .05,1);
-% [groundX, groundZ, groundTheta] = generateGround('const', inner_opt_settings.terrain_height, 1,true);
-%[groundX, groundZ, groundTheta] = generateGround('ramp');
-
-%open('NeuromuscularModel');
-% set_param(model,'SimulationMode','normal');
-% set_param(model,'StopTime','30');
-
-set_param(model, 'AccelVerboseBuild', 'off')
-save_system(model);
-%%
-warning('off');
-tic;
-sim(model)
-toc;
-warning('on');
+if contains(get_param(model,'SimulationMode'),'rapid')
+    rtp = Simulink.BlockDiagram.buildRapidAcceleratorTarget(model);
+    
+    for jj = 0:(terrains2Test-1)
+            if jj == 0
+                [~, groundZ, groundTheta] = generateGround('flat',[],4*jj,false);
+            else
+                [~, groundZ, groundTheta] = generateGround('const', inner_opt_settings.terrain_height, 4*jj,false);
+            end
+            paramSets{jj+1} = ...
+                Simulink.BlockDiagram.modifyTunableParameters(rtp, ...
+                'groundZ',     groundZ, ...
+                'groundTheta', groundTheta);
+    end   
+else
+    paramStruct = [];
+end
 
 %%
-[cost, dataStruct] = getCost(model,[],time,metabolicEnergy,sumOfStopTorques,HATPosVel,stepVelocities,stepTimes,stepLengths,stepNumbers,CMGData,selfCollision,inner_opt_settings,0);
-printOptInfo(dataStruct,true);
-% animPost3D(animData3D,'intact',false,'speed',1,'obstacle',true,'view','perspective','CMG',true,'createVideo',false,'info','wCMG_1.2ms_trip')
+parfor ii = 1:length(paramSets)
+    tic;
+    simout(ii) = sim(model,...
+        'RapidAcceleratorParameterSets',paramSets{ii},...
+        'RapidAcceleratorUpToDateCheck','off',...
+        'TimeOut',20*60,...
+        'SaveOutput','on');
+    toc;
+end
 
 %%
-% kinematics.angularData = angularData;
-% kinematics.GaitPhaseData = GaitPhaseData;
-% kinematics.time = time;
-% kinematics.stepTimes = stepTimes;
-% kinematics.musculoData = musculoData;
-% kinematics.GRFData = GRFData;
-% dataStruct.kinematics = kinematics;
-% save('dataStruct.mat','dataStruct')
-% 
-% %%
+for idx = 1:length(simout)
+   [cost(idx), dataStruct(idx)] = getCost(model,[],simout(idx).time,simout(idx).metabolicEnergy,simout(idx).sumOfStopTorques,simout(idx).HATPosVel,simout(idx).stepVelocities,simout(idx).stepTimes,simout(idx).stepLengths,simout(idx).stepNumbers,[],simout(idx).selfCollision,inner_opt_settings,0);
+    printOptInfo(dataStruct(idx),true); 
+end
+
+ animPost3D(simout(1).animData3D,'intact',false,'speed',1,'obstacle',false,'view','perspective','CMG',false,...
+                'showFigure',true,'createVideo',false,'info','prosthetic1.2ms_y','saveLocation',inner_opt_settings.optimizationDir);
+            
+plotData(simout(1).angularData,simout(1).musculoData,simout(1).GRFData,simout(1).jointTorquesData,simout(1).GaitPhaseData,simout(1).stepTimes,[],'prosthetic3D_1.2ms_yaw',[],0,1,1)
+%%
 set(0, 'DefaultFigureHitTest','on');
 set(0, 'DefaultAxesHitTest','on','DefaultAxesPickableParts','all');
 set(0, 'DefaultLineHitTest','on','DefaultLinePickableParts','all');

@@ -1,44 +1,47 @@
 % clc;
-%%
+% % %
 % tempstring = strsplit(opts.UserData,' ');
 % dataFile = tempstring{end};
 % InitialGuessFile = load(dataFile); 
 % 
-% % Gains = InitialGuessFile.Gains.*exp(bestever.x);
-% CMGGains = InitialGuessFile.CMGGains.*exp(bestever.x);
+% GainsSagittal = InitialGuessFile.GainsSagittal.*exp(bestever.x(1:length(InitialGuessFile.GainsSagittal)));
+% initConditionsSagittal = InitialGuessFile.initConditionsSagittal.*exp(bestever.x(length(InitialGuessFile.GainsSagittal)+1:end));
+
+
 %%
 % load('Results/RoughDist/SongGainsamp.mat');
 % load('Results/Flat/SongGains_02amp.mat');
+
 % load('Results/RoughDist/SongGains_wC_IC.mat');
-% load('Results/Rough/Umb10_1.5cm_1.2ms_Umb10_kneelim1_mstoptorque3.mat');
+% load('Results/Rough/Umb10_1.5cm_0.9ms_intermediate.mat');
+% load('Results/Rough/Umb10_1.5cm_1.2ms_kneelim1_mstoptorque2.mat');
 
-% load('Results/Rough/Umb10_1.5cm_1.2ms_kneelim1_mstoptorque2_wCMG.mat');
-load('Results/Rough/Umb10_1.5cm_1.2ms_kneelim1_mstoptorque2.mat');
-% load('Results/Rough/Umb10_1.5cm_0.9ms_kneelim1_mstoptorque2.mat');
-load('Results/Flat/SongGains_02_wC_IC.mat');
 
-% load('Results/optCMGGains_wmass.mat');
-load('Results/optCMGgains_1_2ms_lowerDH_noKpKi.mat');
-assignCMGGains;
-assignGains;
+%%
+model = 'NeuromuscularModel_3R60_2D';
+load_system(model);
+set_param(strcat(model,'/Body Mechanics Layer/Right Ankle Joint'),'SpringStiffness','3000','DampingCoefficient','1000');
+set_param(strcat(model,'/Body Mechanics Layer/Obstacle'),'Commented','on');
 
-dt_visual = 1/50;
-setInit;
+%%
+[inner_opt_settings,~] = setInnerOptSettings();
+
+BodyMechParams;
+ControlParams;
+OptimParams;
+Prosthesis3R60Params;
+% initSignals;
+setInitAmputee;
+
+% assignInit;
+assignGainsSagittal;
+
+dt_visual = 1/30;
 
 [groundX, groundZ, groundTheta] = generateGround('flat');
 % [groundX, groundZ, groundTheta] = generateGround('const', .05,1);
 %[groundX, groundZ, groundTheta] = generateGround('ramp');
 
-% LlegLengthClr = 0.95*LlegLengthClr;
-% RGainLRFHFLsw = 5*RGainLRFHFLsw;
-% RGainVRFHFLsw = 5*RGainVRFHFLsw;
-% RlegLengthClr = 0.9*RlegLengthClr;
-% RGainLGLUsw = 3*RGainLGLUsw;
-%%
-model = 'NeuromuscularModel_3R60_2D';
-
-%%
-[inner_opt_settings,~] = setInnerOptSettings();
 
 %%
 %open('NeuromuscularModel');
@@ -52,8 +55,9 @@ toc;
 warning('on');
 
 %%
-[cost, dataStruct] = getCost(model,Gains,time,metabolicEnergy,sumOfStopTorques,HATPos,stepVelocities,stepTimes,stepLengths,CMGData,inner_opt_settings,0);
+[~,dataStruct] = getCost(model,[],time,metabolicEnergy,sumOfStopTorques,HATPosVel,stepVelocities,stepTimes,stepLengths,stepNumbers,[],inner_opt_settings, 0);
 printOptInfo(dataStruct,true);
+
 %%
 % kinematics.angularData = angularData;
 % kinematics.GaitPhaseData = GaitPhaseData;

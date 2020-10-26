@@ -1,5 +1,10 @@
 function [cost, dataStruct] = getCost(model,Gains,time,metabolicEnergy,sumOfStopTorques,HATPosVel,stepVelocities,stepTimes,stepLengths,stepNumbers,CMGData,selfCollision,inner_opt_settings, b_isParallel)
 try
+    if nargin < 13
+        b_isParallel = false;
+    end
+    OptimParams;
+    
     if contains(model,'3R60')
          modelType = 'prosthetic';
     else
@@ -10,15 +15,12 @@ try
     else
          modelType = [modelType, '2D'];
     end
+    modelType = [modelType, char(num2str(inner_opt_settings.target_velocity)) 'ms'];
     
-    if nargin < 13
-        b_isParallel = false;
-    end
-    OptimParams;
     dataStruct = struct('cost',struct('data',nan,'minimize',1,'info',''));
-    % global dataQueueD
-    HATPos = sqrt(sum(HATPosVel.signals.values(end,[1,2]).^2));
-    
+    % x pos only
+    HATPos = HATPosVel.signals.values(end,1);%norm(HATPosVel.signals.values(end,[1,2]));
+%     HATPos = norm(HATPosVel.signals.values(end,[1,2]));
     %%
     if HATPos > 101
         cost = nan;
@@ -135,7 +137,9 @@ try
         'stepLengthASIstruct',struct('data',stepLengthASIstruct,'minimize',2,'info',''),...
         'stepTimeASIstruct',struct('data',stepTimeASIstruct,'minimize',2,'info',''),'velCost',struct('data',velCost,'minimize',1,'info',''),'timeVector',struct('data',time,'minimize',1,'info',''),...
         'maxCMGTorque',struct('data',maxCMGTorque,'minimize',1,'info',''),'maxCMGdeltaH',struct('data',maxCMGdeltaH,'minimize',1,'info',''),'controlRMSE',struct('data',controlRMSE,'minimize',1,'info',''),...
-        'numberOfCollisions',struct('data',numberOfCollisions,'minimize',1,'info',''));
+        'numberOfCollisions',struct('data',numberOfCollisions,'minimize',1,'info',''), ...
+        'tripWasActive',struct('data',tripWasActive,'minimize',1,'info',''),...
+        'optimizationDir',inner_opt_settings.optimizationDir);
 
     if b_isParallel && timeCost == 0
         GainsSave = Gains;
@@ -148,13 +152,13 @@ try
             workerID = [];
             warning(strcat(char(ME.message)," In ", mfilename, " line ", num2str(ME.stack(1).line)));
         end
-        filename = char(strcat('compareEnergyCost',num2str(workerID),'.mat'));
+        filename = [inner_opt_settings.optimizationDir filesep char(strcat('compareEnergyCost',num2str(workerID),'.mat'))];
         if exist(filename,'file') == 2
             exist_vars = load(filename);
             metabolicEnergySave     = [exist_vars.metabolicEnergySave;metabolicEnergy];
             meanVel                 = [exist_vars.meanVel;meanVel];
-            stepLengthASImean       = [exist_vars.ASIStepLength;stepLengthASIstruct.ASImean];
-            stepTimeASImean         = [exist_vars.ASIStepTime;stepTimeASIstruct.ASImean];
+            stepLengthASImean       = [exist_vars.stepLengthASImean;stepLengthASIstruct.ASImean];
+            stepTimeASImean         = [exist_vars.stepTimeASImean;stepTimeASIstruct.ASImean];
             costOfTransportSave     = [exist_vars.costOfTransportSave; [effort_costs.costOfTransport] ];
             costT                   = [exist_vars.costT;cost];
             %             sumOfIdealTorques       = [exist_vars.sumOfIdealTorques;sumOfIdealTorques];
@@ -172,6 +176,8 @@ try
             timeCostSave            = [timeCost];
             maxCMGTorqueSave    = [maxCMGTorque];
             maxCMGdeltaHSave        = [maxCMGdeltaH];
+             stepLengthASImean       = [stepLengthASIstruct.ASImean];
+            stepTimeASImean         = [stepTimeASIstruct.ASImean];
             dateSave = {char(datestr(now,'yyyy-mm-dd_HH-MM'))};
 
         end
@@ -188,5 +194,5 @@ try
 % printOptInfo(dataStruct,true);
 catch ME
     save('ErrorWorkspace');
-    error('Error: %s\nIn %s.m line %d',ME.message,mfilename,ME.stack(1).line);
+    error('Error: %s\nIn %s.m line %d',ME.message,ME.stack(1).name,ME.stack(1).line);
 end

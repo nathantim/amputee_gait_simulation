@@ -20,14 +20,17 @@ termination_height = 0.5;
 % --------------------
 
 % foot placement Ctrl %
-LsimbiconLegAngle0_C       =(-1)   *pi/180; 
-LsimbiconGainD_C           = 10     *pi/180;    % [rad/m]
-LsimbiconGainV_C           = 10     *pi/180;    % [rad*s/m]
+LsimbiconLegAngle0_C        =(-1)   *pi/180; 
+LsimbiconGainD_C            = 10     *pi/180;    % [rad/m]
+LsimbiconGainV_C            = 10     *pi/180;    % [rad*s/m]
+LheadingGain                = 0;
+LheadingIntGain             = 0;
 
-RsimbiconLegAngle0_C       =(-1)   *pi/180; 
-RsimbiconGainD_C           = 10     *pi/180;    % [rad/m]
-RsimbiconGainV_C           = 10     *pi/180;    % [rad*s/m]
-
+RsimbiconLegAngle0_C        =(-1)   *pi/180; 
+RsimbiconGainD_C            = 10     *pi/180;    % [rad/m]
+RsimbiconGainV_C            = 10     *pi/180;    % [rad*s/m]
+RheadingGain                = 0;
+RheadingIntGain             = 0;
 
 % 0: prestimulations
 LPreStimHABst       	= 0.01;

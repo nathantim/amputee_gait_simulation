@@ -12,8 +12,8 @@ if ViewShiftParamsX(1)==0
     XLimits = get(gca, 'XLim');
     
     % get min and max xpos of object
-    minX = u(1);
-    maxX = u(1);
+    minX = mean(u(4),u(19));
+    maxX = mean(u(4),u(19));
     
     % check right border
     if XLimits(2) < ( maxX + ViewWin*TolFrac )
