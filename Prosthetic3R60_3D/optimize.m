@@ -1,5 +1,5 @@
 try 
-    if input('Do you want to save loaded model?')
+    if input('Do you want to save loaded model? (1/0)  ')
         save_system;
         disp('Saved loaded system');
     end

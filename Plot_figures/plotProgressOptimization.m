@@ -180,7 +180,7 @@ try
             animPost3D(dataStruct.animData3D,'intact',intactFlag,'obstacle',logical(dataStruct.tripWasActive.data),'view','perspective',...
                         'CMG',(~isempty(CMGData)),'showFigure',false,'createVideo',true,'info',['cost_' num2str(round(dataStruct.optimCost,1))],...
                         'saveLocation',dataStruct.optimizationDir);
-            save([dataStruct.optimizationDir 'cost_' num2str(round(dataStruct.optimCost,1))]);        
+            save([dataStruct.optimizationDir filesep 'cost_' num2str(round(dataStruct.optimCost,1)) '.mat'],'dataStruct');        
                     
         end
     end
