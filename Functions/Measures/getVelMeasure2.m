@@ -7,6 +7,7 @@ idxfirstHATPosVel = find(abs(HATPosVel.time-stepNumbers.time(idxfirstStepNum))==
 if isempty(idxfirstHATPosVel)
     velMeasure = 9999999999;
     avgHATVel = nan;
+    disp('Insufficient steps');
     return    
 else
     avgHATVel = mean( sqrt( sum(HATPosVel.signals.values(idxfirstHATPosVel:end,[4,5]).^2,2)) );
