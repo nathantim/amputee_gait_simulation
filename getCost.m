@@ -75,7 +75,7 @@ try
     %% Calculate velocity cost
 %     velCost = getVelMeasure(stepVelocities(:,1),stepTimes(:,1),min_velocity,max_velocity,initiation_steps) + ...
 %         getVelMeasure(stepVelocities(:,2),stepTimes(:,2),min_velocity,max_velocity,initiation_steps);
-    [velCost,meanVel, ASIVel] = getVelMeasure2(HATPosVel,stepNumbers,min_velocity,max_velocity,initiation_steps);
+    [velCost,meanVel, ASIVel] = getVelMeasure(HATPosVel,stepNumbers,min_velocity,max_velocity,initiation_steps);
     %     [distCost, dist_covered] = getDistMeasure(timeSetToRun,stepLengths,min_velocity,max_velocity,dist_slack);
     
     %% Calculate step info
