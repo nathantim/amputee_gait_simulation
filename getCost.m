@@ -79,8 +79,8 @@ try
     %     [distCost, dist_covered] = getDistMeasure(timeSetToRun,stepLengths,min_velocity,max_velocity,dist_slack);
     
     %% Calculate step info
-    stepLengthASIstruct = getFilterdMean_and_ASI(findpeaks(stepLengths(:,1)),findpeaks(stepLengths(:,2)),initiation_steps);
-    stepTimeASIstruct = getFilterdMean_and_ASI(findpeaks(stepTimes(:,1)),findpeaks(stepTimes(:,2)),initiation_steps);
+    stepLengthASIstruct = getFilterdMean_and_ASI(findpeaks(stepLengths.signals.values(:,1)),findpeaks(stepLengths.signals.values(:,2)),initiation_steps);
+    stepTimeASIstruct = getFilterdMean_and_ASI(findpeaks(stepTimes.signals.values(:,1)),findpeaks(stepTimes.signals.values(:,2)),initiation_steps);
 %     [meanVel, ASIVel] = getFilterdMean_and_ASI(stepVelocities(:,1),stepVelocities(:,2),initiation_steps);
     
     %%
