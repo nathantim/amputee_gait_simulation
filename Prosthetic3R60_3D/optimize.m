@@ -11,14 +11,14 @@ clear all; close all; clc;
 
 %%
 b_resumeOptimization = char(input("Do you want to resume a previous optimization? (yes/no)   ",'s'));
-optimizationInfo = 'higherTs';
+optimizationInfo = 'heading_noInt';
 
 %%
 % initial_gains_filename = ['Results' filesep 'Rough' filesep 'Umb10_1.5cm_1.2ms_kneelim1_mstoptorque2.mat'];
 % initial_gains_filename = ['Results' filesep 'Rough' filesep 'Umb10_1.5cm_0.9ms_opt_1.2mscoronal.mat'];
 % initial_gains_filename = ['Results' filesep 'Rough' filesep 'Umb10_1.2ms_difffoot_higherabd.mat'];
 % initial_gains_filename = ['Results' filesep 'Rough' filesep 'Umb10_0.9ms.mat'];
-initial_gains_filename = ['Results' filesep 'Rough' filesep 'Umb10_0.9ms_wheading.mat'];
+initial_gains_filename = ['Results' filesep 'Rough' filesep 'Umb10_0.9ms_wheading_noInt.mat'];
 
 
 %%
@@ -37,7 +37,7 @@ catch ME
     warning(ME.message);
 end
 
-%% initialze parameters
+%% initialze parameters1
 [inner_opt_settings,opts] = setInnerOptSettings(b_resumeOptimization,initial_gains_filename,optimizationInfo);
 
 InitialGuessFile = load([inner_opt_settings.optimizationDir filesep 'initial_gains.mat']);
