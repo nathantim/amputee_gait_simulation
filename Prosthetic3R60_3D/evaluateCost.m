@@ -45,7 +45,8 @@ terrains2Test = input("Number of terrains to test:   ");
 model = 'NeuromuscularModel_3R60_3D';
 
 load_system(model);
-% set_param(model, 'OptimizationLevel','level2');
+set_param(model, 'RTWCompilerOptimization','off');
+set_param(model,'BuildConfiguration','Faster Runs');
 % set_param(strcat(model,'/Body Mechanics Layer/Right Ankle Joint'),'SpringStiffness','3000','DampingCoefficient','1000');
 
 %%
@@ -58,6 +59,8 @@ assignGainsSagittal;
 assignGainsCoronal;
 assignInit;
 
+LheadingIntGain = 0;
+RheadingIntGain = 0;
 
 % set_param(model, 'AccelVerboseBuild', 'off');
 % save_system(model);
@@ -82,7 +85,7 @@ else
 end
 
 %%
-parfor ii = 1:length(paramSets)
+for ii = 1:length(paramSets)
     tic;
     simout(ii) = sim(model,...
         'RapidAcceleratorParameterSets',paramSets{ii},...
