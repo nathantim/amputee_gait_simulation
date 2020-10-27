@@ -11,14 +11,14 @@ clear all; close all; clc;
 
 %%
 b_resumeOptimization = char(input("Do you want to resume a previous optimization? (yes/no)   ",'s'));
-optimizationInfo = 'higherTs';
+optimizationInfo = 'CMG';
 
 %%
 % initial_gains_filename = ['Results' filesep 'Rough' filesep 'Umb10_1.5cm_1.2ms_kneelim1_mstoptorque2.mat'];
 % initial_gains_filename = ['Results' filesep 'Rough' filesep 'Umb10_1.5cm_0.9ms_opt_1.2mscoronal.mat'];
 % initial_gains_filename = ['Results' filesep 'Rough' filesep 'Umb10_1.2ms_difffoot_higherabd.mat'];
 % initial_gains_filename = ['Results' filesep 'Rough' filesep 'Umb10_0.9ms.mat'];
-initial_gains_filename = ['Results' filesep 'Rough' filesep 'Umb10_0.9ms_wheading.mat'];
+initial_gains_filename = ['Results' filesep 'Rough' filesep 'Umb10_1.2ms_wheading.mat'];
 
 
 %%
@@ -48,6 +48,7 @@ run([inner_opt_settings.optimizationDir, filesep, 'BodyMechParamsCapture']);
 run([inner_opt_settings.optimizationDir, filesep, 'ControlParamsCapture']);
 run([inner_opt_settings.optimizationDir, filesep, 'Prosthesis3R60ParamsCapture']);
 run([inner_opt_settings.optimizationDir, filesep, 'OptimParamsCapture']);
+ run([inner_opt_settings.optimizationDir, filesep, 'CMGParamsCapture']);
 
 setInitVar;
 

@@ -28,7 +28,7 @@ if contains(num2str(opts.Resume),'no') || min(opts.Resume) == 0
     moveAndRenameFile([baseDir filesep 'BodyMechParams.m'], [optDirectory, filesep,'BodyMechParamsCapture.m']);
     moveAndRenameFile([modelDir filesep 'ControlParams.m'], [optDirectory, filesep,'ControlParamsCapture.m']);
     moveAndRenameFile([baseDir filesep 'Prosthesis3R60Params.m'], [optDirectory, filesep,'Prosthesis3R60ParamsCapture.m']);
-    moveAndRenameFile([baseDir filesep 'CMGParams.m'], [optDirectory, filesep,'OptimParamsCapture.m']);
+    moveAndRenameFile([baseDir filesep 'CMGParams.m'], [optDirectory, filesep,'CMGParamsCapture.m']);
     moveAndRenameFile([baseDir filesep 'OptimParams.m'], [optDirectory, filesep,'OptimParamsCapture.m']);
 
     
