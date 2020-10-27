@@ -85,7 +85,7 @@ else
 end
 
 %%
-for ii = 1:length(paramSets)
+parfor ii = 1:length(paramSets)
     tic;
     simout(ii) = sim(model,...
         'RapidAcceleratorParameterSets',paramSets{ii},...
