@@ -71,14 +71,14 @@ if contains(get_param(model,'SimulationMode'),'rapid')
     
     for jj = 0:(terrains2Test-1)
             if jj == 0
-                [~, groundZ, groundTheta] = generateGround('flat',[],4*jj,false);
+                [groundX(jj+1,:), groundZ(jj+1,:), groundTheta(jj+1,:)] = generateGround('flat',[],4*jj,false);
             else
-                [~, groundZ, groundTheta] = generateGround('const', inner_opt_settings.terrain_height, 4*jj,false);
+                [groundX(jj+1,:), groundZ(jj+1,:), groundTheta(jj+1,:)] = generateGround('const', inner_opt_settings.terrain_height, 4*jj,false);
             end
             paramSets{jj+1} = ...
                 Simulink.BlockDiagram.modifyTunableParameters(rtp, ...
-                'groundZ',     groundZ, ...
-                'groundTheta', groundTheta);
+                'groundZ',     groundZ(jj+1,:), ...
+                'groundTheta', groundTheta(jj+1,:));
     end   
 else
     paramStruct = [];
@@ -101,10 +101,12 @@ for idx = 1:length(simout)
     printOptInfo(dataStruct(idx),true); 
 end
 
-%  animPost3D(simout(4).animData3D,'intact',false,'speed',1,'obstacle',false,'view','perspective','CMG',false,...
-%                 'showFigure',true,'createVideo',false,'info','prosthetic1.2ms_y','saveLocation',inner_opt_settings.optimizationDir);
-            
-% plotData(simout(1).angularData,simout(1).musculoData,simout(1).GRFData,simout(1).jointTorquesData,simout(1).GaitPhaseData,simout(1).stepTimes,[],'prosthetic3D_1.2ms_yaw',[],0,1,1)
+%%
+ animPost3D(simout(1).animData3D,'intact',false,'speed',1,'obstacle',false,'view','perspective','CMG',false,...
+                'showFigure',true,'createVideo',false,'info','prosthetic1.2ms_y','saveLocation',inner_opt_settings.optimizationDir);
+
+%%            
+plotData(simout(1).angularData,simout(1).musculoData,simout(1).GRFData,simout(1).jointTorquesData,simout(1).GaitPhaseData,simout(1).stepTimes,[],'prosthetic3D_1.2ms_yaw',[],0,1,1)
 %%
 set(0, 'DefaultFigureHitTest','on');
 set(0, 'DefaultAxesHitTest','on','DefaultAxesPickableParts','all');
