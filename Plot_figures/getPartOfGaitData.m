@@ -1,4 +1,5 @@
 function [GaitInfo] = getPartOfGaitData(t,GaitPhaseData,stepTimes,saveInfo,b_oneGaitPhase,timeInterval)
+stepTimes = stepTimes.signals.values;
 if nargin < 6 || isempty(timeInterval)
     idxstart = 1;
     idxend = length(t);

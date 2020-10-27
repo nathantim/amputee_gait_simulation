@@ -3,6 +3,12 @@ velMeasure = nan;
 avgHATVel = nan;
 ASIVel = 0;
 idxfirstStepNum = (max(find(stepNumbers.signals.values(:,1)==initiation_steps,1,'first'),find(stepNumbers.signals.values(:,2)==initiation_steps,1,'first')));
+if isempty(idxfirstStepNum)
+    velMeasure = 9999999999;
+    avgHATVel = nan;
+    disp('Insufficient steps');
+    return    
+end
 idxfirstHATPosVel = find(abs(HATPosVel.time-stepNumbers.time(idxfirstStepNum))==min(abs(HATPosVel.time-stepNumbers.time(idxfirstStepNum))));
 if isempty(idxfirstHATPosVel)
     velMeasure = 9999999999;
