@@ -34,7 +34,7 @@ else
     OptimParams;
     inner_opt_settings = setInnerOptSettings('eval');
     
-    load(['Results' filesep 'Rough' filesep 'Umb10_0.9ms_wheading.mat'])
+    load(['Results' filesep 'Rough' filesep 'Umb10_0.9ms_wheading_noInt.mat'])
 %     load(['Results' filesep 'Rough' filesep 'Umb10_1.2ms_wheading.mat'])
     
 end
@@ -102,11 +102,11 @@ for idx = 1:length(simout)
 end
 
 %%
- animPost3D(simout(1).animData3D,'intact',false,'speed',1,'obstacle',false,'view','perspective','CMG',false,...
-                'showFigure',true,'createVideo',false,'info','prosthetic1.2ms_y','saveLocation',inner_opt_settings.optimizationDir);
+%  animPost3D(simout(1).animData3D,'intact',false,'speed',1,'obstacle',false,'view','perspective','CMG',false,...
+%                 'showFigure',true,'createVideo',false,'info','prosthetic1.2ms_y','saveLocation',inner_opt_settings.optimizationDir);
 
 %%            
-plotData(simout(1).angularData,simout(1).musculoData,simout(1).GRFData,simout(1).jointTorquesData,simout(1).GaitPhaseData,simout(1).stepTimes,[],'prosthetic3D_1.2ms_yaw',[],0,1,1)
+% plotData(simout(1).angularData,simout(1).musculoData,simout(1).GRFData,simout(1).jointTorquesData,simout(1).GaitPhaseData,simout(1).stepTimes,[],'prosthetic3D_1.2ms_yaw',[],0,1,1)
 %%
 set(0, 'DefaultFigureHitTest','on');
 set(0, 'DefaultAxesHitTest','on','DefaultAxesPickableParts','all');
