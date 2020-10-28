@@ -34,8 +34,8 @@ else
     OptimParams;
     inner_opt_settings = setInnerOptSettings('eval');
     
-    load(['Results' filesep 'Rough' filesep 'Umb10_0.9ms_wheading.mat'])
-%     load(['Results' filesep 'Rough' filesep 'Umb10_1.2ms_wheading.mat'])
+%     load(['Results' filesep 'Rough' filesep 'Umb10_0.9ms_wheading.mat'])
+    load(['Results' filesep 'Rough' filesep 'Umb10_1.2ms_wheading.mat'])
     
 end
 
@@ -51,7 +51,7 @@ load_system(model);
 %%
 [groundX, groundZ, groundTheta] = generateGround('flat');
 
-dt_visual = 1/1000;
+dt_visual = 1/30;
 animFrameRate = 30;
 
 assignGainsSagittal;
@@ -97,8 +97,8 @@ for idx = 1:length(simout)
     printOptInfo(dataStruct(idx),true); 
 end
 
- animPost3D(simout(1).animData3D,'intact',false,'speed',1,'obstacle',false,'view','perspective','CMG',false,...
-                'showFigure',true,'createVideo',true,'info',[num2str(inner_opt_settings.target_velocity) 'ms_y_dt1000'],'saveLocation',inner_opt_settings.optimizationDir);
+%  animPost3D(simout(1).animData3D,'intact',false,'speed',1,'obstacle',false,'view','perspective','CMG',false,...
+%                 'showFigure',true,'createVideo',true,'info',[num2str(inner_opt_settings.target_velocity) 'ms_y_dt1000'],'saveLocation',inner_opt_settings.optimizationDir);
             
 plotData(simout(1).angularData,simout(1).musculoData,simout(1).GRFData,simout(1).jointTorquesData,simout(1).GaitPhaseData,simout(1).stepTimes,[],'prosthetic3D_1.2ms_yaw',[],0,1,1)
 %%
