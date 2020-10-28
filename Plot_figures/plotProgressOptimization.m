@@ -164,7 +164,7 @@ try
             end
             
             
-            warning('on');
+            
             
             if ~isempty(CMGData) && b_plotCMG
                 clf(CMGData);
@@ -180,7 +180,8 @@ try
             animPost3D(dataStruct.animData3D,'intact',intactFlag,'obstacle',logical(dataStruct.tripWasActive.data),'view','perspective',...
                         'CMG',(~isempty(CMGData)),'showFigure',false,'createVideo',true,'info',['cost_' num2str(round(dataStruct.optimCost,1))],...
                         'saveLocation',dataStruct.optimizationDir);
-            save([dataStruct.optimizationDir filesep 'cost_' num2str(round(dataStruct.optimCost,1)) '.mat'],'dataStruct');        
+            warning('on');
+            save([dataStruct.optimizationDir filesep 'cost_' num2str(round(dataStruct.optimCost,1)) '.mat'],'dataStruct');
                     
         end
     end
