@@ -180,8 +180,9 @@ try
                     'CMG',(~isempty(CMGData)),'showFigure',false,'createVideo',true,'info',['cost_' num2str(round(dataStruct.optimCost,1))],...
                     'saveLocation',dataStruct.innerOptSettings.optimizationDir);
             end
-            save([dataStruct.optimizationDir filesep 'cost_' num2str(round(dataStruct.optimCost,1)) '.mat'],'dataStruct');
-                    
+            if ~isempty(strtrim(dataStruct.innerOptSettings.optimizationDir))
+                save([dataStruct.innerOptSettings.optimizationDir filesep 'cost_' num2str(round(dataStruct.optimCost,1)) '.mat'],'dataStruct');
+            end
         end
     end
     
