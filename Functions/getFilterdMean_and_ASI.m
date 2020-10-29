@@ -6,18 +6,6 @@ end
 leftValues = reshape(leftSignal,1,length(leftSignal));
 rightValues = reshape(rightSignal,1,length(rightSignal));
 
-ASIstruct=[];
-ASImean = [];
-ASIstd = [];
-leftMean = [];
-leftStd = [];
-rightMean = [];
-rightStd = [];
-if length(leftValues) < initiation_steps || length(rightValues) < initiation_steps
-    warning("Not enough steps for proper evaluation");
-    return
-end
-
 step2cal    = min(length(leftValues),length(rightValues))-initiation_steps;
 
 leftMean    = mean(leftValues((1+initiation_steps):end));

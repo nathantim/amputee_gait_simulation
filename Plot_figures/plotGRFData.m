@@ -21,7 +21,9 @@ end
 t = GaitInfo.t;
 
 %%
-
+% x: Anterior +, Posterior -
+% y: Medio +, Lateral -,
+% z: Up +, down -
 LGRFx = GRFData.signals.values(:,1);
 LGRFy = GRFData.signals.values(:,2);
 LGRFz = GRFData.signals.values(:,3);
@@ -30,7 +32,7 @@ RGRFx = GRFData.signals.values(:,4);
 RGRFy = GRFData.signals.values(:,5);
 RGRFz = GRFData.signals.values(:,6);
 
-warning('Direction stuff');
+% warning('Direction stuff');
 
 
 [LGRFx_avg,LGRFx_sd] = interpData2perc(t,GaitInfo.tp,LGRFx,GaitInfo.start.leftV,GaitInfo.end.leftV,GaitInfo.b_oneGaitPhase);

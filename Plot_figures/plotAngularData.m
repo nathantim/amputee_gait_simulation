@@ -24,20 +24,23 @@ t = GaitInfo.t;
 
 %%
 
-
+% Flexion +, Extension -
 LhipAngles      = -180/pi*angularData.signals.values(:,3);
 RhipAngles      = -180/pi*angularData.signals.values(:,5);
 
+% Flexion +, Extension -
 LkneeAngles     = 180/pi*angularData.signals.values(:,7);
 RkneeAngles     = 180/pi*angularData.signals.values(:,9);
 
+% Dorsiflexion +, Plantar flexion -
 LankleAngles    = -180/pi*angularData.signals.values(:,11);
 RankleAngles    = -180/pi*angularData.signals.values(:,13);
 
+% Abduction +, Adduction -
 LhipRollAngles    = 180/pi*angularData.signals.values(:,15);
 RhipRollAngles    = 180/pi*angularData.signals.values(:,17);
 
-warning('Unreasoned factor -1');
+% warning('Unreasoned factor -1');
 
 
 [LhipAngles_avg,LhipAngles_sd] = interpData2perc(t,GaitInfo.tp,LhipAngles,GaitInfo.start.leftV,GaitInfo.end.leftV,GaitInfo.b_oneGaitPhase);

@@ -1,9 +1,8 @@
-function [cost, dataStruct] = getCost(model,Gains,time,metabolicEnergy,sumOfStopTorques,HATPosVel,stepVelocities,stepTimes,stepLengths,stepNumbers,CMGData,selfCollision,inner_opt_settings, b_isParallel)
+function [cost, dataStruct] = getCost(model,Gains,time,metabolicEnergy,sumOfStopTorques,HATPosVel,stepVelocities,stepTimes,stepLengths,stepNumbers,CMGData,selfCollision,innerOptSettings, b_isParallel)
 try
     if nargin < 13
         b_isParallel = false;
     end
-    OptimParams;
     
     if contains(model,'3R60')
          modelType = 'prosthetic';
@@ -15,7 +14,7 @@ try
     else
          modelType = [modelType, '2D'];
     end
-    modelType = [modelType, char(num2str(inner_opt_settings.target_velocity)) 'ms'];
+    modelType = [modelType, char(num2str(innerOptSettings.target_velocity)) 'ms'];
     
     dataStruct = struct('cost',struct('data',nan,'minimize',1,'info',''));
     % x pos only
@@ -34,11 +33,10 @@ try
         cost = nan;
         disp('Metabolic Energy < 0')
         return
-        % elseif ( min(size(stepVelocities)) == 0 || min(size(stepTimes)) == 0 || size(stepVelocities,2) ~= 2 || size(stepTimes,2) ~= 2 || ...
-        %         min(size(stepVelocities(stepVelocities~=0))) == 0 ||  min(size(stepTimes(stepTimes~=0))) == 0)
-        %     cost = nan;
-        %     disp('No steps')
-        %     return
+    elseif max(stepNumbers.signals.values(:,1)) < innerOptSettings.initiation_steps && max(stepNumbers.signals.values(:,1)) < innerOptSettings.initiation_steps
+        cost = nan;
+        disp('Insufficient steps')
+        return
     end
     
     %% Calculate cost of transport
@@ -58,7 +56,7 @@ try
     % Decide which to use for optimization, 
     % Umberger (2003), Umberger (2003) TG, Umberger (2010), Wang (2012)
 %     opt_exp_model = 'Umberger (2010)';
-    opt_exp_model = inner_opt_settings.expenditure_model;
+    opt_exp_model = innerOptSettings.expenditure_model;
     costOfTransportForOpt =  effort_costs(contains(muscle_exp_models,opt_exp_model)).costOfTransport;
     if isempty(costOfTransportForOpt)
         disp(effort_costs(:));
@@ -73,15 +71,11 @@ try
     end
     
     %% Calculate velocity cost
-%     velCost = getVelMeasure(stepVelocities(:,1),stepTimes(:,1),min_velocity,max_velocity,initiation_steps) + ...
-%         getVelMeasure(stepVelocities(:,2),stepTimes(:,2),min_velocity,max_velocity,initiation_steps);
-    [velCost,meanVel, ASIVel] = getVelMeasure(HATPosVel,stepNumbers,min_velocity,max_velocity,initiation_steps);
-    %     [distCost, dist_covered] = getDistMeasure(timeSetToRun,stepLengths,min_velocity,max_velocity,dist_slack);
+    [velCost,meanVel, ASIVel] = getVelMeasure(HATPosVel,stepNumbers,innerOptSettings.min_velocity,innerOptSettings.max_velocity,innerOptSettings.initiation_steps);
     
     %% Calculate step info
-    stepLengthASIstruct = getFilterdMean_and_ASI(findpeaks(stepLengths.signals.values(:,1)),findpeaks(stepLengths.signals.values(:,2)),initiation_steps);
-    stepTimeASIstruct = getFilterdMean_and_ASI(findpeaks(stepTimes.signals.values(:,1)),findpeaks(stepTimes.signals.values(:,2)),initiation_steps);
-%     [meanVel, ASIVel] = getFilterdMean_and_ASI(stepVelocities(:,1),stepVelocities(:,2),initiation_steps);
+    stepLengthASIstruct = getFilterdMean_and_ASI(findpeaks(stepLengths.signals.values(:,1)),findpeaks(stepLengths.signals.values(:,2)),innerOptSettings.initiation_steps);
+    stepTimeASIstruct = getFilterdMean_and_ASI(findpeaks(stepTimes.signals.values(:,1)),findpeaks(stepTimes.signals.values(:,2)),innerOptSettings.initiation_steps);
     
     %%
     try
@@ -110,14 +104,14 @@ try
     %     cost = 100000*timeCost  + 1000*(velCost + 0*distCost) + 0.1*costOfTransport;
 %     cost = 100000*timeCost  + 1000*(velCost) + 100*costOfTransportForOpt + .01*sumOfStopTorques;
 %11-6-2020_19:49
-    timeFactor  = inner_opt_settings.timeFactor;
-    velFactor   = inner_opt_settings.velocityFactor;
-    CoTFactor   = inner_opt_settings.CoTFactor;
-    stopTFactor = inner_opt_settings.sumStopTorqueFactor;
-    CMGTorqueFactor = inner_opt_settings.CMGTorqueFactor;
-    CMGdeltaHFactor = inner_opt_settings.CMGdeltaHFactor;
-    ControlRMSEFactor = inner_opt_settings.ControlRMSEFactor;
-    selfCollisionFactor = inner_opt_settings.selfCollisionFactor;
+    timeFactor  = innerOptSettings.timeFactor;
+    velFactor   = innerOptSettings.velocityFactor;
+    CoTFactor   = innerOptSettings.CoTFactor;
+    stopTFactor = innerOptSettings.sumStopTorqueFactor;
+    CMGTorqueFactor = innerOptSettings.CMGTorqueFactor;
+    CMGdeltaHFactor = innerOptSettings.CMGdeltaHFactor;
+    ControlRMSEFactor = innerOptSettings.ControlRMSEFactor;
+    selfCollisionFactor = innerOptSettings.selfCollisionFactor;
     
     cost = timeFactor*timeCost  + velFactor*(velCost) + CoTFactor*costOfTransportForOpt ...
                 + stopTFactor*sumOfStopTorques + CMGTorqueFactor*maxCMGTorque + CMGdeltaHFactor*maxCMGdeltaH ...
@@ -139,7 +133,7 @@ try
         'maxCMGTorque',struct('data',maxCMGTorque,'minimize',1,'info',''),'maxCMGdeltaH',struct('data',maxCMGdeltaH,'minimize',1,'info',''),'controlRMSE',struct('data',controlRMSE,'minimize',1,'info',''),...
         'numberOfCollisions',struct('data',numberOfCollisions,'minimize',1,'info',''), ...
         'tripWasActive',struct('data',tripWasActive,'minimize',1,'info',''),...
-        'optimizationDir',inner_opt_settings.optimizationDir);
+        'innerOptSettings',innerOptSettings,'Gains',Gains);
 
     if b_isParallel && timeCost == 0
         GainsSave = Gains;
@@ -152,7 +146,7 @@ try
             workerID = [];
             warning(strcat(char(ME.message)," In ", mfilename, " line ", num2str(ME.stack(1).line)));
         end
-        filename = [inner_opt_settings.optimizationDir filesep char(strcat('compareEnergyCost',num2str(workerID),'.mat'))];
+        filename = [innerOptSettings.optimizationDir filesep char(strcat('compareEnergyCost',num2str(workerID),'.mat'))];
         if exist(filename,'file') == 2
             exist_vars = load(filename);
             metabolicEnergySave     = [exist_vars.metabolicEnergySave;metabolicEnergy];

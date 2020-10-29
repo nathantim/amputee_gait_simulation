@@ -46,10 +46,10 @@ function ConeObjects = createConeObjects(ConeRes, yShift, rFoot, rShank, rThigh,
         R_KneeProsthObj = surf( xf, yf - yShift + yShiftGlobal, zf, 'FaceColor', [1,0.6,0.6]);
         ConeObjects = [ConeObjects, R_KneeProsthObj];
     end
-    if CMGFlag
-        CMGlinkObj = surf( xf, yf - yShift + yShiftGlobal, zf, 'FaceColor', ConeCol3);
-        ConeObjects = [ConeObjects, CMGlinkObj];
-    end
+%     if CMGFlag
+%         CMGlinkObj = surf( xf, yf - yShift + yShiftGlobal, zf, 'FaceColor', ConeCol3);
+%         ConeObjects = [ConeObjects, CMGlinkObj];
+%     end
 
     % set general properties                 
     set(ConeObjects, 'Visible', 'off', 'EdgeColor', 'none', ...

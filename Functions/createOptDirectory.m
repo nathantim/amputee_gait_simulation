@@ -30,9 +30,7 @@ if contains(num2str(opts.Resume),'no') || min(opts.Resume) == 0
     moveAndRenameFile([baseDir filesep 'Prosthesis3R60Params.m'], [optDirectory, filesep,'Prosthesis3R60ParamsCapture.m']);
     moveAndRenameFile([baseDir filesep 'CMGParams.m'], [optDirectory, filesep,'CMGParamsCapture.m']);
     moveAndRenameFile([baseDir filesep 'OptimParams.m'], [optDirectory, filesep,'OptimParamsCapture.m']);
-
     
-
 %     opts.SaveFilename = [optDirectory filesep 'vcmaes.mat'];
     opts.BaseDirectory = optDirectory;
     save([optDirectory filesep 'settings.mat'],'inner_opt_settings','opts');  
