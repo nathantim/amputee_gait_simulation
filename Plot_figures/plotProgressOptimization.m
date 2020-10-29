@@ -22,7 +22,7 @@ try
     dataFieldnames = fieldnames(dataStruct);
     %     numOfData = length(dataFieldnames)-1;
     %%
-    if ~isempty(dataFieldnames) && length(dataFieldnames)>4 && dataStruct.timeCost.data == 0
+    if ~isempty(dataFieldnames) && length(dataFieldnames)>4 && ~isempty(dataStruct.timeCost.data) && dataStruct.timeCost.data == 0
         legStates = findobj('type','figure','Name','Leg State');
         gaitKinematics = findobj('type','figure','Name','Gait Kinematics');
         jointTorques = findobj('type','figure','Name','Joint Torques');

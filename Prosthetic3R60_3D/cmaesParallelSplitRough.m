@@ -215,19 +215,29 @@ for ii = 1:numTerrains:(numTerrains*popSize)
 end
 rng('shuffle');
 
-%simulate each sample and store cost
-simout = parsim(in, 'ShowProgress', true);
 
+%% simulate each sample and store cost
+simout = parsim(in, 'ShowProgress', false);
 
-
+%% Obtain cost and data from simulation
+dataStruct(1:length(in)) = struct('modelType',[],'timeCost',struct('data',[],'minimize',1,'info',''),'cost',struct('data',nan,'minimize',1,'info',''),'CoT',struct('data',[],'minimize',1,'info',[]),...
+        'E',struct('data',[],'minimize',1,'info',[]),'sumTstop',struct('data',[],'minimize',1,'info',''),...
+        'HATPos',struct('data',[],'minimize',0,'info',''),'vMean',struct('data',[],'minimize',0,'info',''),...
+        'stepLengthASIstruct',struct('data',[],'minimize',2,'info',''),...
+        'stepTimeASIstruct',struct('data',[],'minimize',2,'info',''),'velCost',struct('data',[],'minimize',1,'info',''),'timeVector',struct('data',[],'minimize',1,'info',''),...
+        'maxCMGTorque',struct('data',[],'minimize',1,'info',''),'maxCMGdeltaH',struct('data',[],'minimize',1,'info',''),'controlRMSE',struct('data',[],'minimize',1,'info',''),...
+        'numberOfCollisions',struct('data',[],'minimize',1,'info',''), ...
+        'tripWasActive',struct('data',[],'minimize',1,'info',''),...
+        'innerOptSettings',innerOptSettings,'Gains',[],'kinematics',[],'animData3D',[]);
+    
 for idx = 1:length(in)
     
-    mData=out(idx).getSimulationMetadata();
+    mData=simout(idx).getSimulationMetadata();
     
     if strcmp(mData.ExecutionInfo.StopEvent,'DiagnosticError') || strcmp(mData.ExecutionInfo.StopEvent,'TimeOut')
         disp('Sim was stopped due to error');
         fprintf('Simulation %d was stopped due to error: \n',idx);
-        disp(out(idx).ErrorMessage);
+        disp(simout(idx).ErrorMessage);
         costs(idx) = nan;
     else
         time                = simout(idx).time;
@@ -275,20 +285,21 @@ for idx = 1:length(in)
         
         try
             dataStruct(idx) = dataStructlocal;
+            
         catch ME
-            warning('Error: %s\nIn %s.m line %d',ME.message,mfilename,ME.stack(1).line);
+            warning('Error: %s\nIn %s.m line %d',ME.message, mfilename,ME.stack(1).line);
+        end
+        if innerOptSettings.visual
+                printOptInfo(dataStruct(idx),true);
         end
         
-        if inner_opt_settings.visual
-            printOptInfo(dataStruct(idx),true);
-        end
         
     end
     
 end
 
 
-%calculate mean across terrains
+%% calculate mean across terrains
 costs = reshape(costs,numTerrains,popSize); % size(costs) = [numTerrrains, popSize]
 isinvalid = sum(isnan(costs))>1;
 costs = nanmean(costs,1);
@@ -297,6 +308,9 @@ costs(isinvalid) = nan;
 %% send the best outcome of the best gains for plotting, only flat terrain
 try
     mingainidx = find(costs == min(costs));
+    if isempty(mingainidx)
+        mingainidx = 1;
+    end
     %         distfrommean = costsall(:,mingainidx) - costs(mingainidx);
     meanterrainidx = 1;%find(abs(distfrommean) == min(abs(distfrommean)));
     
