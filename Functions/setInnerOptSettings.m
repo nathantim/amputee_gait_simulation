@@ -1,4 +1,4 @@
-function [inner_opt_settings, opts] = setInnerOptSettings(b_resume,initial_gains_filename,optimizationInfo)
+function [innerOptSettings, opts] = setInnerOptSettings(b_resume,initial_gains_filename,optimizationInfo)
 if nargin < 2
     initial_gains_filename = '';
 end
@@ -10,29 +10,32 @@ opts = [];
 
 
 % Umberger (2003), Umberger (2003) TG, Umberger (2010), Wang (2012)
-inner_opt_settings.expenditure_model = 'Umberger (2010)';
-inner_opt_settings.timeFactor = 100000;
-inner_opt_settings.velocityFactor = 100;
-inner_opt_settings.CoTFactor = 1; % cost of transport
-inner_opt_settings.sumStopTorqueFactor = 1E-2;
-inner_opt_settings.CMGTorqueFactor = 0;
-inner_opt_settings.CMGdeltaHFactor = 15;
-inner_opt_settings.ControlRMSEFactor = 0;
-inner_opt_settings.selfCollisionFactor = 1000;
+innerOptSettings.expenditure_model = 'Umberger (2010)';
+innerOptSettings.timeFactor = 100000;
+innerOptSettings.velocityFactor = 100;
+innerOptSettings.CoTFactor = 1; % cost of transport
+innerOptSettings.sumStopTorqueFactor = 1E-2;
+innerOptSettings.CMGTorqueFactor = 0;
+innerOptSettings.CMGdeltaHFactor = 15;
+innerOptSettings.ControlRMSEFactor = 0;
+innerOptSettings.selfCollisionFactor = 1000;
 
-inner_opt_settings.numTerrains = 4;
-inner_opt_settings.terrain_height = 0.010; % in m
+innerOptSettings.numTerrains = 4;
+innerOptSettings.terrain_height = 0.010; % in m
 if usejava('desktop')
-    inner_opt_settings.numParWorkers = 4;
-    inner_opt_settings.visual = true;
+    innerOptSettings.numParWorkers = 4;
+    innerOptSettings.visual = true;
 else
-    inner_opt_settings.numParWorkers = 4;
-    inner_opt_settings.visual = false;
+    innerOptSettings.numParWorkers = 4;
+    innerOptSettings.visual = false;
 end
-inner_opt_settings.initiation_steps = initiation_steps;
-inner_opt_settings.target_velocity = target_velocity;
-inner_opt_settings.min_velocity = min_velocity;
-inner_opt_settings.max_velocity = max_velocity;
+innerOptSettings.initiation_steps = initiation_steps;
+innerOptSettings.target_velocity = target_velocity;
+innerOptSettings.min_velocity = min_velocity;
+innerOptSettings.max_velocity = max_velocity;
+
+innerOptSettings.timeOut = 10*60; % Time out for simulation
+innerOptSettings.createVideo = true; % Create video during optimization
 if nargin > 0
     opts = cmaes;
     %opts.PopSize = numvars;
@@ -56,11 +59,11 @@ if nargin > 0
     end
     opts.UserData = char(strcat("Gains filename: ", initial_gains_filename));
     opts.UserDat2 = '';
-    fields_opts = fields(inner_opt_settings);
-    for i = 1:length(fields(inner_opt_settings))
-        opts.UserDat2 = strcat(opts.UserDat2,"; ", fields_opts{i}, ": ", string(inner_opt_settings.(fields_opts{i})));
+    fields_opts = fields(innerOptSettings);
+    for i = 1:length(fields(innerOptSettings))
+        opts.UserDat2 = strcat(opts.UserDat2,"; ", fields_opts{i}, ": ", string(innerOptSettings.(fields_opts{i})));
     end
     
-    [inner_opt_settings, opts] = createOptDirectory(pwd,inner_opt_settings,opts,optimizationInfo);
+    [innerOptSettings, opts] = createOptDirectory(pwd,innerOptSettings,opts,optimizationInfo);
     
 end

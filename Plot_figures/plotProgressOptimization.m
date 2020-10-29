@@ -162,10 +162,7 @@ try
                     set(plotGRFFukuchi(2,1),'DisplayName','Fukuchi');
                 end
             end
-            
-            
-            
-            
+
             if ~isempty(CMGData) && b_plotCMG
                 clf(CMGData);
                 sgtitle(CMGData,['CMG data for cost of ',num2str(round(dataStruct.optimCost,1)),', with $v_{mean}$ = ', num2str(round(dataStruct.vMean.data,1)),'m/s','. $\tau_{stop}$ = ', num2str(dataStruct.sumTstop.data)]);
@@ -177,10 +174,12 @@ try
             else
                 intactFlag = true;
             end
-            animPost3D(dataStruct.animData3D,'intact',intactFlag,'obstacle',logical(dataStruct.tripWasActive.data),'view','perspective',...
-                        'CMG',(~isempty(CMGData)),'showFigure',false,'createVideo',true,'info',['cost_' num2str(round(dataStruct.optimCost,1))],...
-                        'saveLocation',dataStruct.optimizationDir);
             warning('on');
+            if innerOptSettings.createVideo
+                animPost3D(dataStruct.animData3D,'intact',intactFlag,'obstacle',logical(dataStruct.tripWasActive.data),'view','perspective',...
+                    'CMG',(~isempty(CMGData)),'showFigure',false,'createVideo',true,'info',['cost_' num2str(round(dataStruct.optimCost,1))],...
+                    'saveLocation',dataStruct.innerOptSettings.optimizationDir);
+            end
             save([dataStruct.optimizationDir filesep 'cost_' num2str(round(dataStruct.optimCost,1)) '.mat'],'dataStruct');
                     
         end

@@ -5,11 +5,11 @@ end
 
 %%
 if input("Load from optimization folder? (1/0)   " )
-    inner_opt_settings = setInnerOptSettings('yes');
-    disp(inner_opt_settings.optimizationDir);
+    innerOptSettings = setInnerOptSettings('yes');
+    disp(innerOptSettings.optimizationDir);
     
-    load([inner_opt_settings.optimizationDir filesep 'variablescmaes.mat']);
-    InitialGuess = load([inner_opt_settings.optimizationDir filesep 'initial_gains.mat']);
+    load([innerOptSettings.optimizationDir filesep 'variablescmaes.mat']);
+    InitialGuess = load([innerOptSettings.optimizationDir filesep 'initial_gains.mat']);
     
     idx1 = length(InitialGuess.GainsSagittal);
     idx2 = idx1 + length(InitialGuess.initConditionsSagittal);
@@ -22,17 +22,17 @@ if input("Load from optimization folder? (1/0)   " )
     GainsCoronal = InitialGuess.GainsCoronal.*exp(bestever.x(idx2+1:idx3));
     initConditionsCoronal = InitialGuess.initConditionsCoronal.*exp(bestever.x((idx3+1):idx4));
     
-    run([inner_opt_settings.optimizationDir, filesep, 'BodyMechParamsCapture']);
-    run([inner_opt_settings.optimizationDir, filesep, 'ControlParamsCapture']);
-    run([inner_opt_settings.optimizationDir, filesep, 'Prosthesis3R60ParamsCapture']);
-    run([inner_opt_settings.optimizationDir, filesep, 'OptimParamsCapture']);
+    run([innerOptSettings.optimizationDir, filesep, 'BodyMechParamsCapture']);
+    run([innerOptSettings.optimizationDir, filesep, 'ControlParamsCapture']);
+    run([innerOptSettings.optimizationDir, filesep, 'Prosthesis3R60ParamsCapture']);
+    run([innerOptSettings.optimizationDir, filesep, 'OptimParamsCapture']);
     
 else
     BodyMechParams;
     ControlParams;
     Prosthesis3R60Params;
     OptimParams;
-    inner_opt_settings = setInnerOptSettings('eval');
+    innerOptSettings = setInnerOptSettings('eval');
     
     load(['Results' filesep 'Rough' filesep 'Umb10_0.9ms_num_inter.mat'])
 %     load(['Results' filesep 'Rough' filesep 'Umb10_1.2ms_wheading.mat'])
@@ -71,7 +71,7 @@ if contains(get_param(model,'SimulationMode'),'rapid')
             if jj == 1
                 [groundX(jj,:), groundZ(jj,:), groundTheta(jj,:)] = generateGround('flat',[],4*(jj-1),false);
             else
-                [groundX(jj,:), groundZ(jj,:), groundTheta(jj,:)] = generateGround('const', inner_opt_settings.terrain_height, 4*(jj-1),false);
+                [groundX(jj,:), groundZ(jj,:), groundTheta(jj,:)] = generateGround('const', innerOptSettings.terrain_height, 4*(jj-1),false);
             end
             paramSets{jj} = ...
                 Simulink.BlockDiagram.modifyTunableParameters(rtp, ...
@@ -107,15 +107,34 @@ for idx = 1:length(simout)
         disp('Sim was stopped due to error');
         fprintf('Simulation %d was stopped due to error: \n',idx);
         disp(simout(idx).ErrorMessage);
-        costs(idx) = nan;
+        cost(idx) = nan;
     else
-        [cost(idx), dataStruct(idx)] = getCost(model,[],simout(idx).time,simout(idx).metabolicEnergy,simout(idx).sumOfStopTorques,simout(idx).HATPosVel,simout(idx).stepVelocities,simout(idx).stepTimes,simout(idx).stepLengths,simout(idx).stepNumbers,[],simout(idx).selfCollision,inner_opt_settings,0);
-        printOptInfo(dataStruct(idx),true);
+        [cost(idx), dataStructLocal] = getCost(model,[],simout(idx).time,simout(idx).metabolicEnergy,simout(idx).sumOfStopTorques,simout(idx).HATPosVel,simout(idx).stepVelocities,simout(idx).stepTimes,simout(idx).stepLengths,simout(idx).stepNumbers,[],simout(idx).selfCollision,innerOptSettings,0);
+        printOptInfo(dataStructLocal,true);
+        
+        kinematics.angularData = simout(idx).angularData;
+        kinematics.GaitPhaseData = simout(idx).GaitPhaseData;
+        kinematics.time = simout(idx).time;
+        kinematics.stepTimes = simout(idx).stepTimes;
+        kinematics.musculoData = simout(idx).musculoData;
+        kinematics.GRFData = simout(idx).GRFData;
+        kinematics.CMGData = simout(idx).CMGData;
+        kinematics.jointTorquesData = simout(idx).jointTorquesData;
+        
+        
+        dataStructLocal.kinematics = kinematics;
+        dataStructLocal.animData3D = simout((idx)).animData3D;
+        dataStructLocal.optimCost = cost(idx);
+        try
+            dataStruct(idx) = dataStructLocal;
+        catch
+        end
     end
 end
 
+%%
 %  animPost3D(simout(1).animData3D,'intact',false,'speed',1,'obstacle',false,'view','perspective','CMG',false,...
-%                 'showFigure',true,'createVideo',true,'info',[num2str(inner_opt_settings.target_velocity) 'ms_y_dt1000'],'saveLocation',inner_opt_settings.optimizationDir);
+%                 'showFigure',true,'createVideo',true,'info',[num2str(innerOptSettings.target_velocity) 'ms_y_dt1000'],'saveLocation',innerOptSettings.optimizationDir);
             
 plotData(simout(1).angularData,simout(1).musculoData,simout(1).GRFData,simout(1).jointTorquesData,simout(1).GaitPhaseData,simout(1).stepTimes,[],'prosthetic3D_1.2ms_yaw',[],0,1,1)
 %%
