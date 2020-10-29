@@ -78,7 +78,7 @@ try
     %% 
     if max(stepNumbers.signals.values(:,1)) < innerOptSettings.initiation_steps && max(stepNumbers.signals.values(:,1)) < innerOptSettings.initiation_steps
         velCost = 9999999*( innerOptSettings.initiation_steps/min([max(stepNumbers.signals.values(:,1)),max(stepNumbers.signals.values(:,2))]) );
-        fprintf('-- Insufficient steps --')
+        fprintf('-- Insufficient steps -- \n')
         meanVel = nan;
         ASIVel.ASImean = nan;
         stepLengthASIstruct.ASImean = nan;

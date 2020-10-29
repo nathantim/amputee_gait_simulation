@@ -52,7 +52,7 @@ try
 %         end
         
     else
-        fprintf(' Cost: %d \n',cost);
+        fprintf('Cost: %d \n',cost);
     end
 catch ME
     warning(ME.message)
