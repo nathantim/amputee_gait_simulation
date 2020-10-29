@@ -11,14 +11,14 @@ clear all; close all; clc;
 
 %%
 b_resumeOptimization = char(input("Do you want to resume a previous optimization? (yes/no)   ",'s'));
-optimizationInfo = 'higherTs';
+optimizationInfo = 'numerical_change';
 
 %%
 % initial_gains_filename = ['Results' filesep 'Rough' filesep 'Umb10_1.5cm_1.2ms_kneelim1_mstoptorque2.mat'];
 % initial_gains_filename = ['Results' filesep 'Rough' filesep 'Umb10_1.5cm_0.9ms_opt_1.2mscoronal.mat'];
 % initial_gains_filename = ['Results' filesep 'Rough' filesep 'Umb10_1.2ms_difffoot_higherabd.mat'];
 % initial_gains_filename = ['Results' filesep 'Rough' filesep 'Umb10_0.9ms.mat'];
-initial_gains_filename = ['Results' filesep 'Rough' filesep 'Umb10_0.9ms_wheading.mat'];
+initial_gains_filename = ['Results' filesep 'Rough' filesep 'Umb10_1.2ms_wheading.mat'];
 
 
 %%
@@ -51,7 +51,7 @@ run([inner_opt_settings.optimizationDir, filesep, 'OptimParamsCapture']);
 
 setInitVar;
 
-dt_visual = 1/1000;
+dt_visual = 1/30;
 animFrameRate = 30;
 
 [groundX, groundZ, groundTheta] = generateGround('flat');
@@ -60,7 +60,9 @@ animFrameRate = 30;
 % save_system(model)
 
 %% Build the Rapid Accelerator target once
+warning('off')
 rtp = Simulink.BlockDiagram.buildRapidAcceleratorTarget(model);
+warning('on')
 
 %% setup cmaes
 numvars = length(InitialGuess);
@@ -68,7 +70,7 @@ x0 = zeros(numvars,1);
 sigma0 = 1/8;
 % sigma0 = 1/3;
 
-opts.DiagonalOnly = 30;
+opts.DiagonalOnly = 10;
 opts.UserDat2 = strcat(opts.UserDat2,"; ", "sigma0: ", string(sigma0), "; ampHipFlexFactor: ", string(ampHipFlexFactor) , "; ampHipExtFactor: ", string(ampHipExtFactor), "; ampHipAbdFactor: ", string(ampHipAbdFactor), "; ampHipAddFactor: ", string(ampHipAddFactor) );
 
 %% Show settings

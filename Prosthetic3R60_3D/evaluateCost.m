@@ -34,8 +34,8 @@ else
     OptimParams;
     inner_opt_settings = setInnerOptSettings('eval');
     
-%     load(['Results' filesep 'Rough' filesep 'Umb10_0.9ms_wheading.mat'])
-    load(['Results' filesep 'Rough' filesep 'Umb10_1.2ms_wheading.mat'])
+    load(['Results' filesep 'Rough' filesep 'Umb10_0.9ms_num_inter.mat'])
+%     load(['Results' filesep 'Rough' filesep 'Umb10_1.2ms_wheading.mat'])
     
 end
 
@@ -63,38 +63,55 @@ assignInit;
 
 %%
 if contains(get_param(model,'SimulationMode'),'rapid')
+    warning('off')
     rtp = Simulink.BlockDiagram.buildRapidAcceleratorTarget(model);
+    warning('on');
     
-    for jj = 0:(terrains2Test-1)
-            if jj == 0
-                [groundX(jj+1,:), groundZ(jj+1,:), groundTheta(jj+1,:)] = generateGround('flat',[],4*jj,false);
+    for jj = 1:(terrains2Test)
+            if jj == 1
+                [groundX(jj,:), groundZ(jj,:), groundTheta(jj,:)] = generateGround('flat',[],4*(jj-1),false);
             else
-                [groundX(jj+1,:), groundZ(jj+1,:), groundTheta(jj+1,:)] = generateGround('const', inner_opt_settings.terrain_height, 4*jj,false);
+                [groundX(jj,:), groundZ(jj,:), groundTheta(jj,:)] = generateGround('const', inner_opt_settings.terrain_height, 4*(jj-1),false);
             end
-            paramSets{jj+1} = ...
+            paramSets{jj} = ...
                 Simulink.BlockDiagram.modifyTunableParameters(rtp, ...
-                'groundZ',     groundZ(jj+1,:), ...
-                'groundTheta', groundTheta(jj+1,:));
+                'groundZ',     groundZ(jj,:), ...
+                'groundTheta', groundTheta(jj,:));
+            in(jj) = Simulink.SimulationInput(model);
+            in(jj) = in(jj).setModelParameter('TimeOut', 10*60);
+            in(jj) = in(jj).setModelParameter('SimulationMode', 'rapid', ...
+                'RapidAcceleratorUpToDateCheck', 'off');
+            in(jj) = in(jj).setModelParameter('RapidAcceleratorParameterSets', paramSets{jj});
     end   
 else
     paramStruct = [];
 end
 
 %%
-parfor ii = 1:length(paramSets)
-    tic;
-    simout(ii) = sim(model,...
-        'RapidAcceleratorParameterSets',paramSets{ii},...
-        'RapidAcceleratorUpToDateCheck','off',...
-        'TimeOut',10*60,...
-        'SaveOutput','on');
-    toc;
-end
+% parfor ii = 1:length(paramSets)
+%     tic;
+%     simout(ii) = sim(model,...
+%         'RapidAcceleratorParameterSets',paramSets{ii},...
+%         'RapidAcceleratorUpToDateCheck','off',...
+%         'TimeOut',10*60,...
+%         'SaveOutput','on');
+%     toc;
+% end
+simout = parsim(in, 'ShowProgress', true);
 
 %%
 for idx = 1:length(simout)
-   [cost(idx), dataStruct(idx)] = getCost(model,[],simout(idx).time,simout(idx).metabolicEnergy,simout(idx).sumOfStopTorques,simout(idx).HATPosVel,simout(idx).stepVelocities,simout(idx).stepTimes,simout(idx).stepLengths,simout(idx).stepNumbers,[],simout(idx).selfCollision,inner_opt_settings,0);
-    printOptInfo(dataStruct(idx),true); 
+    mData=simout(idx).getSimulationMetadata();
+    
+    if strcmp(mData.ExecutionInfo.StopEvent,'DiagnosticError') || strcmp(mData.ExecutionInfo.StopEvent,'TimeOut')
+        disp('Sim was stopped due to error');
+        fprintf('Simulation %d was stopped due to error: \n',idx);
+        disp(simout(idx).ErrorMessage);
+        costs(idx) = nan;
+    else
+        [cost(idx), dataStruct(idx)] = getCost(model,[],simout(idx).time,simout(idx).metabolicEnergy,simout(idx).sumOfStopTorques,simout(idx).HATPosVel,simout(idx).stepVelocities,simout(idx).stepTimes,simout(idx).stepLengths,simout(idx).stepNumbers,[],simout(idx).selfCollision,inner_opt_settings,0);
+        printOptInfo(dataStruct(idx),true);
+    end
 end
 
 %  animPost3D(simout(1).animData3D,'intact',false,'speed',1,'obstacle',false,'view','perspective','CMG',false,...

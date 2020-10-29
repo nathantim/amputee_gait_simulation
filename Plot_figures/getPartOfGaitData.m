@@ -12,7 +12,7 @@ t_right = t(idxstart:idxend);
 OptimParams;
 
 %%
-if (b_oneGaitPhase) && min(sum(stepTimes(:,1)),sum(stepTimes(:,2))) > 1
+if (b_oneGaitPhase) && min(sum(stepTimes.signals.values(:,1)),sum(stepTimes.signals.values(:,2))) > 1
     leftLegState    = GaitPhaseData.signals.values(:,1);
     rightLegState   = GaitPhaseData.signals.values(:,2);
     leftLegStateChange = diff(leftLegState);

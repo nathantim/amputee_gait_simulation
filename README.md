@@ -30,3 +30,6 @@ plotData(angularData,musculoData,GRFData,jointTorquesData,GaitPhaseData,stepTime
 This will show the kinematics, muscle activation, GRF, joint torques for the simulation. It will show the average data with standard deviation. As a reference winter data will be plotted for the sagittal data. This figure will be saved. See the plotData function for specifics.
 
 This model is available for Academic or Non-Profit Organization Noncommercial research use only.
+
+Compiler used: MEX configured to use 'Microsoft Visual C++ 2015 (C)' for C language compilation.
+Model is numerically sensitive. Gains were obtained while sampling the data at 30 Hz. Changing this will change the evaluations. On flat terrain this does not differ too much, however, on rougher terrain it might result in an unsuccesful gait

@@ -3,7 +3,6 @@ try
     if nargin < 13
         b_isParallel = false;
     end
-    OptimParams;
     
     if contains(model,'3R60')
          modelType = 'prosthetic';
@@ -34,11 +33,10 @@ try
         cost = nan;
         disp('Metabolic Energy < 0')
         return
-        % elseif ( min(size(stepVelocities)) == 0 || min(size(stepTimes)) == 0 || size(stepVelocities,2) ~= 2 || size(stepTimes,2) ~= 2 || ...
-        %         min(size(stepVelocities(stepVelocities~=0))) == 0 ||  min(size(stepTimes(stepTimes~=0))) == 0)
-        %     cost = nan;
-        %     disp('No steps')
-        %     return
+    elseif max(stepNumbers.signals.values(:,1)) < inner_opt_settings.initiation_steps && max(stepNumbers.signals.values(:,1)) < inner_opt_settings.initiation_steps
+        cost = nan;
+        disp('Insufficient steps')
+        return
     end
     
     %% Calculate cost of transport
@@ -73,15 +71,11 @@ try
     end
     
     %% Calculate velocity cost
-%     velCost = getVelMeasure(stepVelocities(:,1),stepTimes(:,1),min_velocity,max_velocity,initiation_steps) + ...
-%         getVelMeasure(stepVelocities(:,2),stepTimes(:,2),min_velocity,max_velocity,initiation_steps);
-    [velCost,meanVel, ASIVel] = getVelMeasure2(HATPosVel,stepNumbers,min_velocity,max_velocity,initiation_steps);
-    %     [distCost, dist_covered] = getDistMeasure(timeSetToRun,stepLengths,min_velocity,max_velocity,dist_slack);
+    [velCost,meanVel, ASIVel] = getVelMeasure2(HATPosVel,stepNumbers,inner_opt_settings.min_velocity,inner_opt_settings.max_velocity,inner_opt_settings.initiation_steps);
     
     %% Calculate step info
-    stepLengthASIstruct = getFilterdMean_and_ASI(findpeaks(stepLengths(:,1)),findpeaks(stepLengths(:,2)),initiation_steps);
-    stepTimeASIstruct = getFilterdMean_and_ASI(findpeaks(stepTimes(:,1)),findpeaks(stepTimes(:,2)),initiation_steps);
-%     [meanVel, ASIVel] = getFilterdMean_and_ASI(stepVelocities(:,1),stepVelocities(:,2),initiation_steps);
+    stepLengthASIstruct = getFilterdMean_and_ASI(findpeaks(stepLengths.signals.values(:,1)),findpeaks(stepLengths.signals.values(:,2)),inner_opt_settings.initiation_steps);
+    stepTimeASIstruct = getFilterdMean_and_ASI(findpeaks(stepTimes.signals.values(:,1)),findpeaks(stepTimes.signals.values(:,2)),inner_opt_settings.initiation_steps);
     
     %%
     try
@@ -139,7 +133,7 @@ try
         'maxCMGTorque',struct('data',maxCMGTorque,'minimize',1,'info',''),'maxCMGdeltaH',struct('data',maxCMGdeltaH,'minimize',1,'info',''),'controlRMSE',struct('data',controlRMSE,'minimize',1,'info',''),...
         'numberOfCollisions',struct('data',numberOfCollisions,'minimize',1,'info',''), ...
         'tripWasActive',struct('data',tripWasActive,'minimize',1,'info',''),...
-        'optimizationDir',inner_opt_settings.optimizationDir);
+        'optimizationDir',inner_opt_settings.optimizationDir,'Gains',Gains);
 
     if b_isParallel && timeCost == 0
         GainsSave = Gains;

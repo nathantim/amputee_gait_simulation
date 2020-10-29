@@ -29,7 +29,10 @@ else
     inner_opt_settings.numParWorkers = 4;
     inner_opt_settings.visual = false;
 end
+inner_opt_settings.initiation_steps = initiation_steps;
 inner_opt_settings.target_velocity = target_velocity;
+inner_opt_settings.min_velocity = min_velocity;
+inner_opt_settings.max_velocity = max_velocity;
 if nargin > 0
     opts = cmaes;
     %opts.PopSize = numvars;
