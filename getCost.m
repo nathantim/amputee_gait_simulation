@@ -16,26 +16,35 @@ try
     end
     modelType = [modelType, char(num2str(innerOptSettings.target_velocity)) 'ms'];
     
-    dataStruct = struct('cost',struct('data',nan,'minimize',1,'info',''));
+    dataStruct = struct('modelType',[],'timeCost',struct('data',[],'minimize',1,'info',''),'cost',struct('data',nan,'minimize',1,'info',''),'CoT',struct('data',[],'minimize',1,'info',[]),...
+        'E',struct('data',[],'minimize',1,'info',[]),'sumTstop',struct('data',[],'minimize',1,'info',''),...
+        'HATPos',struct('data',[],'minimize',0,'info',''),'vMean',struct('data',[],'minimize',0,'info',''),...
+        'stepLengthASIstruct',struct('data',[],'minimize',2,'info',''),...
+        'stepTimeASIstruct',struct('data',[],'minimize',2,'info',''),'velCost',struct('data',[],'minimize',1,'info',''),'timeVector',struct('data',[],'minimize',1,'info',''),...
+        'maxCMGTorque',struct('data',[],'minimize',1,'info',''),'maxCMGdeltaH',struct('data',[],'minimize',1,'info',''),'controlRMSE',struct('data',[],'minimize',1,'info',''),...
+        'numberOfCollisions',struct('data',[],'minimize',1,'info',''), ...
+        'tripWasActive',struct('data',[],'minimize',1,'info',''),...
+        'innerOptSettings',innerOptSettings,'Gains',[],'kinematics',[],'animData3D',[]);
+    
     % x pos only
     HATPos = HATPosVel.signals.values(end,1);%norm(HATPosVel.signals.values(end,[1,2]));
 %     HATPos = norm(HATPosVel.signals.values(end,[1,2]));
     %%
     if HATPos > 101
         cost = nan;
-        disp('HATPos > 101')
+        fprintf('-- HATPos > 101 --')
         return
     elseif HATPos < 0
         cost = nan;
-        disp('HATPos < 0')
+        fprintf('-- HATPos < 0 --')
         return
     elseif any(metabolicEnergy < 0)
         cost = nan;
-        disp('Metabolic Energy < 0')
+        fprintf('-- Metabolic Energy < 0 --')
         return
     elseif max(stepNumbers.signals.values(:,1)) < innerOptSettings.initiation_steps && max(stepNumbers.signals.values(:,1)) < innerOptSettings.initiation_steps
         cost = nan;
-        disp('Insufficient steps')
+        fprintf('-- Insufficient steps --')
         return
     end
     
@@ -144,7 +153,7 @@ try
             workerID = getCurrentWorker().ProcessId;
         catch ME
             workerID = [];
-            warning(strcat(char(ME.message)," In ", mfilename, " line ", num2str(ME.stack(1).line)));
+%             warning(strcat(char(ME.message)," In ", mfilename, " line ", num2str(ME.stack(1).line)));
         end
         filename = [innerOptSettings.optimizationDir filesep char(strcat('compareEnergyCost',num2str(workerID),'.mat'))];
         if exist(filename,'file') == 2
