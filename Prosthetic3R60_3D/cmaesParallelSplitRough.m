@@ -217,7 +217,7 @@ rng('shuffle');
 
 
 %% simulate each sample and store cost
-simout = parsim(in, 'ShowProgress', true);
+simout = parsim(in, 'ShowProgress', false);
 
 %% Obtain cost and data from simulation
 dataStruct(1:length(in)) = struct('modelType',[],'timeCost',struct('data',[],'minimize',1,'info',''),'cost',struct('data',nan,'minimize',1,'info',''),'CoT',struct('data',[],'minimize',1,'info',[]),...
