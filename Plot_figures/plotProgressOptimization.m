@@ -175,7 +175,7 @@ try
                 intactFlag = true;
             end
             warning('on');
-            if innerOptSettings.createVideo
+            if dataStruct.innerOptSettings.createVideo
                 animPost3D(dataStruct.animData3D,'intact',intactFlag,'obstacle',logical(dataStruct.tripWasActive.data),'view','perspective',...
                     'CMG',(~isempty(CMGData)),'showFigure',false,'createVideo',true,'info',['cost_' num2str(round(dataStruct.optimCost,1))],...
                     'saveLocation',dataStruct.innerOptSettings.optimizationDir);
