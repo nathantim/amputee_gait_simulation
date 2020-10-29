@@ -41,11 +41,7 @@ try
     elseif any(metabolicEnergy < 0)
         cost = nan;
         fprintf('-- Metabolic Energy < 0 --')
-        return
-    elseif max(stepNumbers.signals.values(:,1)) < innerOptSettings.initiation_steps && max(stepNumbers.signals.values(:,1)) < innerOptSettings.initiation_steps
-        cost = nan;
-        fprintf('-- Insufficient steps --')
-        return
+        return 
     end
     
     %% Calculate cost of transport
@@ -79,13 +75,23 @@ try
         timeCost = 0;
     end
     
-    %% Calculate velocity cost
-    [velCost,meanVel, ASIVel] = getVelMeasure(HATPosVel,stepNumbers,innerOptSettings.min_velocity,innerOptSettings.max_velocity,innerOptSettings.initiation_steps);
-    
-    %% Calculate step info
-    stepLengthASIstruct = getFilterdMean_and_ASI(findpeaks(stepLengths.signals.values(:,1)),findpeaks(stepLengths.signals.values(:,2)),innerOptSettings.initiation_steps);
-    stepTimeASIstruct = getFilterdMean_and_ASI(findpeaks(stepTimes.signals.values(:,1)),findpeaks(stepTimes.signals.values(:,2)),innerOptSettings.initiation_steps);
-    
+    %% 
+    if max(stepNumbers.signals.values(:,1)) < innerOptSettings.initiation_steps && max(stepNumbers.signals.values(:,1)) < innerOptSettings.initiation_steps
+        velCost = 9999999*( innerOptSettings.initiation_steps/min([max(stepNumbers.signals.values(:,1)),max(stepNumbers.signals.values(:,2))]) );
+        fprintf('-- Insufficient steps --')
+        meanVel = nan;
+        ASIVel.ASImean = nan;
+        stepLengthASIstruct.ASImean = nan;
+        stepTimeASIstruct.ASImean = nan;
+    else
+        %% Calculate velocity cost
+        [velCost,meanVel, ASIVel] = getVelMeasure(HATPosVel,stepNumbers,innerOptSettings.min_velocity,innerOptSettings.max_velocity,innerOptSettings.initiation_steps);
+        
+        %% Calculate step info
+        stepLengthASIstruct = getFilterdMean_and_ASI(findpeaks(stepLengths.signals.values(:,1)),findpeaks(stepLengths.signals.values(:,2)),innerOptSettings.initiation_steps);
+        stepTimeASIstruct = getFilterdMean_and_ASI(findpeaks(stepTimes.signals.values(:,1)),findpeaks(stepTimes.signals.values(:,2)),innerOptSettings.initiation_steps);
+        
+    end
     %%
     try
         maxCMGTorque = max(CMGData.signals.values(:,6));
