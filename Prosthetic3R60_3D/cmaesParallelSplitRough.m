@@ -308,6 +308,9 @@ costs(isinvalid) = nan;
 %% send the best outcome of the best gains for plotting, only flat terrain
 try
     mingainidx = find(costs == min(costs));
+    if isempty(mingainidx)
+        mingainidx = 1;
+    end
     %         distfrommean = costsall(:,mingainidx) - costs(mingainidx);
     meanterrainidx = 1;%find(abs(distfrommean) == min(abs(distfrommean)));
     
