@@ -41,21 +41,21 @@ axesGRF = [];
 %%
 plotInfo.showSD = showSD;%true;
 plotInfo.plotProp = {'LineStyle','Color','LineWidth'};
-plotInfo.lineVec = {'-'; '--';':'};
-plotInfo.colorProp = {	'#0072BD';	'#D95319';'#7E2F8E'};
-plotInfo.lineVec = plotInfo.lineVec(1:3,:);
-plotInfo.colorProp = plotInfo.colorProp(1:3,:);
-plotInfo.lineWidthProp = {3;3;3};
+plotInfo.lineVec = {'-';':'; '-';':'};
+plotInfo.colorProp = {	'#0072BD';	'#D95319';'#7E2F8E';'#618D27'};
+% plotInfo.lineVec = plotInfo.lineVec(1:3,:);
+% plotInfo.colorProp = plotInfo.colorProp(1:3,:);
+plotInfo.lineWidthProp = {3;3;3;3};
 plotInfo.plotProp_entries = [plotInfo.lineVec(:),plotInfo.colorProp(:), plotInfo.lineWidthProp(:)];
 plotInfo.plotWinterData = false;
 plotInfo.plotFukuchiData = plotFukuchiData;
 
 plotInfo.fillProp = {'FaceColor','FaceAlpha','EdgeColor','LineStyle'};
-faceAlpha = {0.2;0.2;0.2};
-plotInfo.fillVal = {'#0072BD';	'#D95319';'#7E2F8E'};% {[0.8 0.8 0.8],0.5,'none'};
-plotInfo.edgeVec = {':';':';':'};% {[0.8 0.8 0.8],0.5,'none'};
+faceAlpha = {0.4;0.4;0.4;0.4};
+plotInfo.fillVal = plotInfo.colorProp;
+plotInfo.edgeVec = {'none';'none';'none';'none'};% {[0.8 0.8 0.8],0.5,'none'};
 plotInfo.fillProp_entries = [plotInfo.fillVal,faceAlpha,plotInfo.fillVal,plotInfo.edgeVec];
-plotInfo.showTables = true;
+plotInfo.showTables = b_oneGaitPhase;
 
 %%
 if ~isempty(GRFData)
@@ -73,7 +73,7 @@ end
 [plotMusc,axesMusc] = plotMusculoData(musculoData,plotInfo,GaitInfo,saveInfo);
 [plotGRF,axesGRF] = plotGRFData(GRFData,plotInfo,GaitInfo,saveInfo,[]);
 % set(0, 'DefaultAxesFontSize',18);
-if ~isempty(CMGData)
+if ~isempty(CMGData) && ~(max(diff(CMGData.signals.values(:,1)))==0)
     plotCMGData(CMGData,plotInfo,GaitInfo,saveInfo,[]);
 end
 if plotInfo.plotFukuchiData && b_oneGaitPhase

@@ -8,12 +8,16 @@ rowhead = {'$r_{0}$ (cm)','$r_{\\text{max}}$ (cm)','$r_{\\text{min}}$ (cm)', '$\
     '$\\varphi_{\\text{min}}$ (deg)','$\\varphi_{0}$ (deg)','$\\rho$'};
 
 textarr = '';
-for j = 1:length(rowhead)
-    textarr = [textarr, rowhead{j}];
-    for i = 1:length(muscle)
-        textarr = [textarr ,' & ' , findvar([properpre{j}],[muscle{i}, muscleapp{i},properapp{j}])];
+for jj = 1:length(rowhead)
+    textarr = [textarr, rowhead{jj}];
+    for ii = 1:length(muscle)
+        textarr = [textarr ,' & ' , findvar([properpre{jj}],[muscle{ii}, muscleapp{ii},properapp{jj}])];
     end
-    textarr = [textarr, ' \\tabularnewline \n'];
+    if jj == length(rowhead)
+        textarr = [textarr, '\n'];
+    else
+        textarr = [textarr, ' \\tabularnewline \n'];
+    end
 end
 
 %  fprintf(textarr)

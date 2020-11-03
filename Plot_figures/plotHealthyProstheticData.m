@@ -1,5 +1,5 @@
 function plotHealthyProstheticData(realHealthyData,healthyData,prostheticData,prostheticCMGData,info,b_saveTotalFig)
-showSD = false;
+showSD = true;
 plotWinterData = false;
 
 %For debug purposes
@@ -76,9 +76,9 @@ plotInfo.showTables = true;
 plotInfo.showCorr = true;
 
 plotInfo.fillProp = {'FaceColor','FaceAlpha','EdgeColor','LineStyle'};
-faceAlpha = {0.2;0.2;0.2;0.2};
+faceAlpha = {0.4;0.4;0.4;0.4};
 plotInfo.fillVal = plotInfo.colorProp;
-plotInfo.edgeVec = {':';':';':';':'};% {[0.8 0.8 0.8],0.5,'none'};
+plotInfo.edgeVec = {'none';'none';'none';'none'};% {[0.8 0.8 0.8],0.5,'none'};
 plotInfo.fillProp_entries = [plotInfo.fillVal,faceAlpha,plotInfo.fillVal,plotInfo.edgeVec];
 
 set(0, 'DefaultAxesFontSize',16);
@@ -143,7 +143,10 @@ if b_plotAngles
     
     for ii = 1:size(plotProstheticAngle,1)
         set(plotProstheticAngle(ii,1),plotInfo.plotProp,plotInfo.plotProp_entries(3,:));
+        set(plotProstheticAngle(ii,2),plotInfo.fillProp,plotInfo.fillProp_entries(3,:));
         set(plotProstheticAngle(ii,3),plotInfo.plotProp,plotInfo.plotProp_entries(4,:));
+        set(plotProstheticAngle(ii,4),plotInfo.fillProp,plotInfo.fillProp_entries(4,:));
+        
     end
     
     axesAngle = [axesHealthyAngle,axesProstheticAngle,axesCMGAngle];
@@ -164,7 +167,7 @@ if b_plotAngles
     
     
     addCorr2plot(plotInfo.showCorr,plotHealthyAngle(:,1),plotRealHealthyAngle(:,1),axesHealthyAngle,...
-                14,[0.05,0.85,0; 0.05,0.85,0; 0.05,0.85,0; 0.01,0.05,0;]);
+                14,[0.05,0.75,0; 0.05,0.75,0; 0.05,0.75,0; 0.01,0.05,0;]);
 
 end
 
@@ -185,10 +188,12 @@ if b_plotTorques
     end
     
     subplotStart(3) = subplotStart(3)+subplotStart(2);
-    [plotProstheticTorque,axesProstheticTorque] = plotJointTorqueData(prostheticData.jointTorquesData,plotInfo,prostheticGaitInfo,prostheticSaveInfo,torqueDataFig,[],subplotStart,'both',false);
+    [plotProstheticTorque,axesProstheticTorque] = plotJointTorqueData(prostheticData.jointTorquesData,plotInfo,prostheticGaitInfo,prostheticSaveInfo,torqueDataFig,[],subplotStart,'both',false);   
     for ii = 1:size(plotProstheticTorque,1)
         set(plotProstheticTorque(ii,1),plotInfo.plotProp,plotInfo.plotProp_entries(3,:));
+        set(plotProstheticTorque(ii,2),plotInfo.fillProp,plotInfo.fillProp_entries(3,:));
         set(plotProstheticTorque(ii,3),plotInfo.plotProp,plotInfo.plotProp_entries(4,:));
+        set(plotProstheticTorque(ii,4),plotInfo.fillProp,plotInfo.fillProp_entries(4,:));
     end
     
     axesTorque = [axesHealthyTorque,axesProstheticTorque,axesCMGTorque];
@@ -205,7 +210,7 @@ if b_plotTorques
     addInfoTextFigure('Amputee',24,'(b)',20,axesTorque(5),ylabelPosTorque);
     
     addCorr2plot(plotInfo.showCorr,plotHealthyTorque(:,1),plotRealHealthyTorque(:,1),axesHealthyTorque,...
-                14,[0.45,0.80,0; 0.40,0.80,0; 0.40,0.05,0; 0.40,0.80,0]);
+                14,[0.35,0.75,0; 0.35,0.75,0; 0.30,0,0; 0.39,0.75,0]);
 
 end
 
@@ -220,10 +225,11 @@ if b_plotPowers
     [plotHealthyPower,axesHealthyPower] = plotJointPowerData(healthyData.angularData,healthyData.jointTorquesData,plotInfo,healthyGaitInfo,healthySaveInfo,powerDataFig,[],subplotStart,'left',true);
     subplotStart(3) = subplotStart(3)+subplotStart(2);
     [plotProstheticPower,axesProstheticPower] = plotJointPowerData(prostheticData.angularData,prostheticData.jointTorquesData,plotInfo,prostheticGaitInfo,prostheticSaveInfo,powerDataFig,[],subplotStart,'both',false);
-    
     for ii = 1:size(plotProstheticPower,1)
         set(plotProstheticPower(ii,1),plotInfo.plotProp,plotInfo.plotProp_entries(3,:));
+        set(plotProstheticPower(ii,2),plotInfo.fillProp,plotInfo.fillProp_entries(3,:));
         set(plotProstheticPower(ii,3),plotInfo.plotProp,plotInfo.plotProp_entries(4,:));
+        set(plotProstheticPower(ii,4),plotInfo.fillProp,plotInfo.fillProp_entries(4,:));
     end
     
     axesPower = [axesHealthyPower,axesProstheticPower,axesCMGPower];
@@ -258,7 +264,9 @@ if b_plotGRF
     [plotProstheticGRF,axesProstheticGRF] = plotGRFData(prostheticData.GRFData,plotInfo,prostheticGaitInfo,prostheticSaveInfo,GRFDataFig,[],subplotStart,'both',false);
     for ii = 1:size(plotProstheticGRF,1)
         set(plotProstheticGRF(ii,1),plotInfo.plotProp,plotInfo.plotProp_entries(3,:));
+        set(plotProstheticGRF(ii,2),plotInfo.fillProp,plotInfo.fillProp_entries(3,:));
         set(plotProstheticGRF(ii,3),plotInfo.plotProp,plotInfo.plotProp_entries(4,:));
+        set(plotProstheticGRF(ii,4),plotInfo.fillProp,plotInfo.fillProp_entries(4,:));
     end
     
     axesGRF = [axesHealthyGRF,axesProstheticGRF,axesCMGGRF];
@@ -274,7 +282,7 @@ if b_plotGRF
     addInfoTextFigure('Amputee',24,'(b)',20,axesGRF(4),ylabelPosGRF);
     
     addCorr2plot(plotInfo.showCorr,plotHealthyGRF(:,1),plotRealHealthyGRF(:,1),axesHealthyGRF, ...
-                14,[0.35,0.05,0; 0.35,0.75,0; 0.35,0.80,0]);
+                14,[0.30,0.75,0; 0.30,0.75,0; 0.30,0.75,0]);
 
 end
 
@@ -290,10 +298,13 @@ if b_plotMuscle
     [plotHealthyMusc,axesHealthyMusc] = plotMusculoData(healthyData.musculoData,plotInfo,healthyGaitInfo,healthySaveInfo,musculoDataFig,[],subplotStart,'left',true);
     subplotStart(3) = subplotStart(3)+subplotStart(2);
     [plotProstheticMusc,axesProstheticMusc] = plotMusculoData(prostheticData.musculoData,plotInfo,prostheticGaitInfo,prostheticSaveInfo,musculoDataFig,[],subplotStart,'both',false);
-    
     for ii = 1:size(plotProstheticMusc,1)
         set(plotProstheticMusc(ii,1),plotInfo.plotProp,plotInfo.plotProp_entries(3,:));
+        set(plotProstheticMusc(ii,2),plotInfo.fillProp,plotInfo.fillProp_entries(3,:));
         set(plotProstheticMusc(ii,3),plotInfo.plotProp,plotInfo.plotProp_entries(4,:));
+        if ~isnan(plotProstheticMusc(ii,4))
+            set(plotProstheticMusc(ii,4),plotInfo.fillProp,plotInfo.fillProp_entries(4,:));
+        end
     end
     
     axesMusc = [axesHealthyMusc,axesProstheticMusc];%,axesCMGAngle];

@@ -4,15 +4,19 @@ segment = {'hat','thigh','thigh','shank','shank','foot','foot'};
 segmentapp = {'','','Amp','','Prosth','','Prosth'};
 % properpre = {'r','r','r','phimax','phimin','phiref','rho'};
 properapp = {'Mass', 'Length', 'Inertia'};%,'',''};
-rowhead = {'mass ($\\unit{kg}$)','Length ($\\unit{m}$)','Moment of inertia ($\\unit{kg\\cdot m$^2}$)'};%, 'Center of Mass'};
+rowhead = {'mass ($\\unit{kg}$)','Length ($\\unit{m}$)','Moment of inertia ($\\unit{kg\\cdot m^2}$)'};%, 'Center of Mass'};
 
 textarr = '';
-for j = 1:length(rowhead)
-    textarr = [textarr, rowhead{j}];
-    for i = 1:length(segment)
-        textarr = [textarr ,' & ' , findvar([segment{i}, segmentapp{i},properapp{j}])];
+for jj = 1:length(rowhead)
+    textarr = [textarr, rowhead{jj}];
+    for ii = 1:length(segment)
+        textarr = [textarr ,' & ' , findvar([segment{ii}, segmentapp{ii},properapp{jj}])];
     end
-    textarr = [textarr, ' \\tabularnewline \n'];
+    if jj == length(rowhead)
+        textarr = [textarr, '\n'];
+    else
+        textarr = [textarr, ' \\tabularnewline \n'];
+    end
 end
 
 %  fprintf(textarr)

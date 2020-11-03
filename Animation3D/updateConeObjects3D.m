@@ -19,10 +19,10 @@ if(~intactFlag)
     R_KneeProsthObj = ConeObjects(idx);
     idx = idx + 1;
 end
-% if CMGFlag
-%     CMGlinkObj = ConeObjects(idx);
-%     idx = idx + 1;
-% end
+if CMGFlag
+    CMGlinkObj = ConeObjects(idx);
+    idx = idx + 1;
+end
 
 % at the initial time step t=0, scale cone objects to their actual length
 HAT_Length = sqrt( (u(1)-u(4))^2 + (u(2)-u(5))^2 + (u(3)-u(6))^2 );
@@ -66,9 +66,9 @@ if t==0
         x(24) = R_KneeProsthLength;
         
         if CMGFlag
-%             CMGlinkLength = sqrt( (u(37)-u(34))^2 + (u(38)-u(35))^2 + (u(39)-u(36))^2 ) - rCMG;
-%             set(CMGlinkObj, 'ZData', get(CMGlinkObj, 'ZData') * CMGlinkLength);
-%             x(36) = CMGlinkLength;
+            CMGlinkLength = sqrt( (u(38)-u(35))^2 + (u(39)-u(36))^2 + (u(40)-u(37))^2 ) - rCMG;
+            set(CMGlinkObj, 'ZData', get(CMGlinkObj, 'ZData') * CMGlinkLength);
+            x(37) = 0*CMGlinkLength;
             % set right shank length
             R_ShankLength = sqrt( (u(38)-u(25))^2 + (u(39)-u(26))^2 + (u(40)-u(27))^2 ) - rCMG;
             set(R_ShankObj, 'ZData', get(R_ShankObj, 'ZData') * R_ShankLength);
@@ -112,7 +112,7 @@ if t==0
     if (~intactFlag)
         rotTransObj(  R_KneeProsthObj, u(35:37),   u(22:24),   zeros(1,3),   x(22:24))
         if CMGFlag
-%             rotTransObj(  CMGlinkObj, u(37:39),   u(34:36),   zeros(1,3),   x(34:36))
+            rotTransObj(  CMGlinkObj, u(38:40),   u(35:37),   zeros(1,3),   x(35:37))
             rotTransObj(  R_ShankObj, u(25:27),   u(38:40),   zeros(1,3),   x(38:40))
         else
             rotTransObj(  R_ShankObj, u(25:27),   u(35:37),   zeros(1,3),   x(35:37))
@@ -149,8 +149,8 @@ else
     if (~intactFlag)
         rotTransObj(  R_KneeProsthObj, u(35:37),   u(22:24),   x(35:37),   x(22:24))
         if CMGFlag
-%             rotTransObj(  CMGlinkObj, u(37:39),   u(34:36),   x(37:39),   x(34:36))
-            rotTransObj(  R_ShankObj, u(25:27),   u(37:39),   x(25:27),   x(37:39))
+            rotTransObj(  CMGlinkObj, u(38:40),   u(35:37),   x(38:40),   x(35:37))
+            rotTransObj(  R_ShankObj, u(25:27),   u(38:40),   x(25:27),   x(38:40))
         else
         rotTransObj(  R_ShankObj, u(25:27),   u(35:37),   x(25:27),   x(35:37))
         end

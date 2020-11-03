@@ -6,12 +6,16 @@ properapp = {'UpLimit','LowLimit'};
 rowhead = {'$\\theta_{\\text{max}}$ (deg)', '$\\theta_{\\text{min}}$ (deg)'};
 
 textarr = '';
-for j = 1:length(rowhead)
-    textarr = [textarr, rowhead{j}];
-    for i = 1:length(joint)
-        textarr = [textarr ,' & ' , findvar(proper{j},[joint{i},properapp{j}])];
+for jj = 1:length(rowhead)
+    textarr = [textarr, rowhead{jj}];
+    for ii = 1:length(joint)
+        textarr = [textarr ,' & ' , findvar(proper{jj},[joint{ii},properapp{jj}])];
     end
-    textarr = [textarr, ' \\tabularnewline \n'];
+    if jj == length(rowhead)
+        textarr = [textarr, '\n'];
+    else
+        textarr = [textarr, ' \\tabularnewline \n'];
+    end
 end
 
 % fprintf(textarr)
