@@ -7,7 +7,7 @@ obstacle_depth = 0.05;
 % obstacle_x = 8.65; %fall for Prosthetic_2D 1.2 m/s
 % obstacle_x = 8.10; %fall for Prosthetic_2D 0.9 m/s
 % obstacle_x = 8.4; % fall
-obstacle_x = 11.88;  %8.75 %fall for Prosthetic_3D 1.2 m/s
+obstacle_x = 13.04;  %8.75 %fall for Prosthetic_3D 1.2 m/s
 obstacle_y = -2.35; %fall for Prosthetic_2D 1.2 m/s
 obstacle_damping = 8E1;
 obstacle_stiffness = 5E1;
@@ -29,8 +29,8 @@ maxGammadot = 20; % rad/s
 % tripDetectThreshold = -100; % m/s^2   0.9 m/s
 % tripDetectThreshold = -60; % m/s^2   1.2 m/s
 
-% tripDetectThreshold = -35; % m/s^2 2D
-tripDetectThreshold = 1E9*3.5E4; % m/s^2
+tripDetectThreshold = -1500; % m/s^2 2D
+% tripDetectThreshold = 1E9*3.5E4; % m/s^2
 % tripDetectThreshold = -650; % m/s^2
 
 

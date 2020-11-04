@@ -46,11 +46,11 @@ else
     
 %     load(['Results' filesep 'Rough' filesep 'Umb10_0.9ms_num_inter.mat'])
 %     load(['Results' filesep 'Rough' filesep 'Umb10_1.2ms_wheading_numsolve.mat'])
-    load(['Results' filesep 'Rough' filesep 'Umb10_1.2ms_num_wCMG.mat'])
-    
+    load(['Results' filesep 'Rough' filesep 'v1.2ms_wCMG.mat'])
+    load(['Results' filesep 'CMGGains_init.mat']);
 end
 
-terrains2Test = input("Number of terrains to test:   ");
+terrains2Test = 1;%input("Number of terrains to test:   ");
 
 %%
 model = 'NeuromuscularModel_3R60_3D';
@@ -65,6 +65,7 @@ load_system(model);
 dt_visual = 1/1000;
 animFrameRate = 30;
 
+assignCMGGains;
 assignGainsSagittal;
 assignGainsCoronal;
 assignInit;
@@ -85,7 +86,7 @@ if contains(get_param(model,'SimulationMode'),'rapid')
     warning('on');
     
 %     obstacleX = 12.71:0.02:13.01;
-     obstacleX = [13.02:0.01:13.04, 13.06];
+     obstacleX = [13.04:0.005:13.06]; %13.04;
     for jj = 1:length(obstacleX)
         %             if jj == 1
         %                 [groundX(jj,:), groundZ(jj,:), groundTheta(jj,:)] = generateGround('flat',[],4*(jj-1),false);
@@ -106,7 +107,11 @@ if contains(get_param(model,'SimulationMode'),'rapid')
         in(jj) = in(jj).setModelParameter('RapidAcceleratorParameterSets', paramSets{jj});
     end
 else
-    paramStruct = [];
+    paramStruct = {};
+    in = Simulink.SimulationInput(model);
+    in = in.setModelParameter('TimeOut', 30*60);
+    in = in.setModelParameter('SimulationMode', 'rapid', ...
+            'RapidAcceleratorUpToDateCheck', 'off');
 end
 
 %%
@@ -155,8 +160,8 @@ for idx = 1:length(simout)
 end
 
 %%
-%  animPost3D(simout(end-2).animData3D,'intact',false,'speed',1,'obstacle',true,'view','side','CMG',true,...
-%                 'showFigure',true,'createVideo',true,'info',[num2str(innerOptSettings.target_velocity) 'ms_y_dt1000'],'saveLocation',innerOptSettings.optimizationDir);
+ animPost3D(simout(3).animData3D,'intact',false,'speed',1,'obstacle',true,'view','perspective','CMG',true,...
+                'showFigure',true,'createVideo',false,'info',[num2str(innerOptSettings.target_velocity) 'ms_y_dt1000'],'saveLocation',innerOptSettings.optimizationDir);
             
 plotData(simout(1).angularData,simout(1).musculoData,simout(1).GRFData,simout(1).jointTorquesData,simout(1).GaitPhaseData,simout(1).stepTimes,simout(1).CMGData,'prosthetic3D_1.2ms_yaw',[],0,1,1)
 %%
