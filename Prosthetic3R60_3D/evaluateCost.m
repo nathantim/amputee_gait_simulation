@@ -1,5 +1,5 @@
 if  (input("Do you want to clear the data? (1/0)   "))
-%     close all;  
+    %     close all;
     clearvars;  clc;
 end
 
@@ -22,12 +22,12 @@ if input("Load from optimization folder? (1/0)   " )
     GainsCoronal = InitialGuess.GainsCoronal.*exp(bestever.x(idx2+1:idx3));
     initConditionsCoronal = InitialGuess.initConditionsCoronal.*exp(bestever.x((idx3+1):idx4));
     
-%     Initial_file = load([innerOptSettings.optimizationDir filesep 'cost_14.mat'],'dataStruct');
-%     InitialGuess = Initial_file.dataStruct.Gains;
-%     GainsSagittal = InitialGuess(1:idx1);
-%     initConditionsSagittal = InitialGuess(idx1+1:idx2);
-%     GainsCoronal = InitialGuess(idx2+1:idx3);
-%     initConditionsCoronal = InitialGuess((idx3+1):idx4);
+    %     Initial_file = load([innerOptSettings.optimizationDir filesep 'cost_14.mat'],'dataStruct');
+    %     InitialGuess = Initial_file.dataStruct.Gains;
+    %     GainsSagittal = InitialGuess(1:idx1);
+    %     initConditionsSagittal = InitialGuess(idx1+1:idx2);
+    %     GainsCoronal = InitialGuess(idx2+1:idx3);
+    %     initConditionsCoronal = InitialGuess((idx3+1):idx4);
     
     run([innerOptSettings.optimizationDir, filesep, 'BodyMechParamsCapture']);
     run([innerOptSettings.optimizationDir, filesep, 'ControlParamsCapture']);
@@ -44,10 +44,10 @@ else
     setInitVar;
     innerOptSettings = setInnerOptSettings('eval');
     
-%     load(['Results' filesep 'Rough' filesep 'Umb10_0.9ms_num_inter.mat'])
-%     load(['Results' filesep 'Rough' filesep 'Umb10_1.2ms_wheading_numsolve.mat'])
+    %     load(['Results' filesep 'Rough' filesep 'Umb10_0.9ms_num_inter.mat'])
+    %     load(['Results' filesep 'Rough' filesep 'Umb10_1.2ms_wheading_numsolve.mat'])
     load(['Results' filesep 'Rough' filesep 'v1.2ms_wCMG.mat'])
-    load(['Results' filesep 'CMGGains_init.mat']);
+%     load(['Results' filesep 'CMGGains_init.mat']);
 end
 
 terrains2Test = 1;%input("Number of terrains to test:   ");
@@ -65,13 +65,13 @@ load_system(model);
 dt_visual = 1/1000;
 animFrameRate = 30;
 
-assignCMGGains;
+% assignCMGGains;
 assignGainsSagittal;
 assignGainsCoronal;
 assignInit;
 
 try
-    set_param(strcat(model,'/Body Mechanics Layer/Obstacle'),'Commented','off');
+    set_param(strcat(model,'/Body Mechanics Layer/Obstacle'),'Commented','on');
 catch ME
     warning(ME.message);
 end
@@ -85,33 +85,41 @@ if contains(get_param(model,'SimulationMode'),'rapid')
     rtp = Simulink.BlockDiagram.buildRapidAcceleratorTarget(model);
     warning('on');
     
-%     obstacleX = 12.71:0.02:13.01;
-     obstacleX = [13.04:0.005:13.06]; %13.04;
-    for jj = 1:length(obstacleX)
-        %             if jj == 1
-        %                 [groundX(jj,:), groundZ(jj,:), groundTheta(jj,:)] = generateGround('flat',[],4*(jj-1),false);
-        %             else
-        %                 [groundX(jj,:), groundZ(jj,:), groundTheta(jj,:)] = generateGround('const', innerOptSettings.terrain_height, 4*(jj-1),false);
-        %             end
-        %             paramSets{jj} = ...
-        %                 Simulink.BlockDiagram.modifyTunableParameters(rtp, ...
-        %                 'groundZ',     groundZ(jj,:), ...
-        %                 'groundTheta', groundTheta(jj,:));
-        paramSets{jj} = ...
-            Simulink.BlockDiagram.modifyTunableParameters(rtp, ...
-            'obstacle_x',     obstacleX(jj));
-        in(jj) = Simulink.SimulationInput(model);
-        in(jj) = in(jj).setModelParameter('TimeOut', 20*60);
-        in(jj) = in(jj).setModelParameter('SimulationMode', 'rapid', ...
+    %     obstacleX = 12.71:0.02:13.01;
+    obstacleX = [];%13.04;%[13.04:0.005:13.06]; %13.04;
+    if ~isempty(obstacleX)
+        for jj = 1:length(obstacleX)
+            %             if jj == 1
+            %                 [groundX(jj,:), groundZ(jj,:), groundTheta(jj,:)] = generateGround('flat',[],4*(jj-1),false);
+            %             else
+            %                 [groundX(jj,:), groundZ(jj,:), groundTheta(jj,:)] = generateGround('const', innerOptSettings.terrain_height, 4*(jj-1),false);
+            %             end
+            %             paramSets{jj} = ...
+            %                 Simulink.BlockDiagram.modifyTunableParameters(rtp, ...
+            %                 'groundZ',     groundZ(jj,:), ...
+            %                 'groundTheta', groundTheta(jj,:));
+            paramSets{jj} = ...
+                Simulink.BlockDiagram.modifyTunableParameters(rtp, ...
+                'obstacle_x',     obstacleX(jj));
+            in(jj) = Simulink.SimulationInput(model);
+            in(jj) = in(jj).setModelParameter('TimeOut', 20*60);
+            in(jj) = in(jj).setModelParameter('SimulationMode', 'rapid', ...
+                'RapidAcceleratorUpToDateCheck', 'off');
+            in(jj) = in(jj).setModelParameter('RapidAcceleratorParameterSets', paramSets{jj});
+        end
+    else
+        paramStruct = {};
+        in = Simulink.SimulationInput(model);
+        in = in.setModelParameter('TimeOut', 30*60);
+        in = in.setModelParameter('SimulationMode', 'rapid', ...
             'RapidAcceleratorUpToDateCheck', 'off');
-        in(jj) = in(jj).setModelParameter('RapidAcceleratorParameterSets', paramSets{jj});
     end
 else
     paramStruct = {};
     in = Simulink.SimulationInput(model);
     in = in.setModelParameter('TimeOut', 30*60);
     in = in.setModelParameter('SimulationMode', 'rapid', ...
-            'RapidAcceleratorUpToDateCheck', 'off');
+        'RapidAcceleratorUpToDateCheck', 'off');
 end
 
 %%
@@ -160,9 +168,9 @@ for idx = 1:length(simout)
 end
 
 %%
- animPost3D(simout(3).animData3D,'intact',false,'speed',1,'obstacle',true,'view','perspective','CMG',true,...
-                'showFigure',true,'createVideo',false,'info',[num2str(innerOptSettings.target_velocity) 'ms_y_dt1000'],'saveLocation',innerOptSettings.optimizationDir);
-            
+animPost3D(simout(1).animData3D,'intact',false,'speed',1,'obstacle',true,'view','perspective','CMG',true,...
+    'showFigure',true,'createVideo',false,'info',[num2str(innerOptSettings.target_velocity) 'ms_y_dt1000'],'saveLocation',innerOptSettings.optimizationDir);
+
 plotData(simout(1).angularData,simout(1).musculoData,simout(1).GRFData,simout(1).jointTorquesData,simout(1).GaitPhaseData,simout(1).stepTimes,simout(1).CMGData,'prosthetic3D_1.2ms_yaw',[],0,1,1)
 %%
 set(0, 'DefaultFigureHitTest','on');

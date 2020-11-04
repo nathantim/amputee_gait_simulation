@@ -20,11 +20,24 @@ if contains(num2str(opts.Resume),'no') || min(opts.Resume) == 0
     inner_opt_settings.optimizationDir = optDirectory;
     
     init_gains = strsplit(string(opts.UserData),' ');
-    init_gains = init_gains{end};
-    init_gains_name = strsplit(string(opts.UserData),filesep);
+    init_gainsCMG = init_gains{end};
+    init_gains = init_gains{3};
+%     init_gains_name = strsplit(string(opts.UserData),filesep);
+    init_gains_name = strsplit(string(opts.UserData),';');
+    init_gains_nameCMG = init_gains_name{2};
+    init_gains_name = init_gains_name{1};
+    
+    init_gains_name = strsplit(string(init_gains_name),filesep);
     init_gains_name = init_gains_name{end};
-    opts.UserData = ['Gains filename: ' optDirectory, filesep init_gains_name];
+    
+    init_gains_nameCMG = strsplit(string(init_gains_nameCMG),filesep);
+    init_gains_nameCMG = init_gains_nameCMG{end};
+    
+    opts.UserData = ['Gains filename: ' optDirectory, filesep init_gains_name, "; CMGGains: ", optDirectory, filesep init_gains_nameCMG];
     moveAndRenameFile([modelDir filesep init_gains], [optDirectory, filesep 'initial_gains.mat']);
+    if ~isempty(init_gainsCMG)
+        moveAndRenameFile([modelDir filesep init_gainsCMG], [optDirectory, filesep 'initial_gainsCMG.mat']);
+    end
     moveAndRenameFile([baseDir filesep 'BodyMechParams.m'], [optDirectory, filesep,'BodyMechParamsCapture.m']);
     moveAndRenameFile([modelDir filesep 'ControlParams.m'], [optDirectory, filesep,'ControlParamsCapture.m']);
     moveAndRenameFile([baseDir filesep 'Prosthesis3R60Params.m'], [optDirectory, filesep,'Prosthesis3R60ParamsCapture.m']);
