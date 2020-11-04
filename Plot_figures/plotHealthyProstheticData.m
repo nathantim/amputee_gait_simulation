@@ -1,4 +1,4 @@
-function plotHealthyProstheticData(realHealthyData,healthyData,prostheticData,prostheticCMGData,info,b_saveTotalFig)
+function plotHealthyProstheticData(realHealthyData,healthyData,prostheticData,prostheticCMGNotActiveData,prostheticCMGActiveData,info,b_saveTotalFig)
 showSD = false;
 plotWinterData = false;
 
@@ -46,22 +46,33 @@ prostheticSaveInfo.info = [prostheticSaveInfo.info, 'prosthetic'];
 
 healthyGaitInfo         = getPartOfGaitData(healthyData.angularData.time,       healthyData.GaitPhaseData,          healthyData.stepTimes,          healthySaveInfo, b_oneGaitPhase);
 prostheticGaitInfo      = getPartOfGaitData(prostheticData.angularData.time,    prostheticData.GaitPhaseData,       prostheticData.stepTimes,       prostheticSaveInfo, b_oneGaitPhase);
-% prostheticCMGGaitInfo   = getPartOfGaitData(prostheticCMGData.angularData.time, prostheticCMGData.GaitPhaseData,    prostheticCMGData.stepTimes,    prostheticSaveInfo, b_oneGaitPhase);
 realHealthyDataGaitInfo = getPartOfGaitData(realHealthyData.angularData.time,   [],                                 [],                             healthySaveInfo, false);
 
+if ~isempty(prostheticCMGNotActiveData)
+    prostheticCMGNotActiveGaitInfo   = getPartOfGaitData(prostheticCMGNotActiveData.angularData.time, prostheticCMGNotActiveData.GaitPhaseData,    prostheticCMGNotActiveData.stepTimes,    prostheticSaveInfo, b_oneGaitPhase);
+end
+if ~isempty(prostheticCMGActiveData)
+    prostheticCMGActiveGaitInfo   = getPartOfGaitData(prostheticCMGActiveData.angularData.time, prostheticCMGActiveData.GaitPhaseData,    prostheticCMGActiveData.stepTimes,    prostheticSaveInfo, b_oneGaitPhase);
+end
 %% Normalize data:
 healthyData.jointTorquesData.signals.values = healthyData.jointTorquesData.signals.values./getBodyMass();
-prostheticData.jointTorquesData.signals.values = prostheticData.jointTorquesData.signals.values./getBodyMass();
-% prostheticCMGData.jointTorquesData.signals.values = prostheticData.jointTorquesData.signals.values./getBodyMass();
-
 healthyData.GRFData.signals.values = healthyData.GRFData.signals.values./getBodyMass();
+
+prostheticData.jointTorquesData.signals.values = prostheticData.jointTorquesData.signals.values./getBodyMass();
 prostheticData.GRFData.signals.values = prostheticData.GRFData.signals.values./getBodyMass();
-% prostheticCMGData.GRFData.signals.values = prostheticData.GRFData.signals.values./getBodyMass();
 
 realHealthyData.angularData.time = realHealthyData.angularData.time./100;
 realHealthyData.jointTorquesData.time = realHealthyData.jointTorquesData.time./100;
 realHealthyData.GRFData.time = realHealthyData.GRFData.time./100;
 
+if ~isempty(prostheticCMGNotActiveData)
+    prostheticCMGNotActiveData.GRFData.signals.values = prostheticCMGNotActiveData.GRFData.signals.values./getBodyMass();
+    prostheticCMGNotActiveData.jointTorquesData.signals.values = prostheticCMGNotActiveData.jointTorquesData.signals.values./getBodyMass();
+end
+if ~isempty(prostheticCMGActiveData)
+    prostheticCMGActiveData.GRFData.signals.values = prostheticCMGActiveData.GRFData.signals.values./getBodyMass();
+    prostheticCMGActiveData.jointTorquesData.signals.values = prostheticCMGActiveData.jointTorquesData.signals.values./getBodyMass();
+end
 %%
 plotInfo.showSD = showSD;%true;
 plotInfo.plotProp = {'LineStyle','Color','LineWidth'};
@@ -100,9 +111,9 @@ if b_plotLegState
     fprintf('<strong>Amputee model:</strong> \n');
     [plotProstheticState, axesProstheticState] = plotLegState(prostheticData.GaitPhaseData,plotInfo,prostheticGaitInfo,prostheticSaveInfo,legStateFig,[],subplotStart,'both',false);
 
-%     subplotStart(3) = subplotStart(3)+subplotStart(2);
-%     fprintf('<strong>Amputee model with CMG:</strong> \n');
-%     [plotCMGState, axesCMGState] = plotLegState(prostheticCMGData.GaitPhaseData,plotInfo,prostheticCMGGaitInfo,prostheticSaveInfo,legStateFig,[],subplotStart,'both',false);
+    subplotStart(3) = subplotStart(3)+subplotStart(2);
+    fprintf('<strong>Amputee model with inactive CMG:</strong> \n');
+    [plotCMGState, axesCMGState] = plotLegState(prostheticCMGNotActiveData.GaitPhaseData,plotInfo,prostheticCMGNotActiveGaitInfo,prostheticSaveInfo,legStateFig,[],subplotStart,'both',false);
     
     axesState = [axesHealthyState,axesProstheticState,axesCMGState];
     
@@ -112,24 +123,36 @@ if b_plotLegState
     
     setLegend([plotHealthyState(1)],axesPosState(1,:),{'H'},18);
     setLegend(plotProstheticState(end,[1,3]),axesPosState(2,:),{'I','P'},18);
-%     setLegend(plotCMGState(end,[1,3]),axesPosState(3,:),{'I','P'},18);
+    setLegend(plotCMGState(end,[1,3]),axesPosState(3,:),{'I','P'},18);
 
     ylabelPosState = 0.5*alignYlabel(axesState);%,axesCMGAngle(1)]);
     addInfoTextFigure('Healthy',24,'(a)',20,axesState(1),ylabelPosState);
     addInfoTextFigure('Amputee',24,'(b)',20,axesState(2),ylabelPosState);
-%     addInfoTextFigure('CMG',24,'(c)',20,axesState(3),ylabelPosState);
+    addInfoTextFigure('CMG',24,'(c)',20,axesState(3),ylabelPosState);
 end
 
 %% Angular data
 
 if b_plotAngles
-    axesHealthyAngle = []; axesProstheticAngle = []; axesCMGAngle = [];
+    axesHealthyAngle = []; axesProstheticAngle = []; 
+    axesCMGNotActiveAngle = []; axesCMGActiveAngle = [];
     angularDataFig = figure();
-    figurePositionAngle = [10,100,730,400];
+    
+    if ~isempty(prostheticCMGNotActiveData) && ~isempty(prostheticCMGActiveData)
+        subplotStart = [4 4 1];
+        figurePositionAngle = [10,100,750,650];
+    elseif ~isempty(prostheticCMGNotActiveData)
+        subplotStart = [3 4 1];
+    else
+        subplotStart = [2 4 1];
+        figurePositionAngle = [10,100,730,400];
+    end
+    
     hwratioAngles = figurePositionAngle(end)/figurePositionAngle(end-1);
     set(angularDataFig, 'Position',figurePositionAngle); % two
     % set(angularDataFig, 'Position',[10,100,1700,800]); % three
-    subplotStart = [2 4 1];
+    
+    
     [plotHealthyAngle, axesHealthyAngle] = plotAngularData(healthyData.angularData,plotInfo,healthyGaitInfo,healthySaveInfo,angularDataFig,[],subplotStart,'left',true);
     [plotRealHealthyAngle, axesHealthyAngle] = plotAngularData(realHealthyData.angularData,plotInfo,realHealthyDataGaitInfo,healthySaveInfo,angularDataFig,axesHealthyAngle,subplotStart,'right',true);
     for ii = 1:length(plotRealHealthyAngle)
@@ -138,30 +161,55 @@ if b_plotAngles
     
     subplotStart(3) = subplotStart(3)+subplotStart(2);
     [plotProstheticAngle, axesProstheticAngle] = plotAngularData(prostheticData.angularData,plotInfo,prostheticGaitInfo,prostheticSaveInfo,angularDataFig,[],subplotStart,'both',false);
-    % subplotStart(3) = subplotStart(3)+subplotStart(2);
-    % [plotCMGAngle, axesCMGAngle] = plotAngularData(prostheticCMGData.angularData,prostheticCMGData.GaitPhaseData,plotInfo,prostheticCMGGaitInfo,prostheticSaveInfo,angularDataFig,[],subplotStart,'both',false,false);
+    
+    if ~isempty(prostheticCMGNotActiveData)
+        subplotStart(3) = subplotStart(3)+subplotStart(2);
+        [plotCMGNotActiveAngle, axesCMGNotActiveAngle] = plotAngularData(prostheticCMGNotActiveData.angularData,plotInfo,prostheticCMGNotActiveGaitInfo,prostheticSaveInfo,angularDataFig,[],subplotStart,'both',false);
+    end
+    if ~isempty(prostheticCMGActiveData)
+        subplotStart(3) = subplotStart(3)+subplotStart(2);
+        [plotCMGActiveAngle, axesCMGActiveAngle] = plotAngularData(prostheticCMGActiveData.angularData,plotInfo,prostheticCMGActiveGaitInfo,prostheticSaveInfo,angularDataFig,[],subplotStart,'both',false);
+    end
     
     for ii = 1:size(plotProstheticAngle,1)
         set(plotProstheticAngle(ii,1),plotInfo.plotProp,plotInfo.plotProp_entries(3,:));
         set(plotProstheticAngle(ii,3),plotInfo.plotProp,plotInfo.plotProp_entries(4,:));
+        if ~isempty(prostheticCMGNotActiveData)
+            set(plotCMGNotActiveAngle(ii,1),plotInfo.plotProp,plotInfo.plotProp_entries(3,:));
+            set(plotCMGNotActiveAngle(ii,3),plotInfo.plotProp,plotInfo.plotProp_entries(4,:));
+        end
+        if ~isempty(prostheticCMGActiveData)
+            set(plotCMGActiveAngle(ii,1),plotInfo.plotProp,plotInfo.plotProp_entries(3,:));
+            set(plotCMGActiveAngle(ii,3),plotInfo.plotProp,plotInfo.plotProp_entries(4,:));
+        end
     end
     
-    axesAngle = [axesHealthyAngle,axesProstheticAngle,axesCMGAngle];
+    axesAngle = [axesHealthyAngle,axesProstheticAngle,axesCMGNotActiveAngle,axesCMGActiveAngle];
     
     xlabel(axesAngle(end),'gait cycle ($\%$) ');
     
     % addInfoTextFigure('Amputee model CMG','(c)',axesCMGAngle(1),ylabelPosAngle);
+    if subplotStart(1) == 2
+        axesPosAngle = setAxes(axesAngle,subplotStart(2),0.135,0.20, -0.08, 0.12, 0.16, hwratioAngles);
+    elseif subplotStart(1) == 4
+        axesPosAngle = setAxes(axesAngle,subplotStart(2),0.125,0.20, -0.07, 0.015, 0.15, hwratioAngles);
+    end
     
-    axesPosAngle = setAxes(axesAngle,subplotStart(2),0.135,0.20, -0.08, 0.12, 0.16, hwratioAngles);
-    
-    setLegend([plotHealthyAngle(end,1),plotRealHealthyAngle(end,1)],axesPosAngle(4,:),{'H','F'},18);
+    setLegend([plotHealthyAngle(end,1),plotRealHealthyAngle(end,1)],axesPosAngle(end,:),{'H','F'},18);
     setLegend(plotProstheticAngle(end,[1,3]),axesPosAngle(end,:),{'I','P'},18);
     
-    ylabelPosAngle = alignYlabel(axesAngle([1,5]));%,axesCMGAngle(1)]);
+    ylabelPosAngle = alignYlabel(axesAngle([1,(length(axesAngle)-length(axesHealthyAngle)+1)]));%,axesCMGAngle(1)]);
 %     ylabelPosAngle = ylabelPosAngle + 0.25;
     addInfoTextFigure('Healthy',24,'(a)',20,axesAngle(1),ylabelPosAngle);
     addInfoTextFigure('Amputee',24,'(b)',20,axesAngle(5),ylabelPosAngle);
-    
+    if ~isempty(axesCMGNotActiveAngle)
+        setLegend(plotCMGNotActiveAngle(end,[1,3]),axesPosAngle(end,:),{'$\mathrm{I}_{\mathrm{CI}}$','$\mathrm{P}_{\mathrm{CI}}$'},18);
+        addInfoTextFigure('CMG not Active',24,'(c)',20,axesAngle(9),ylabelPosAngle);
+    end
+    if ~isempty(axesCMGActiveAngle)
+        addInfoTextFigure('CMG Active',24,'(d)',20,axesAngle(13),ylabelPosAngle);
+         setLegend(plotCMGActiveAngle(end,[1,3]),axesPosAngle(end,:),{'$\mathrm{I}_{\mathrm{CA}}$','$\mathrm{P}_{\mathrm{CA}}$'},18);
+    end
     
     addCorr2plot(plotInfo.showCorr,plotHealthyAngle(:,1),plotRealHealthyAngle(:,1),axesHealthyAngle,...
                 14,[0.05,0.85,0; 0.05,0.85,0; 0.05,0.85,0; 0.01,0.05,0;]);
