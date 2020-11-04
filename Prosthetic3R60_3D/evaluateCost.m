@@ -34,8 +34,8 @@ else
     OptimParams;
     innerOptSettings = setInnerOptSettings('eval');
     
-    load(['Results' filesep 'Rough' filesep 'Umb10_0.9ms_num_inter.mat'])
-%     load(['Results' filesep 'Rough' filesep 'Umb10_1.2ms_wheading.mat'])
+%     load(['Results' filesep 'Rough' filesep 'Umb10_0.9ms_num_inter.mat'])
+    load(['Results' filesep 'Rough' filesep 'Umb10_1.2ms_wheading_numsolve.mat'])
     
 end
 
@@ -51,7 +51,7 @@ load_system(model);
 %%
 [groundX, groundZ, groundTheta] = generateGround('flat');
 
-dt_visual = 1/30;
+dt_visual = 1/1000;
 animFrameRate = 30;
 
 assignGainsSagittal;
