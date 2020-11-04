@@ -84,7 +84,8 @@ if contains(get_param(model,'SimulationMode'),'rapid')
     rtp = Simulink.BlockDiagram.buildRapidAcceleratorTarget(model);
     warning('on');
     
-    obstacleX = 12.65:0.02:13.05;
+%     obstacleX = 12.71:0.02:13.01;
+     obstacleX = [13.02:0.01:13.04, 13.06];
     for jj = 1:length(obstacleX)
         %             if jj == 1
         %                 [groundX(jj,:), groundZ(jj,:), groundTheta(jj,:)] = generateGround('flat',[],4*(jj-1),false);
@@ -154,10 +155,10 @@ for idx = 1:length(simout)
 end
 
 %%
-%  animPost3D(simout(1).animData3D,'intact',false,'speed',1,'obstacle',false,'view','perspective','CMG',true,...
-%                 'showFigure',true,'createVideo',false,'info',[num2str(innerOptSettings.target_velocity) 'ms_y_dt1000'],'saveLocation',innerOptSettings.optimizationDir);
+%  animPost3D(simout(end-2).animData3D,'intact',false,'speed',1,'obstacle',true,'view','side','CMG',true,...
+%                 'showFigure',true,'createVideo',true,'info',[num2str(innerOptSettings.target_velocity) 'ms_y_dt1000'],'saveLocation',innerOptSettings.optimizationDir);
             
-% plotData(simout(1).angularData,simout(1).musculoData,simout(1).GRFData,simout(1).jointTorquesData,simout(1).GaitPhaseData,simout(1).stepTimes,simout(1).CMGData,'prosthetic3D_1.2ms_yaw',[],0,1,1)
+plotData(simout(1).angularData,simout(1).musculoData,simout(1).GRFData,simout(1).jointTorquesData,simout(1).GaitPhaseData,simout(1).stepTimes,simout(1).CMGData,'prosthetic3D_1.2ms_yaw',[],0,1,1)
 %%
 set(0, 'DefaultFigureHitTest','on');
 set(0, 'DefaultAxesHitTest','on','DefaultAxesPickableParts','all');

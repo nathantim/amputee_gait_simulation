@@ -30,7 +30,7 @@ maxGammadot = 20; % rad/s
 % tripDetectThreshold = -60; % m/s^2   1.2 m/s
 
 % tripDetectThreshold = -35; % m/s^2 2D
-tripDetectThreshold = 3.5E4; % m/s^2
+tripDetectThreshold = 1E9*3.5E4; % m/s^2
 % tripDetectThreshold = -650; % m/s^2
 
 
