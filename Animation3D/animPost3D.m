@@ -166,8 +166,8 @@ end
         obstacle_height = 0.08;
         obstacle_width = 0.15;
         obstacle_depth = 0.02;
-        xoffset = 13.01;
-        yoffset = -2.35;
+        xoffset = 9.06;
+        yoffset = -1.6;
         zoffset = 0;
         v = [xoffset, yoffset - obstacle_width/2, 0;...
             xoffset, yoffset + obstacle_width/2, 0;...

@@ -7,8 +7,8 @@ obstacle_depth = 0.05;
 % obstacle_x = 8.65; %fall for Prosthetic_2D 1.2 m/s
 % obstacle_x = 8.10; %fall for Prosthetic_2D 0.9 m/s
 % obstacle_x = 8.4; % fall
-obstacle_x = 13.04;  %8.75 %fall for Prosthetic_3D 1.2 m/s
-obstacle_y = -2.35; %fall for Prosthetic_2D 1.2 m/s
+obstacle_x = 9.06;  %8.75 %fall for Prosthetic_3D 1.2 m/s
+obstacle_y = -1.6; %fall for Prosthetic_2D 1.2 m/s
 obstacle_damping = 8E1;
 obstacle_stiffness = 5E1;
 
