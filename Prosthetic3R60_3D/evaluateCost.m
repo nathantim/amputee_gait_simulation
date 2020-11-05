@@ -71,7 +71,7 @@ assignGainsCoronal;
 assignInit;
 
 try
-    set_param(strcat(model,'/Body Mechanics Layer/Obstacle'),'Commented','on');
+    set_param(strcat(model,'/Body Mechanics Layer/Obstacle'),'Commented','off');
 catch ME
     warning(ME.message);
 end
@@ -86,7 +86,7 @@ if contains(get_param(model,'SimulationMode'),'rapid')
     warning('on');
     
     %     obstacleX = 12.71:0.02:13.01;
-    obstacleX = [];%[9.00:0.005:9.09];%13.04;%[13.04:0.005:13.06]; %13.04;
+    obstacleX = [9.05:0.005:9.065];%13.04;%[13.04:0.005:13.06]; %13.04;
     if ~isempty(obstacleX)
         for jj = 1:length(obstacleX)
             %             if jj == 1
@@ -145,7 +145,10 @@ for idx = 1:length(simout)
         disp(simout(idx).ErrorMessage);
         cost(idx) = nan;
     else
-        [cost(idx), dataStructLocal] = getCost(model,[],simout(idx).time,simout(idx).metabolicEnergy,simout(idx).sumOfStopTorques,simout(idx).HATPosVel,simout(idx).stepVelocities,simout(idx).stepTimes,simout(idx).stepLengths,simout(idx).stepNumbers,simout(idx).CMGData,simout(idx).selfCollision,innerOptSettings,0);
+        [cost(idx), dataStructLocal] = getCost(model,[],simout(idx).time,simout(idx).metabolicEnergy,simout(idx).sumOfStopTorques,...
+                                                        simout(idx).HATPosVel,simout(idx).stepVelocities,simout(idx).stepTimes,...
+                                                        simout(idx).stepLengths,simout(idx).stepNumbers,simout(idx).CMGData,...
+                                                        simout(idx).selfCollision,innerOptSettings,0);
         printOptInfo(dataStructLocal,true);
         
         kinematics.angularData = simout(idx).angularData;
