@@ -86,7 +86,7 @@ if contains(get_param(model,'SimulationMode'),'rapid')
     warning('on');
     
     %     obstacleX = 12.71:0.02:13.01;
-    obstacleX = [9.05:0.005:9.065];%13.04;%[13.04:0.005:13.06]; %13.04;
+    obstacleX = [];%[9.05:0.005:9.065];%13.04;%[13.04:0.005:13.06]; %13.04;
     if ~isempty(obstacleX)
         for jj = 1:length(obstacleX)
             %             if jj == 1
@@ -102,7 +102,7 @@ if contains(get_param(model,'SimulationMode'),'rapid')
                 Simulink.BlockDiagram.modifyTunableParameters(rtp, ...
                 'obstacle_x',     obstacleX(jj));
             in(jj) = Simulink.SimulationInput(model);
-            in(jj) = in(jj).setModelParameter('TimeOut', 20*60);
+            in(jj) = in(jj).setModelParameter('TimeOut', innerOptSettings.timeOut);
             in(jj) = in(jj).setModelParameter('SimulationMode', 'rapid', ...
                 'RapidAcceleratorUpToDateCheck', 'off');
             in(jj) = in(jj).setModelParameter('RapidAcceleratorParameterSets', paramSets{jj});
@@ -110,16 +110,14 @@ if contains(get_param(model,'SimulationMode'),'rapid')
     else
         paramStruct = {};
         in = Simulink.SimulationInput(model);
-        in = in.setModelParameter('TimeOut', 30*60);
+        in = in.setModelParameter('TimeOut', innerOptSettings.timeOut);
         in = in.setModelParameter('SimulationMode', 'rapid', ...
             'RapidAcceleratorUpToDateCheck', 'off');
     end
 else
     paramStruct = {};
     in = Simulink.SimulationInput(model);
-    in = in.setModelParameter('TimeOut', 30*60);
-    in = in.setModelParameter('SimulationMode', 'rapid', ...
-        'RapidAcceleratorUpToDateCheck', 'off');
+    in = in.setModelParameter('TimeOut', innerOptSettings.timeOut);
 end
 
 %%
@@ -174,7 +172,7 @@ end
 animPost3D(simout(1).animData3D,'intact',false,'speed',1,'obstacle',true,'view','perspective','CMG',true,...
     'showFigure',true,'createVideo',true,'info',[num2str(innerOptSettings.target_velocity) 'ms_y_dt1000'],'saveLocation',innerOptSettings.optimizationDir);
 % 
-plotData(simout(1).angularData,simout(1).musculoData,simout(1).GRFData,simout(1).jointTorquesData,simout(1).GaitPhaseData,simout(1).stepTimes,simout(1).CMGData,'prosthetic3D_1.2ms_yaw',[],0,1,1)
+% plotData(simout(1).angularData,simout(1).musculoData,simout(1).GRFData,simout(1).jointTorquesData,simout(1).GaitPhaseData,simout(1).stepTimes,simout(1).CMGData,'prosthetic3D_1.2ms_yaw',[],0,1,1)
 
 %%
 set(0, 'DefaultFigureHitTest','on');
