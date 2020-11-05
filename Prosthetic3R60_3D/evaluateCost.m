@@ -76,7 +76,7 @@ catch ME
     warning(ME.message);
 end
 % set_param(model, 'AccelVerboseBuild', 'off');
-set_param(model,'StopTime','30');
+set_param(model,'StopTime','20');
 save_system(model);
 
 %%
@@ -103,7 +103,6 @@ if contains(get_param(model,'SimulationMode'),'rapid')
                 'obstacle_x',     obstacleX(jj));
             in(jj) = Simulink.SimulationInput(model);
             in(jj) = in(jj).setModelParameter('TimeOut', 20*60);
-            in(jj) = in(jj).setModelParameter('Stoptime', 30);
             in(jj) = in(jj).setModelParameter('SimulationMode', 'rapid', ...
                 'RapidAcceleratorUpToDateCheck', 'off');
             in(jj) = in(jj).setModelParameter('RapidAcceleratorParameterSets', paramSets{jj});
