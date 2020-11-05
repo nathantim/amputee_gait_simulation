@@ -111,8 +111,13 @@ if contains(get_param(model,'SimulationMode'),'rapid')
         paramStruct = {};
         in = Simulink.SimulationInput(model);
         in = in.setModelParameter('TimeOut', innerOptSettings.timeOut);
+%         paramSets = ...
+%                 Simulink.BlockDiagram.modifyTunableParameters(rtp, ...
+%                 'tripDetectThreshold',     1E9*2000);
         in = in.setModelParameter('SimulationMode', 'rapid', ...
             'RapidAcceleratorUpToDateCheck', 'off');
+%         in = in.setModelParameter('RapidAcceleratorParameterSets', paramSets);
+        
     end
 else
     paramStruct = {};
@@ -172,7 +177,7 @@ end
 animPost3D(simout(1).animData3D,'intact',false,'speed',1,'obstacle',true,'view','perspective','CMG',true,...
     'showFigure',true,'createVideo',true,'info',[num2str(innerOptSettings.target_velocity) 'ms_y_dt1000'],'saveLocation',innerOptSettings.optimizationDir);
 % 
-% plotData(simout(1).angularData,simout(1).musculoData,simout(1).GRFData,simout(1).jointTorquesData,simout(1).GaitPhaseData,simout(1).stepTimes,simout(1).CMGData,'prosthetic3D_1.2ms_yaw',[],0,1,1)
+plotData(simout(1).angularData,simout(1).musculoData,simout(1).GRFData,simout(1).jointTorquesData,simout(1).GaitPhaseData,simout(1).stepTimes,simout(1).CMGData,'prosthetic3D_1.2ms_yaw',[],0,1,1)
 
 %%
 set(0, 'DefaultFigureHitTest','on');

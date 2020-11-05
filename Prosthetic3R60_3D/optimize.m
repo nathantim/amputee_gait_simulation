@@ -18,7 +18,7 @@ optimizationInfo = 'diff_model_wCMG';
 % initial_gains_filename = ['Results' filesep 'Rough' filesep 'Umb10_1.5cm_0.9ms_opt_1.2mscoronal.mat'];
 % initial_gains_filename = ['Results' filesep 'Rough' filesep 'Umb10_1.2ms_difffoot_higherabd.mat'];
 % initial_gains_filename = ['Results' filesep 'Rough' filesep 'Umb10_0.9ms.mat'];
-initial_gains_filename = ['Results' filesep 'Rough' filesep 'Umb10_1.2ms_wheading.mat'];
+initial_gains_filename = ['Results' filesep 'Rough' filesep 'v1.2ms_wCMG.mat'];
 
 
 %%
