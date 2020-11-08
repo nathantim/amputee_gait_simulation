@@ -26,8 +26,8 @@ innerOptSettings.selfCollisionFactor = 1000;
 
 % innerOptSettings.numTerrains = 4;
 innerOptSettings.numTerrains = 1;
-% innerOptSettings.terrain_height = 0.010; % in m
-innerOptSettings.terrain_height = 0.010E-8; % in m
+innerOptSettings.terrain_height = 0.010; % in m
+% innerOptSettings.terrain_height = 0.010E-8; % in m
 
 if usejava('desktop')
     innerOptSettings.numParWorkers = 4;
@@ -41,7 +41,7 @@ innerOptSettings.target_velocity = target_velocity;
 innerOptSettings.min_velocity = min_velocity;
 innerOptSettings.max_velocity = max_velocity;
 
-innerOptSettings.timeOut = 20*60; % Time out for simulation
+innerOptSettings.timeOut = 25*60; % Time out for simulation
 innerOptSettings.createVideo = true; % Create video during optimization
 if nargin > 0
     opts = cmaes;

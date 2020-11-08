@@ -29,10 +29,10 @@ global model rtp InitialGuess innerOptSettings
 model = 'NeuromuscularModel_3R60_3D';
 optfunc = 'cmaesParallelSplitRoughCMG';
 load_system(model);
-set_param(strcat(model,'/Body Mechanics Layer/Obstacle'),'Commented','off');
-set_param(model,'SimulationMode','rapid');
+% set_param(strcat(model,'/Body Mechanics Layer/Obstacle'),'Commented','off');
+% set_param(model,'SimulationMode','rapid');
 % set_param(model,'StopTime','30');
-set_param(model,'StopTime','20');
+% set_param(model,'StopTime','20');
 
 %% initialze parameters
 [innerOptSettings,opts] = setInnerOptSettings(b_resumeOptimization,initial_gains_filename,optimizationInfo,initial_gains_filenameCMG);
@@ -53,12 +53,12 @@ assignGainsSagittal;
 assignGainsCoronal;
 assignInit;
 
-dt_visual = 1/30;
+dt_visual = 1/1000;
 animFrameRate = 30;
 
 [groundX, groundZ, groundTheta] = generateGround('flat');
 
-save_system(model)
+% save_system(model)
 
 %% Build the Rapid Accelerator target once
 warning('off')

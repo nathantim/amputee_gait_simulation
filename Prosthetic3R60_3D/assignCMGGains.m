@@ -1,4 +1,3 @@
-CMGParams;
 
 % KpGamma                 = CMGGains(1);
 % KiGamma                 = CMGGains(2);
