@@ -92,7 +92,7 @@ if contains(get_param(model,'SimulationMode'),'rapid')
     warning('on');
     
     %     obstacleX = 12.71:0.02:13.01;
-    obstacleX = [9.070:0.001:9.090];%[7.80:0.005:7.87,9.065:0.001:9.085];%13.04;%[13.04:0.005:13.06]; %13.04;
+    obstacleX = [9.079:0.001:9.095];%[7.80:0.005:7.87,9.065:0.001:9.085];%13.04;%[13.04:0.005:13.06]; %13.04;
     if ~isempty(obstacleX)
         for jj = 1:length(obstacleX)
             %             if jj == 1
@@ -194,8 +194,8 @@ for idx = 1:length(simout)
 end
 
 %%
-animPost3D(simout(12).animData3D,'intact',false,'speed',1,'obstacle',true,'view','side','CMG',true,...
-    'showFigure',true,'createVideo',false,'info',[num2str(innerOptSettings.target_velocity) 'ms_y_dt1000'],'saveLocation',innerOptSettings.optimizationDir);
+% animPost3D(simout(12).animData3D,'intact',false,'speed',1,'obstacle',true,'view','side','CMG',true,...
+%     'showFigure',true,'createVideo',false,'info',[num2str(innerOptSettings.target_velocity) 'ms_y_dt1000'],'saveLocation',innerOptSettings.optimizationDir);
 % % %
 % plotData(simout(1).angularData,simout(1).musculoData,simout(1).GRFData,simout(1).jointTorquesData,simout(1).GaitPhaseData,simout(1).stepTimes,simout(1).CMGData,'prosthetic3D_1.2ms_yaw',[7 10],0,1,1,0)
 
