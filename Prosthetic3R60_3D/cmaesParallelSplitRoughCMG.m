@@ -77,10 +77,13 @@ for idx = 1:length(in)
     
     mData=simout(idx).getSimulationMetadata();
     
-    if strcmp(mData.ExecutionInfo.StopEvent,'DiagnosticError') || strcmp(mData.ExecutionInfo.StopEvent,'TimeOut')
+    if strcmp(mData.ExecutionInfo.StopEvent,'DiagnosticError') 
         disp('Sim was stopped due to error');
         fprintf('Simulation %d was stopped due to error: \n',idx);
         disp(simout(idx).ErrorMessage);
+        costs(idx) = nan;
+    elseif strcmp(mData.ExecutionInfo.StopEvent,'Timeout')
+        fprintf('Simulation %d was stopped due to Timeout: \n',idx);
         costs(idx) = nan;
     else
         time                = simout(idx).time;

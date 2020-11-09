@@ -155,12 +155,15 @@ simout = parsim(in, 'ShowProgress', true);
 
 %%
 for idx = 1:length(simout)
-%     mData=simout(idx).getSimulationMetadata();
+    mData=simout(idx).getSimulationMetadata();
     
-    if false %strcmp(mData.ExecutionInfo.StopEvent,'DiagnosticError') || strcmp(mData.ExecutionInfo.StopEvent,'TimeOut')
+    if strcmp(mData.ExecutionInfo.StopEvent,'DiagnosticError')
         disp('Sim was stopped due to error');
         fprintf('Simulation %d was stopped due to error: \n',idx);
         disp(simout(idx).ErrorMessage);
+        cost(idx) = nan;
+    elseif strcmp(mData.ExecutionInfo.StopEvent,'Timeout')
+        fprintf('Simulation %d was stopped due to Timeout: \n',idx);
         cost(idx) = nan;
     else
         [cost(idx), dataStructLocal] = getCost(model,[],simout(idx).time,simout(idx).metabolicEnergy,simout(idx).sumOfStopTorques,...
@@ -194,8 +197,8 @@ for idx = 1:length(simout)
 end
 
 %%
-% animPost3D(simout(12).animData3D,'intact',false,'speed',1,'obstacle',true,'view','side','CMG',true,...
-%     'showFigure',true,'createVideo',false,'info',[num2str(innerOptSettings.target_velocity) 'ms_y_dt1000'],'saveLocation',innerOptSettings.optimizationDir);
+animPost3D(simout(2).animData3D,'intact',false,'speed',1,'obstacle',true,'view','side','CMG',true,...
+    'showFigure',true,'createVideo',false,'info',[num2str(innerOptSettings.target_velocity) 'ms_y_dt1000'],'saveLocation',innerOptSettings.optimizationDir);
 % % %
 % plotData(simout(1).angularData,simout(1).musculoData,simout(1).GRFData,simout(1).jointTorquesData,simout(1).GaitPhaseData,simout(1).stepTimes,simout(1).CMGData,'prosthetic3D_1.2ms_yaw',[7 10],0,1,1,0)
 
