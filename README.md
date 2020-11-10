@@ -20,16 +20,43 @@ To run one the models:
 6. If 'normal' simulation mode is selected, the simulation is visualized. If 'rapid-accelerator' mode is selected, the simulation can be animated using animPost3D.
 7. Simulation data can be plotted using the plotData() function.
 
+Animating the data
+	* animPost3D function. See the animPost3D function for all the options and specifics.
+	* Example of running animPost3D: 
+		* animPost3D(simout(1).animData3D,'intact',false)
+		* Shows an animation of the simulated amputee model
+		* animPost3D(simout(1).animData3D,'intact',false,'speed',1,'obstacle',true,'view','side','CMG',true,'showFigure',true,'createVideo',true,'info','prosthetic1.2ms','saveLocation','Videos');
+		* Shows an animation of the simulated amputee model walking with CMG and tripping over obstacle. A mp4 file is created and saved. The filename contains prosthetic1.2ms and it is saved in a subfolder called Videos located in the current directory	
 
-Example of running animPost3D: 
-animPost3D(animData3D,'intact',false,'speed',1,'followModel',true,'createVideo',true);
-This will animate the model and keep the model in the middle of the figure. Also, a .avi video will be created. See the animPost3D function for all the specifics.
 
-Example of running plotData: 
-plotData(angularData,musculoData,GRFData,jointTorquesData,GaitPhaseData,stepTimes,'prosthetic3D',true,true,true);
-This will show the kinematics, muscle activation, GRF, joint torques for the simulation. It will show the average data with standard deviation. As a reference winter data will be plotted for the sagittal data. This figure will be saved. See the plotData function for specifics.
+
+Plotting the data:
+	* plotData function. Check the function for all the options and specifics
+	* Example of running plotData: 
+		* plotData(simout(1).angularData,simout(1).musculoData,simout(1).GRFData,simout(1).jointTorquesData,simout(1).GaitPhaseData,simout(1).stepTimes,simout(1).CMGData,'prosthetic3D_1.2ms_yaw',[7 10],0,1,1,0)
+		* Shows the data between 7 and 10 seconds
+		* plotData(simout(1).angularData,simout(1).musculoData,simout(1).GRFData,simout(1).jointTorquesData,simout(1).GaitPhaseData,simout(1).stepTimes,simout(1).CMGData,'prosthetic3D_1.2ms_yaw',[],1,1,1)
+		* Shows and saves the data. Presented as average data and standard deviation per stride. Saved filename contains prosthetic3D_1.2ms_yaw
+
 
 This model is available for Academic or Non-Profit Organization Noncommercial research use only.
 
-Compiler used: MEX configured to use 'Microsoft Visual C++ 2015 (C)' for C language compilation.
-Model is numerically sensitive. Gains were obtained while sampling the data at 30 Hz. Changing this will change the evaluations. On flat terrain this does not differ too much, however, on rougher terrain it might result in an unsuccesful gait
+Notes:
+	* Compilers used: 
+		* MEX configured to use 'Microsoft Visual C++ 2015 (C)' for C language compilation.
+		* CompilerConfiguration with properties:
+             		* Name: 'Microsoft Visual C++ 2015 (C)'
+     			* Manufacturer: 'Microsoft'
+         		* Language: 'C'
+          		* Version: '14.0'
+		* MEX configured to use 'Microsoft Visual C++ 2017' for C++ language compilation.
+		* CompilerConfiguration with properties:
+             		* Name: 'Microsoft Visual C++ 2017'
+     			* Manufacturer: 'Microsoft'
+         		* Language: 'C++'
+          		* Version: '15.0'
+	* Model is numerically sensitive. 
+		* Gains were obtained while sampling the data at 30 Hz. Changing this will change the evaluations. 
+		* On flat terrain this does not differ too much, however, on rougher terrain it might result in an unsuccesful gait.
+		* Adding integrator blocks will also affect the outcome, since the solver variable step takes different amount of steps.
+	
