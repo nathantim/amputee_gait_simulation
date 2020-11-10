@@ -24,6 +24,7 @@ b_oneGaitPhase = true;
 
 if 1
     savePath = '../../Thesis Document/fig/';
+%     savePath = '../Thesis Document/fig/';
     saveInfo.type = {'eps'};
     b_withDate = false;
 else
@@ -123,7 +124,7 @@ if b_plotLegState
     
     axesPosState = setAxes(axesState,subplotStart(2),0.38,0.185, -0.02, 0.01, 0.23, hwratioState);
     
-    setLegend([plotHealthyState(1)],axesPosState(1,:),{'H'},18);
+    setLegend([plotHealthyState(1)],axesPosState(1,:),{'M$_{\mathrm{H}}$'},18);
     setLegend(plotProstheticState(end,[1,3]),axesPosState(2,:),{'I','P'},18);
     setLegend(plotCMGState(end,[1,3]),axesPosState(3,:),{'I','P'},18);
     
@@ -212,12 +213,12 @@ if b_plotAngles
     
     % addInfoTextFigure('Amputee model CMG','(c)',axesCMGAngle(1),ylabelPosAngle);
     if subplotStart(1) == 2
-        axesPosAngle = setAxes(axesAngle,subplotStart(2),0.135,0.20, -0.08, 0.12, 0.16, hwratioAngles);
+        axesPosAngle = setAxes(axesAngle,subplotStart(2),0.12,0.20, -0.08, 0.12, 0.16, hwratioAngles);
     elseif subplotStart(1) == 4
         axesPosAngle = setAxes(axesAngle,subplotStart(2),0.125,0.20, -0.07, 0.015, 0.15, hwratioAngles);
     end
     
-    setLegend([plotHealthyAngle(end,1),plotRealHealthyAngle(end,1)],axesPosAngle(end,:),{'H','F'},18);
+    setLegend([plotHealthyAngle(end,1),plotRealHealthyAngle(end,1)],axesPosAngle(end,:),{'M$_{\mathrm{H}}$','F$_{\mathrm{H}}$'},18);
     setLegend(plotProstheticAngle(end,[1,3]),axesPosAngle(end,:),{'I','P'},18);
     
     ylabelPosAngle = alignYlabel(axesAngle([1,(length(axesAngle)-length(axesHealthyAngle)+1)]));%,axesCMGAngle(1)]);
@@ -251,7 +252,7 @@ if b_plotTorques
         subplotStart = [3 4 1];
     else
         subplotStart = [2 4 1];
-        figurePositionTorque = [10,100,640,400]; %[10,100,1700,800]
+        figurePositionTorque = [10,100,700,400]; %[10,100,1700,800]
     end
     hwratioTorque = figurePositionTorque(end)/figurePositionTorque(end-1);
     set(torqueDataFig, 'Position',figurePositionTorque);
@@ -313,12 +314,12 @@ if b_plotTorques
     
     
     if subplotStart(1) == 2
-        axesPosTorque = setAxes(axesTorque,subplotStart(2),0.13,0.200, -0.08, 0.12, 0.16, hwratioTorque);
+        axesPosTorque = setAxes(axesTorque,subplotStart(2),0.115,0.200, -0.08, 0.12, 0.16, hwratioTorque);
     elseif subplotStart(1) == 4
         axesPosTorque = setAxes(axesTorque,subplotStart(2),0.125,0.20, -0.07, 0.015, 0.15, hwratioTorque);
     end
     
-    setLegend([plotHealthyTorque(end,1),plotRealHealthyTorque(end,1)],axesPosTorque(4,:),{'H','F'},18);
+    setLegend([plotHealthyTorque(end,1),plotRealHealthyTorque(end,1)],axesPosTorque(4,:),{'M$_{\mathrm{H}}$','F$_{\mathrm{H}}$'},18);
     setLegend(plotProstheticTorque(end,[1,3]),axesPosTorque(end,:),{'I','P'},18);
     
     ylabelPosTorque = alignYlabel(axesTorque([1,(length(axesTorque)-length(axesHealthyTorque)+1)]));%,axesCMGAngle(1)]);
@@ -413,12 +414,12 @@ if b_plotPowers
     
     
     if subplotStart(1) == 2
-        axesPosPower = setAxes(axesPower,subplotStart(2),0.145,0.2, -0.08, 0.12, 0.155, hwratioPower);
+        axesPosPower = setAxes(axesPower,subplotStart(2),0.125,0.2, -0.08, 0.12, 0.155, hwratioPower);
     elseif subplotStart(1) == 4
         axesPosPower = setAxes(axesPower,subplotStart(2),0.125,0.20, -0.07, 0.015, 0.15, hwratioPower);
     end
     
-    setLegend([plotHealthyPower(end,1)],axesPosPower(4,:),{'H'},18);
+    setLegend([plotHealthyPower(end,1)],axesPosPower(4,:),{'M$_{\mathrm{H}}$'},18);
     setLegend(plotProstheticPower(end,[1,3]),axesPosPower(end,:),{'I','P'},18);
     
     ylabelPosPower = alignYlabel(axesPower([1,(length(axesPower)-length(axesHealthyPower)+1)]));%,axesCMGAngle(1)]);
@@ -448,7 +449,7 @@ if b_plotGRF
         subplotStart = [3 3 1];
     else
         subplotStart = [2 3 1];
-        figurePositionGRF = [10,100,500,400]; %[10,100,1700,800]
+        figurePositionGRF = [10,100,550,400]; %[10,100,1700,800]
     end
     hwratioGRF = figurePositionGRF(end)/figurePositionGRF(end-1);
     set(GRFDataFig, 'Position',figurePositionGRF);
@@ -510,12 +511,12 @@ if b_plotGRF
     
     
     if subplotStart(1) == 2
-        axesPosGRF = setAxes(axesGRF,subplotStart(2),0.170,0.250, -0.05, 0.12, 0.19, hwratioGRF);
+        axesPosGRF = setAxes(axesGRF,subplotStart(2),0.15,0.250, -0.05, 0.12, 0.19, hwratioGRF);
     elseif subplotStart(1) == 4
         axesPosGRF = setAxes(axesGRF,subplotStart(2),0.16,0.250, -0.07, 0.02, 0.18, hwratioGRF);
     end
     
-    setLegend([plotHealthyGRF(end,1),plotRealHealthyGRF(end,1)],axesPosGRF(3,:),{'H','F'},18);
+    setLegend([plotHealthyGRF(end,1),plotRealHealthyGRF(end,1)],axesPosGRF(3,:),{'M$_{\mathrm{H}}$','F$_{\mathrm{H}}$'},18);
     setLegend(plotProstheticGRF(end,[1,3]),axesPosGRF(6,:),{'I','P'},18);
     % legend(plotProstheticAngle(end,[1,3]),'I','P','FontSize', 21,'Position',[0.80 0.465 0.075 0.07]);  %two
     
@@ -615,7 +616,7 @@ if b_plotMuscle
     end
     
     
-    setLegend([plotHealthyMusc(end,1)],axesPosMusc(length(axesHealthyMusc),:),{'H'},18);
+    setLegend([plotHealthyMusc(end,1)],axesPosMusc(length(axesHealthyMusc),:),{'M$_{\mathrm{H}}$'},18);
     setLegend(plotProstheticMusc(end,[1,3]),axesPosMusc(end,:),{'I','P'},18);
     
     ylabelPosMusc = alignYlabel(axesMusc([1,(length(axesMusc)-length(axesHealthyMusc)+1)]));
