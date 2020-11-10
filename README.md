@@ -33,3 +33,5 @@ This model is available for Academic or Non-Profit Organization Noncommercial re
 
 Compiler used: MEX configured to use 'Microsoft Visual C++ 2015 (C)' for C language compilation.
 Model is numerically sensitive. Gains were obtained while sampling the data at 30 Hz. Changing this will change the evaluations. On flat terrain this does not differ too much, however, on rougher terrain it might result in an unsuccesful gait
+
+https://www.mathworks.com/help/physmod/simscape/ug/set-the-run-time-parameters-visibility-preference.html

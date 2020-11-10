@@ -8,9 +8,15 @@ function createWalkwayObject(WayCol, rCP, width)
         width = 1;
     end
 
-    ground = load('groundHeight.mat');
-    zPts = ground.groundZ; % - rCP/2;
-    xPts = ground.groundX;
+    if exist('groundHeight.mat','file') == 0
+        [xPts, zPts, ~] = generateGround('flat',[],[],0);
+    else
+        ground = load('groundHeight.mat');
+        zPts = ground.groundZ; % - rCP/2;
+        xPts = ground.groundX;
+    end
+    
+    
     numPts = length(zPts);
 
     % initialize vertex and face matrices

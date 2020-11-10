@@ -26,7 +26,7 @@ initial_gains_filenameCMG = ['Results' filesep 'CMGGains_inter2.mat'];
 global model rtp InitialGuess innerOptSettings
 
 %% specifiy model and intial parameters
-model = 'NeuromuscularModel_3R60_3D';
+model = 'NeuromuscularModel_3R60CMG_3D';
 optfunc = 'cmaesParallelSplitRoughCMG';
 load_system(model);
 % set_param(strcat(model,'/Body Mechanics Layer/Obstacle'),'Commented','off');

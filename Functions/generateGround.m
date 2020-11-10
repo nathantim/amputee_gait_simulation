@@ -5,12 +5,12 @@ groundX(2:2:end) = (1:100)-.03;
 groundZ = zeros(1,200);
 
 rng('default')
-if nargin < 3
+if nargin < 3 || isempty(seed)
     rng('shuffle');
 else
     rng(seed);
 end
-if nargin < 4
+if nargin < 4 || isempty(b_save)
     b_save = true;
 end
 if nargin == 0

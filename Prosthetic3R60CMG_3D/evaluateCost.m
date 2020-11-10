@@ -59,7 +59,7 @@ end
 terrains2Test = 1;%input("Number of terrains to test:   ");
 
 %%
-model = 'NeuromuscularModel_3R60_3D';
+model = 'NeuromuscularModel_3R60CMG_3D';
 
 load_system(model);
 % set_param(model, 'OptimizationLevel','level2');

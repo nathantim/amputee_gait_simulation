@@ -25,7 +25,7 @@ initial_gains_filename = ['Results' filesep 'Rough' filesep 'v1.2ms_wCMG.mat'];
 global model rtp InitialGuess innerOptSettings
 
 %% specifiy model and intial parameters
-model = 'NeuromuscularModel_3R60_3D';
+model = 'NeuromuscularModel_3R60CMG_3D';
 optfunc = 'cmaesParallelSplitRough';
 load_system(model);
 % set_param(strcat(model,'/Body Mechanics Layer/Right Ankle Joint'),'SpringStiffness','3000','DampingCoefficient','1000');
