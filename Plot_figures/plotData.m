@@ -41,7 +41,7 @@ axesGRF = [];
 %%
 plotInfo.showSD = showSD;%true;
 plotInfo.plotProp = {'LineStyle','Color','LineWidth'};
-plotInfo.lineVec = {'-';':'; '-';':'};
+plotInfo.lineVec = {'-';':'; '-.';':'};
 plotInfo.colorProp = {	'#0072BD';	'#D95319';'#7E2F8E';'#618D27'};
 % plotInfo.lineVec = plotInfo.lineVec(1:3,:);
 % plotInfo.colorProp = plotInfo.colorProp(1:3,:);
@@ -66,12 +66,12 @@ if ~isempty(jointTorquesData)
 end
 
 %%'
-[plotState, axesState] = plotLegState(GaitPhaseData,plotInfo,GaitInfo,saveInfo);
-[plotAngle,axesAngle] = plotAngularData(angularData,plotInfo,GaitInfo,saveInfo,[]);
-[plotTorque,axesTorque] = plotJointTorqueData(jointTorquesData,plotInfo,GaitInfo,saveInfo,[]);
-[plotPower,axesPower] = plotJointPowerData(angularData,jointTorquesData,plotInfo,GaitInfo,saveInfo,[]);
-[plotMusc,axesMusc] = plotMusculoData(musculoData,plotInfo,GaitInfo,saveInfo);
-[plotGRF,axesGRF] = plotGRFData(GRFData,plotInfo,GaitInfo,saveInfo,[]);
+% [plotState, axesState] = plotLegState(GaitPhaseData,plotInfo,GaitInfo,saveInfo);
+% [plotAngle,axesAngle] = plotAngularData(angularData,plotInfo,GaitInfo,saveInfo,[]);
+% [plotTorque,axesTorque] = plotJointTorqueData(jointTorquesData,plotInfo,GaitInfo,saveInfo,[]);
+% [plotPower,axesPower] = plotJointPowerData(angularData,jointTorquesData,plotInfo,GaitInfo,saveInfo,[]);
+% [plotMusc,axesMusc] = plotMusculoData(musculoData,plotInfo,GaitInfo,saveInfo);
+% [plotGRF,axesGRF] = plotGRFData(GRFData,plotInfo,GaitInfo,saveInfo,[]);
 % set(0, 'DefaultAxesFontSize',18);
 if ~isempty(CMGData) && ~(max(diff(CMGData.signals.values(:,1)))==0)
     plotCMGData(CMGData,plotInfo,GaitInfo,saveInfo,[]);

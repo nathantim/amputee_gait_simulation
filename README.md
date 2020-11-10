@@ -1,7 +1,7 @@
 # Neuromuscular-Transfemoral-Prosthesis-Model
 
 
-This repository contains neuromuscular models of an amputee walking on a transfemoral prosthesis, containing the Otto Bock 3R60 knee prosthesis. 
+This repository contains neuromuscular models of an amputee walking on a trans-femoral prosthesis, containing the Otto Bock 3R60 knee prosthesis. 
 The model is based on the work of:
 
 - Song, S., & Geyer, H. (2015). A neural circuitry that emphasizes spinal feedback generates diverse behaviours of human locomotion. The Journal of physiology, 593(16), 3493-3511.
@@ -9,7 +9,7 @@ The model is based on the work of:
 
 The repository contains a 2D and 3D model of a healthy person and of a trans-femoral amputee.
 
-To run one the models:
+## Running the model
 
 1. Run the `setup_paths.m` script.
 2. Go to the folder for the model you wish to run.
@@ -20,8 +20,19 @@ To run one the models:
 7. If 'normal' simulation mode is selected, the simulation is visualized. If 'rapid-accelerator' mode is selected, the simulation can be animated using `animPost3D()`.
 8. Simulation data can be plotted using the `plotData()` function.
 
+
+## Optimizing the model
+
+1. Run the `setup_paths.m` script.
+2. Go to the folder for the model you wish to optimize.
+3. Open `optimize.m`
+4. Select the disired initial gains 
+5. Check if the settings are as you wish in `setInnerOptSettings`
+6. Select which data you want to have plotted during optimization in `plotProgressOptimization`
+7. Run `optimize.m`
+
 ## Animating the data
-* animPost3D function. See the animPost3D function for all the options and specifics.
+* `animPost3D` function. See the `animPost3D` function for all the options and specifics.
 * Example of running animPost3D: 
   * `animPost3D(simout(1).animData3D,'intact',false)`
     * Shows an animation of the simulated amputee model
@@ -37,8 +48,6 @@ To run one the models:
   * `plotData(simout(1).angularData,simout(1).musculoData,simout(1).GRFData,simout(1).jointTorquesData,simout(1).GaitPhaseData,simout(1).stepTimes,simout(1).CMGData,'prosthetic3D_1.2ms_yaw',[],1,1,1);`
     * Shows and saves the data. Presented as average data and standard deviation per stride. Saved filename contains prosthetic3D_1.2ms_yaw
 
-
-This model is available for Academic or Non-Profit Organization Noncommercial research use only.
 
 ## Notes:
 * Compilers used: 
@@ -59,3 +68,5 @@ This model is available for Academic or Non-Profit Organization Noncommercial re
   * On flat terrain this does not differ too much, however, on rougher terrain it might result in an unsuccesful gait.
   * Adding integrator blocks will also affect the outcome, since the solver variable step takes different amount of steps.
 	
+
+This model is available for Academic or Non-Profit Organization Noncommercial research use only.
