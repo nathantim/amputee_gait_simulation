@@ -23,6 +23,7 @@ rtp = Simulink.BlockDiagram.buildRapidAcceleratorTarget(model);
 warning('on');
 
 %%
+clearvars in
 for idxGains = 1:length(gainfiles)
     load(['Results' filesep gainfiles{idxGains}])
     
