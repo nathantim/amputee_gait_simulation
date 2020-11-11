@@ -127,7 +127,7 @@ if showCollision
     plotHandles1(2,1) = plot(axesHandles(axidx), [t_trip, t_trip], get(axesHandles(axidx)).YLim,'--o','Color','#454545');
     plotHandles1(3,1) = plot(axesHandles(axidx), t_CMGPreventActive, ones(1,2)*get(axesHandles(axidx)).YLim(2)-0.001,'-*','color','#9F9F9F');
     h = get(axesHandles(axidx),'children');
-    set(axesHandles(axidx),'children',[h(3:end) h(1:2)] );
+    set(axesHandles(axidx),'children',[h(3:end); h(1:2)] );
 end
 if  b_addTitle
     title(axesHandles(axidx),'GM angle');

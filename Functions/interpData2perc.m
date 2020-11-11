@@ -18,7 +18,7 @@ if b_oneGaitPhase
 
 else
     meanDataInterp = data(stepStarts:stepEnds,:);
-    sdDataInterp = [];
+    sdDataInterp = zeros(size(meanDataInterp));
     
 end
 

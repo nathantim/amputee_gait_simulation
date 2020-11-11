@@ -27,17 +27,20 @@ if input(['Do you want to \n' '(1) simulate all models, or \n' '(0) use datafile
     cmgArray = logical([0,0,1]);
     
     %%
-    for ii = 1:size(simouts,2)
-        for jj = 1:size(simouts,1)
-        animPost3D(simouts(jj,ii).animData3D,'intact',intactArray(ii),'view','perspective',...
-                'CMG',cmgArray(ii),'obstacle',cmgArray(ii),'showFigure',true,'createVideo',false);
-            
-        plotData(simouts(jj,ii).angularData,simouts(jj,ii).musculoData,simouts(jj,ii).GRFData,...
-            simouts(jj,ii).jointTorquesData,simouts(jj,ii).GaitPhaseData,simouts(jj,ii).stepTimes,...
-            simouts(jj,ii).CMGData,'',[],0,1,1);
+    realHealthy3D = load('Plot_figures/Data/FukuchiData.mat','gaitData');
+    realHealthy3D09 = realHealthy3D.gaitData.v0_9;
+    realHealthy3D12 = realHealthy3D.gaitData.v1_2;
+    prosthetic3DCMGNOTActive = load('Prosthetic3R60CMG_3D/Results/resultData_prostheticNOTActiveCMG_1.2ms.mat');
+    prosthetic3DCMGActive = simouts(3,3);
+    CMGtripPrevent = simouts(1,3);
+    prosthetic3D09 = simouts(1,2);
+    prosthetic3D12 = simouts(2,2);
+    healthy3D09 = simouts(1,1);
+    healthy3D12 = simouts(2,1);
     
-        end
-    end
+    plotHealthyProstheticData(realHealthy3D09,healthy3D09,prosthetic3D09,[],[],'3D_0_9ms',false)
+    plotHealthyProstheticData(realHealthy3D12,healthy3D12,prosthetic3D12,prosthetic3DCMGNOTActive.simout,prosthetic3DCMGActive,'3D_1_2ms',false);
+    plotCombinedCMGData(prosthetic3DCMGActive,CMGtripPrevent);
     
 else
     
@@ -51,6 +54,10 @@ else
     prosthetic3DCMGActive = load('Prosthetic3R60CMG_3D/Results/resultData_prostheticActiveCMG_1.2ms.mat');
     prosthetic3DCMGTripFall = load('Prosthetic3R60CMG_3D/Results/resultData_prostheticTripNOTPrevent.mat');
     prosthetic3DCMGTripPrevent = load('Prosthetic3R60CMG_3D/Results/resultData_prostheticTripPrevent.mat');
+    
+    plotHealthyProstheticData(realHealthy3D09,healthy3D09.simout,prosthetic3D09.simout,[],[],'3D_0_9ms',false)
+    plotHealthyProstheticData(realHealthy3D12,healthy3D12.simout,prosthetic3D12.simout,prosthetic3DCMGNOTActive.simout,prosthetic3DCMGActive.simout,'3D_1_2ms',false);
+    plotCombinedCMGData(prosthetic3DCMGActive.simout,prosthetic3DCMGTripPrevent.simout);
     
     animPost3D(healthy3D09.simout.animData3D,'intact',true,'obstacle',false,'view','perspective','CMG',false);
     animPost3D(healthy3D12.simout.animData3D,'intact',true,'obstacle',false,'view','perspective','CMG',false);
