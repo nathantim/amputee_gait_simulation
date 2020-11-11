@@ -7,19 +7,6 @@
 %    4. ground interaction.
 %
 
-%% obstacle
-obstacle_height = 0.08;
-obstacle_width = 0.15;
-obstacle_depth = 0.05;
-% obstacle_x = 1.7; %no fall?
-% obstacle_x = 1.8; % fall
-% obstacle_x = 8.65; %fall for Prosthetic_2D 1.2 m/s
-% obstacle_x = 8.10; %fall for Prosthetic_2D 0.9 m/s
-% obstacle_x = 8.4; % fall
-obstacle_x = 8.78;  %8.75 %fall for Prosthetic_3D 1.2 m/s
-obstacle_y = -1.2; %fall for Prosthetic_2D 1.2 m/s
-obstacle_damping = 8E1;
-obstacle_stiffness = 5E1;
 
 %%
 % environment
