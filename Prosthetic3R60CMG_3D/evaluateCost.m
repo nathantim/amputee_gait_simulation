@@ -6,6 +6,7 @@ end
 %%
 if input("Load from optimization folder? (1/0)   " )
     innerOptSettings = setInnerOptSettings('yes');
+    innerOptSettings.optimizationDir = 'C:\Users\Nathan\Documents\Studie\Msc 3e jaar (2019-2020)\Thesis\Simulation Matlab - Copy\Prosthetic3R60CMG_3D\Results\2020-11-09_11-12_1.2ms_CMG_trip_prevent';
     disp(innerOptSettings.optimizationDir);
     
     
@@ -34,7 +35,6 @@ if input("Load from optimization folder? (1/0)   " )
         initConditionsCoronal   = InitialGuess.initConditionsCoronal;
         CMGGains = InitialGuessCMG.CMGGains.*exp(bestever.x);
     end
-%     clearvars -except CMGGains GainsSagittal initConditionsSagittal GainsCoronal initConditionsCoronal innerOptSettings
     
     run([innerOptSettings.optimizationDir, filesep, 'BodyMechParamsCapture']);
     run([innerOptSettings.optimizationDir, filesep, 'ControlParamsCapture']);
@@ -49,11 +49,9 @@ else
     CMGParams;
     setInitVar;
     innerOptSettings = setInnerOptSettings('eval');
-    
-    %     load(['Results' filesep 'Rough' filesep 'Umb10_0.9ms_num_inter.mat'])
-    %     load(['Results' filesep 'Rough' filesep 'Umb10_1.2ms_wheading_numsolve.mat'])
-    load(['Results' filesep 'Rough' filesep 'v1.2ms_wCMG.mat'])
-    load(['Results' filesep 'CMGGains_init.mat']);
+
+    load(['Results'  filesep 'v1.2ms_wCMG.mat'])
+    load(['Results' filesep 'CMGGains_tripprevent.mat']);
 end
 
 terrains2Test = 1;%input("Number of terrains to test:   ");
@@ -62,8 +60,6 @@ terrains2Test = 1;%input("Number of terrains to test:   ");
 model = 'NeuromuscularModel_3R60CMG_3D';
 
 load_system(model);
-% set_param(model, 'OptimizationLevel','level2');
-% set_param(strcat(model,'/Body Mechanics Layer/Right Ankle Joint'),'SpringStiffness','3000','DampingCoefficient','1000');
 
 %%
 [groundX, groundZ, groundTheta] = generateGround('flat');
@@ -76,66 +72,30 @@ assignGainsSagittal;
 assignGainsCoronal;
 assignInit;
 
-% try
-%     set_param(strcat(model,'/Body Mechanics Layer/Obstacle'),'Commented','off');
-% catch ME
-%     warning(ME.message);
-% end
-% set_param(model, 'AccelVerboseBuild', 'off');
-% set_param(model,'StopTime','20');
-% save_system(model);
-
 %%
 if contains(get_param(model,'SimulationMode'),'rapid')
     warning('off')
     rtp = Simulink.BlockDiagram.buildRapidAcceleratorTarget(model);
     warning('on');
     
-    %     obstacleX = 12.71:0.02:13.01;
-    obstacleX = [];%[9.079:0.001:9.095];%[7.80:0.005:7.87,9.065:0.001:9.085];%13.04;%[13.04:0.005:13.06]; %13.04;
-    if ~isempty(obstacleX)
-        for jj = 1:length(obstacleX)
-            %             if jj == 1
-            %                 [groundX(jj,:), groundZ(jj,:), groundTheta(jj,:)] = generateGround('flat',[],4*(jj-1),false);
-            %             else
-            %                 [groundX(jj,:), groundZ(jj,:), groundTheta(jj,:)] = generateGround('const', innerOptSettings.terrain_height, 4*(jj-1),false);
-            %             end
-            %             paramSets{jj} = ...
-            %                 Simulink.BlockDiagram.modifyTunableParameters(rtp, ...
-            %                 'groundZ',     groundZ(jj,:), ...
-            %                 'groundTheta', groundTheta(jj,:));
-            paramSets{jj} = ...
-                Simulink.BlockDiagram.modifyTunableParameters(rtp, ...
-                'obstacle_x',     obstacleX(jj),...
-                'tripDetectThreshold',     2000, ...
-                 'RkneeFlexPosGain',     0, ...
-                 'RkneeFlexSpeedGain',   0, ...
-                 'TargetLegAngleTripFlex', 2/3*pi,...
-                 'RkneeStopGain',        0, ...
-                 'RkneeExtendGain',0);
+
+        for jj = 1:terrains2Test
+                        if jj == 1
+                            [groundX(jj,:), groundZ(jj,:), groundTheta(jj,:)] = generateGround('flat',[],4*(jj-1),false);
+                        else
+                            [groundX(jj,:), groundZ(jj,:), groundTheta(jj,:)] = generateGround('const', innerOptSettings.terrain_height, 4*(jj-1),false);
+                        end
+                        paramSets{jj} = ...
+                            Simulink.BlockDiagram.modifyTunableParameters(rtp, ...
+                            'groundZ',     groundZ(jj,:), ...
+                            'groundTheta', groundTheta(jj,:));
             in(jj) = Simulink.SimulationInput(model);
             in(jj) = in(jj).setModelParameter('TimeOut', innerOptSettings.timeOut);
             in(jj) = in(jj).setModelParameter('SimulationMode', 'rapid', ...
                 'RapidAcceleratorUpToDateCheck', 'off');
             in(jj) = in(jj).setModelParameter('RapidAcceleratorParameterSets', paramSets{jj});
         end
-    else
-        paramStruct = {};
-        in = Simulink.SimulationInput(model);
-        in = in.setModelParameter('TimeOut', innerOptSettings.timeOut);
-%                 paramSets = ...
-%                         Simulink.BlockDiagram.modifyTunableParameters(rtp, ...
-%                         'tripDetectThreshold', 2000, ...
-%                         'RkneeFlexPosGain',     0, ...
-%                         'RkneeFlexSpeedGain',   0, ...
-%                         'TargetLegAngleTripFlex', 2/3*pi,...
-%                         'RkneeStopGain',        0, ...
-%                         'RkneeExtendGain', 0);
-        in = in.setModelParameter('SimulationMode', 'rapid', ...
-            'RapidAcceleratorUpToDateCheck', 'off');
-%                 in = in.setModelParameter('RapidAcceleratorParameterSets', paramSets);
-        
-    end
+ 
 else
     paramStruct = {};
     in = Simulink.SimulationInput(model);
@@ -143,27 +103,18 @@ else
 end
 
 %%
-% parfor ii = 1:length(paramSets)
-%     tic;
-%     simout(ii) = sim(model,...
-%         'RapidAcceleratorParameterSets',paramSets{ii},...
-%         'RapidAcceleratorUpToDateCheck','off',...
-%         'TimeOut',10*60,...
-%         'SaveOutput','on');
-%     toc;
-% end
 simout = parsim(in, 'ShowProgress', true);
 
 %%
 for idx = 1:length(simout)
-%     mData=simout(idx).getSimulationMetadata();
+    mData=simout(idx).getSimulationMetadata();
     
-    if false%strcmp(mData.ExecutionInfo.StopEvent,'DiagnosticError')
+    if strcmp(mData.ExecutionInfo.StopEvent,'DiagnosticError')
         disp('Sim was stopped due to error');
         fprintf('Simulation %d was stopped due to error: \n',idx);
         disp(simout(idx).ErrorMessage);
         cost(idx) = nan;
-    elseif false %strcmp(mData.ExecutionInfo.StopEvent,'Timeout')
+    elseif strcmp(mData.ExecutionInfo.StopEvent,'Timeout')
         fprintf('Simulation %d was stopped due to Timeout: \n',idx);
         cost(idx) = nan;
     else
@@ -187,9 +138,6 @@ for idx = 1:length(simout)
         dataStructLocal.animData3D = simout((idx)).animData3D;
         dataStructLocal.optimCost = cost(idx);
         
-        %         animPost3D(simout(idx).animData3D,'intact',false,'speed',1,'obstacle',true,'view','perspective','CMG',true,...
-        %     'showFigure',true,'createVideo',true,'info',[num2str(innerOptSettings.target_velocity) 'ms_y_dt1000_' num2str(idx)],'saveLocation',innerOptSettings.optimizationDir);
-        
         try
             dataStruct(idx) = dataStructLocal;
         catch
@@ -199,14 +147,6 @@ end
 
 %%
 animPost3D(simout(1).animData3D,'intact',false,'speed',1,'obstacle',true,'view','perspective','CMG',true,...
-    'showFigure',true,'createVideo',false,'info',[num2str(innerOptSettings.target_velocity) 'ms_y_dt1000'],'saveLocation',innerOptSettings.optimizationDir);
-% % %
-% plotData(simout(1).angularData,simout(1).musculoData,simout(1).GRFData,simout(1).jointTorquesData,simout(1).GaitPhaseData,simout(1).stepTimes,simout(1).CMGData,'prosthetic3D_1.2ms_yaw',[],0,1,1)
+    'showFigure',true,'createVideo',false,'info',[num2str(innerOptSettings.target_velocity) 'ms'],'saveLocation',innerOptSettings.optimizationDir);
 
-%%
-set(0, 'DefaultFigureHitTest','on');
-set(0, 'DefaultAxesHitTest','on','DefaultAxesPickableParts','all');
-set(0, 'DefaultLineHitTest','on','DefaultLinePickableParts','all');
-set(0, 'DefaultPatchHitTest','on','DefaultPatchPickableParts','all');
-set(0, 'DefaultStairHitTest','on','DefaultStairPickableParts','all');
-set(0, 'DefaultLegendHitTest','on','DefaultLegendPickableParts','all');
+plotData(simout(1).angularData,simout(1).musculoData,simout(1).GRFData,simout(1).jointTorquesData,simout(1).GaitPhaseData,simout(1).stepTimes,simout(1).CMGData,'prosthetic3D_1.2msCMG',[7 9],0,1,1,0)

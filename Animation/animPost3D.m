@@ -15,13 +15,13 @@ if isempty(p)
     p.FunctionName = 'animPost3D';
     addRequired(p,'animData');
 
-    validFrameSkipFcn = @(i) isnumeric(i) && isscalar(i) && ~mod(i,1) && (i > 0);
+    validFrameSkipFcn = @(ii) isnumeric(ii) && isscalar(ii) && ~mod(ii,1) && (ii > 0);
     addParamValue(p,'frameSkip',1,validFrameSkipFcn);
 
-    validSpeedFcn = @(i) isnumeric(i) && isscalar(i) && (i > 0);
+    validSpeedFcn = @(ii) isnumeric(ii) && isscalar(ii) && (ii > 0);
     addParamValue(p,'speed',1,validSpeedFcn);
 
-    validBoolFcn = @(i) islogical(i) && isscalar(i);
+    validBoolFcn = @(ii) islogical(ii) && isscalar(ii);
     addParamValue(p,'intact',false,validBoolFcn);
     addParamValue(p,'obstacle',false,validBoolFcn);
     addParamValue(p,'CMG',false,validBoolFcn);
@@ -32,10 +32,10 @@ if isempty(p)
     addParamValue(p,'followModel',true,validBoolFcn);
     addParamValue(p,'showFigure',true,validBoolFcn);
     
-    validTimeRangeFcn = @(i) isnumeric(i) && length(i) == 2 && i(1) <= i(2);
+    validTimeRangeFcn = @(ii) isnumeric(ii) && length(ii) == 2 && i(1) <= i(2);
     addParamValue(p,'saveFramesInTimeRange',[],validTimeRangeFcn);
 
-    validLabelFcn = @(i) ischar(i) && length(i)>0;
+    validLabelFcn = @(ii) ischar(ii) && ~isempty(ii);
     addParamValue(p,'label','',validLabelFcn);
     addParamValue(p,'view','',validLabelFcn);
     addParamValue(p,'info','',validLabelFcn);

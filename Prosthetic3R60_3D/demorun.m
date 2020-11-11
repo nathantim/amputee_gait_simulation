@@ -1,5 +1,5 @@
 % function simout = demorun()
-model = 'NeuromuscularModel3D';
+model = 'NeuromuscularModel_3R60_3D';
 gainfiles = {'v0.9ms.mat', 'v1.2ms.mat'};
 targetVel = [0.9, 1.2];
 [groundX, groundZ, groundTheta] = generateGround('flat');
@@ -8,29 +8,32 @@ animFrameRate = 30;
 load(['Results' filesep gainfiles{1}]);
 BodyMechParams;
 ControlParams;
+Prosthesis3R60Params;
 OptimParams;
 innerOptSettings = setInnerOptSettings('eval');
+
+load_system(model);
 
 assignGainsSagittal;
 assignGainsCoronal;
 assignInit;
-load_system(model);
+
 warning('off')
 rtp = Simulink.BlockDiagram.buildRapidAcceleratorTarget(model);
 warning('on');
 
 %%
 for idxGains = 1:length(gainfiles)
+    load(['Results' filesep gainfiles{idxGains}])
     
-    load(['Results' filesep gainfiles{idxGains}])    
     Gains = [GainsSagittal;initConditionsSagittal;...
-				GainsCoronal; initConditionsCoronal];
+        GainsCoronal; initConditionsCoronal];
     paramSets{idxGains} = setRtpParamset(rtp,Gains);
     
     in(idxGains) = Simulink.SimulationInput(model);
     in(idxGains) = in(idxGains).setModelParameter('TimeOut', 10*60);
     in(idxGains) = in(idxGains).setModelParameter('SimulationMode', 'rapid', ...
-        'RapidAcceleratorUpToDateCheck', 'off');
+                                            'RapidAcceleratorUpToDateCheck', 'off');
     in(idxGains) = in(idxGains).setModelParameter('RapidAcceleratorParameterSets', paramSets{idxGains});
     
 end

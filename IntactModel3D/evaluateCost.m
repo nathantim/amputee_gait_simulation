@@ -32,9 +32,8 @@ else
     OptimParams;
     innerOptSettings = setInnerOptSettings('eval');
     
-%     load(['Results' filesep 'Rough' filesep 'Umb10_0.9ms_num_inter.mat'])
-%     load(['Results' filesep 'Rough' filesep 'Umb10_1.2ms_wheading_numsolve.mat'])
-    load('../Plot_figures/Data/Healthy_1.2ms.mat')
+    load(['Results' filesep 'v0.9ms.mat']);
+
 end
 
 terrains2Test = input("Number of terrains to test:   ");
@@ -43,8 +42,7 @@ terrains2Test = input("Number of terrains to test:   ");
 model = 'NeuromuscularModel3D';
 
 load_system(model);
-% set_param(model, 'OptimizationLevel','level2');
-% set_param(strcat(model,'/Body Mechanics Layer/Right Ankle Joint'),'SpringStiffness','3000','DampingCoefficient','1000');
+
 
 %%
 [groundX, groundZ, groundTheta] = generateGround('flat');
@@ -56,8 +54,6 @@ assignGainsSagittal;
 assignGainsCoronal;
 assignInit;
 
-% set_param(model, 'AccelVerboseBuild', 'off');
-% save_system(model);
 
 %%
 if contains(get_param(model,'SimulationMode'),'rapid')
@@ -86,15 +82,6 @@ else
 end
 
 %%
-% parfor ii = 1:length(paramSets)
-%     tic;
-%     simout(ii) = sim(model,...
-%         'RapidAcceleratorParameterSets',paramSets{ii},...
-%         'RapidAcceleratorUpToDateCheck','off',...
-%         'TimeOut',10*60,...
-%         'SaveOutput','on');
-%     toc;
-% end
 simout = parsim(in, 'ShowProgress', true);
 
 %%
@@ -131,14 +118,7 @@ for idx = 1:length(simout)
 end
 
 %%
- animPost3D(simout(1).animData3D,'intact',true,'speed',1,'obstacle',false,'view','perspective','CMG',false,...
-                'showFigure',true,'createVideo',true,'info',[num2str(innerOptSettings.target_velocity) 'ms_dt1000'],'saveLocation',innerOptSettings.optimizationDir);
+ animPost3D(simout(1).animData3D,'intact',true,'speed',1,'view','perspective',...
+                'showFigure',true,'createVideo',false,'info',[num2str(innerOptSettings.target_velocity) 'ms'],'saveLocation',innerOptSettings.optimizationDir);
             
-plotData(simout(1).angularData,simout(1).musculoData,simout(1).GRFData,simout(1).jointTorquesData,simout(1).GaitPhaseData,simout(1).stepTimes,[],'healthy3D_1.2ms',[],0,1,1)
-%%
-set(0, 'DefaultFigureHitTest','on');
-set(0, 'DefaultAxesHitTest','on','DefaultAxesPickableParts','all');
-set(0, 'DefaultLineHitTest','on','DefaultLinePickableParts','all');
-set(0, 'DefaultPatchHitTest','on','DefaultPatchPickableParts','all');
-set(0, 'DefaultStairHitTest','on','DefaultStairPickableParts','all');
-set(0, 'DefaultLegendHitTest','on','DefaultLegendPickableParts','all');
+plotData(simout(1).angularData,simout(1).musculoData,simout(1).GRFData,simout(1).jointTorquesData,simout(1).GaitPhaseData,simout(1).stepTimes,[],['healthy3D', num2str(innerOptSettings.target_velocity), 'ms'],[],0,1,1);

@@ -9,21 +9,11 @@ clear all; close all; clc;
 
 %%
 b_resumeOptimization = char(input("Do you want to resume a previous optimization? (yes/no)   ",'s'));
-optimizationInfo = 'diff_stc';
+optimizationInfo = '';
 
 %%
-% initial_gains_filename = ['Results' filesep 'Flat' filesep 'SongGains_02amp_wC.mat'];
-% initial_gains_filename = ['Results' filesep 'Flat' filesep 'Umb10nodimmuscleforce3D.mat'];
-% initial_gains_filename = ['Results' filesep 'Rough' filesep '2Dopt_1.2_ms_part3D.mat'];
-% initial_gains_filename = ['Results' filesep 'Rough' filesep 'Umb10_1.5cm_0.9ms_kneelim1_mstoptorque2_2Dopt.mat'];
-% initial_gains_filename = ['Results' filesep 'Rough' filesep 'Umb10_1.5cm_0.9ms_kneelim1_mstoptorque2.mat'];
-initial_gains_filename = ['Results' filesep 'Rough' filesep 'Umb10_0.9ms.mat'];
-% initial_gains_filename = ['Results' filesep 'Rough' filesep '1.2msinter.mat'];
+initial_gains_filename = ['Results' filesep 'v0.9ms.mat'];
 
-% GainsSagittal = initial_gains_file.GainsSagittal;
-% initConditionsSagittal = initial_gains_file.initConditionsSagittal;
-% GainsCoronal = initial_gains_file.GainsCoronal; 
-% initConditionsCoronal = initial_gains_file.initConditionsCoronal;
 
 
 %%
@@ -31,16 +21,9 @@ global model rtp InitialGuess inner_opt_settings
 
 %% specifiy model and intial parameters
 model = 'NeuromuscularModel3D';
-optfunc = 'cmaesParallelSplitRough';
+optfunc = 'cmaesParallelSplit';
+
 load_system(model);
-% % set_param(strcat(model,'/Body Mechanics Layer/Right Ankle Joint'),'SpringStiffness','20','DampingCoefficient','4');
-set_param(model,'SimulationMode','rapid');
-set_param(model,'StopTime','30');
-try
-    set_param(strcat(model,'/Body Mechanics Layer/Obstacle'),'Commented','on');
-catch ME
-    warning(ME.message);
-end
 
 
 %% initialze parameters
@@ -54,15 +37,13 @@ run([inner_opt_settings.optimizationDir, filesep, 'BodyMechParamsCapture']);
 run([inner_opt_settings.optimizationDir, filesep, 'ControlParamsCapture']);
 run([inner_opt_settings.optimizationDir, filesep, 'OptimParamsCapture']);
 
-
 setInitVar;
  
 dt_visual = 1/30;
 animFrameRate = 30;
 
 [groundX, groundZ, groundTheta] = generateGround('flat');
-set_param(model, 'AccelVerboseBuild', 'off');
-save_system(model)
+
 
 %% Build the Rapid Accelerator target once
 rtp = Simulink.BlockDiagram.buildRapidAcceleratorTarget(model);
@@ -71,10 +52,8 @@ rtp = Simulink.BlockDiagram.buildRapidAcceleratorTarget(model);
 numvars = length(InitialGuess);
 x0 = zeros(numvars,1);
 sigma0 = 1/8;
-% sigma0 = 1/3;
 
 opts.DiagonalOnly = 30;
-
 opts.UserDat2 = strcat(opts.UserDat2,"; ", "sigma0: ", string(sigma0) );
 
 %% Show settings
@@ -83,8 +62,6 @@ disp(opts);
 disp(inner_opt_settings);
 disp(initial_gains_filename);
 fprintf('Target velocity: %1.1f m/s \n',inner_opt_settings.target_velocity);
-
-% parpool(inner_opt_settings.numParWorkers);
 
 %% run cmaes
 [xmin, fmin, counteval, stopflag, out, bestever] = cmaes(optfunc, x0, sigma0, opts)

@@ -154,7 +154,5 @@ if ~isempty(leg)
     set(leg,'Location','best');
 end
 if saveInfo.b_saveFigure
-    for j = 1:length(saveInfo.type)
-        saveFigure(torqueDataFig,'torqueData',saveInfo.type{j},saveInfo.info)
-    end
+    saveFigure(torqueDataFig,'torqueData',saveInfo.type,saveInfo.info)
 end

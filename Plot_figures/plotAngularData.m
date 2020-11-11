@@ -170,7 +170,5 @@ if ~isempty(leg)
 end
 
 if saveInfo.b_saveFigure
-    for j = 1:length(saveInfo.type)
-        saveFigure(angularDataFig,'angularData',saveInfo.type{j},saveInfo.info)
-    end
+    saveFigure(angularDataFig,'angularData',saveInfo.type,saveInfo.info)
 end

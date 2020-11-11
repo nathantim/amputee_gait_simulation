@@ -11,31 +11,25 @@ clear all; close all; clc;
 
 %%
 b_resumeOptimization = char(input("Do you want to resume a previous optimization? (yes/no)   ",'s'));
-optimizationInfo = 'diff_model_wCMG';
+optimizationInfo = '';
 
 %%
-% initial_gains_filename = ['Results' filesep 'Rough' filesep 'Umb10_1.5cm_1.2ms_kneelim1_mstoptorque2.mat'];
-% initial_gains_filename = ['Results' filesep 'Rough' filesep 'Umb10_1.5cm_0.9ms_opt_1.2mscoronal.mat'];
-% initial_gains_filename = ['Results' filesep 'Rough' filesep 'Umb10_1.2ms_difffoot_higherabd.mat'];
-% initial_gains_filename = ['Results' filesep 'Rough' filesep 'Umb10_0.9ms.mat'];
-initial_gains_filename = ['Results' filesep 'Rough' filesep 'v1.2ms_wCMG.mat'];
-
+initial_gains_filename = ['Results' filesep 'v1.2ms_wCMG.mat'];
 
 %%
 global model rtp InitialGuess innerOptSettings
 
 %% specifiy model and intial parameters
 model = 'NeuromuscularModel_3R60CMG_3D';
-optfunc = 'cmaesParallelSplitRough';
+optfunc = 'cmaesParallelSplit';
+
 load_system(model);
-% set_param(strcat(model,'/Body Mechanics Layer/Right Ankle Joint'),'SpringStiffness','3000','DampingCoefficient','1000');
-% set_param(model,'SimulationMode','rapid');
-% set_param(model,'StopTime','30');
 try
     set_param(strcat(model,'/Body Mechanics Layer/Obstacle'),'Commented','on');
 catch ME
     warning(ME.message);
 end
+
 
 %% initialze parameters
 [innerOptSettings,opts] = setInnerOptSettings(b_resumeOptimization,initial_gains_filename,optimizationInfo);
@@ -54,11 +48,9 @@ setInitVar;
 
 dt_visual = 1/30;
 animFrameRate = 30;
-
 [groundX, groundZ, groundTheta] = generateGround('flat');
 
-% set_param(model, 'AccelVerboseBuild', 'off');
-% save_system(model)
+save_system(model)
 
 %% Build the Rapid Accelerator target once
 warning('off')
@@ -84,8 +76,6 @@ fprintf('Amputated hip flexor diminish factor:   %1.2f \n',ampHipFlexFactor);
 fprintf('Amputated hip extensor diminish factor: %1.2f \n',ampHipExtFactor);
 fprintf('Amputated hip abductor diminish factor: %1.2f \n',ampHipAbdFactor);
 fprintf('Amputated hip adductor diminish factor: %1.2f \n',ampHipAddFactor);
-
-% parpool(innerOptSettings.numParWorkers);
 
 %% run cmaes
 [xmin, fmin, counteval, stopflag, out, bestever] = cmaes(optfunc, x0, sigma0, opts)

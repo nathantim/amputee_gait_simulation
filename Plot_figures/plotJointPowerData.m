@@ -221,7 +221,5 @@ if ~isempty(leg)
     set(leg,'Location','best');
 end
 if saveInfo.b_saveFigure
-    for j = 1:length(saveInfo.type)
-        saveFigure(PowerDataFig,'powerData',saveInfo.type{j},saveInfo.info)
-    end
+    saveFigure(PowerDataFig,'powerData',saveInfo.type,saveInfo.info)
 end

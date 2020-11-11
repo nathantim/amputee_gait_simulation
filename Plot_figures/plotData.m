@@ -3,6 +3,12 @@ function plotData(angularData,musculoData,GRFData,jointTorquesData,GaitPhaseData
 set(0, 'DefaultAxesFontSize',16);
 set(0, 'DefaultAxesTitleFontSizeMultiplier',1.5);
 set(0, 'DefaultAxesLabelFontSizeMultiplier',1.5);
+set(0, 'DefaultFigureHitTest','on');
+set(0, 'DefaultAxesHitTest','on','DefaultAxesPickableParts','all');
+set(0, 'DefaultLineHitTest','on','DefaultLinePickableParts','all');
+set(0, 'DefaultPatchHitTest','on','DefaultPatchPickableParts','all');
+set(0, 'DefaultStairHitTest','on','DefaultStairPickableParts','all');
+set(0, 'DefaultLegendHitTest','on','DefaultLegendPickableParts','all');
 
 
 saveInfo = struct;
@@ -21,7 +27,7 @@ if saveInfo.b_saveFigure
     saveInfo.type = {'jpeg','eps','emf'};
 end
 if nargin < 12
-   showSD = false; 
+    showSD = false;
 end
 if nargin < 11
     plotFukuchiData = false;
@@ -76,37 +82,41 @@ end
 if ~isempty(CMGData)
     plotCMGData(CMGData,plotInfo,GaitInfo,saveInfo,[]);
 end
-if plotInfo.plotFukuchiData && b_oneGaitPhase
-    disp('Fukuchi Data');
-   FukuchiData = load('../Plot_figures/Data/FukuchiData.mat','gaitData'); 
-   fieldNames = fieldnames(FukuchiData.gaitData);
-   
-   if contains(saveInfo.info,'0.5ms')
-       FukuchiData2Plot = FukuchiData.gaitData.(fieldNames{contains(fieldNames,'0_5')});
-   elseif contains(saveInfo.info,'0.9ms')
-       FukuchiData2Plot = FukuchiData.gaitData.(fieldNames{contains(fieldNames,'0_9')});
-   elseif contains(saveInfo.info,'1.2ms')
-       FukuchiData2Plot = FukuchiData.gaitData.(fieldNames{contains(fieldNames,'1_2')});
-   else
-       warning('Unknown velocity')
-   end
-   plotInfoTemp = plotInfo;
-   plotInfoTemp.showTables = false;
-   plotInfoTemp.plotProp_entries = plotInfoTemp.plotProp_entries(end,:);
-   GaitInfoFukuchi = getPartOfGaitData(FukuchiData2Plot.angularData.time,[],[],saveInfo,false);
-   if ~isempty(axesAngle)
-       [plotAngleFukuchi,~] = plotAngularData(FukuchiData2Plot.angularData,plotInfoTemp,GaitInfoFukuchi,saveInfo,[],axesAngle,[1 4 1],'right');
-       set(plotAngleFukuchi(2,1),'DisplayName','Fukuchi');
-   end
-   if ~isempty(axesTorque)
-       [plotTorqueFukuchi,~] = plotJointTorqueData(FukuchiData2Plot.jointTorquesData,plotInfoTemp,GaitInfoFukuchi,saveInfo,[],axesTorque,[1 4 1],'right');
-       set(plotTorqueFukuchi(2,1),'DisplayName','Fukuchi');
-   end
-   if ~isempty(axesGRF)
-       [plotGRFFukuchi,~] = plotGRFData(FukuchiData2Plot.GRFData,plotInfoTemp,GaitInfoFukuchi,saveInfo,[],axesGRF,[1 3 1],'right');
-       set(plotGRFFukuchi(2,1),'DisplayName','Fukuchi');
-   end
-    
+try
+    if plotInfo.plotFukuchiData && b_oneGaitPhase
+        disp('Fukuchi Data');
+        FukuchiData = load('../Plot_figures/Data/FukuchiData.mat','gaitData');
+        fieldNames = fieldnames(FukuchiData.gaitData);
+        
+        if contains(saveInfo.info,'0.5ms')
+            FukuchiData2Plot = FukuchiData.gaitData.(fieldNames{contains(fieldNames,'0_5')});
+        elseif contains(saveInfo.info,'0.9ms')
+            FukuchiData2Plot = FukuchiData.gaitData.(fieldNames{contains(fieldNames,'0_9')});
+        elseif contains(saveInfo.info,'1.2ms')
+            FukuchiData2Plot = FukuchiData.gaitData.(fieldNames{contains(fieldNames,'1_2')});
+        else
+            warning('Unknown velocity')
+        end
+        plotInfoTemp = plotInfo;
+        plotInfoTemp.showTables = false;
+        plotInfoTemp.plotProp_entries = plotInfoTemp.plotProp_entries(end,:);
+        GaitInfoFukuchi = getPartOfGaitData(FukuchiData2Plot.angularData.time,[],[],saveInfo,false);
+        if ~isempty(axesAngle)
+            [plotAngleFukuchi,~] = plotAngularData(FukuchiData2Plot.angularData,plotInfoTemp,GaitInfoFukuchi,saveInfo,[],axesAngle,[1 4 1],'right');
+            set(plotAngleFukuchi(2,1),'DisplayName','Fukuchi');
+        end
+        if ~isempty(axesTorque)
+            [plotTorqueFukuchi,~] = plotJointTorqueData(FukuchiData2Plot.jointTorquesData,plotInfoTemp,GaitInfoFukuchi,saveInfo,[],axesTorque,[1 4 1],'right');
+            set(plotTorqueFukuchi(2,1),'DisplayName','Fukuchi');
+        end
+        if ~isempty(axesGRF)
+            [plotGRFFukuchi,~] = plotGRFData(FukuchiData2Plot.GRFData,plotInfoTemp,GaitInfoFukuchi,saveInfo,[],axesGRF,[1 3 1],'right');
+            set(plotGRFFukuchi(2,1),'DisplayName','Fukuchi');
+        end
+        
+    end
+catch ME
+    warning(ME.message);
     
 end
 

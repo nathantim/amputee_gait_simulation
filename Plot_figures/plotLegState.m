@@ -126,7 +126,5 @@ if ~isempty(leg)
 end
 
 if saveInfo.b_saveFigure
-    for ii = 1:length(saveInfo.type)
-        saveFigure(legStateFig,'legState',saveInfo.type{ii},saveInfo.info)
-    end
+    saveFigure(legStateFig,'legState',saveInfo.type,saveInfo.info)
 end

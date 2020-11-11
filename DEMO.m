@@ -1,12 +1,44 @@
+bdclose('all'); clearvars; close all; clc
+%%
 setup_paths;
-if input(['Do you want to \n' '(1) simulate all models, or \n' '(0) use datafiles for visualization ? \n' '(Note: simulation takes quite some time)\n   '])
+if input(['Do you want to \n' '(1) simulate all models, or \n' '(0) use datafiles for visualization ? \n' '(Note: simulation can takes some time, around 30 min)\n   '])
+    %%
     pathnames = {'IntactModel3D','Prosthetic3R60_3D','Prosthetic3R60CMG_3D'};
     
-    for idx = 1:length(pathnames)
-        addpath(pathnames{idx});
-        simouts(:,idx) = demorun;
-        rmpath(pathnames{idx})
+    hwb = waitbar(0,'Please wait...');
+    executMess = '';
+    tic;
+    for idxModels = 1:length(pathnames)
+        
+        cd(pathnames{idxModels})
+        outPut = evalc('demorun');
+        commOutput{idxModels} = outPut;
+        for jjModels = 1:length(simout)
+            simouts(jjModels,idxModels) = simout(jjModels);
+        end
+        cd ..
+        clearvars -except idxModels simouts commOutput pathnames hwb executMess
+        executMess = [executMess pathnames{idxModels} ', '];
+        waitbar(idxModels/length(pathnames),hwb,['Please wait... ' executMess 'just executed....']);
     end
+    toc;
+    close(hwb);
+    intactArray = logical([1,0,0]);
+    cmgArray = logical([0,0,1]);
+    
+    %%
+    for ii = 1:size(simouts,2)
+        for jj = 1:size(simouts,1)
+        animPost3D(simouts(jj,ii).animData3D,'intact',intactArray(ii),'view','perspective',...
+                'CMG',cmgArray(ii),'obstacle',cmgArray(ii),'showFigure',true,'createVideo',false);
+            
+        plotData(simouts(jj,ii).angularData,simouts(jj,ii).musculoData,simouts(jj,ii).GRFData,...
+            simouts(jj,ii).jointTorquesData,simouts(jj,ii).GaitPhaseData,simouts(jj,ii).stepTimes,...
+            simouts(jj,ii).CMGData,'',[],0,1,1);
+    
+        end
+    end
+    
 else
     
     healthy3D09 = load('IntactModel3D/Results/resultData_healthy_0.9ms.mat');
