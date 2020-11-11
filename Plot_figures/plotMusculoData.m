@@ -1,19 +1,25 @@
-function plotMusculoData(musculoData,plotInfo,GaitInfo,saveInfo,musculoDataFigure,subplotStart,b_plotBothLegs)
+function [plotHandles,axesHandles] = plotMusculoData(musculoData,plotInfo,GaitInfo,saveInfo,musculoDataFigure,axesHandles,subplotStart,legToPlot,b_addTitle)
 if nargin < 5
     musculoDataFigure = [];
 end
+if nargin < 6
+    axesHandles = [];
+end
 if nargin < 6 || isempty(subplotStart)
-    subplotStart = 621;
-    subplotStart = dec2base(subplotStart,10) - '0';
+    subplotStart = [6 2 1];
+    setLegend = true;
+else
+    setLegend = false;
 end
 if nargin < 7
-    b_plotBothLegs = true;
+    legToPlot = 'both';
+end
+if nargin < 8
+    b_addTitle = true;
 end
 %%
-if ~GaitInfo.b_oneGaitPhase
-        GaitInfo.tp = musculoData.time;
-end
-t = musculoData.time;
+t = GaitInfo.t;
+
 %%
 l_dyn = 6;
 act_offset = 5;
@@ -126,9 +132,14 @@ if ~plotInfo.showSD
     R_TA_sd = [];
 end
 %%
-if isempty(musculoDataFigure)
+
+ plotHandlesLeft = [];
+ plotHandlesRight = [];
+
+if isempty(musculoDataFigure) && isempty(axesHandles)
     musculoDataFig = figure();
-    set(musculoDataFig, 'Position',[10,40,1200,930]);
+    fullScreen = get(0,'screensize');
+    set(musculoDataFig, 'Position',[fullScreen(1:2)+20 fullScreen(3:4)*0.9]);
 else
     musculoDataFig = musculoDataFigure;
 %     clf(musculoDataFig);
@@ -137,43 +148,56 @@ end
 % sgtitle('Muscle stimulations')
 
 
-    
-[plotHandlesLeft,axesHandles] = plotMusculoDataInFigure(musculoDataFig,[],GaitInfo.tp,L_HFL_avg,L_HFL_sd,L_GLU_avg,L_GLU_sd,L_HAM_avg,L_HAM_sd,L_RF_avg,L_RF_sd,L_VAS_avg,L_VAS_sd,...
-        L_BFSH_avg,L_BFSH_sd,L_GAS_avg,L_GAS_sd,L_SOL_avg,L_SOL_sd,L_TA_avg,L_TA_sd,L_HAB_avg,L_HAB_sd,L_HAD_avg,L_HAD_sd,GaitInfo.b_oneGaitPhase,subplotStart);
-if b_plotBothLegs
-    [plotHandlesRight,axesHandles] = plotMusculoDataInFigure(musculoDataFig,axesHandles,GaitInfo.tp,R_HFL_avg,R_HFL_sd,R_GLU_avg,R_GLU_sd,R_HAM_avg,R_HAM_sd,R_RF_avg,R_RF_sd,R_VAS_avg,R_VAS_sd,...
-        R_BFSH_avg,R_BFSH_sd,R_GAS_avg,R_GAS_sd,R_SOL_avg,R_SOL_sd,R_TA_avg,R_TA_sd,R_HAB_avg,R_HAB_sd,R_HAD_avg,R_HAD_sd,GaitInfo.b_oneGaitPhase,subplotStart);
+if contains(legToPlot,'left') || contains(legToPlot,'both')
+    [plotHandlesLeft,axesHandles] = plotMusculoDataInFigure(musculoDataFig,axesHandles,GaitInfo.tp,L_HFL_avg,L_HFL_sd,L_GLU_avg,L_GLU_sd,L_HAM_avg,L_HAM_sd,L_RF_avg,L_RF_sd,L_VAS_avg,L_VAS_sd,...
+        L_BFSH_avg,L_BFSH_sd,L_GAS_avg,L_GAS_sd,L_SOL_avg,L_SOL_sd,L_TA_avg,L_TA_sd,L_HAB_avg,L_HAB_sd,L_HAD_avg,L_HAD_sd,GaitInfo.b_oneGaitPhase,subplotStart,b_addTitle);
 end
-    if contains(saveInfo.info,'prosthetic') || b_plotBothLegs
-        leg = legend([plotHandlesLeft(end,1),plotHandlesRight(end,1)],'Intact leg','Prosthetic leg');
-    elseif b_plotBothLegs
-        leg = legend([plotHandlesLeft(end,1),plotHandlesRight(end,1)],'Left leg','Right leg');
+if contains(legToPlot,'right') || contains(legToPlot,'both')
+    [plotHandlesRight,axesHandles] = plotMusculoDataInFigure(musculoDataFig,axesHandles,GaitInfo.tp,R_HFL_avg,R_HFL_sd,R_GLU_avg,R_GLU_sd,R_HAM_avg,R_HAM_sd,R_RF_avg,R_RF_sd,R_VAS_avg,R_VAS_sd,...
+        R_BFSH_avg,R_BFSH_sd,R_GAS_avg,R_GAS_sd,R_SOL_avg,R_SOL_sd,R_TA_avg,R_TA_sd,R_HAB_avg,R_HAB_sd,R_HAD_avg,R_HAD_sd,GaitInfo.b_oneGaitPhase,subplotStart,b_addTitle);
+end
+
+if setLegend
+    if GaitInfo.b_oneGaitPhase
+        xlabel(axesHandles(end),'gait cycle ($\%$)');
     else
-        leg = [];
+        xlabel(axesHandles(end),'s');
     end
+end
+
+ plotHandles = [plotHandlesLeft, plotHandlesRight];
+ 
+%% 
+for ii= 1:size(plotHandles,1)
+    
+    set(plotHandles(ii,1),plotInfo.plotProp,plotInfo.plotProp_entries(1,:));
+    
+    if size(plotHandles,2)>2
+        set(plotHandles(ii,3),plotInfo.plotProp,plotInfo.plotProp_entries(2,:));
+    end
+    
+    if plotInfo.showSD && GaitInfo.b_oneGaitPhase
+        set(plotHandles(ii,2),plotInfo.fillProp,plotInfo.fillProp_entries(1,:));
+        if size(plotHandles,2)>2 && ~isnan(plotHandles(ii,4))
+            set(plotHandles(ii,4),plotInfo.fillProp,plotInfo.fillProp_entries(2,:));
+        end
+    end
+   
+end
+
+%%
+if contains(saveInfo.info,'prosthetic') && contains(legToPlot,'both')
+    leg = legend([plotHandlesLeft(end,1),plotHandlesRight(end,1)],'Intact leg','Prosthetic leg');
+elseif contains(legToPlot,'both')
+    leg = legend([plotHandlesLeft(end,1),plotHandlesRight(end,1)],'Left leg','Right leg');
+else
+    leg = [];
+end
 % set(leg,'FontSize',18);
 if ~isempty(leg)
     set(leg,'FontSize',12);
 end
 
-for i= 1:length(plotHandlesLeft)
-    if ~isnan(plotHandlesLeft(i,1))
-        set(plotHandlesLeft(i,1),plotInfo.plotProp,plotInfo.plotProp_entries(1,:));
-    end
-    if b_plotBothLegs && ~isnan(plotHandlesRight(i,1)) 
-        set(plotHandlesRight(i,1),plotInfo.plotProp,plotInfo.plotProp_entries(2,:));
-    end
-    if plotInfo.showSD && GaitInfo.b_oneGaitPhase
-        if ~isnan(plotHandlesLeft(i,2))
-            set(plotHandlesLeft(i,2),plotInfo.fillProp,plotInfo.fillProp_entries(1,:));
-        end
-        if b_plotBothLegs && ~isnan(plotHandlesRight(i,2))
-            set(plotHandlesRight(i,2),plotInfo.fillProp,plotInfo.fillProp_entries(2,:));
-        end
-    end
-end
 if saveInfo.b_saveFigure
-    for j = 1:length(saveInfo.type)
-        saveFigure(musculoDataFig,'musculoData',saveInfo.type{j},saveInfo.info)
-    end
+    saveFigure(musculoDataFig,'musculoData',saveInfo.type,saveInfo.info)
 end

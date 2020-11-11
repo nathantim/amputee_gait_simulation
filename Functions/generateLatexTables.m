@@ -7,4 +7,3 @@ BodyMechParams;
 muscle_param_table;
 muscle_attach_param_table;
 joint_limits_table;
-skeletal_param_table;

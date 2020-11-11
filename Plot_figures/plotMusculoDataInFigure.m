@@ -1,6 +1,6 @@
 function [plotHandles, axesHandles] = plotMusculoDataInFigure(musculoDataFigure,axesHandles,t,HFL_avg,HFL_sd,GLU_avg,GLU_sd,HAM_avg,HAM_sd,...
                                                                 RF_avg,RF_sd,VAS_avg,VAS_sd,BFSH_avg,BFSH_sd,GAS_avg,GAS_sd,SOL_avg,SOL_sd,TA_avg,TA_sd,...
-                                                                HAB_avg,HAB_sd,HAD_avg,HAD_sd,b_oneGaitPhase,subplotStart)
+                                                                HAB_avg,HAB_sd,HAD_avg,HAD_sd,b_oneGaitPhase,subplotStart,b_addTitle)
 plotHandles = nan(11,2);
 if isempty(axesHandles)
     for i = 1:length(plotHandles)
@@ -11,21 +11,28 @@ end
 if  nargin < 26
     b_oneGaitPhase = true;
 end
+if nargin < 27
+    b_addTitle = true;
+end
 
 % subplotStart = dec2base(subplotStart,10) - '0';
 
 %%
 axidx = 1;
-axesHandles(1) = subplot(subplotStart(1),subplotStart(2),subplotStart(3),axesHandles(axidx));
+axesHandles(axidx) = subplot(subplotStart(1),subplotStart(2),subplotStart(3),axesHandles(axidx));
 if ~isempty(HAB_sd)
     plotHandles(axidx,2) = fill(axesHandles(axidx),[t;flipud(t)],[HAB_avg-HAB_sd;flipud(HAB_avg+HAB_sd)],[0.8 0.8 0.8]);
 end
 hold(axesHandles(axidx),'on');
 plotHandles(axidx,1) = plot(axesHandles(axidx),t,HAB_avg);
-title(axesHandles(axidx),'HAB')
+if b_addTitle
+    title(axesHandles(axidx),'HAB');
+    ylabel(axesHandles(axidx),'Activation (-)');
+end
 if (max(HAB_avg)<1)
     ylim(axesHandles(axidx),[0,1])
 end
+
 % ylabel('rad/s')
 
 subplotStart(3) = subplotStart(3) +1;
@@ -36,7 +43,9 @@ if ~isempty(HAD_sd)
 end
 hold(axesHandles(axidx),'on');
 plotHandles(axidx,1) = plot(axesHandles(axidx),t,HAD_avg);
-title(axesHandles(axidx),'HAD')
+if b_addTitle
+    title(axesHandles(axidx),'HAD');
+end
 if (max(HAD_avg)<1)
     ylim(axesHandles(axidx),[0,1])
 end
@@ -49,7 +58,9 @@ if ~isempty(HFL_sd)
 end
 hold(axesHandles(axidx),'on');
 plotHandles(axidx,1) = plot(axesHandles(axidx),t,HFL_avg);
-title(axesHandles(axidx),'HFL')
+if b_addTitle
+    title(axesHandles(axidx),'HFL');
+end
 % ylabel('rad');
 if (max(HFL_avg)<1)
     ylim(axesHandles(axidx),[0,1])
@@ -63,7 +74,9 @@ if ~isempty(GLU_sd)
 end
 hold(axesHandles(axidx),'on');
 plotHandles(axidx,1) = plot(axesHandles(axidx),t,GLU_avg);
-title(axesHandles(axidx),'GLU')
+if b_addTitle
+    title(axesHandles(axidx),'GLU');
+end
 if (max(GLU_avg)<1)
     ylim(axesHandles(axidx),[0,1])
 end
@@ -79,8 +92,9 @@ if ~isempty(HAM_sd)
 end
 hold(axesHandles(axidx),'on');
 plotHandles(axidx,1) = plot(axesHandles(axidx),t,HAM_avg);
-
-title(axesHandles(axidx),'HAM')
+if b_addTitle
+    title(axesHandles(axidx),'HAM');
+end
 if (max(HAM_avg)<1 )
     ylim(axesHandles(axidx),[0,1])
 end
@@ -95,7 +109,9 @@ if ~isempty(RF_sd)
 end
 hold(axesHandles(axidx),'on');
 plotHandles(axidx,1) = plot(axesHandles(axidx),t,RF_avg);
-title(axesHandles(axidx),'RF')
+if b_addTitle
+    title(axesHandles(axidx),'RF');
+end
 if (max(RF_avg)<1)
     ylim(axesHandles(axidx),[0,1])
 end% ylabel('rad');
@@ -112,7 +128,9 @@ if (length(t) == length(VAS_avg))
 else
     plotHandles(axidx,1) = plot(axesHandles(axidx),t,zeros(size(t)));
 end
-title(axesHandles(axidx),'VAS')
+if b_addTitle
+title(axesHandles(axidx),'VAS');
+end
 if (max(VAS_avg)<1)
     ylim(axesHandles(axidx),[0,1])
 end
@@ -134,8 +152,9 @@ if (length(t) == length(BFSH_avg))
 else
     plotHandles(axidx,1) = plot(axesHandles(axidx),t,zeros(size(t)));
 end
-
-title(axesHandles(axidx),'BFSH')
+if b_addTitle
+    title(axesHandles(axidx),'BFSH');
+end
 if (max(BFSH_avg)<1)
     ylim(axesHandles(axidx),[0,1])
 end
@@ -154,7 +173,9 @@ if (length(t) == length(GAS_avg))
 else
     plotHandles(axidx,1) = plot(axesHandles(axidx),t,zeros(size(t)));
 end
-title(axesHandles(axidx),'GAS')
+if b_addTitle
+    title(axesHandles(axidx),'GAS');
+end
 if (max(GAS_avg)<1)
     ylim(axesHandles(axidx),[0,1])
 end
@@ -172,7 +193,9 @@ if (length(t) == length(SOL_avg))
 else
     plotHandles(axidx,1) = plot(axesHandles(axidx),t,zeros(size(t)));
 end
-title(axesHandles(axidx),'SOL')
+if b_addTitle
+    title(axesHandles(axidx),'SOL');
+end
 if (max(SOL_avg)<1)
     ylim(axesHandles(axidx),[0,1])
 end
@@ -190,8 +213,9 @@ if (length(t) == length(TA_avg))
 else
     plotHandles(axidx,1) = plot(axesHandles(axidx),t,zeros(size(t)));
 end
-
-title(axesHandles(axidx),'TA')
+if b_addTitle
+    title(axesHandles(axidx),'TA');
+end
 if (max(TA_avg)<1)
     ylim(axesHandles(axidx),[0,1])
 end
@@ -199,10 +223,10 @@ end
 
 % ylabel('rad');
 
-if b_oneGaitPhase
+% if b_oneGaitPhase
 %     xlabel(axesHandles(10),'%_{stride}','interpreter','tex')
-    xlabel(axesHandles(11),'%_{stride}','interpreter','tex')
-else
+%     xlabel(axesHandles(11),'%_{stride}','interpreter','tex')
+% else
 %     xlabel(axesHandles(10),'s')
-    xlabel(axesHandles(11),'s')
-end
+%     xlabel(axesHandles(11),'s')
+% end

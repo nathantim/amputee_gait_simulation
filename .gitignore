@@ -2,6 +2,12 @@
 ###########
 Plot_figures/Figures/
 logfilematlab.txt
+*/Results/*
+
+# Data #
+########
+*.mat
+*.dat
 
 # Compiled source #
 ###################
@@ -91,7 +97,3 @@ Thumbs.db
 *.eps
 *.emf
 
-# Data #
-########
-*.mat
-*.dat

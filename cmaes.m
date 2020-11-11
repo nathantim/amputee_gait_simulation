@@ -272,6 +272,7 @@ defopts.LogModulo = '1    % [0:Inf] if >1 record data less frequently after gen=
 defopts.LogTime   = '25   % [0:100] max. percentage of time for recording data';
 defopts.LogFilenamePrefix = 'outcmaes  % files for output data'; 
 defopts.LogPlot = 'off    % plot while running using output data files';
+defopts.BaseDirectory = '% Base directory to save variables in';
 
 %qqqkkk 
 %defopts.varopt1 = ''; % 'for temporary and hacking purposes'; 
@@ -300,7 +301,7 @@ if isequal(fitfun, 'displayoptions')
  return; 
 end
 
-input.fitfun = fitfun; % record used input
+inputVars.fitfun = fitfun; % record used input
 if isempty(fitfun)
   % fitfun = definput.fitfun; 
   % warning(['Objective function not determined, ''' fitfun ''' used']);
@@ -315,7 +316,7 @@ if nargin < 2
   xstart = [];
 end
 
-input.xstart = xstart;
+inputVars.xstart = xstart;
 if isempty(xstart)
   % xstart = definput.xstart;  % objective variables initial point
   % warning('Initial search point, and problem dimension, not determined');
@@ -329,7 +330,7 @@ if isa(insigma, 'struct')
   error(['Third argument SIGMA must be (or eval to) a scalar '...
 	   'or a column vector of size(X0,1)']);
 end
-input.sigma = insigma;
+inputVars.sigma = insigma;
 if isempty(insigma)
   if all(size(myeval(xstart)) > 1)
     insigma = std(xstart, 0, 2); 
@@ -349,13 +350,15 @@ if nargin < 4 || isempty(inopts) % no input options available
 else
   opts = getoptions(inopts, defopts);
 end
-i = strfind(opts.SaveFilename, '%'); % remove everything after comment
-if ~isempty(i)
-  opts.SaveFilename = opts.SaveFilename(1:i(1)-1);
+jj = strsplit(opts.BaseDirectory,'%');
+if ~isempty(jj)
+  opts.BaseDirectory = jj{1};
 end
-if ~exist(opts.SaveFilename,'file')
-    opts.Resume = 'no';
+ii = strfind(opts.SaveFilename, '%'); % remove everything after comment
+if ~isempty(ii)
+  opts.SaveFilename = [opts.BaseDirectory filesep opts.SaveFilename(1:ii(1)-1)];
 end
+
 opts.SaveFilename = deblank(opts.SaveFilename); % remove trailing white spaces
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  
@@ -387,8 +390,8 @@ if ~flgresume % not resuming a former run
   end
 else % flgresume is true, do resume former run
   tmp = whos('-file', opts.SaveFilename);
-  for i = 1:length(tmp)
-    if strcmp(tmp(i).name, 'localopts');
+  for ii = 1:length(tmp)
+    if strcmp(tmp(ii).name, 'localopts');
       error('Saved variables include variable "localopts", please remove');
     end
   end
@@ -454,8 +457,8 @@ flgscience = myevalbool(opts.Science);
 flgsaving = [];
 strsaving = [];
 if strfind(opts.SaveVariables, '-v6') 
-  i = strfind(opts.SaveVariables, '%');
-  if isempty(i) || i == 0 || strfind(opts.SaveVariables, '-v6') < i
+  ii = strfind(opts.SaveVariables, '%');
+  if isempty(ii) || ii == 0 || strfind(opts.SaveVariables, '-v6') < ii
     strsaving = '-v6';
     flgsaving = 1;
     flgsavingfinal = 1;
@@ -472,10 +475,12 @@ end
 savemodulo = myeval(opts.LogModulo);
 savetime = myeval(opts.LogTime);
 
-i = strfind(opts.LogFilenamePrefix, ' '); % remove everything after white space
-if ~isempty(i)
-  opts.LogFilenamePrefix = opts.LogFilenamePrefix(1:i(1)-1);
+ii = strfind(opts.LogFilenamePrefix, ' '); % remove everything after white space
+if ~isempty(ii)
+  opts.LogFilenamePrefix = opts.LogFilenamePrefix(1:ii(1)-1);
 end
+
+
 
 % TODO here silent option? set disp, save and log options to 0 
 
@@ -697,7 +702,7 @@ else % flgresume
       for namecell = filenames(:)'
         name = namecell{:};
 
-	[fid, err] = fopen(['./' filenameprefix name '.dat'], 'w');
+	[fid, err] = fopen([opts.BaseDirectory filesep filenameprefix name '.dat'], 'w');
 	if fid < 1 % err ~= 0 
 	  warning(['could not open ' filenameprefix name '.dat']);
 	  filenames(find(strcmp(filenames,name))) = [];
@@ -1421,13 +1426,13 @@ while isempty(stopflag)
     tmp = 0.1*sigma*BD(:,1+floor(mod(countiter,N)));
   end
   if all(xmean == xmean + tmp)
-    i = 1+floor(mod(countiter,N));
+    ii = 1+floor(mod(countiter,N));
     if stopOnWarnings
 	stopflag(end+1) = {'warnnoeffectaxis'};
     else
       warning(['Iteration ' num2str(countiter) ...
 	       ': main axis standard deviation ' ...
-	       num2str(sigma*diagD(i)) ' has no effect' ]);
+	       num2str(sigma*diagD(ii)) ' has no effect' ]);
       sigma = sigma * exp(0.2+cs/damps); 
     end
   end
@@ -1520,7 +1525,7 @@ while isempty(stopflag)
   end
   % read stopping message from file signals.par 
   if flgreadsignals
-    fid = fopen('./signals.par', 'rt');  % can be performance critical 
+    fid = fopen([opts.BaseDirectory filesep 'signals.par'], 'rt');  % can be performance critical 
     while fid > 0
       strline = fgetl(fid); %fgets(fid, 300);
       if strline < 0 % fgets and fgetl returns -1 at end of file
@@ -1535,8 +1540,8 @@ while isempty(stopflag)
       % 'skip filename run 3' skips a run, but not the last
       str = sscanf(strline, ' %s %s %s', 3);
       if strcmp(str, ['skip' opts.LogFilenamePrefix 'run'])
-        i = strfind(strline, 'run');
-        if irun == sscanf(strline(i+3:end), ' %d ', 1) && irun <= myeval(opts.Restarts)
+        ii = strfind(strline, 'run');
+        if irun == sscanf(strline(ii+3:end), ' %d ', 1) && irun <= myeval(opts.Restarts)
           stopflag(end+1) = {'skipped'};
         end      
       end
@@ -1608,7 +1613,7 @@ while isempty(stopflag)
       for namecell = filenames(:)'
         name = namecell{:};
 
-	[fid, err] = fopen(['./' filenameprefix name '.dat'], 'a');
+	[fid, err] = fopen([opts.BaseDirectory filesep filenameprefix name '.dat'], 'a');
 	if fid < 1 % err ~= 0 
 	  warning(['could not open ' filenameprefix name '.dat']);
 	else
@@ -2890,8 +2895,8 @@ function f=frand(x)
   f=1./(1-rand(1, size(x,2))) - 1;
 
 % CHANGES
-% 20/07/27: Make it possible to set opts.Resume to 'yes' eventhough file
-%               does not yet exist. It will create one.
+% 
+% 20/10/15: Make it possible to use a designated map for all cmaes files
 % 12/04/28: (3.61) stopIter is relative to countiter after resume (thanks to Tom Holden)
 % 12/04/28: (3.61) some syncing from 3.32.integer branch (cmean introduced, ...)
 % 12/02/19: "future" setting of ccum, correcting for large mueff, is default now

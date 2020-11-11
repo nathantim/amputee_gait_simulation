@@ -1,30 +1,52 @@
-function [inner_opt_settings, opts] = setInnerOptSettings(initial_gains_filename)
+function [innerOptSettings, opts] = setInnerOptSettings(b_resume,initial_gains_filename,optimizationInfo)
+if nargin < 2
+    initial_gains_filename = '';
+end
+if nargin < 3
+    optimizationInfo = '';
+end
 OptimParams;
 opts = [];
-% Umberger (2003), Umberger (2003) TG, Umberger (2010), Wang (2012)
-inner_opt_settings.expenditure_model = 'Umberger (2010)';
-inner_opt_settings.timeFactor = 100000;
-inner_opt_settings.velocityFactor = 100;
-inner_opt_settings.CoTFactor = 10; % cost of transport
-inner_opt_settings.sumStopTorqueFactor = 1E-2;
-inner_opt_settings.CMGTorqueFactor = 0;
-inner_opt_settings.CMGdeltaHFactor = 15;
-inner_opt_settings.ControlRMSEFactor = 0;
 
-inner_opt_settings.numTerrains = 6;
-inner_opt_settings.terrain_height = 0.015; % in m
+
+% Umberger (2003), Umberger (2003) TG, Umberger (2010), Wang (2012)
+innerOptSettings.expenditure_model = 'Umberger (2010)';
+innerOptSettings.timeFactor = 100000;
+innerOptSettings.velocityFactor = 100;
+innerOptSettings.CoTFactor = 1; % cost of transport
+innerOptSettings.sumStopTorqueFactor = 1E-2;
+innerOptSettings.CMGTorqueFactor = 0;
+innerOptSettings.CMGdeltaHFactor = 15;
+innerOptSettings.ControlRMSEFactor = 0;
+innerOptSettings.selfCollisionFactor = 1000;
+
+innerOptSettings.numTerrains = 4;
+innerOptSettings.terrain_height = 0.010; % in m
 if usejava('desktop')
-    inner_opt_settings.numParWorkers = 4;
-    inner_opt_settings.visual = true;
+    innerOptSettings.numParWorkers = 4;
+    innerOptSettings.visual = true;
 else
-    inner_opt_settings.numParWorkers = 4;
-    inner_opt_settings.visual = false;
+    innerOptSettings.numParWorkers = 4;
+    innerOptSettings.visual = false;
 end
+innerOptSettings.initiation_steps = initiation_steps;
+innerOptSettings.target_velocity = target_velocity;
+innerOptSettings.min_velocity = min_velocity;
+innerOptSettings.max_velocity = max_velocity;
+
+innerOptSettings.timeOut = 10*60; % Time out for simulation
+innerOptSettings.createVideo = true; % Create video during optimization
 if nargin > 0
     opts = cmaes;
     %opts.PopSize = numvars;
-    opts.Resume = 'yes';
-    opts.MaxIter = 2000;
+    if contains(num2str(b_resume),'yes') || min(opts.Resume) == 1 
+        opts.Resume = 'yes';
+    elseif contains(num2str(b_resume),'no') || min(opts.Resume) == 0 
+        opts.Resume = 'no';
+    elseif contains(num2str(b_resume),'eval') || min(opts.Resume) == -1 
+        opts.Resume = 'eval';
+    end
+    opts.MaxIter = 300;
     % opts.StopFitness = -inf;
     opts.StopFitness = 0;
     opts.DispModulo = 1;
@@ -37,8 +59,11 @@ if nargin > 0
     end
     opts.UserData = char(strcat("Gains filename: ", initial_gains_filename));
     opts.UserDat2 = '';
-    fields_opts = fields(inner_opt_settings);
-    for i = 1:length(fields(inner_opt_settings))
-        opts.UserDat2 = strcat(opts.UserDat2,"; ", fields_opts{i}, ": ", string(inner_opt_settings.(fields_opts{i})));
+    fields_opts = fields(innerOptSettings);
+    for i = 1:length(fields(innerOptSettings))
+        opts.UserDat2 = strcat(opts.UserDat2,"; ", fields_opts{i}, ": ", string(innerOptSettings.(fields_opts{i})));
     end
+    
+    [innerOptSettings, opts] = createOptDirectory(pwd,innerOptSettings,opts,optimizationInfo);
+    
 end

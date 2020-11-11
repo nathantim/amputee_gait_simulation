@@ -10,8 +10,6 @@ mainfolderpath = outputstruct.folder;
 addpath(mainfolderpath);
 
 addpath(genpath(strcat(mainfolderpath,'/Functions')));
-try
-    addpath(strcat(mainfolderpath,'/Animation3D'));
-    addpath(strcat(mainfolderpath,'/Plot_figures'));
-catch
-end
+addpath(genpath(strcat(mainfolderpath,'/Parameter_files')));
+addpath(strcat(mainfolderpath,'/Animation'));
+addpath(strcat(mainfolderpath,'/Plot_figures'));

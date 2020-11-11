@@ -1,24 +1,33 @@
-function saveFigure(fig,name,type,info,b_withDate,path)
-set(fig,'PaperOrientation','landscape')
-set(fig,'PaperType','a2')
-if nargin < 4
-    info = '';
-end
-if nargin < 5
-    b_withDate = true;
-end
-if contains(type,'eps')
-    addontype = 'epsc';
-else
-    addontype = '';
-end
-if nargin < 6 || isempty(path)
-   path =  '../Plot_figures/Figures/';
-end
-
-if b_withDate
-    dateNow = char(datestr(now,'yyyy-mm-dd_HH-MM'));
-    saveas(fig,char(strcat(path,name,dateNow,'_',name,'_',info,'.',type) ),addontype);
-else
-    saveas(fig,char(strcat(path,name,'_',info,'.',type) ),addontype);
+function saveFigure(fig,name,saveType,info,b_withDate,path)
+if ~isempty(fig)
+    set(fig,'PaperOrientation','landscape')
+    set(fig,'PaperType','a2')
+    if nargin < 4
+        info = '';
+    end
+    if nargin < 5
+        b_withDate = true;
+    end
+    
+    if nargin < 6 || isempty(path)
+        path =  '../Plot_figures/Figures/';
+    end
+    
+    if b_withDate
+        dateNow = strcat(char(datestr(now,'yyyy-mm-dd_HH-MM')),'_');
+        
+    else
+        dateNow = [];
+        
+    end
+    for ii = 1:length(saveType)
+        if contains(saveType{ii},'eps')
+            %     addontype = 'epsc';
+            saveas(fig,char(strcat(path,dateNow,name,'_',info,'.',saveType{ii})), 'epsc');
+        else
+            saveas(fig,char(strcat(path,dateNow,name,'_',info,'.',saveType{ii})));
+        end
+    end
+    
+    close(fig)
 end
