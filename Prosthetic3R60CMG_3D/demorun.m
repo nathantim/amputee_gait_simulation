@@ -27,7 +27,7 @@ assignInit;
 targetVel = [1.2,1.2,1.2];
 stopTimeVec = [20,20,30];
 obstacleX = [obstacle_x, obstacle_x, 1000];
-tripDetectThresh = [tripDetectThreshold, tripDetectThreshold*1E9, tripDetectThreshold*1E9];
+tripDetectThresh = [tripDetectThreshold, tripDetectThreshold, tripDetectThreshold*1E9];
 
 %%
 warning('off')
@@ -36,13 +36,20 @@ warning('on');
 
 %%
 clearvars in
-for idxGains = 1:length(obstacleX)
+paramSets{2} = Simulink.BlockDiagram.modifyTunableParameters(rtp, ...
+                        'RkneeFlexSpeedGain', 0, ...
+                        'RkneeFlexPosGain', 0, ...
+                        'RkneeStopGain', 0, ...
+                        'RkneeExtendGain', 0 );
+paramSets{3} = Simulink.BlockDiagram.modifyTunableParameters(rtp, ...
+                        'obstacle_x',     1000, ...
+                        'tripDetectThreshold', tripDetectThreshold*1E9);
+                    
+for idxGains = 1:length(paramSets)
     in(idxGains) = Simulink.SimulationInput(model);
     in(idxGains) = in(idxGains).setModelParameter('TimeOut', 25*60);
     in(idxGains) = in(idxGains).setModelParameter('StopTime', char(num2str(stopTimeVec(idxGains))));
-    paramSets{idxGains} = Simulink.BlockDiagram.modifyTunableParameters(rtp, ...
-                        'obstacle_x',     obstacleX(idxGains), ...
-                        'tripDetectThreshold', tripDetectThresh(idxGains));
+    
     in(idxGains) = in(idxGains).setModelParameter('SimulationMode', 'rapid', ...
         'RapidAcceleratorUpToDateCheck', 'off');
     in(idxGains) = in(idxGains).setModelParameter('RapidAcceleratorParameterSets', paramSets{idxGains});
