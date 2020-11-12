@@ -30,6 +30,7 @@ assignGainsCoronal;
 assignInit;
 
 targetVel = [1.2,1.2,1.2,1.2];
+CMGcostFactor = [innerOptSettings.CMGdeltaHFactor,0,innerOptSettings.CMGdeltaHFactor,1.2];
 stopTimeVec = [20,30,20,30];
 tripDetectThresh = [tripDetectThreshold, tripDetectThreshold, tripDetectThreshold*1E9];
 
@@ -77,6 +78,7 @@ for idxSim = 1:length(simout)
     innerOptSettings.target_velocity    = targetVel(idxSim);
     innerOptSettings.min_velocity       = targetVel(idxSim);
     innerOptSettings.max_velocity       = targetVel(idxSim);
+    setInnerOptSettings.CMGdeltaHFactor = CMGcostFactor(idxSim);
     mData=simout(idxSim).getSimulationMetadata();
     
     if strcmp(mData.ExecutionInfo.StopEvent,'DiagnosticError')
