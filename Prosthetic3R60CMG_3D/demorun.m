@@ -1,4 +1,9 @@
-% function simout = demorun()
+% Simulation 1: Trip prevention
+% Simulation 2: Gait with active CMG
+% Simulation 3: Trip fall
+% Simulation 4: Gait with inactive CMG
+
+%%
 model = 'NeuromuscularModel_3R60CMG_3D';
 
 load(['Results' filesep 'v1.2ms_wCMG.mat'])
@@ -24,9 +29,8 @@ assignGainsSagittal;
 assignGainsCoronal;
 assignInit;
 
-targetVel = [1.2,1.2,1.2];
-stopTimeVec = [20,20,30];
-obstacleX = [obstacle_x, obstacle_x, 1000];
+targetVel = [1.2,1.2,1.2,1.2];
+stopTimeVec = [20,30,20,30];
 tripDetectThresh = [tripDetectThreshold, tripDetectThreshold, tripDetectThreshold*1E9];
 
 %%
@@ -37,13 +41,15 @@ warning('on');
 %%
 clearvars in
 paramSets{2} = Simulink.BlockDiagram.modifyTunableParameters(rtp, ...
+                        'obstacle_x',     1000, ...
+                        'tripDetectThreshold', tripDetectThreshold*1E9);
+paramSets{3} = Simulink.BlockDiagram.modifyTunableParameters(rtp, ...
+                        'obstacle_x', obstacle_x,...
                         'RkneeFlexSpeedGain', 0, ...
                         'RkneeFlexPosGain', 0, ...
                         'RkneeStopGain', 0, ...
-                        'RkneeExtendGain', 0 );
-paramSets{3} = Simulink.BlockDiagram.modifyTunableParameters(rtp, ...
-                        'obstacle_x',     1000, ...
-                        'tripDetectThreshold', tripDetectThreshold*1E9);
+                        'RkneeExtendGain', 0, ...
+                        'tripDetectThreshold', tripDetectThreshold);
 paramSets{4} = Simulink.BlockDiagram.modifyTunableParameters(rtp, ...
                         'obstacle_x',     1000, ...
                         'tripDetectThreshold', tripDetectThreshold*1E9, ...
@@ -54,7 +60,7 @@ paramSets{4} = Simulink.BlockDiagram.modifyTunableParameters(rtp, ...
                         'omegaRef', 0);                    
 for idxGains = 1:length(paramSets)
     in(idxGains) = Simulink.SimulationInput(model);
-    in(idxGains) = in(idxGains).setModelParameter('TimeOut', 25*60);
+    in(idxGains) = in(idxGains).setModelParameter('TimeOut', 35*60);
     in(idxGains) = in(idxGains).setModelParameter('StopTime', char(num2str(stopTimeVec(idxGains))));
     
     in(idxGains) = in(idxGains).setModelParameter('SimulationMode', 'rapid', ...

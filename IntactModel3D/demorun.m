@@ -1,4 +1,6 @@
-% function simout = demorun()
+% Simulation 1: Healthy gait at 0.9m/s
+% Simulation 2: Healthy gait at 1.2m/s
+%%
 model = 'NeuromuscularModel3D';
 gainfiles = {'v0.9ms.mat', 'v1.2ms.mat'};
 targetVel = [0.9, 1.2];
