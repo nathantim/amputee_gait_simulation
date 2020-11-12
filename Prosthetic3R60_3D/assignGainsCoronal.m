@@ -1,7 +1,4 @@
-% BodyMechParams;
-% ControlParams;
-% OptimParams;
-% Prosthesis3R60Params;
+% ASSIGNGAINSCORONAL        Script that assigns values to the Coronal neurological controller variables from the Gain vector 
  
 %% Left
 %% Coronal 

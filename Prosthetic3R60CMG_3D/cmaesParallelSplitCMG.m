@@ -1,35 +1,37 @@
 function costs = cmaesParallelSplitCMG(gainsPop)
+% CMAESPARALLELSPLITCMG         Function that simulates the model with a certain set of gains which are coming from the cmaes optimization
+% INPUTS:
+%   - gainsPop                  Set of gains for which the model should be evaluated
+%
+% OUTPUTS:
+%   - costs                     Cost function values for each set of gains
+
+%%
 global rtp InitialGuess innerOptSettings model
 %% Data plotting during optimization
-%     global dataQueueD
-%     if innerOptSettings.visual
-dataQueueD = parallel.pool.DataQueue;
-dataQueueD.afterEach(@plotProgressOptimization);
-%     end
+if inner_opt_settings.visual
+    dataQueueD = parallel.pool.DataQueue;
+    dataQueueD.afterEach(@plotProgressOptimization);
+end
 
-%allocate costs vector and paramsets the generation
+% allocate costs vector and paramsets the generation
 popSize = size(gainsPop,2);
 
 numTerrains = innerOptSettings.numTerrains;
 terrain_height = innerOptSettings.terrain_height;
-%     rampSlope = 0.0025;
-%     [groundX, groundZ, groundTheta] = generateGround('flat');
+
 
 costs = nan(popSize*numTerrains,1);
 paramSets = cell(popSize*numTerrains,1);
-%     dataStruct = struct;
 
 %create param sets
 gainind = 1;
 for ii = 1:numTerrains:(numTerrains*popSize)
-    %set gains
+    % set gains
     Gains = InitialGuess.*exp(gainsPop(:,gainind));
-    %         Gains = InitialGuess.*exp(gainsPop(:,i));
     paramSets{ii} = setRtpParamsetCMG(rtp,Gains); 
-    %                     'KpGamma',               Gains( 1), ...
-    %             'KiGamma',               Gains( 2), ...
     
-    %set ground heights
+    % set ground heights
     for jj = 0:(numTerrains-1)
         if jj == 0
             [~, groundZ, groundTheta] = generateGround('flat',[],4*jj,false);

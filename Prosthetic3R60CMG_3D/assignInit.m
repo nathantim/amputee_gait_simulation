@@ -1,3 +1,6 @@
+% ASSIGNINIT        Script that assigns initial condition values from the initial condition vectors
+
+%%
 setInitVar;
 
 vxInit              = initConditionsSagittal(1); 

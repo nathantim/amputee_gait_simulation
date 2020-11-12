@@ -29,13 +29,8 @@ if ~isstruct(saveInfoInput)
 else
     saveInfo = saveInfoInput;
 end
-CMGParams;
+
 t = CMGData.time;
-
-% t1 = 1;
-% t2 = 20;
-% idx = (find(abs(CMGData.time-t1) == min(abs(CMGData.time-t1))):find(abs(CMGData.time-t2) == min(abs(CMGData.time-t2))));
-
 
 %%
 gamma               = CMGData.signals.values(:,1);
@@ -90,8 +85,6 @@ end
 
 if isempty(CMGDataFigure) && isempty(axesHandles)
     CMGDataFig = figure();
-    fullScreen = get(0,'screensize');
-%     set(CMGDataFig, 'Position',[fullScreen(1:2)+20 fullScreen(3:4)*0.9]);
     set(CMGDataFig, 'Position',[50 10 540 970]);
 else
     CMGDataFig = CMGDataFigure;
@@ -101,8 +94,6 @@ end
 if isempty(axesHandles)
     for ii = 1:subplotStart(1)
         axesHandles(ii) = axes(CMGDataFig);
-        
-        %     set(axesHandles(i),'Position', [0.13
     end
 end
 fontSizeLeg = 16;
@@ -137,10 +128,9 @@ if  b_addAxesTitle
 end
 if b_addLegend
     warning('off')
-    legend(plotHandles1(1:end,1),'$\gamma$(t)','Collision','Prevent','Location','northeastoutside','FontSize',fontSizeLeg);
+    legend(plotHandles1(1:end,1),'$\gamma$(t)','Collision','Prevent','Location','northeastoutside','FontSize',fontSizeLeg,'Box','off');
     warning('on')
 end
-
 
 
 for ii = 1:1
@@ -180,7 +170,7 @@ if  b_addAxesTitle
 end
 if b_addLegend
     warning('off')
-    legend(plotHandles2(1:end,1),'$\dot{\gamma}(t)$','$\dot{\gamma}_{\mathrm{ref}}$','Location','northeastoutside','FontSize',fontSizeLeg);
+    legend(plotHandles2(1:end,1),'$\dot{\gamma}(t)$','$\dot{\gamma}_{\mathrm{ref}}$','Location','northeastoutside','FontSize',fontSizeLeg,'Box','off');
     warning('on');
 end
 
@@ -221,7 +211,7 @@ if  b_addAxesTitle
 end
 if b_addLegend
     warning('off')
-    legend(plotHandles3([1,3:end],1),'$\tau_{\mathrm{GM}}(t)$','$\tau_{\mathrm{lim}}$','$\tau_{{\mathrm{r}0}}(t)$','$\tau_{\mathrm{L}}(t)$','$\tau_{\mathrm{ff}}(t)$','Location','northeastoutside','FontSize',fontSizeLeg);
+    legend(plotHandles3([1,3:end],1),'$\tau_{\mathrm{GM}}(t)$','$\tau_{\mathrm{lim}}$','$\tau_{{\mathrm{r}0}}(t)$','$\tau_{\mathrm{L}}(t)$','$\tau_{\mathrm{ff}}(t)$','Location','northeastoutside','FontSize',fontSizeLeg,'Box','off');
     % legend(plotHandles3([1,4:end],1),'$\tau_{\mathrm{GM}}(t)$','$\tau_{{\mathrm{r}0}}(t)$','$\tau_{\mathrm{L}}(t)$','$\tau_{\mathrm{ff}}(t)$','Location','northeastoutside','FontSize',fontSizeLeg);
     warning('on')
 end
@@ -241,7 +231,6 @@ end
 axidx = 4;
 axesHandles(axidx) = subplot(subplotStart(1),subplotStart(2),subplotStart(3),axesHandles(axidx)); 
 subplotStart(3) = subplotStart(3) + idxSkip;
-colorOrder = get(axesHandles(axidx),'colororder');
 if ~isempty(deltaHmag_sd)
     plotHandles4(1,2) = fill(axesHandles(axidx),[GaitInfo.tp;flipud(GaitInfo.tp)],[deltaHmag_avg-deltaHmag_sd;flipud(deltaHmag_avg+deltaHmag_sd)],[0.8 0.8 0.8]);
 else
@@ -262,8 +251,6 @@ end
 plotHandles4(3,1) = plot(axesHandles(axidx),GaitInfo.tp,deltaH_AP_avg); 
 
 
-% plotHandles4(4) = plot(axesHandles(axidx),GaitInfo.tp,Hmag_avg,'--','color',colorOrder(3,:)); 
-
 
 if  b_addTitle
     title(axesHandles(axidx),{'Exch. angular momentum'});
@@ -274,7 +261,7 @@ if  b_addAxesTitle
 end
 if b_addLegend
     warning('off');
-    legend(plotHandles4(1:end,1),'$||\Delta\mathbf{H}(t)||$','$\Delta H_{\mathrm{ML}}(t)$','$\Delta H_{\mathrm{AP}}(t)$','$||\mathbf{H}(t)||$','location','northeastoutside','FontSize',fontSizeLeg);
+    legend(plotHandles4(1:end,1),'$||\Delta\mathbf{H}(t)||$','$\Delta H_{\mathrm{ML}}(t)$','$\Delta H_{\mathrm{AP}}(t)$','$||\mathbf{H}(t)||$','location','northeastoutside','FontSize',fontSizeLeg,'Box','off');
     warning('on');
 end
 
@@ -284,25 +271,6 @@ else
     xlabel(axesHandles(end),'time (s)');
 end
 
-% %% Gyroscopic Torque
-% % axidx = 5;
-% figure();
-% axesHandles(axidx) = axes(gcf);
-% % axesHandles(axidx) = subplot(subplotStart(1),subplotStart(2),subplotStart(3),axesHandles(axidx)); 
-% % colorOrder = get(axesHandles(axidx),'colororder');
-% subplotStart(3) = subplotStart(3) + idxSkip;
-% 
-% plotHandles5(1) =  plot(axesHandles(axidx),GaitInfo.tp,gyroscopicTorqueML_avg); % total torque
-% hold(axesHandles(axidx),'on');
-% plotHandles5(2) =  plot(axesHandles(axidx), GaitInfo.tp,gyroscopicTorqueAP_avg,'--');  % reset torque
-% plotHandles5(3) =  plot(axesHandles(axidx), GaitInfo.tp,gyroscopicTorqueL_avg,'-.');  % low-level torque
-% title(axesHandles(axidx),'Gyroscopic torque');
-% % set(axesHandles(axidx),'YLim',[[max(-15,min(min(CMGData.signals.values(idx,6:8)*1.1))),min(15,max(max(1.1*CMGData.signals.values(idx,6:8))))]]);
-% % yaxis([-taumax-1 taumax+1]);
-% legend(plotHandles5([1:end]),'$\tau_{\mathrm{ML}}(t)$','$\tau_{\mathrm{AP}}(t)$','$\tau_{\mathrm{L}}(t)$');
-% 
-% ylabel(axesHandles(axidx),'$\tau(t)$ (Nm)'); 
-
 for ii = 1:size(plotHandles4,1)
     set(plotHandles4(ii,1),plotInfo.plotProp,plotInfo.plotProp_entries(ii,:));
     if isgraphics(plotHandles4(ii,2))
@@ -310,7 +278,7 @@ for ii = 1:size(plotHandles4,1)
     end
 end
 
-%%
+%% Plot moment of collision and trip prevention active
 if showCollision
     for jj = 2:length(axesHandles)
         axidx = jj;
@@ -321,10 +289,6 @@ if showCollision
     end
 end
 
-% for ii = 1:length(axesHandles)
-%     setPos = get(axesHandles(ii),'Position');
-%     set(axesHandles(ii),'Position', [setPos(1:2), 0.55,setPos(4)]);
-% end
 %%
 
 if saveInfo.b_saveFigure

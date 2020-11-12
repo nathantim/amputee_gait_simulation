@@ -1,7 +1,13 @@
 function costs = cmaesParallelSplit(gainsPop)
+% CMAESPARALLELSPLIT            Function that simulates the model with a certain set of gains which are coming from the cmaes optimization
+% INPUTS:
+%   - gainsPop                  Set of gains for which the model should be evaluated
+%
+% OUTPUTS:
+%   - costs                     Cost function values for each set of gains
+%%
 global rtp InitialGuess innerOptSettings model
 %% Data plotting during optimization
-%     global dataQueueD
 if innerOptSettings.visual
     dataQueueD = parallel.pool.DataQueue;
     dataQueueD.afterEach(@plotProgressOptimization);

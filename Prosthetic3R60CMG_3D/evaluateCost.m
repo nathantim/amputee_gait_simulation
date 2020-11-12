@@ -6,9 +6,7 @@ end
 %%
 if input("Load from optimization folder? (1/0)   " )
     innerOptSettings = setInnerOptSettings('yes');
-    innerOptSettings.optimizationDir = 'C:\Users\Nathan\Documents\Studie\Msc 3e jaar (2019-2020)\Thesis\Simulation Matlab - Copy\Prosthetic3R60CMG_3D\Results\2020-11-09_11-12_1.2ms_CMG_trip_prevent';
     disp(innerOptSettings.optimizationDir);
-    
     
     
     load([innerOptSettings.optimizationDir filesep 'variablescmaes.mat'],'bestever');
@@ -19,7 +17,7 @@ if input("Load from optimization folder? (1/0)   " )
     idx4 = idx3 + length(InitialGuess.initConditionsCoronal);
     
     
-   
+    
     InitialGuessCMG = load([innerOptSettings.optimizationDir filesep 'initial_gainsCMG.mat']);
     
     if idx4 == length(bestever.x)
@@ -49,16 +47,13 @@ else
     CMGParams;
     setInitVar;
     innerOptSettings = setInnerOptSettings('eval');
-
+    
     load(['Results'  filesep 'v1.2ms_wCMG.mat'])
     load(['Results' filesep 'CMGGains_tripprevent.mat']);
 end
 
-terrains2Test = 1;%input("Number of terrains to test:   ");
-
 %%
 model = 'NeuromuscularModel_3R60CMG_3D';
-
 load_system(model);
 
 %%
@@ -78,34 +73,20 @@ if contains(get_param(model,'SimulationMode'),'rapid')
     rtp = Simulink.BlockDiagram.buildRapidAcceleratorTarget(model);
     warning('on');
     
-
-        for jj = 1:terrains2Test
-                        if jj == 1
-                            [groundX(jj,:), groundZ(jj,:), groundTheta(jj,:)] = generateGround('flat',[],4*(jj-1),false);
-                        else
-                            [groundX(jj,:), groundZ(jj,:), groundTheta(jj,:)] = generateGround('const', innerOptSettings.terrain_height, 4*(jj-1),false);
-                        end
-                        paramSets{jj} = ...
-                            Simulink.BlockDiagram.modifyTunableParameters(rtp, ...
-                            'groundZ',     groundZ(jj,:), ...
-                            'groundTheta', groundTheta(jj,:));
-            in(jj) = Simulink.SimulationInput(model);
-            in(jj) = in(jj).setModelParameter('TimeOut', innerOptSettings.timeOut);
-            in(jj) = in(jj).setModelParameter('SimulationMode', 'rapid', ...
-                'RapidAcceleratorUpToDateCheck', 'off');
-            in(jj) = in(jj).setModelParameter('RapidAcceleratorParameterSets', paramSets{jj});
-        end
- 
-else
     paramStruct = {};
     in = Simulink.SimulationInput(model);
     in = in.setModelParameter('TimeOut', innerOptSettings.timeOut);
+    in = in.setModelParameter('SimulationMode', 'rapid', ...
+        'RapidAcceleratorUpToDateCheck', 'off');
+    in = in.setModelParameter('RapidAcceleratorParameterSets', paramSets{1});
+    
 end
 
 %%
 simout = parsim(in, 'ShowProgress', true);
 
 %%
+cost = nan(size(simout));
 for idx = 1:length(simout)
     mData=simout(idx).getSimulationMetadata();
     
@@ -119,9 +100,9 @@ for idx = 1:length(simout)
         cost(idx) = nan;
     else
         [cost(idx), dataStructLocal] = getCost(model,[],simout(idx).time,simout(idx).metabolicEnergy,simout(idx).sumOfStopTorques,...
-            simout(idx).HATPosVel,simout(idx).stepVelocities,simout(idx).stepTimes,...
-            simout(idx).stepLengths,simout(idx).stepNumbers,simout(idx).CMGData,...
-            simout(idx).selfCollision,innerOptSettings,0);
+                                                simout(idx).HATPosVel,simout(idx).stepVelocities,simout(idx).stepTimes,...
+                                                simout(idx).stepLengths,simout(idx).stepNumbers,simout(idx).CMGData,...
+                                                simout(idx).selfCollision,innerOptSettings,0);
         printOptInfo(dataStructLocal,true);
         
         kinematics.angularData = simout(idx).angularData;
@@ -132,7 +113,6 @@ for idx = 1:length(simout)
         kinematics.GRFData = simout(idx).GRFData;
         kinematics.CMGData = simout(idx).CMGData;
         kinematics.jointTorquesData = simout(idx).jointTorquesData;
-        
         
         dataStructLocal.kinematics = kinematics;
         dataStructLocal.animData3D = simout((idx)).animData3D;
@@ -145,8 +125,10 @@ for idx = 1:length(simout)
     end
 end
 
-%%
+%% Animate and plot data
 animPost3D(simout(1).animData3D,'intact',false,'speed',1,'obstacle',true,'view','perspective','CMG',true,...
-    'showFigure',true,'createVideo',false,'info',[num2str(innerOptSettings.target_velocity) 'ms'],'saveLocation',innerOptSettings.optimizationDir);
+            'createVideo',false,'info',[num2str(innerOptSettings.target_velocity) 'ms'],...
+            'saveLocation',innerOptSettings.optimizationDir);
 
-plotData(simout(1).angularData,simout(1).musculoData,simout(1).GRFData,simout(1).jointTorquesData,simout(1).GaitPhaseData,simout(1).stepTimes,simout(1).CMGData,'prosthetic3D_1.2msCMG',[7 9],0,1,1,0)
+plotData(   simout(1).angularData,simout(1).musculoData,simout(1).GRFData,simout(1).jointTorquesData,...
+            simout(1).GaitPhaseData,simout(1).stepTimes,simout(1).CMGData,'Trip prevent',[7 8],0,1,1,0);

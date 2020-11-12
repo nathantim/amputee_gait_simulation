@@ -1,5 +1,12 @@
 function paramSet = setRtpParamset(rtp,Gains)
-
+% SETTRPPARAMSET            Function that creates a parameter set for the rapid accelerator mode
+% INPUTS:
+%   - rtp                   Rapid accelerator target of the model
+%   - Gains                 Gain values that should be inserted in the parameter set
+%
+% OUTPUTS:
+%   - paramSet
+%%
 paramSet = Simulink.BlockDiagram.modifyTunableParameters(rtp, ...
             'GainFGLUst',               Gains( 1), ...
             'GainFVASst',               Gains( 2), ...

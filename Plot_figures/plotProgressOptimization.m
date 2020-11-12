@@ -1,4 +1,16 @@
 function plotProgressOptimization(dataStruct)
+% PLOTPROGRESSOPTIMIZATION  Function that can plot the leg state, joint angles, joint torque, joint powers, ground reaction 
+%                           forces, muscular activity levels, and CMG data during an optimization run. Also it saves
+%                           the struct when a new best cost function is achieved. It then also creates a video and saves this. 
+%                           Choose inside the function which figures to plot
+%                           Choose in setInnerOptSettings if a video should be created
+% INPUTS:
+%   - dataStruct            struct that contains the data structs coming from the simulation, also the setInnerOptSettings variable is included.
+%
+% OUTPUTS:
+%   -
+
+%%
 b_plotLegState    = 0;
 b_plotAngles      = 1;
 b_plotTorques     = 1;
@@ -20,7 +32,6 @@ set(0, 'DefaultLegendHitTest','off','DefaultLegendPickableParts','none');
 %%
 try
     dataFieldnames = fieldnames(dataStruct);
-    %     numOfData = length(dataFieldnames)-1;
     %%
     if ~isempty(dataFieldnames) && length(dataFieldnames)>4 && ~isempty(dataStruct.timeCost.data) && dataStruct.timeCost.data == 0
         legStates = findobj('type','figure','Name','Leg State');

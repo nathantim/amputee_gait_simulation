@@ -1,4 +1,14 @@
 function paramSet = setRtpParamsetCMG(rtp,Gains,prevParamSets)
+% SETTRPPARAMSETCMG         Function that creates a parameter set for the rapid accelerator mode
+% INPUTS:
+%   - rtp                   Rapid accelerator target of the model with CMG 
+%   - Gains                 Gain values that should be inserted in the parameter set
+%   - prevParamSets         Optional, another or previous created parameter set to which this parameter set should be included
+%
+% OUTPUTS:
+%   - paramSet
+
+%%
 if nargin < 3
     prevParamSets = [];
 end

@@ -1,15 +1,15 @@
 outputstruct = dir('mainfolder') ;
 dots = '';
-i = 1;
-while isempty(outputstruct) && i < 5
-    dots = ['../',dots];
+idx = 1;
+while isempty(outputstruct) && idx < 5
+    dots = ['..' filesep dots];
     outputstruct = dir(strcat(dots,'mainfolder'));
-    i = i + 1;
+    idx = idx + 1;
 end
 mainfolderpath = outputstruct.folder;
 addpath(mainfolderpath);
 
-addpath(genpath(strcat(mainfolderpath,'/Functions')));
-addpath(genpath(strcat(mainfolderpath,'/Parameter_files')));
-addpath(strcat(mainfolderpath,'/Animation'));
-addpath(strcat(mainfolderpath,'/Plot_figures'));
+addpath(genpath(strcat(mainfolderpath,[filesep 'Functions'])));
+addpath(genpath(strcat(mainfolderpath,[filesep 'Parameter_files'])));
+addpath(strcat(mainfolderpath,[filesep 'Animation']));
+addpath(strcat(mainfolderpath,[filesep 'Plot_figures']));
