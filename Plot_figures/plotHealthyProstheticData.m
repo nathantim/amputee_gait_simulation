@@ -103,6 +103,7 @@ set(0, 'DefaultAxesLabelFontSizeMultiplier',1.5);
 if b_plotLegState
     axesHealthyState = []; axesProstheticState = []; axesCMGState = [];
     legStateFig = figure();
+    legStateFig.Name = ['Leg gait state ' info];
     figurePositionState = [10,100,500,500];
     hwratioState = figurePositionState(end)/figurePositionState(end-1);
     set(legStateFig, 'Position',figurePositionState);
@@ -140,6 +141,7 @@ if b_plotAngles
     axesHealthyAngle = []; axesProstheticAngle = [];
     axesCMGNotActiveAngle = []; axesCMGActiveAngle = [];
     angularDataFig = figure();
+    angularDataFig.Name = ['Joint angle data ' info];
     
     if ~isempty(prostheticCMGNotActiveData) && ~isempty(prostheticCMGActiveData)
         subplotStart = [4 4 1];
@@ -244,6 +246,7 @@ if b_plotTorques
     axesHealthyTorque = []; axesProstheticTorque = [];
     axesCMGNotActiveTorque = []; axesCMGActiveTorque = [];
     torqueDataFig = figure();
+    torqueDataFig.Name = ['Joint torque data ' info];
     
     if ~isempty(prostheticCMGNotActiveData) && ~isempty(prostheticCMGActiveData)
         subplotStart = [4 4 1];
@@ -348,6 +351,7 @@ if b_plotPowers
     axesHealthyPower = []; axesProstheticPower = [];
     axesCMGNotActivePower = []; axesCMGActivePower = [];
     powerDataFig = figure();
+    powerDataFig.Name = ['Joint power data ' info];
     
     if ~isempty(prostheticCMGNotActiveData) && ~isempty(prostheticCMGActiveData)
         subplotStart = [4 4 1];
@@ -441,6 +445,7 @@ if b_plotGRF
     axesHealthyGRF = []; axesProstheticGRF = [];
     axesCMGNotActiveGRF = []; axesCMGActiveGRF = [];
     GRFDataFig = figure();
+    GRFDataFig.Name = ['Ground reaction forces data ' info];
     
     if ~isempty(prostheticCMGNotActiveData) && ~isempty(prostheticCMGActiveData)
         subplotStart = [4 3 1];
@@ -558,6 +563,7 @@ if b_plotMuscle
     hwratioMusc = figurePositionMusc(end)/figurePositionMusc(end-1);
     musculoDataFig = figure();
     set(musculoDataFig, 'Position',figurePositionMusc);
+    musculoDataFig.Name = ['Muscle activation data ' info];
     
     [plotHealthyMusc,axesHealthyMusc] = plotMusculoData(healthyData.musculoData,plotInfo,healthyGaitInfo,healthySaveInfo,musculoDataFig,[],subplotStart,'left',true);
     subplotStart(3) = subplotStart(3)+subplotStart(2);

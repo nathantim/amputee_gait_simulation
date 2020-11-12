@@ -87,14 +87,14 @@ if plotInfo.showTables
 
     if contains(saveInfo.info,'prosthetic')
     rowNames = {'x','y','z'};
-    varNames = {'L braking impulse (N%/kg)','R braking impulse (N%/kg)', 'Braking ASI (%)', 'L prop impulse (N%/kg)','R prop impulse (N%/kg)', 'Prop ASI (%)'};%,'L mean propel impulse (N%/kg)','R mean propel impulse (N%/kg)'};
+    varNames = {'L braking impulse (Ns/kg)','R braking impulse (Ns/kg)', 'Braking ASI (%)', 'L prop impulse (Ns/kg)','R prop impulse (Ns/kg)', 'Prop ASI (%)'};%,'L mean propel impulse (N%/kg)','R mean propel impulse (N%/kg)'};
     vars = {impxBrakestruct.leftTxt, impxBrakestruct.rightTxt, impxBrakestruct.ASItxt, impxPropstruct.leftTxt, impxPropstruct.rightTxt, impxPropstruct.ASItxt; ... 
             impyBrakestruct.leftTxt, impyBrakestruct.rightTxt, impyBrakestruct.ASItxt, impyPropstruct.leftTxt, impyPropstruct.rightTxt, impyPropstruct.ASItxt; ... 
             '-', '-', '-', impzPropstruct.leftTxt, impzPropstruct.rightTxt, impzPropstruct.ASItxt};
     impulseTable = (table(vars(:,1),vars(:,2),vars(:,3),vars(:,4),vars(:,5),vars(:,6),'VariableNames',varNames,'RowNames',rowNames));
     else
        rowNames = {'x','y','z'};
-       varNames = {'Total braking impulse (N%/kg)', 'Braking ASI (%)', 'Total prop impulse (N%/kg)', 'Prop ASI (%)'};%,'L mean propel impulse (N%/kg)','R mean propel impulse (N%/kg)'};
+       varNames = {'Total braking impulse (Ns/kg)', 'Braking ASI (%)', 'Total prop impulse (Ns/kg)', 'Prop ASI (%)'};%,'L mean propel impulse (N%/kg)','R mean propel impulse (N%/kg)'};
        vars = {impxBrakestruct.totalTxt, impxBrakestruct.ASItxt, impxPropstruct.totalTxt, impxPropstruct.ASItxt; ...
            impyBrakestruct.totalTxt, impyBrakestruct.ASItxt, impyPropstruct.totalTxt, impyPropstruct.ASItxt; ...
            '-', '-', impzPropstruct.totalTxt, impzPropstruct.ASItxt};

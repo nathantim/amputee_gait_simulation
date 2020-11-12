@@ -81,7 +81,7 @@ end
     tShiftTot =  0*1; %[s] total time of view window shift
 
     % figure name (identifier)
-    FigName = 'Neuromuscular Walker';
+    FigName = ['Neuromuscular Walker - ' animInfo];
 
 % Initialize Figure
 % -----------------
@@ -89,12 +89,7 @@ end
     animInit(FigName);% initialize animation figure
     FigHndl = findobj('Type', 'figure',  'Name', FigName);% store figure handle for repeated access
     if ~showFigure
-%         set(FigHndl,'visible','off')
-        set(FigHndl,'WindowState','minimized')
-%         pause(0.0001)  %//This is important
-%         jFrame.setMinimized(true);
-    else
-%         set(FigHndl,'visible','on')
+        set(FigHndl,'WindowState','minimized');
     end
     figDim = get(FigHndl,'Position');
     winHeight = ViewWin*figDim(4)/figDim(3);

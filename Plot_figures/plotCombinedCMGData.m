@@ -42,6 +42,7 @@ set(0, 'DefaultAxesLabelFontSizeMultiplier',1.5);
 
 %%
 CMGcombinedFig = figure();
+CMGcombinedFig.name = 'CMG data during walking and trip prevention';
 figurePositionCMG = [50 10 500 800];
 hwratio = figurePositionCMG(end)/figurePositionCMG(end-1);
 set(CMGcombinedFig, 'Position',figurePositionCMG);

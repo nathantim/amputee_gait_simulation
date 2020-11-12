@@ -26,7 +26,7 @@ act_offset = 5;
 Lstart = 0;
 Rstart = 11;
 
-if contains(saveInfo.info,'3D')
+if ~contains(saveInfo.info,'2D')
     L_HAB   = musculoData.signals.values(:,act_offset+(Lstart+0)*l_dyn);
     L_HAD   = musculoData.signals.values(:,act_offset+(Lstart+1)*l_dyn);
     Lstart = 2;
@@ -48,7 +48,7 @@ else
     R_HAB_avg = zeros(size(GaitInfo.tp));
     R_HAD_avg = zeros(size(GaitInfo.tp));
 end
-if ~plotInfo.showSD || ~contains(saveInfo.info,'3D')
+if ~plotInfo.showSD || contains(saveInfo.info,'2D')
         L_HAB_sd = [];
         L_HAD_sd = [];
         R_HAB_sd = [];

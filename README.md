@@ -1,15 +1,19 @@
 # Neuromuscular-Transfemoral-Prosthesis-Model
 
+The repository contains a 3D neuromuscular model of
+1. a healthy person 
+2. a trans-femoral amputee wearing the Otto Bock 3R60 knee prosthesis
+3. a trans-femoral amputee wearing the Otto Bock 3R60 knee prosthesis with CMG embedded in the prosthetic shank
 
-This repository contains neuromuscular models of an amputee walking on a trans-femoral prosthesis, containing the Otto Bock 3R60 knee prosthesis. 
 The model is based on the work of:
-
 - Song, S., & Geyer, H. (2015). A neural circuitry that emphasizes spinal feedback generates diverse behaviours of human locomotion. The Journal of physiology, 593(16), 3493-3511.
 - Thatte, Nitish, and Hartmut Geyer. "Toward balance recovery with leg prostheses using neuromuscular model control." IEEE Transactions on Biomedical Engineering 63.5 (2016): 904-913.
 
-The repository contains a 2D and 3D model of a healthy person and of a trans-femoral amputee.
+## Demo
+You can run `DEMO.m`. This demo script allows you to plot and/or animate results. The results can be obtained through simulation, or by just loading the data included in the repository.
+Note: the simulation will take some time (30-60 min). Also the model is numerically sensitive, especially the trip prevention simulation. This means that when simulating the model on your computer it can obtain a different, maybe even unsuccessful, result.
 
-## Running the model
+## Running a model
 
 1. Run the `setup_paths.m` script.
 2. Go to the folder for the model you wish to run.
