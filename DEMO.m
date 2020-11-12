@@ -64,8 +64,8 @@ if input(['\nDo you want to \n' '(1) simulate, or \n' '(0) load datafiles? \n' '
     prosthetic3D09.simout               = simouts(1,2);
     prosthetic3D12.simout               = simouts(2,2);
     prosthetic3DCMGTripPrevent.simout   = simouts(1,3);
-    prosthetic3DCMGActive.simout        = simouts(2,3);
-    prosthetic3DCMGTripFall.simout      = simouts(3,3);
+    prosthetic3DCMGTripFall.simout      = simouts(2,3);
+    prosthetic3DCMGActive.simout        = simouts(3,3);
     prosthetic3DCMGNOTActive.simout     = simouts(4,3);
     
     

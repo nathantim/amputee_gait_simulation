@@ -1,6 +1,6 @@
 % Simulation 1: Trip prevention
-% Simulation 2: Gait with active CMG
-% Simulation 3: Trip fall
+% Simulation 2: Trip fall
+% Simulation 3: Gait with active CMG
 % Simulation 4: Gait with inactive CMG
 
 %%
@@ -19,6 +19,7 @@ OptimParams;
 
 
 load_system(model);
+set_param(strcat(model,'/Body Mechanics Layer/Obstacle'),'Commented','off');
 
 [groundX, groundZ, groundTheta] = generateGround('flat');
 dt_visual = 1/1000;
@@ -30,9 +31,8 @@ assignGainsCoronal;
 assignInit;
 
 targetVel = [1.2,1.2,1.2,1.2];
-CMGcostFactor = [innerOptSettings.CMGdeltaHFactor,0,innerOptSettings.CMGdeltaHFactor,1.2];
-stopTimeVec = [20,30,20,30];
-tripDetectThresh = [tripDetectThreshold, tripDetectThreshold, tripDetectThreshold*1E9];
+CMGcostFactor = [innerOptSettings.CMGdeltaHFactor,innerOptSettings.CMGdeltaHFactor,0,0];
+save_system(model);
 
 %%
 warning('off')
@@ -40,19 +40,40 @@ rtp = Simulink.BlockDiagram.buildRapidAcceleratorTarget(model);
 warning('on');
 
 %%
-clearvars in
+clearvars in paramSets
 paramSets{2} = Simulink.BlockDiagram.modifyTunableParameters(rtp, ...
-                        'obstacle_x',     1000, ...
-                        'tripDetectThreshold', tripDetectThreshold*1E9);
-paramSets{3} = Simulink.BlockDiagram.modifyTunableParameters(rtp, ...
-                        'obstacle_x', obstacle_x,...
                         'RkneeFlexSpeedGain', 0, ...
                         'RkneeFlexPosGain', 0, ...
                         'RkneeStopGain', 0, ...
                         'RkneeExtendGain', 0, ...
                         'tripDetectThreshold', tripDetectThreshold);
-paramSets{4} = Simulink.BlockDiagram.modifyTunableParameters(rtp, ...
-                        'obstacle_x',     1000, ...
+                    
+for idxGains = 1:length(paramSets)
+    in(idxGains) = Simulink.SimulationInput(model);
+    in(idxGains) = in(idxGains).setModelParameter('TimeOut', 35*60);
+    in(idxGains) = in(idxGains).setModelParameter('StopTime', '20');
+    in(idxGains) = in(idxGains).setModelParameter('SimulationMode', 'rapid', ...
+        'RapidAcceleratorUpToDateCheck', 'off');
+    in(idxGains) = in(idxGains).setModelParameter('RapidAcceleratorParameterSets', paramSets{idxGains});
+end
+
+
+%%
+simout(1:2) = parsim(in, 'ShowProgress', true);
+
+%%
+load_system(model);
+set_param(strcat(model,'/Body Mechanics Layer/Obstacle'),'Commented','on');
+save_system(model);
+clearvars rtp in paramSets
+warning('off')
+rtp = Simulink.BlockDiagram.buildRapidAcceleratorTarget(model);
+warning('on');
+
+%%
+paramSets{1} = Simulink.BlockDiagram.modifyTunableParameters(rtp, ...
+                        'tripDetectThreshold', tripDetectThreshold*1E9);
+paramSets{2} = Simulink.BlockDiagram.modifyTunableParameters(rtp, ...
                         'tripDetectThreshold', tripDetectThreshold*1E9, ...
                          'KpGamma', 0, ...
                         'KiGamma', 0, ...
@@ -62,23 +83,21 @@ paramSets{4} = Simulink.BlockDiagram.modifyTunableParameters(rtp, ...
 for idxGains = 1:length(paramSets)
     in(idxGains) = Simulink.SimulationInput(model);
     in(idxGains) = in(idxGains).setModelParameter('TimeOut', 35*60);
-    in(idxGains) = in(idxGains).setModelParameter('StopTime', char(num2str(stopTimeVec(idxGains))));
-    
+    in(idxGains) = in(idxGains).setModelParameter('StopTime', '30');
     in(idxGains) = in(idxGains).setModelParameter('SimulationMode', 'rapid', ...
         'RapidAcceleratorUpToDateCheck', 'off');
     in(idxGains) = in(idxGains).setModelParameter('RapidAcceleratorParameterSets', paramSets{idxGains});
 end
 
-
 %%
-simout = parsim(in, 'ShowProgress', true);
+simout(3:4) = parsim(in, 'ShowProgress', true);
 
 %%
 for idxSim = 1:length(simout)
     innerOptSettings.target_velocity    = targetVel(idxSim);
     innerOptSettings.min_velocity       = targetVel(idxSim);
     innerOptSettings.max_velocity       = targetVel(idxSim);
-    setInnerOptSettings.CMGdeltaHFactor = CMGcostFactor(idxSim);
+    innerOptSettings.CMGdeltaHFactor    = CMGcostFactor(idxSim);
     mData=simout(idxSim).getSimulationMetadata();
     
     if strcmp(mData.ExecutionInfo.StopEvent,'DiagnosticError')
