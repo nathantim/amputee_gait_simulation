@@ -1,24 +1,98 @@
-function [innerOptSettings, opts] = setInnerOptSettings(b_resume,initial_gains_filename,optimizationInfo)
-if nargin < 2
-    initial_gains_filename = '';
+function [innerOptSettings, opts] = setInnerOptSettings(model,varargin)
+% PLOTDATA                          Function that plots the data simulation
+%
+% INPUTS:
+%   - varargin                      Variable inputs can be given, which will result in affecting the plot, or adding plots etc
+%                                   Use: 
+%                                   plotData(GaitPhaseData,stepTimes,'nameVarArgin1',<value/data varargin1> ,'nameVarArgin2',<value/data varargin2>)
+%                                   Required varargin:
+%                                   - 'GaitPhaseData': structure with the gait phase data from the simulation 
+%                                   - 'stepTimes': structure with the step time data from simulation.
+%                                   Optional varargin:
+%                                   - 'angularData': structure with time with angular data from simulation  
+%                                   - 'musculoData': structure with time with muscular data from simulation 
+%                                   - 'GRFData': structure with time with GRF data from simulation 
+%                                   - 'jointTorquesData': structure with time with joint torque data from simulation 
+%                                   - 'CMGData': structure with time with CMG data from simulation 
+%                                   - 'saveFigure': bool for saving figure, default: false
+%                                   - 'showAverageStride': bool for showing data averaged per stride, default: true
+%                                   - 'showSD': bool for showing std data per stride, default: true
+%                                   - 'showFukuchi': bool for showing Fukuchi data, default: false
+%                                   - 'info': char with information that can be added to figure saved file name
+%                                   - 'timeInterval': time interval over which to show the data
+% 
+%   - amputeeCMGNotActiveData       Optional, structure with the data from amputee gait with inactive CMG simulation.
+%   - amputeeCMGActiveData          Optional, Structure with the data from amputee gait with active CMG simulation.
+%   - info                          Optional, info which can be added to the saved file name of the figure
+%   - b_saveTotalFig                Optional, select whether to save the figure or not, default is false
+%
+% OUTPUTS:
+%   -
+%%
+if ~isempty(model)
+    load_system(model);
 end
-if nargin < 3
-    optimizationInfo = '';
+%%%%%%%%%%%%%%%%%%%%
+% Parse Argmuments %
+%%%%%%%%%%%%%%%%%%%%
+
+persistent p
+if isempty(p)
+    p = inputParser;
+    p.FunctionName = 'setInnerOptSettings';
+    
+
+        
+    validFileFcn = @(ii) exist(ii,'file') ==2;
+    addParameter(p,'initialGainsFilename','',validFileFcn);
+    
+    % Umberger (2003), Umberger (2003) TG, Umberger (2010), Wang (2012) are valid
+    validExpModelFcn = @(ii) sum(contains(getExpenditureModels(model),ii))>0;
+    addParameter(p,'expenditureModel','Umberger (2010)',validExpModelFcn);
+    
+    validResumeFcn = @(ii) contains(ii,'yes') || contains(ii,'no') || contains(ii,'eval');
+    addParameter(p,'resume','eval',validResumeFcn);
+    
+    validCharFcn = @(ii) ischar(ii);
+    addParameter(p,'optimizationInfo','',validCharFcn);
+    
+    validValueFcn = @(ii) isreal(ii);
+    addParameter(p,'timeFactor',            100000,             validValueFcn);
+    addParameter(p,'velocityFactor',        100,                validValueFcn);
+    addParameter(p,'CoTFactor',             1,                  validValueFcn);
+    addParameter(p,'sumStopTorqueFactor',   1E-2,               validValueFcn);
+    addParameter(p,'CMGTorqueFactor',       0,                  validValueFcn);
+    addParameter(p,'CMGdeltaHFactor',       15,                 validValueFcn);
+    addParameter(p,'ControlRMSEFactor',     0,                  validValueFcn);
+    addParameter(p,'selfCollisionFactor',   1000,               validValueFcn);
+    addParameter(p,'terrain_height',        0.010,              validValueFcn);
+    
+    validIntegerFcn = @(ii) isinteger(ii);
+    addParameter(p,'numTerrains',       4,  validIntegerFcn);
+    addParameter(p,'initiationSteps',   5,  validIntegerFcn);
+    
 end
+
+parse(p,varargin{:});
+opts.Resume             = p.Results.resume;
+initialGainsFilename    = p.Results.initialGainsFilename;
+
+%%
+
+%%
 OptimParams;
 opts = [];
 
 
-% Umberger (2003), Umberger (2003) TG, Umberger (2010), Wang (2012)
-innerOptSettings.expenditure_model = 'Umberger (2010)';
-innerOptSettings.timeFactor = 100000;
-innerOptSettings.velocityFactor = 100;
-innerOptSettings.CoTFactor = 1; % cost of transport
-innerOptSettings.sumStopTorqueFactor = 1E-2;
-innerOptSettings.CMGTorqueFactor = 0;
-innerOptSettings.CMGdeltaHFactor = 15;
-innerOptSettings.ControlRMSEFactor = 0;
-innerOptSettings.selfCollisionFactor = 1000;
+innerOptSettings.expenditure_model      = p.Results.expenditureModel;%'Umberger (2010)';
+innerOptSettings.timeFactor             = p.Results.timeFactor;
+innerOptSettings.velocityFactor         = p.Results.velocityFactor;
+innerOptSettings.CoTFactor              = p.Results.CoTFactor; % cost of transport
+innerOptSettings.sumStopTorqueFactor    = p.Results.sumStopTorqueFactor;
+innerOptSettings.CMGTorqueFactor        = p.Results.CMGTorqueFactor;
+innerOptSettings.CMGdeltaHFactor        = p.Results.CMGdeltaHFactor;
+innerOptSettings.ControlRMSEFactor      = p.Results.ControlRMSEFactor;
+innerOptSettings.selfCollisionFactor    = p.Results.selfCollisionFactor;
 
 innerOptSettings.numTerrains = 4;
 innerOptSettings.terrain_height = 0.010; % in m
@@ -39,13 +113,7 @@ innerOptSettings.createVideo = true; % Create video during optimization
 if nargin > 0
     opts = cmaes;
     %opts.PopSize = numvars;
-    if contains(num2str(b_resume),'yes') || min(opts.Resume) == 1 
-        opts.Resume = 'yes';
-    elseif contains(num2str(b_resume),'no') || min(opts.Resume) == 0 
-        opts.Resume = 'no';
-    elseif contains(num2str(b_resume),'eval') || min(opts.Resume) == -1 
-        opts.Resume = 'eval';
-    end
+    
     opts.MaxIter = 300;
     % opts.StopFitness = -inf;
     opts.StopFitness = 0;
@@ -57,11 +125,11 @@ if nargin > 0
     if (min_velocity == target_velocity && max_velocity == target_velocity)
         opts.TargetVel = target_velocity;
     end
-    opts.UserData = char(strcat("Gains filename: ", initial_gains_filename));
+    opts.UserData = char(strcat("Gains filename: ", initialGainsFilename));
     opts.UserDat2 = '';
     fields_opts = fields(innerOptSettings);
-    for i = 1:length(fields(innerOptSettings))
-        opts.UserDat2 = strcat(opts.UserDat2,"; ", fields_opts{i}, ": ", string(innerOptSettings.(fields_opts{i})));
+    for ii = 1:length(fields(innerOptSettings))
+        opts.UserDat2 = strcat(opts.UserDat2,"; ", fields_opts{ii}, ": ", string(innerOptSettings.(fields_opts{ii})));
     end
     
     [innerOptSettings, opts] = createOptDirectory(pwd,innerOptSettings,opts,optimizationInfo);

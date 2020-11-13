@@ -1,4 +1,78 @@
-function plotData(angularData,musculoData,GRFData,jointTorquesData,GaitPhaseData,stepTimes,CMGData,info,timeInterval,b_saveFigure,plotFukuchiData,showSD,b_oneGaitPhase)
+function plotData(varargin)
+% PLOTDATA                          Function that plots the data simulation
+%
+% INPUTS:
+%   - varargin                      Variable inputs can be given, which will result in affecting the plot, or adding plots etc
+%                                   Use: 
+%                                   plotData(GaitPhaseData,stepTimes,'nameVarArgin1',<value/data varargin1> ,'nameVarArgin2',<value/data varargin2>)
+%                                   Required varargin:
+%                                   - 'GaitPhaseData': structure with the gait phase data from the simulation 
+%                                   - 'stepTimes': structure with the step time data from simulation.
+%                                   Optional varargin:
+%                                   - 'angularData': structure with time with angular data from simulation  
+%                                   - 'musculoData': structure with time with muscular data from simulation 
+%                                   - 'GRFData': structure with time with GRF data from simulation 
+%                                   - 'jointTorquesData': structure with time with joint torque data from simulation 
+%                                   - 'CMGData': structure with time with CMG data from simulation 
+%                                   - 'saveFigure': bool for saving figure, default: false
+%                                   - 'showAverageStride': bool for showing data averaged per stride, default: true
+%                                   - 'showSD': bool for showing std data per stride, default: true
+%                                   - 'showFukuchi': bool for showing Fukuchi data, default: false
+%                                   - 'info': char with information that can be added to figure saved file name
+%                                   - 'timeInterval': time interval over which to show the data
+% 
+%   - amputeeCMGNotActiveData       Optional, structure with the data from amputee gait with inactive CMG simulation.
+%   - amputeeCMGActiveData          Optional, Structure with the data from amputee gait with active CMG simulation.
+%   - info                          Optional, info which can be added to the saved file name of the figure
+%   - b_saveTotalFig                Optional, select whether to save the figure or not, default is false
+%
+% OUTPUTS:
+%   -
+%%
+%%%%%%%%%%%%%%%%%%%%
+% Parse Argmuments %
+%%%%%%%%%%%%%%%%%%%%
+
+persistent p
+if isempty(p)
+    p = inputParser;
+    p.FunctionName = 'plotData';
+    addRequired(p,'GaitPhaseData');
+    addRequired(p,'stepTimes');
+    
+    validDataStructFcn = @(ii) isstruct(ii) && max(contains(fieldnames(ii),'time'));
+    addParameter(p,'angularData',      [],validDataStructFcn);
+    addParameter(p,'musculoData',      [],validDataStructFcn);
+    addParameter(p,'GRFData',          [],validDataStructFcn);
+    addParameter(p,'jointTorquesData', [],validDataStructFcn);
+    addParameter(p,'CMGData',          [],validDataStructFcn);
+    
+    validBoolFcn = @(ii) islogical(ii) && isscalar(ii);
+    addParameter(p,'saveFigure',       false,validBoolFcn);
+    addParameter(p,'showAverageStride',true,validBoolFcn);
+    addParameter(p,'showSD',           true,validBoolFcn);
+    addParameter(p,'showFukuchi',      false,validBoolFcn);
+    
+    validCharFcn = @(ii) ischar(ii);
+    addParameter(p,'info','',validCharFcn);
+    
+    validVector2Fcn = @(ii) max(size(ii))==2 && min(size(ii))==1;
+    addParameter(p,'timeInterval',[],validVector2Fcn);
+end
+
+parse(p,varargin{:});
+angularData             = p.Results.angularData;
+musculoData             = p.Results.musculoData;
+GRFData                 = p.Results.GRFData;
+jointTorquesData        = p.Results.jointTorquesData;
+CMGData                 = p.Results.CMGData;
+info                    = p.Results.info;
+timeInterval            = p.Results.timeInterval;
+saveInfo.b_saveFigure   = p.Results.saveFigure;
+plotFukuchiData         = p.Results.showFukuchi;
+showSD                  = p.Results.showSD;
+b_oneGaitPhase          = p.Results.showAverageStride;
+
 %%
 set(0, 'DefaultAxesFontSize',16);
 set(0, 'DefaultAxesTitleFontSizeMultiplier',1.5);
@@ -10,32 +84,13 @@ set(0, 'DefaultPatchHitTest','on','DefaultPatchPickableParts','all');
 set(0, 'DefaultStairHitTest','on','DefaultStairPickableParts','all');
 set(0, 'DefaultLegendHitTest','on','DefaultLegendPickableParts','all');
 
-
-saveInfo = struct;
-if  nargin < 9
-    timeInterval = [];
-end
-if  nargin < 10
-    saveInfo.b_saveFigure = 1;
-else
-    saveInfo.b_saveFigure = b_saveFigure;
-end
-if  nargin < 13
-    b_oneGaitPhase = true;
-end
 if saveInfo.b_saveFigure
     saveInfo.type = {'jpeg','eps','emf'};
 end
-if nargin < 12
-    showSD = false;
-end
-if nargin < 11
-    plotFukuchiData = false;
-end
 saveInfo.info = info;
-t = angularData.time;
+t = GaitPhaseData.time;
 
-GaitInfo = getPartOfGaitData(t,GaitPhaseData,stepTimes,b_oneGaitPhase,timeInterval);
+GaitInfo = getGaitInfo(t,GaitPhaseData,stepTimes,b_oneGaitPhase,timeInterval);
 
 axesState = [];
 axesAngle = [];
@@ -71,17 +126,28 @@ if ~isempty(jointTorquesData)
     jointTorquesData.signals.values = jointTorquesData.signals.values./getBodyMass(saveInfo.info);
 end
 
-%%'
-plotLegState(GaitPhaseData,plotInfo,GaitInfo,saveInfo);
-[~,axesAngle] = plotAngularData(angularData,plotInfo,GaitInfo,saveInfo,[]);
-[~,axesTorque] = plotJointTorqueData(jointTorquesData,plotInfo,GaitInfo,saveInfo,[]);
-plotJointPowerData(angularData,jointTorquesData,plotInfo,GaitInfo,saveInfo,[]);
-plotMusculoData(musculoData,plotInfo,GaitInfo,saveInfo);
-[~,axesGRF] = plotGRFData(GRFData,plotInfo,GaitInfo,saveInfo,[]);
+%%
+% plotLegState(GaitPhaseData,plotInfo,GaitInfo,saveInfo);
 
+if ~isempty(angularData)
+    [~,axesAngle] = plotAngularData(angularData,plotInfo,GaitInfo,saveInfo,[]);
+end
+if ~isempty(jointTorquesData)
+    [~,axesTorque] = plotJointTorqueData(jointTorquesData,plotInfo,GaitInfo,saveInfo,[]);
+end
+if ~isempty(angularData) && ~isempty(jointTorquesData)
+    plotJointPowerData(angularData,jointTorquesData,plotInfo,GaitInfo,saveInfo,[]);
+end
+if ~isempty(musculoData)
+    plotMusculoData(musculoData,plotInfo,GaitInfo,saveInfo);
+end
+if ~isempty(GRFData)
+    [~,axesGRF] = plotGRFData(GRFData,plotInfo,GaitInfo,saveInfo,[]);
+end
 if ~isempty(CMGData)
     plotCMGData(CMGData,plotInfo,GaitInfo,saveInfo,[]);
 end
+
 try
     if plotInfo.plotFukuchiData && b_oneGaitPhase
         disp('Fukuchi Data');
@@ -100,7 +166,7 @@ try
         plotInfoTemp = plotInfo;
         plotInfoTemp.showTables = false;
         plotInfoTemp.plotProp_entries = plotInfoTemp.plotProp_entries(end,:);
-        GaitInfoFukuchi = getPartOfGaitData(FukuchiData2Plot.angularData.time,[],[],saveInfo,false);
+        GaitInfoFukuchi = getGaitInfo(FukuchiData2Plot.angularData.time,[],[],saveInfo,false);
         if ~isempty(axesAngle)
             [plotAngleFukuchi,~] = plotAngularData(FukuchiData2Plot.angularData,plotInfoTemp,GaitInfoFukuchi,saveInfo,[],axesAngle,[1 4 1],'right');
             set(plotAngleFukuchi(2,1),'DisplayName','Fukuchi');
