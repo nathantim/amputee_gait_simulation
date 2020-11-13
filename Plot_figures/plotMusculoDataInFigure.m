@@ -1,23 +1,34 @@
 function [plotHandles, axesHandles] = plotMusculoDataInFigure(musculoDataFigure,axesHandles,t,HFL_avg,HFL_sd,GLU_avg,GLU_sd,HAM_avg,HAM_sd,...
                                                                 RF_avg,RF_sd,VAS_avg,VAS_sd,BFSH_avg,BFSH_sd,GAS_avg,GAS_sd,SOL_avg,SOL_sd,TA_avg,TA_sd,...
-                                                                HAB_avg,HAB_sd,HAD_avg,HAD_sd,b_oneGaitPhase,subplotStart,b_addTitle)
+                                                                HAB_avg,HAB_sd,HAD_avg,HAD_sd,subplotStart,b_addTitle)
+% PLOTMUSCULODATAINFIGURE       Function that plots the muscle data
+% INPUTS:
+%   - musculoDataFigure         Pre-created figure in which the muscle data is to be plotted.
+%   - axesHandles               Pre-created, or empty, axes in which the muscle data is to be plotted.
+%   - angularData               Structure with time of the joint angle data from the simulation.
+% 
+%   - All the data
+% 
+%   - subplotStart              This says in which subfigure to start.
+%   - b_addTitle                Optional, boolean which selects if title of axis has to be put in the figure.
+%
+% OUTPUTS:
+%   - plotHandles               Handles of all the plots, which can be used for later changes in line style etc, or for
+%                               adding a legend.
+%   - axesHandles               Handles of all the axes, which can be used for later changes in axes size, axes title
+%                               locations etc.
+%%                                                            
 plotHandles = nan(11,2);
 if isempty(axesHandles)
     for i = 1:length(plotHandles)
         axesHandles(i) = axes(musculoDataFigure);
     end
 end
-
-if  nargin < 26
-    b_oneGaitPhase = true;
-end
-if nargin < 27
+if nargin < 26
     b_addTitle = true;
 end
 
-% subplotStart = dec2base(subplotStart,10) - '0';
-
-%%
+%% Plot HAB data
 axidx = 1;
 axesHandles(axidx) = subplot(subplotStart(1),subplotStart(2),subplotStart(3),axesHandles(axidx));
 if ~isempty(HAB_sd)
@@ -33,8 +44,7 @@ if (max(HAB_avg)<1)
     ylim(axesHandles(axidx),[0,1])
 end
 
-% ylabel('rad/s')
-
+%% Plot HAD data
 subplotStart(3) = subplotStart(3) +1;
 axidx = 2;
 axesHandles(axidx) = subplot(subplotStart(1),subplotStart(2),subplotStart(3),axesHandles(axidx));
@@ -50,6 +60,7 @@ if (max(HAD_avg)<1)
     ylim(axesHandles(axidx),[0,1])
 end
 
+%% Plot HFL data
 subplotStart(3) = subplotStart(3) +1;
 axidx = 3;
 axesHandles(axidx) = subplot(subplotStart(1),subplotStart(2),subplotStart(3),axesHandles(axidx));
@@ -61,11 +72,11 @@ plotHandles(axidx,1) = plot(axesHandles(axidx),t,HFL_avg);
 if b_addTitle
     title(axesHandles(axidx),'HFL');
 end
-% ylabel('rad');
 if (max(HFL_avg)<1)
     ylim(axesHandles(axidx),[0,1])
 end
 
+%% Plot GLU data
 subplotStart(3) = subplotStart(3) +1;
 axidx = 4;
 axesHandles(axidx) = subplot(subplotStart(1),subplotStart(2),subplotStart(3),axesHandles(axidx));
@@ -80,10 +91,8 @@ end
 if (max(GLU_avg)<1)
     ylim(axesHandles(axidx),[0,1])
 end
-% ylabel('rad/s')
 
-
-%%
+%% Plot HAM data
 subplotStart(3) = subplotStart(3) +1;
 axidx = 5;
 axesHandles(axidx) = subplot(subplotStart(1),subplotStart(2),subplotStart(3),axesHandles(axidx));
@@ -98,9 +107,8 @@ end
 if (max(HAM_avg)<1 )
     ylim(axesHandles(axidx),[0,1])
 end
-% ylabel('rad');
 
-
+%% Plot RF data
 subplotStart(3) = subplotStart(3) +1;
 axidx = 6;
 axesHandles(axidx) = subplot(subplotStart(1),subplotStart(2),subplotStart(3),axesHandles(axidx));
@@ -114,8 +122,9 @@ if b_addTitle
 end
 if (max(RF_avg)<1)
     ylim(axesHandles(axidx),[0,1])
-end% ylabel('rad');
+end
 
+%% Plot VAS data
 subplotStart(3) = subplotStart(3) +1;
 axidx = 7;
 axesHandles(axidx) = subplot(subplotStart(1),subplotStart(2),subplotStart(3),axesHandles(axidx));
@@ -134,12 +143,8 @@ end
 if (max(VAS_avg)<1)
     ylim(axesHandles(axidx),[0,1])
 end
-% ylabel('rad/s')
 
-
-
-
-%%
+%% Plot BFSH data
 subplotStart(3) = subplotStart(3) +1;
 axidx = 8;
 axesHandles(axidx) = subplot(subplotStart(1),subplotStart(2),subplotStart(3),axesHandles(axidx));
@@ -158,9 +163,8 @@ end
 if (max(BFSH_avg)<1)
     ylim(axesHandles(axidx),[0,1])
 end
-% ylabel('rad/s')
 
-
+%% Plot GAS data
 subplotStart(3) = subplotStart(3) +1;
 axidx = 9;
 axesHandles(axidx) = subplot(subplotStart(1),subplotStart(2),subplotStart(3),axesHandles(axidx));
@@ -179,8 +183,8 @@ end
 if (max(GAS_avg)<1)
     ylim(axesHandles(axidx),[0,1])
 end
-% ylabel('rad');
 
+%% Plot SOL data
 subplotStart(3) = subplotStart(3) +1;
 axidx = 10;
 axesHandles(axidx) = subplot(subplotStart(1),subplotStart(2),subplotStart(3),axesHandles(axidx));
@@ -199,8 +203,8 @@ end
 if (max(SOL_avg)<1)
     ylim(axesHandles(axidx),[0,1])
 end
-% ylabel('rad/s')
 
+%% Plot TA data
 subplotStart(3) = subplotStart(3) +1;
 axidx = 11;
 axesHandles(axidx) = subplot(subplotStart(1),subplotStart(2),subplotStart(3),axesHandles(axidx));
@@ -219,14 +223,4 @@ end
 if (max(TA_avg)<1)
     ylim(axesHandles(axidx),[0,1])
 end
-% ylabel('rad');
 
-% ylabel('rad');
-
-% if b_oneGaitPhase
-%     xlabel(axesHandles(10),'%_{stride}','interpreter','tex')
-%     xlabel(axesHandles(11),'%_{stride}','interpreter','tex')
-% else
-%     xlabel(axesHandles(10),'s')
-%     xlabel(axesHandles(11),'s')
-% end

@@ -40,8 +40,8 @@ plotInfo.edgeVec = {'none';'none';'none';'none'};% {[0.8 0.8 0.8],0.5,'none'};
 plotInfo.fillProp_entries = [plotInfo.fillVal,faceAlpha,plotInfo.fillVal,plotInfo.edgeVec];
 plotInfo.showTables = b_oneGaitPhase;
 
-GaitInfoWalk = getPartOfGaitData(amputeeCMGactive.angularData.time,amputeeCMGactive.GaitPhaseData,amputeeCMGactive.stepTimes,saveInfo,true,[]);
-GaitInfoTrip = getPartOfGaitData(amputeeTripPrevent.angularData.time,amputeeTripPrevent.GaitPhaseData,amputeeTripPrevent.stepTimes,saveInfo,false,[7 8]);
+GaitInfoWalk = getPartOfGaitData(amputeeCMGactive.angularData.time,amputeeCMGactive.GaitPhaseData,amputeeCMGactive.stepTimes,true,[]);
+GaitInfoTrip = getPartOfGaitData(amputeeTripPrevent.angularData.time,amputeeTripPrevent.GaitPhaseData,amputeeTripPrevent.stepTimes,false,[7 8]);
 
 %%
 set(0, 'DefaultAxesFontSize',15);

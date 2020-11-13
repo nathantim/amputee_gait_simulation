@@ -1,15 +1,36 @@
 function [cost, dataStruct] = getCost(model,Gains,time,metabolicEnergy,sumOfStopTorques,HATPosVel,stepVelocities,stepTimes,stepLengths,stepNumbers,CMGData,selfCollision,innerOptSettings, b_isParallel)
+% GETCOST                           Function calculates the cost function value for the given simulation data
+% INPUTS:
+%   - model                         Model which is simulated
+%   - Gains                         Gains which are used for the model evaluation, this is for saving
+%   - time                          Time reached of the simulation
+%   - metabolicEnergy               Metabolic energy obtained from the simulation
+%   - sumOfStopTorques              Sum of stop torques obtained from the simulation
+%   - stepVelocities                unused
+%   - stepTimes                     Structure with the step time data from simulation.
+%   - stepLengths                   Structure with the step length data from simulation
+%   - stepNumbers                   Structure with the number of steps taken in simulation
+%   - CMGData                      	Structure with the data from the CMG
+%   - selfCollision                 Structure with values obtained from self collision algorithm
+%   - innerOptSettings              Optimization settings used
+%   - b_isParallel                  Optional, is true during optimization
+%
+% OUTPUTS:
+%   - cost                          Cost function value
+%   - dataStruct                    Data structure with all kinds of data, used in PLOTPROGRESSOPTIMIZATION, and PRINTOPTINFO
 try
     if nargin < 13
         b_isParallel = false;
     end
     
-    if contains(model,'3R60')
-         modelType = 'prosthetic';
+    if contains(model,'CMG')
+        modelType = 'amputeeCMG';
+    elseif contains(model,'3R60')
+         modelType = 'amputee';
     else
          modelType = 'healthy';
     end
-    if contains(model,'3D')
+    if ~contains(model,'2D')
          modelType = [modelType, '3D'];
     else
          modelType = [modelType, '2D'];
@@ -26,9 +47,9 @@ try
         'tripWasActive',struct('data',[],'minimize',1,'info',''),...
         'innerOptSettings',innerOptSettings,'Gains',[],'kinematics',[],'animData3D',[]);
     
-    % x pos only
-    HATPos = HATPosVel.signals.values(end,1);%norm(HATPosVel.signals.values(end,[1,2]));
-%     HATPos = norm(HATPosVel.signals.values(end,[1,2]));
+    % x pos only to encourage straight walking
+    HATPos = HATPosVel.signals.values(end,1);
+
     %%
     if HATPos > 101
         cost = nan;
@@ -45,22 +66,19 @@ try
     end
     
     %% Calculate cost of transport
-    amputeeMass = 80; % kg
+    massCalc = 80; % kg, mass used for the cost of transportation calculation
     effort_costs = struct;
     
     muscle_exp_models = getExpenditureModels(model);
     if isempty(muscle_exp_models)
         error('No expenditure model in getCost');
     end
-    for i = 1:length(muscle_exp_models)
-        effort_costs(i).name = (muscle_exp_models{i});
-        effort_costs(i).metabolicEnergy = metabolicEnergy(:,i);
-        effort_costs(i).costOfTransport = (metabolicEnergy(:,i))/(HATPos*amputeeMass);
+    for ii = 1:length(muscle_exp_models)
+        effort_costs(ii).name = (muscle_exp_models{ii});
+        effort_costs(ii).metabolicEnergy = metabolicEnergy(:,ii);
+        effort_costs(ii).costOfTransport = (metabolicEnergy(:,ii))/(HATPos*massCalc);
     end
     
-    % Decide which to use for optimization, 
-    % Umberger (2003), Umberger (2003) TG, Umberger (2010), Wang (2012)
-%     opt_exp_model = 'Umberger (2010)';
     opt_exp_model = innerOptSettings.expenditure_model;
     costOfTransportForOpt =  effort_costs(contains(muscle_exp_models,opt_exp_model)).costOfTransport;
     if isempty(costOfTransportForOpt)
@@ -76,6 +94,7 @@ try
     end
     
     %% 
+    % Check if sufficient steps are made
     if max(stepNumbers.signals.values(:,1)) < innerOptSettings.initiation_steps && max(stepNumbers.signals.values(:,1)) < innerOptSettings.initiation_steps
         velCost = 9999999*( innerOptSettings.initiation_steps/min([max(stepNumbers.signals.values(:,1)),max(stepNumbers.signals.values(:,2))]) );
         fprintf('-- Insufficient steps -- \n')
@@ -92,18 +111,14 @@ try
         stepTimeASIstruct = getFilterdMean_and_ASI(findpeaks(stepTimes.signals.values(:,1)),findpeaks(stepTimes.signals.values(:,2)),innerOptSettings.initiation_steps);
         
     end
-    %%
+    
+    %% Get data from CMG
     try
         maxCMGTorque = max(CMGData.signals.values(:,6));
-%         maxTotalTorque = abs(CMGData.time(idx),CMGData.signals.values(:,6));
         maxCMGdeltaH = max(CMGData.signals.values(:,13));
         controlRMSE = sqrt(sum((CMGData.signals.values(:,2)-CMGData.signals.values(:,3)).^2)); %/length(CMGData.signals.values(:,2))
         tripWasActive = max(CMGData.signals.values(:,14));
-%         if tripWasActive == 0 
-%             cost = nan;
-%             disp('No trip');
-%             return
-%         end
+
     catch 
         maxCMGTorque = 0;
         maxCMGdeltaH = 0;
@@ -112,13 +127,9 @@ try
     end
     
     %%
-%     b_collisionHappend = selfCollision.signals.values(:,end);
     numberOfCollisions = sum(findpeaks(selfCollision.signals.values(:,end)));
     
     %%
-    %     cost = 100000*timeCost  + 1000*(velCost + 0*distCost) + 0.1*costOfTransport;
-%     cost = 100000*timeCost  + 1000*(velCost) + 100*costOfTransportForOpt + .01*sumOfStopTorques;
-%11-6-2020_19:49
     timeFactor  = innerOptSettings.timeFactor;
     velFactor   = innerOptSettings.velocityFactor;
     CoTFactor   = innerOptSettings.CoTFactor;
@@ -139,7 +150,6 @@ try
     
     
     %% Save when optimizing
-    
     dataStruct = struct('modelType',modelType,'timeCost',struct('data',timeCost,'minimize',1,'info',''),'cost',struct('data',cost,'minimize',1,'info',''),'CoT',struct('data',[effort_costs(:).costOfTransport]','minimize',1,'info',char({effort_costs(:).name})),...
         'E',struct('data',[effort_costs(:).metabolicEnergy]','minimize',1,'info',char({effort_costs(:).name})),'sumTstop',struct('data',sumOfStopTorques,'minimize',1,'info',''),...
         'HATPos',struct('data',HATPos,'minimize',0,'info',''),'vMean',struct('data',meanVel,'minimize',0,'info',''),...
@@ -150,6 +160,7 @@ try
         'tripWasActive',struct('data',tripWasActive,'minimize',1,'info',''),...
         'innerOptSettings',innerOptSettings,'Gains',Gains);
 
+    % Save some data as .mat file when simulation reached end during optimization
     if b_isParallel && timeCost == 0
         GainsSave = Gains;
         if size(GainsSave,1)>size(GainsSave,2)
@@ -159,7 +170,6 @@ try
             workerID = getCurrentWorker().ProcessId;
         catch ME
             workerID = [];
-%             warning(strcat(char(ME.message)," In ", mfilename, " line ", num2str(ME.stack(1).line)));
         end
         filename = [innerOptSettings.optimizationDir filesep char(strcat('compareEnergyCost',num2str(workerID),'.mat'))];
         if exist(filename,'file') == 2
@@ -170,7 +180,6 @@ try
             stepTimeASImean         = [exist_vars.stepTimeASImean;stepTimeASIstruct.ASImean];
             costOfTransportSave     = [exist_vars.costOfTransportSave; [effort_costs.costOfTransport] ];
             costT                   = [exist_vars.costT;cost];
-            %             sumOfIdealTorques       = [exist_vars.sumOfIdealTorques;sumOfIdealTorques];
             sumOfStopTorques        = [exist_vars.sumOfStopTorques;sumOfStopTorques];
             HATPos                  = [exist_vars.HATPos;HATPos];
             GainsSave               = [exist_vars.GainsSave;GainsSave];
@@ -196,11 +205,6 @@ try
     end
    
     
-    %     fprintf('-- <strong> t_sim: %2.2f</strong>, Cost: %2.2f, E_m (Wang): %.0f, E_m(Umb10): %.0f, <strong>avg v_step: %2.2f</strong>, avg t_step: %1.2f, avg l_step: %1.2f, ASI l_step: %2.2f, ASI t_step: %2.2f, timeCost: %2.2f, velCost: %2.2f --\n',...
-%         time(end), cost, effort_costs(contains(muscle_exp_models,'Wang')).metabolicEnergy, effort_costs(contains(muscle_exp_models,'Umberger (2010)')).metabolicEnergy,...
-%         meanVel, meanStepTime, meanStepLength,round(ASIStepLength,2),round(ASIStepTime,2), timeCost, velCost);
-    
-% printOptInfo(dataStruct,true);
 catch ME
     save('ErrorWorkspace');
     error('Error: %s\nIn %s.m line %d',ME.message,ME.stack(1).name,ME.stack(1).line);

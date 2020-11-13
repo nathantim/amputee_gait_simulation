@@ -106,7 +106,7 @@ try
             saveInfo.b_saveFigure = 0;
             saveInfo.info = dataStruct.modelType;
             
-            GaitInfo = getPartOfGaitData(t,dataStruct.kinematics.GaitPhaseData,dataStruct.kinematics.stepTimes,saveInfo,b_oneGaitPhase);
+            GaitInfo = getPartOfGaitData(t,dataStruct.kinematics.GaitPhaseData,dataStruct.kinematics.stepTimes,b_oneGaitPhase);
             
             
             dataStruct.kinematics.jointTorquesData.signals.values    = dataStruct.kinematics.jointTorquesData.signals.values./getBodyMass();
@@ -200,5 +200,4 @@ try
     drawnow;
 catch ME
     warning(strcat(char(ME.message)," In ", ME.stack(1).name, " line ", num2str(ME.stack(1).line)));
-    %     pause(0.05);
 end

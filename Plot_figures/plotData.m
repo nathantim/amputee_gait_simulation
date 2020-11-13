@@ -35,7 +35,7 @@ end
 saveInfo.info = info;
 t = angularData.time;
 
-GaitInfo = getPartOfGaitData(t,GaitPhaseData,stepTimes,saveInfo,b_oneGaitPhase,timeInterval);
+GaitInfo = getPartOfGaitData(t,GaitPhaseData,stepTimes,b_oneGaitPhase,timeInterval);
 
 axesState = [];
 axesAngle = [];
@@ -65,20 +65,20 @@ plotInfo.showTables = true;
 
 %%
 if ~isempty(GRFData)
-    GRFData.signals.values = GRFData.signals.values./getBodyMass();
+    GRFData.signals.values = GRFData.signals.values./getBodyMass(saveInfo.info);
 end
 if ~isempty(jointTorquesData)
-    jointTorquesData.signals.values = jointTorquesData.signals.values./getBodyMass();
+    jointTorquesData.signals.values = jointTorquesData.signals.values./getBodyMass(saveInfo.info);
 end
 
 %%'
-[plotState, axesState] = plotLegState(GaitPhaseData,plotInfo,GaitInfo,saveInfo);
-[plotAngle,axesAngle] = plotAngularData(angularData,plotInfo,GaitInfo,saveInfo,[]);
-[plotTorque,axesTorque] = plotJointTorqueData(jointTorquesData,plotInfo,GaitInfo,saveInfo,[]);
-[plotPower,axesPower] = plotJointPowerData(angularData,jointTorquesData,plotInfo,GaitInfo,saveInfo,[]);
-[plotMusc,axesMusc] = plotMusculoData(musculoData,plotInfo,GaitInfo,saveInfo);
-[plotGRF,axesGRF] = plotGRFData(GRFData,plotInfo,GaitInfo,saveInfo,[]);
-% set(0, 'DefaultAxesFontSize',18);
+plotLegState(GaitPhaseData,plotInfo,GaitInfo,saveInfo);
+[~,axesAngle] = plotAngularData(angularData,plotInfo,GaitInfo,saveInfo,[]);
+[~,axesTorque] = plotJointTorqueData(jointTorquesData,plotInfo,GaitInfo,saveInfo,[]);
+plotJointPowerData(angularData,jointTorquesData,plotInfo,GaitInfo,saveInfo,[]);
+plotMusculoData(musculoData,plotInfo,GaitInfo,saveInfo);
+[~,axesGRF] = plotGRFData(GRFData,plotInfo,GaitInfo,saveInfo,[]);
+
 if ~isempty(CMGData)
     plotCMGData(CMGData,plotInfo,GaitInfo,saveInfo,[]);
 end

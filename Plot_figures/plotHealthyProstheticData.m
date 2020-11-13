@@ -1,8 +1,22 @@
-function plotHealthyProstheticData(realHealthyData,healthyData,prostheticData,prostheticCMGNotActiveData,prostheticCMGActiveData,info,b_saveTotalFig)
-showSD = true;
-plotWinterData = false;
+function plotHealthyProstheticData(realHealthyData,healthyData,amputeeData,amputeeCMGNotActiveData,amputeeCMGActiveData,info,b_saveTotalFig)
+% PLOTHEALTHYPROSTHETICDATA         Function that plots the data of healthy and prosthetic simulation together, with optional 
+%                                   amputee with CMG simulation
+% INPUTS:
+%   - realHealthyData               Structure with the data from Fukuchi.
+%   - healthyData                   Structure with the data from healthy gait simulation.
+%   - amputeeData                   Structure with the data from amputee gait simulaion.
+%   - amputeeCMGNotActiveData       Optional, structure with the data from amputee gait with inactive CMG simulation.
+%   - amputeeCMGActiveData          Optional, Structure with the data from amputee gait with active CMG simulation.
+%   - info                          Optional, info which can be added to the saved file name of the figure 
+%   - b_saveTotalFig                Optional, select whether to save the figure or not, default is false
+%
+% OUTPUTS:
+%   - 
+%%
+showSD      = true;
+showTables  = true;
 
-%For debug purposes
+% Select which figures to show
 b_plotLegState    = 0;
 b_plotAngles      = 1;
 b_plotTorques     = 1;
@@ -18,9 +32,9 @@ powerDataFig    = [];
 GRFDataFig      = [];
 musculoDataFig  = [];
 
-saveInfo = struct;
-saveInfo.b_saveFigure = 0;
-b_oneGaitPhase = true;
+saveInfo                = struct;
+saveInfo.b_saveFigure   = 0;
+b_oneGaitPhase          = true;
 
 if 1
     savePath = '../../Thesis Document/fig/';
@@ -35,65 +49,66 @@ end
 
 if nargin < 5
     b_saveTotalFig = false;
+else
+    b_saveTotalFig = logical(b_saveTotalFig);
 end
 saveInfo.info = info;
 
 healthySaveInfo = saveInfo;
 healthySaveInfo.info = [healthySaveInfo.info, 'healthy'];
 
-prostheticSaveInfo = saveInfo;
-prostheticSaveInfo.info = [prostheticSaveInfo.info, 'prosthetic'];
+amputeeSaveInfo = saveInfo;
+amputeeSaveInfo.info = [amputeeSaveInfo.info, 'amputee'];
 
+healthyGaitInfo         = getPartOfGaitData(healthyData.angularData.time,       healthyData.GaitPhaseData,       healthyData.stepTimes, b_oneGaitPhase);
+amputeeGaitInfo         = getPartOfGaitData(amputeeData.angularData.time,       amputeeData.GaitPhaseData,       amputeeData.stepTimes, b_oneGaitPhase);
+realHealthyDataGaitInfo = getPartOfGaitData(realHealthyData.angularData.time,   [],                              [],                    false);
 
-healthyGaitInfo         = getPartOfGaitData(healthyData.angularData.time,       healthyData.GaitPhaseData,          healthyData.stepTimes,          healthySaveInfo, b_oneGaitPhase);
-prostheticGaitInfo      = getPartOfGaitData(prostheticData.angularData.time,    prostheticData.GaitPhaseData,       prostheticData.stepTimes,       prostheticSaveInfo, b_oneGaitPhase);
-realHealthyDataGaitInfo = getPartOfGaitData(realHealthyData.angularData.time,   [],                                 [],                             healthySaveInfo, false);
-
-if ~isempty(prostheticCMGNotActiveData)
-    prostheticCMGNotActiveGaitInfo   = getPartOfGaitData(prostheticCMGNotActiveData.angularData.time, prostheticCMGNotActiveData.GaitPhaseData,    prostheticCMGNotActiveData.stepTimes,    prostheticSaveInfo, b_oneGaitPhase);
+if ~isempty(amputeeCMGNotActiveData)
+    amputeeCMGNotActiveGaitInfo   = getPartOfGaitData(amputeeCMGNotActiveData.angularData.time, amputeeCMGNotActiveData.GaitPhaseData, ...
+                                                      amputeeCMGNotActiveData.stepTimes, b_oneGaitPhase);
 end
-if ~isempty(prostheticCMGActiveData)
-    prostheticCMGActiveGaitInfo   = getPartOfGaitData(prostheticCMGActiveData.angularData.time, prostheticCMGActiveData.GaitPhaseData,    prostheticCMGActiveData.stepTimes,    prostheticSaveInfo, b_oneGaitPhase);
+if ~isempty(amputeeCMGActiveData)
+    amputeeCMGActiveGaitInfo   = getPartOfGaitData(amputeeCMGActiveData.angularData.time, amputeeCMGActiveData.GaitPhaseData, ...
+                                                   amputeeCMGActiveData.stepTimes, b_oneGaitPhase);
 end
-%% Normalize data:
-healthyData.jointTorquesData.signals.values = healthyData.jointTorquesData.signals.values./getBodyMass();
-healthyData.GRFData.signals.values = healthyData.GRFData.signals.values./getBodyMass();
 
-prostheticData.jointTorquesData.signals.values = prostheticData.jointTorquesData.signals.values./getBodyMass();
-prostheticData.GRFData.signals.values = prostheticData.GRFData.signals.values./getBodyMass();
+%% Normalize data with body weight
+healthyData.jointTorquesData.signals.values = healthyData.jointTorquesData.signals.values./getBodyMass('healthy');
+healthyData.GRFData.signals.values = healthyData.GRFData.signals.values./getBodyMass('healthy');
+
+amputeeData.jointTorquesData.signals.values = amputeeData.jointTorquesData.signals.values./getBodyMass('amputee');
+amputeeData.GRFData.signals.values = amputeeData.GRFData.signals.values./getBodyMass('amputee');
 
 realHealthyData.angularData.time = realHealthyData.angularData.time./100;
 realHealthyData.jointTorquesData.time = realHealthyData.jointTorquesData.time./100;
 realHealthyData.GRFData.time = realHealthyData.GRFData.time./100;
 
-if ~isempty(prostheticCMGNotActiveData)
-    prostheticCMGNotActiveData.GRFData.signals.values = prostheticCMGNotActiveData.GRFData.signals.values./getBodyMass();
-    prostheticCMGNotActiveData.jointTorquesData.signals.values = prostheticCMGNotActiveData.jointTorquesData.signals.values./getBodyMass();
+if ~isempty(amputeeCMGNotActiveData)
+    amputeeCMGNotActiveData.GRFData.signals.values = amputeeCMGNotActiveData.GRFData.signals.values./getBodyMass('CMG');
+    amputeeCMGNotActiveData.jointTorquesData.signals.values = amputeeCMGNotActiveData.jointTorquesData.signals.values./getBodyMass('CMG');
 end
-if ~isempty(prostheticCMGActiveData)
-    prostheticCMGActiveData.GRFData.signals.values = prostheticCMGActiveData.GRFData.signals.values./getBodyMass();
-    prostheticCMGActiveData.jointTorquesData.signals.values = prostheticCMGActiveData.jointTorquesData.signals.values./getBodyMass();
+if ~isempty(amputeeCMGActiveData)
+    amputeeCMGActiveData.GRFData.signals.values = amputeeCMGActiveData.GRFData.signals.values./getBodyMass('CMG');
+    amputeeCMGActiveData.jointTorquesData.signals.values = amputeeCMGActiveData.jointTorquesData.signals.values./getBodyMass('CMG');
 end
-%%
-plotInfo.showSD = showSD;%true;
-plotInfo.plotProp = {'LineStyle','Color','LineWidth'};
-plotInfo.lineVec = {'-';':'; '-';':';'-';':';'-';':'};
-plotInfo.colorProp = {	'#0072BD';	'#D95319';'#7E2F8E';'#618D27';'#372D31';'#E74B47';'#504579';'#D27918'};
-% plotInfo.lineVec = plotInfo.lineVec(:,:);
-% plotInfo.colorProp = plotInfo.colorProp(1:3,:);
-plotInfo.lineWidthProp = {3;3;3;3;3;3;3;3};
-plotInfo.plotProp_entries = [plotInfo.lineVec(:),plotInfo.colorProp(:), plotInfo.lineWidthProp(:)];
-plotInfo.plotWinterData = plotWinterData;
-plotInfo.showTables = true;
-plotInfo.showCorr = true;
 
-plotInfo.fillProp = {'FaceColor','FaceAlpha','EdgeColor','LineStyle'};
-faceAlpha = {0.4;0.4;0.4;0.4;0.4;0.4;0.4;0.4};
-plotInfo.fillVal = plotInfo.colorProp;
-% plotInfo.edgeVec = {':';':';':';':'};% {[0.8 0.8 0.8],0.5,'none'};
-plotInfo.edgeVec = {'none';'none';'none';'none';'none';'none';'none';'none'};% {[0.8 0.8 0.8],0.5,'none'};
+%% Line and fill style/color/width etc settings
+plotInfo.showSD             = showSD;
+plotInfo.plotProp           = {'LineStyle','Color','LineWidth'};
+plotInfo.lineVec            = {'-';':'; '-';':';'-';':';'-';':'};
+plotInfo.colorProp          = {	'#0072BD';	'#D95319';'#7E2F8E';'#618D27';'#372D31';'#E74B47';'#504579';'#D27918'};
+plotInfo.lineWidthProp      = {3;3;3;3;3;3;3;3};
+plotInfo.plotProp_entries   = [plotInfo.lineVec(:),plotInfo.colorProp(:), plotInfo.lineWidthProp(:)];
+plotInfo.showTables         = showTables;
+plotInfo.showCorr           = true;
 
-plotInfo.fillProp_entries = [plotInfo.fillVal,faceAlpha,plotInfo.fillVal,plotInfo.edgeVec];
+plotInfo.fillProp           = {'FaceColor','FaceAlpha','EdgeColor','LineStyle'};
+plotInfo.faceAlpha                   = {0.4;0.4;0.4;0.4;0.4;0.4;0.4;0.4};
+plotInfo.fillVal            = plotInfo.colorProp;
+plotInfo.edgeVec            = {'none';'none';'none';'none';'none';'none';'none';'none'};
+
+plotInfo.fillProp_entries = [plotInfo.fillVal,plotInfo.faceAlpha,plotInfo.fillVal,plotInfo.edgeVec];
 
 set(0, 'DefaultAxesFontSize',16);
 set(0, 'DefaultAxesTitleFontSizeMultiplier',1.5);
@@ -101,25 +116,31 @@ set(0, 'DefaultAxesLabelFontSizeMultiplier',1.5);
 
 %% Leg state
 if b_plotLegState
-    axesHealthyState = []; axesProstheticState = []; axesCMGState = [];
+    axesHealthyState = []; axesProstheticState = []; 
+    axesCMGNotActiveState = []; axesCMGActiveState = [];
     legStateFig = figure();
     legStateFig.Name = ['Leg gait state ' info];
     figurePositionState = [10,100,500,500];
     hwratioState = figurePositionState(end)/figurePositionState(end-1);
     set(legStateFig, 'Position',figurePositionState);
-    subplotStart = [3 1 1];
+    subplotStart = [4 1 1];
+    
     fprintf('\n<strong>Healthy model:</strong> \n');
     [plotHealthyState, axesHealthyState] = plotLegState(healthyData.GaitPhaseData,plotInfo,healthyGaitInfo,healthySaveInfo,legStateFig,[],subplotStart,'left',true);
     
     subplotStart(3) = subplotStart(3)+subplotStart(2);
     fprintf('<strong>Amputee model:</strong> \n');
-    [plotProstheticState, axesProstheticState] = plotLegState(prostheticData.GaitPhaseData,plotInfo,prostheticGaitInfo,prostheticSaveInfo,legStateFig,[],subplotStart,'both',false);
+    [plotProstheticState, axesProstheticState] = plotLegState(amputeeData.GaitPhaseData,plotInfo,amputeeGaitInfo,amputeeSaveInfo,legStateFig,[],subplotStart,'both',false);
     
     subplotStart(3) = subplotStart(3)+subplotStart(2);
     fprintf('<strong>Amputee model with inactive CMG:</strong> \n');
-    [plotCMGState, axesCMGState] = plotLegState(prostheticCMGNotActiveData.GaitPhaseData,plotInfo,prostheticCMGNotActiveGaitInfo,prostheticSaveInfo,legStateFig,[],subplotStart,'both',false);
+    [plotCMGNotActiveState, axesCMGNotActiveState] = plotLegState(amputeeCMGNotActiveData.GaitPhaseData,plotInfo,amputeeCMGNotActiveGaitInfo,amputeeSaveInfo,legStateFig,[],subplotStart,'both',false);
     
-    axesState = [axesHealthyState,axesProstheticState,axesCMGState];
+    subplotStart(3) = subplotStart(3)+subplotStart(2);
+    fprintf('<strong>Amputee model with active CMG:</strong> \n');
+    [plotCMGActiveState, axesCMGActiveState] = plotLegState(amputeeCMGActiveData.GaitPhaseData,plotInfo,amputeeCMGActiveGaitInfo,amputeeSaveInfo,legStateFig,[],subplotStart,'both',false);
+    
+    axesState = [axesHealthyState,axesProstheticState,axesCMGNotActiveState,axesCMGActiveState];
     
     xlabel(axesState(end),'gait cycle ($\%$) ');
     
@@ -127,9 +148,9 @@ if b_plotLegState
     
     setLegend([plotHealthyState(1)],axesPosState(1,:),{'M$_{\mathrm{H}}$'},18);
     setLegend(plotProstheticState(end,[1,3]),axesPosState(2,:),{'I','P'},18);
-    setLegend(plotCMGState(end,[1,3]),axesPosState(3,:),{'I','P'},18);
+    setLegend(plotCMGNotActiveState(end,[1,3]),axesPosState(3,:),{'I','P'},18);
     
-    ylabelPosState = 0.5*alignYlabel(axesState);%,axesCMGAngle(1)]);
+    ylabelPosState = 0.5*alignYlabel(axesState);
     addInfoTextFigure('Healthy',24,'(a)',20,axesState(1),ylabelPosState);
     addInfoTextFigure('Amputee',24,'(b)',20,axesState(2),ylabelPosState);
     addInfoTextFigure('CMG',24,'(c)',20,axesState(3),ylabelPosState);
@@ -143,10 +164,10 @@ if b_plotAngles
     angularDataFig = figure();
     angularDataFig.Name = ['Joint angle data ' info];
     
-    if ~isempty(prostheticCMGNotActiveData) && ~isempty(prostheticCMGActiveData)
+    if ~isempty(amputeeCMGNotActiveData) && ~isempty(amputeeCMGActiveData)
         subplotStart = [4 4 1];
         figurePositionAngle = [10,100,750,650];
-    elseif ~isempty(prostheticCMGNotActiveData)
+    elseif ~isempty(amputeeCMGNotActiveData)
         subplotStart = [3 4 1];
     else
         subplotStart = [2 4 1];
@@ -154,28 +175,27 @@ if b_plotAngles
     end
     
     hwratioAngles = figurePositionAngle(end)/figurePositionAngle(end-1);
-    set(angularDataFig, 'Position',figurePositionAngle); % two
-    % set(angularDataFig, 'Position',[10,100,1700,800]); % three
-    
-    
-    [plotHealthyAngle, axesHealthyAngle] = plotAngularData(healthyData.angularData,plotInfo,healthyGaitInfo,healthySaveInfo,angularDataFig,[],subplotStart,'left',true);
-    [plotRealHealthyAngle, axesHealthyAngle] = plotAngularData(realHealthyData.angularData,plotInfo,realHealthyDataGaitInfo,healthySaveInfo,angularDataFig,axesHealthyAngle,subplotStart,'right',true);
+    set(angularDataFig, 'Position',figurePositionAngle); 
+  
+    [plotHealthyAngle, axesHealthyAngle]        = plotAngularData(healthyData.angularData,plotInfo,healthyGaitInfo,healthySaveInfo,angularDataFig,[],subplotStart,'left',true);
+    [plotRealHealthyAngle, axesHealthyAngle]    = plotAngularData(realHealthyData.angularData,plotInfo,realHealthyDataGaitInfo,healthySaveInfo,angularDataFig,axesHealthyAngle,subplotStart,'right',true);
     for ii = 1:length(plotRealHealthyAngle)
         set(plotRealHealthyAngle(ii,1),plotInfo.plotProp,plotInfo.plotProp_entries(2,:));
     end
     
     subplotStart(3) = subplotStart(3)+subplotStart(2);
-    [plotProstheticAngle, axesProstheticAngle] = plotAngularData(prostheticData.angularData,plotInfo,prostheticGaitInfo,prostheticSaveInfo,angularDataFig,[],subplotStart,'both',false);
+    [plotProstheticAngle, axesProstheticAngle] = plotAngularData(amputeeData.angularData,plotInfo,amputeeGaitInfo,amputeeSaveInfo,angularDataFig,[],subplotStart,'both',false);
     
-    if ~isempty(prostheticCMGNotActiveData)
+    if ~isempty(amputeeCMGNotActiveData)
         subplotStart(3) = subplotStart(3)+subplotStart(2);
-        [plotCMGNotActiveAngle, axesCMGNotActiveAngle] = plotAngularData(prostheticCMGNotActiveData.angularData,plotInfo,prostheticCMGNotActiveGaitInfo,prostheticSaveInfo,angularDataFig,[],subplotStart,'both',false);
+        [plotCMGNotActiveAngle, axesCMGNotActiveAngle] = plotAngularData(amputeeCMGNotActiveData.angularData,plotInfo,amputeeCMGNotActiveGaitInfo,amputeeSaveInfo,angularDataFig,[],subplotStart,'both',false);
     end
-    if ~isempty(prostheticCMGActiveData)
+    if ~isempty(amputeeCMGActiveData)
         subplotStart(3) = subplotStart(3)+subplotStart(2);
-        [plotCMGActiveAngle, axesCMGActiveAngle] = plotAngularData(prostheticCMGActiveData.angularData,plotInfo,prostheticCMGActiveGaitInfo,prostheticSaveInfo,angularDataFig,[],subplotStart,'both',false);
+        [plotCMGActiveAngle, axesCMGActiveAngle] = plotAngularData(amputeeCMGActiveData.angularData,plotInfo,amputeeCMGActiveGaitInfo,amputeeSaveInfo,angularDataFig,[],subplotStart,'both',false);
     end
     
+    % Set line and fill properties
     for ii = 1:size(plotProstheticAngle,1)
         set(plotProstheticAngle(ii,1),plotInfo.plotProp,plotInfo.plotProp_entries(3,:));
         set(plotProstheticAngle(ii,3),plotInfo.plotProp,plotInfo.plotProp_entries(4,:));
@@ -187,7 +207,7 @@ if b_plotAngles
             set(plotProstheticAngle(ii,4),plotInfo.fillProp,plotInfo.fillProp_entries(4,:));
         end
         
-        if ~isempty(prostheticCMGNotActiveData)
+        if ~isempty(amputeeCMGNotActiveData)
             set(plotCMGNotActiveAngle(ii,1),plotInfo.plotProp,plotInfo.plotProp_entries(5,:));
             set(plotCMGNotActiveAngle(ii,3),plotInfo.plotProp,plotInfo.plotProp_entries(6,:));
             if isgraphics(plotCMGNotActiveAngle(ii,2))
@@ -197,7 +217,7 @@ if b_plotAngles
                 set(plotCMGNotActiveAngle(ii,4),plotInfo.fillProp,plotInfo.fillProp_entries(6,:));
             end
         end
-        if ~isempty(prostheticCMGActiveData)
+        if ~isempty(amputeeCMGActiveData)
             set(plotCMGActiveAngle(ii,1),plotInfo.plotProp,plotInfo.plotProp_entries(7,:));
             set(plotCMGActiveAngle(ii,3),plotInfo.plotProp,plotInfo.plotProp_entries(8,:));
             if isgraphics(plotCMGActiveAngle(ii,2))
@@ -213,7 +233,7 @@ if b_plotAngles
     
     xlabel(axesAngle(end),'gait cycle ($\%$) ');
     
-    % addInfoTextFigure('Amputee model CMG','(c)',axesCMGAngle(1),ylabelPosAngle);
+    % Resize axes
     if subplotStart(1) == 2
         axesPosAngle = setAxes(axesAngle,subplotStart(2),0.12,0.20, -0.08, 0.12, 0.16, hwratioAngles);
     elseif subplotStart(1) == 4
@@ -223,19 +243,22 @@ if b_plotAngles
     setLegend([plotHealthyAngle(end,1),plotRealHealthyAngle(end,1)],axesPosAngle(end,:),{'M$_{\mathrm{H}}$','F$_{\mathrm{H}}$'},18);
     setLegend(plotProstheticAngle(end,[1,3]),axesPosAngle(end,:),{'I','P'},18);
     
-    ylabelPosAngle = alignYlabel(axesAngle([1,(length(axesAngle)-length(axesHealthyAngle)+1)]));%,axesCMGAngle(1)]);
-    %     ylabelPosAngle = ylabelPosAngle + 0.25;
+    % Align y-label of axes
+    ylabelPosAngle = alignYlabel(axesAngle([1,(length(axesAngle)-length(axesHealthyAngle)+1)]));
+    
+    % Add (a), (b) etc to figure
     addInfoTextFigure('Healthy',24,'(a)',20,axesAngle(1),ylabelPosAngle);
     addInfoTextFigure('Amputee',24,'(b)',20,axesAngle(5),ylabelPosAngle);
-    if ~isempty(prostheticCMGNotActiveData)
+    if ~isempty(amputeeCMGNotActiveData)
         setLegend(plotCMGNotActiveAngle(end,[1,3]),axesPosAngle(end,:),{'$\mathrm{I}_{\mathrm{CI}}$','$\mathrm{P}_{\mathrm{CI}}$'},18);
         addInfoTextFigure('CMG not Active',24,'(c)',20,axesAngle(9),ylabelPosAngle);
     end
-    if ~isempty(prostheticCMGActiveData)
+    if ~isempty(amputeeCMGActiveData)
         addInfoTextFigure('CMG Active',24,'(d)',20,axesAngle(13),ylabelPosAngle);
         setLegend(plotCMGActiveAngle(end,[1,3]),axesPosAngle(end,:),{'$\mathrm{I}_{\mathrm{CA}}$','$\mathrm{P}_{\mathrm{CA}}$'},18);
     end
     
+    %% Insert correlation plot values
     addCorr2plot(plotInfo.showCorr,plotHealthyAngle(:,1),plotRealHealthyAngle(:,1),axesHealthyAngle,...
         14,[0.01,0.75,0; 0.01,0.75,0; 0.01,0.75,0; 0.01,0.05,0;]);
     
@@ -248,37 +271,38 @@ if b_plotTorques
     torqueDataFig = figure();
     torqueDataFig.Name = ['Joint torque data ' info];
     
-    if ~isempty(prostheticCMGNotActiveData) && ~isempty(prostheticCMGActiveData)
+    if ~isempty(amputeeCMGNotActiveData) && ~isempty(amputeeCMGActiveData)
         subplotStart = [4 4 1];
         figurePositionTorque = [10,100,750,650];
-    elseif ~isempty(prostheticCMGNotActiveData)
+    elseif ~isempty(amputeeCMGNotActiveData)
         subplotStart = [3 4 1];
     else
         subplotStart = [2 4 1];
-        figurePositionTorque = [10,100,700,400]; %[10,100,1700,800]
+        figurePositionTorque = [10,100,700,400]; 
     end
     hwratioTorque = figurePositionTorque(end)/figurePositionTorque(end-1);
     set(torqueDataFig, 'Position',figurePositionTorque);
     
     
-    [plotHealthyTorque,axesHealthyTorque] = plotJointTorqueData(healthyData.jointTorquesData,plotInfo,healthyGaitInfo,healthySaveInfo,torqueDataFig,[],subplotStart,'left',true);
-    [plotRealHealthyTorque,axesHealthyTorque] = plotJointTorqueData(realHealthyData.jointTorquesData,plotInfo,realHealthyDataGaitInfo,healthySaveInfo,torqueDataFig,axesHealthyTorque,subplotStart,'right',true);
+    [plotHealthyTorque,axesHealthyTorque]       = plotJointTorqueData(healthyData.jointTorquesData,plotInfo,healthyGaitInfo,healthySaveInfo,torqueDataFig,[],subplotStart,'left',true);
+    [plotRealHealthyTorque,axesHealthyTorque]   = plotJointTorqueData(realHealthyData.jointTorquesData,plotInfo,realHealthyDataGaitInfo,healthySaveInfo,torqueDataFig,axesHealthyTorque,subplotStart,'right',true);
     for ii = 1:length(plotRealHealthyTorque)
         set(plotRealHealthyTorque(ii,1),plotInfo.plotProp,plotInfo.plotProp_entries(2,:));
     end
     
     subplotStart(3) = subplotStart(3)+subplotStart(2);
-    [plotProstheticTorque,axesProstheticTorque] = plotJointTorqueData(prostheticData.jointTorquesData,plotInfo,prostheticGaitInfo,prostheticSaveInfo,torqueDataFig,[],subplotStart,'both',false);
+    [plotProstheticTorque,axesProstheticTorque] = plotJointTorqueData(amputeeData.jointTorquesData,plotInfo,amputeeGaitInfo,amputeeSaveInfo,torqueDataFig,[],subplotStart,'both',false);
     
-    if ~isempty(prostheticCMGNotActiveData)
+    if ~isempty(amputeeCMGNotActiveData)
         subplotStart(3) = subplotStart(3)+subplotStart(2);
-        [plotCMGNotActiveTorque, axesCMGNotActiveTorque] = plotJointTorqueData(prostheticCMGNotActiveData.jointTorquesData,plotInfo,prostheticCMGNotActiveGaitInfo,prostheticSaveInfo,torqueDataFig,[],subplotStart,'both',false);
+        [plotCMGNotActiveTorque, axesCMGNotActiveTorque] = plotJointTorqueData(amputeeCMGNotActiveData.jointTorquesData,plotInfo,amputeeCMGNotActiveGaitInfo,amputeeSaveInfo,torqueDataFig,[],subplotStart,'both',false);
     end
-    if ~isempty(prostheticCMGActiveData)
+    if ~isempty(amputeeCMGActiveData)
         subplotStart(3) = subplotStart(3)+subplotStart(2);
-        [plotCMGActiveTorque, axesCMGActiveTorque] = plotJointTorqueData(prostheticCMGActiveData.jointTorquesData,plotInfo,prostheticCMGActiveGaitInfo,prostheticSaveInfo,torqueDataFig,[],subplotStart,'both',false);
+        [plotCMGActiveTorque, axesCMGActiveTorque] = plotJointTorqueData(amputeeCMGActiveData.jointTorquesData,plotInfo,amputeeCMGActiveGaitInfo,amputeeSaveInfo,torqueDataFig,[],subplotStart,'both',false);
     end
     
+    % Set line and fill properties
     for ii = 1:size(plotProstheticTorque,1)
         set(plotProstheticTorque(ii,1),plotInfo.plotProp,plotInfo.plotProp_entries(3,:));
         set(plotProstheticTorque(ii,3),plotInfo.plotProp,plotInfo.plotProp_entries(4,:));
@@ -290,7 +314,7 @@ if b_plotTorques
             set(plotProstheticTorque(ii,4),plotInfo.fillProp,plotInfo.fillProp_entries(4,:));
         end
         
-        if ~isempty(prostheticCMGNotActiveData)
+        if ~isempty(amputeeCMGNotActiveData)
             set(plotCMGNotActiveTorque(ii,1),plotInfo.plotProp,plotInfo.plotProp_entries(5,:));
             set(plotCMGNotActiveTorque(ii,3),plotInfo.plotProp,plotInfo.plotProp_entries(6,:));
             if isgraphics(plotCMGNotActiveTorque(ii,2))
@@ -300,7 +324,7 @@ if b_plotTorques
                 set(plotCMGNotActiveTorque(ii,4),plotInfo.fillProp,plotInfo.fillProp_entries(6,:));
             end
         end
-        if ~isempty(prostheticCMGActiveData)
+        if ~isempty(amputeeCMGActiveData)
             set(plotCMGActiveTorque(ii,1),plotInfo.plotProp,plotInfo.plotProp_entries(7,:));
             set(plotCMGActiveTorque(ii,3),plotInfo.plotProp,plotInfo.plotProp_entries(8,:));
             if isgraphics(plotCMGActiveTorque(ii,2))
@@ -330,19 +354,17 @@ if b_plotTorques
     addInfoTextFigure('Healthy',24,'(a)',20,axesTorque(1),ylabelPosTorque);
     addInfoTextFigure('Amputee',24,'(b)',20,axesTorque(5),ylabelPosTorque);
     
-    if ~isempty(prostheticCMGNotActiveData)
+    if ~isempty(amputeeCMGNotActiveData)
         setLegend(plotCMGNotActiveTorque(end,[1,3]),axesPosTorque(end,:),{'$\mathrm{I}_{\mathrm{CI}}$','$\mathrm{P}_{\mathrm{CI}}$'},18);
         addInfoTextFigure('CMG not Active',24,'(c)',20,axesTorque(9),ylabelPosTorque);
     end
-    if ~isempty(prostheticCMGActiveData)
+    if ~isempty(amputeeCMGActiveData)
         addInfoTextFigure('CMG Active',24,'(d)',20,axesTorque(13),ylabelPosTorque);
         setLegend(plotCMGActiveTorque(end,[1,3]),axesPosTorque(end,:),{'$\mathrm{I}_{\mathrm{CA}}$','$\mathrm{P}_{\mathrm{CA}}$'},18);
     end
     
     addCorr2plot(plotInfo.showCorr,plotHealthyTorque(:,1),plotRealHealthyTorque(:,1),axesHealthyTorque,...
-        14,[0.35,0.75,0; 0.35,0.75,0; 0.3,0.001,0; 0.40,0.75,0]);
-    %             addCorr2plot(plotInfo.showCorr,plotHealthyTorque(:,1),plotRealHealthyTorque(:,1),axesHealthyTorque,...
-    %                 14,[0.45,0.80,0; 0.40,0.80,0; 0.40,0.05,0; 0.40,0.80,0]);
+        14,[0.35,0.75,0; 0.35,0.05,0; 0.33,0.001,0; 0.40,0.05,0]);
     
 end
 
@@ -353,33 +375,34 @@ if b_plotPowers
     powerDataFig = figure();
     powerDataFig.Name = ['Joint power data ' info];
     
-    if ~isempty(prostheticCMGNotActiveData) && ~isempty(prostheticCMGActiveData)
+    if ~isempty(amputeeCMGNotActiveData) && ~isempty(amputeeCMGActiveData)
         subplotStart = [4 4 1];
         figurePositionPower = [10,100,750,650];
-    elseif ~isempty(prostheticCMGNotActiveData)
+    elseif ~isempty(amputeeCMGNotActiveData)
         subplotStart = [3 4 1];
     else
         subplotStart = [2 4 1];
-        figurePositionPower = [10,100,720,380]; %[10,100,1700,800]
+        figurePositionPower = [10,100,720,380]; 
     end
     
     hwratioPower = figurePositionPower(end)/figurePositionPower(end-1);
     set(powerDataFig, 'Position',figurePositionPower);
     
-    [plotHealthyPower,axesHealthyPower] = plotJointPowerData(healthyData.angularData,healthyData.jointTorquesData,plotInfo,healthyGaitInfo,healthySaveInfo,powerDataFig,[],subplotStart,'left',true);
+    [plotHealthyPower,axesHealthyPower]         = plotJointPowerData(healthyData.angularData,healthyData.jointTorquesData,plotInfo,healthyGaitInfo,healthySaveInfo,powerDataFig,[],subplotStart,'left',true);
     subplotStart(3) = subplotStart(3)+subplotStart(2);
-    [plotProstheticPower,axesProstheticPower] = plotJointPowerData(prostheticData.angularData,prostheticData.jointTorquesData,plotInfo,prostheticGaitInfo,prostheticSaveInfo,powerDataFig,[],subplotStart,'both',false);
+    [plotProstheticPower,axesProstheticPower]   = plotJointPowerData(amputeeData.angularData,amputeeData.jointTorquesData,plotInfo,amputeeGaitInfo,amputeeSaveInfo,powerDataFig,[],subplotStart,'both',false);
     
-    if ~isempty(prostheticCMGNotActiveData)
+    if ~isempty(amputeeCMGNotActiveData)
         subplotStart(3) = subplotStart(3)+subplotStart(2);
-        [plotCMGNotActivePower, axesCMGNotActivePower] = plotJointPowerData(prostheticCMGNotActiveData.angularData,prostheticCMGNotActiveData.jointTorquesData,plotInfo,prostheticCMGNotActiveGaitInfo,prostheticSaveInfo,powerDataFig,[],subplotStart,'both',false);
+        [plotCMGNotActivePower, axesCMGNotActivePower] = plotJointPowerData(amputeeCMGNotActiveData.angularData,amputeeCMGNotActiveData.jointTorquesData,plotInfo,amputeeCMGNotActiveGaitInfo,amputeeSaveInfo,powerDataFig,[],subplotStart,'both',false);
         
     end
-    if ~isempty(prostheticCMGActiveData)
+    if ~isempty(amputeeCMGActiveData)
         subplotStart(3) = subplotStart(3)+subplotStart(2);
-        [plotCMGActivePower, axesCMGActivePower] = plotJointPowerData(prostheticCMGActiveData.angularData,prostheticCMGActiveData.jointTorquesData,plotInfo,prostheticCMGActiveGaitInfo,prostheticSaveInfo,powerDataFig,[],subplotStart,'both',false);
+        [plotCMGActivePower, axesCMGActivePower] = plotJointPowerData(amputeeCMGActiveData.angularData,amputeeCMGActiveData.jointTorquesData,plotInfo,amputeeCMGActiveGaitInfo,amputeeSaveInfo,powerDataFig,[],subplotStart,'both',false);
     end
     
+    % Set line and fill properties
     for ii = 1:size(plotProstheticPower,1)
         set(plotProstheticPower(ii,1),plotInfo.plotProp,plotInfo.plotProp_entries(3,:));
         set(plotProstheticPower(ii,3),plotInfo.plotProp,plotInfo.plotProp_entries(4,:));
@@ -391,7 +414,7 @@ if b_plotPowers
             set(plotProstheticPower(ii,4),plotInfo.fillProp,plotInfo.fillProp_entries(4,:));
         end
         
-        if ~isempty(prostheticCMGNotActiveData)
+        if ~isempty(amputeeCMGNotActiveData)
             set(plotCMGNotActivePower(ii,1),plotInfo.plotProp,plotInfo.plotProp_entries(5,:));
             set(plotCMGNotActivePower(ii,3),plotInfo.plotProp,plotInfo.plotProp_entries(6,:));
             if isgraphics(plotCMGNotActivePower(ii,2))
@@ -401,7 +424,7 @@ if b_plotPowers
                 set(plotCMGNotActivePower(ii,4),plotInfo.fillProp,plotInfo.fillProp_entries(6,:));
             end
         end
-        if ~isempty(prostheticCMGActiveData)
+        if ~isempty(amputeeCMGActiveData)
             set(plotCMGActivePower(ii,1),plotInfo.plotProp,plotInfo.plotProp_entries(7,:));
             set(plotCMGActivePower(ii,3),plotInfo.plotProp,plotInfo.plotProp_entries(8,:));
             if isgraphics(plotCMGActivePower(ii,2))
@@ -430,11 +453,11 @@ if b_plotPowers
     addInfoTextFigure('Healthy',24,'(a)',20,axesPower(1),ylabelPosPower);
     addInfoTextFigure('Amputee',24,'(b)',20,axesPower(5),ylabelPosPower);
     
-    if ~isempty(prostheticCMGNotActiveData)
+    if ~isempty(amputeeCMGNotActiveData)
         setLegend(plotCMGNotActivePower(end,[1,3]),axesPosPower(end,:),{'$\mathrm{I}_{\mathrm{CI}}$','$\mathrm{P}_{\mathrm{CI}}$'},18);
         addInfoTextFigure('CMG not Active',24,'(c)',20,axesPower(9),ylabelPosPower);
     end
-    if ~isempty(prostheticCMGActiveData)
+    if ~isempty(amputeeCMGActiveData)
         addInfoTextFigure('CMG Active',24,'(d)',20,axesPower(13),ylabelPosPower);
         setLegend(plotCMGActivePower(end,[1,3]),axesPosPower(end,:),{'$\mathrm{I}_{\mathrm{CA}}$','$\mathrm{P}_{\mathrm{CA}}$'},18);
     end
@@ -447,14 +470,14 @@ if b_plotGRF
     GRFDataFig = figure();
     GRFDataFig.Name = ['Ground reaction forces data ' info];
     
-    if ~isempty(prostheticCMGNotActiveData) && ~isempty(prostheticCMGActiveData)
+    if ~isempty(amputeeCMGNotActiveData) && ~isempty(amputeeCMGActiveData)
         subplotStart = [4 3 1];
         figurePositionGRF = [10,100,580,580];
-    elseif ~isempty(prostheticCMGNotActiveData)
+    elseif ~isempty(amputeeCMGNotActiveData)
         subplotStart = [3 3 1];
     else
         subplotStart = [2 3 1];
-        figurePositionGRF = [10,100,550,400]; %[10,100,1700,800]
+        figurePositionGRF = [10,100,550,400]; 
     end
     hwratioGRF = figurePositionGRF(end)/figurePositionGRF(end-1);
     set(GRFDataFig, 'Position',figurePositionGRF);
@@ -467,17 +490,18 @@ if b_plotGRF
     end
     
     subplotStart(3) = subplotStart(3)+subplotStart(2);
-    [plotProstheticGRF,axesProstheticGRF] = plotGRFData(prostheticData.GRFData,plotInfo,prostheticGaitInfo,prostheticSaveInfo,GRFDataFig,[],subplotStart,'both',false);
+    [plotProstheticGRF,axesProstheticGRF] = plotGRFData(amputeeData.GRFData,plotInfo,amputeeGaitInfo,amputeeSaveInfo,GRFDataFig,[],subplotStart,'both',false);
     
-    if ~isempty(prostheticCMGNotActiveData)
+    if ~isempty(amputeeCMGNotActiveData)
         subplotStart(3) = subplotStart(3)+subplotStart(2);
-        [plotCMGNotActiveGRF, axesCMGNotActiveGRF] = plotGRFData(prostheticCMGNotActiveData.GRFData,plotInfo,prostheticCMGNotActiveGaitInfo,prostheticSaveInfo,GRFDataFig,[],subplotStart,'both',false);
+        [plotCMGNotActiveGRF, axesCMGNotActiveGRF] = plotGRFData(amputeeCMGNotActiveData.GRFData,plotInfo,amputeeCMGNotActiveGaitInfo,amputeeSaveInfo,GRFDataFig,[],subplotStart,'both',false);
     end
-    if ~isempty(prostheticCMGActiveData)
+    if ~isempty(amputeeCMGActiveData)
         subplotStart(3) = subplotStart(3)+subplotStart(2);
-        [plotCMGActiveGRF, axesCMGActiveGRF] = plotGRFData(prostheticCMGActiveData.GRFData,plotInfo,prostheticCMGActiveGaitInfo,prostheticSaveInfo,GRFDataFig,[],subplotStart,'both',false);
+        [plotCMGActiveGRF, axesCMGActiveGRF] = plotGRFData(amputeeCMGActiveData.GRFData,plotInfo,amputeeCMGActiveGaitInfo,amputeeSaveInfo,GRFDataFig,[],subplotStart,'both',false);
     end
     
+    % Set line and fill properties
     for ii = 1:size(plotProstheticGRF,1)
         set(plotProstheticGRF(ii,1),plotInfo.plotProp,plotInfo.plotProp_entries(3,:));
         set(plotProstheticGRF(ii,3),plotInfo.plotProp,plotInfo.plotProp_entries(4,:));
@@ -489,7 +513,7 @@ if b_plotGRF
             set(plotProstheticGRF(ii,4),plotInfo.fillProp,plotInfo.fillProp_entries(4,:));
         end
         
-        if ~isempty(prostheticCMGNotActiveData)
+        if ~isempty(amputeeCMGNotActiveData)
             set(plotCMGNotActiveGRF(ii,1),plotInfo.plotProp,plotInfo.plotProp_entries(5,:));
             set(plotCMGNotActiveGRF(ii,3),plotInfo.plotProp,plotInfo.plotProp_entries(6,:));
             if isgraphics(plotCMGNotActiveGRF(ii,2))
@@ -499,7 +523,7 @@ if b_plotGRF
                 set(plotCMGNotActiveGRF(ii,4),plotInfo.fillProp,plotInfo.fillProp_entries(6,:));
             end
         end
-        if ~isempty(prostheticCMGActiveData)
+        if ~isempty(amputeeCMGActiveData)
             set(plotCMGActiveGRF(ii,1),plotInfo.plotProp,plotInfo.plotProp_entries(7,:));
             set(plotCMGActiveGRF(ii,3),plotInfo.plotProp,plotInfo.plotProp_entries(8,:));
             if isgraphics(plotCMGActiveGRF(ii,2))
@@ -523,25 +547,23 @@ if b_plotGRF
     
     setLegend([plotHealthyGRF(end,1),plotRealHealthyGRF(end,1)],axesPosGRF(3,:),{'M$_{\mathrm{H}}$','F$_{\mathrm{H}}$'},18);
     setLegend(plotProstheticGRF(end,[1,3]),axesPosGRF(6,:),{'I','P'},18);
-    % legend(plotProstheticAngle(end,[1,3]),'I','P','FontSize', 21,'Position',[0.80 0.465 0.075 0.07]);  %two
     
     ylabelPosGRF = alignYlabel(axesGRF([1,(length(axesGRF)-length(axesHealthyGRF)+1)]));%,axesCMGAngle(1)]);
     addInfoTextFigure('Healthy',24,'(a)',20,axesGRF(1),ylabelPosGRF);
     addInfoTextFigure('Amputee',24,'(b)',20,axesGRF(4),ylabelPosGRF);
     
-    if ~isempty(prostheticCMGNotActiveData)
+    if ~isempty(amputeeCMGNotActiveData)
         setLegend(plotCMGNotActiveGRF(end,[1,3]),axesPosGRF(end,:),{'$\mathrm{I}_{\mathrm{CI}}$','$\mathrm{P}_{\mathrm{CI}}$'},18);
         addInfoTextFigure('CMG not Active',24,'(c)',20,axesGRF(7),ylabelPosGRF);
     end
-    if ~isempty(prostheticCMGActiveData)
+    if ~isempty(amputeeCMGActiveData)
         addInfoTextFigure('CMG Active',24,'(d)',20,axesGRF(10),ylabelPosGRF);
         setLegend(plotCMGActiveGRF(end,[1,3]),axesPosGRF(end,:),{'$\mathrm{I}_{\mathrm{CA}}$','$\mathrm{P}_{\mathrm{CA}}$'},18);
     end
     
     addCorr2plot(plotInfo.showCorr,plotHealthyGRF(:,1),plotRealHealthyGRF(:,1),axesHealthyGRF, ...
         14,[0.35,0.001,0; 0.35,0.75,0; 0.35,0.75,0]);
-%     addCorr2plot(plotInfo.showCorr,plotHealthyGRF(:,1),plotRealHealthyGRF(:,1),axesHealthyGRF, ...
-%         14,[0.35,0.05,0; 0.35,0.75,0; 0.35,0.75,0]);
+
     
 end
 
@@ -551,14 +573,14 @@ if b_plotMuscle
     axesCMGNotActiveMusc = []; axesCMGActiveMusc = [];
     set(0, 'DefaultAxesFontSize',18);
     
-    if ~isempty(prostheticCMGNotActiveData) && ~isempty(prostheticCMGActiveData)
+    if ~isempty(amputeeCMGNotActiveData) && ~isempty(amputeeCMGActiveData)
         subplotStart = [4 11 1];
         figurePositionMusc = [10,100,1750,600];
-    elseif ~isempty(prostheticCMGNotActiveData)
+    elseif ~isempty(amputeeCMGNotActiveData)
         subplotStart = [3 11 1];
     else
         subplotStart = [2 11 1];
-        figurePositionMusc = [10,100,1750,400]; %[10,100,1700,800]
+        figurePositionMusc = [10,100,1750,400]; 
     end
     hwratioMusc = figurePositionMusc(end)/figurePositionMusc(end-1);
     musculoDataFig = figure();
@@ -567,17 +589,18 @@ if b_plotMuscle
     
     [plotHealthyMusc,axesHealthyMusc] = plotMusculoData(healthyData.musculoData,plotInfo,healthyGaitInfo,healthySaveInfo,musculoDataFig,[],subplotStart,'left',true);
     subplotStart(3) = subplotStart(3)+subplotStart(2);
-    [plotProstheticMusc,axesProstheticMusc] = plotMusculoData(prostheticData.musculoData,plotInfo,prostheticGaitInfo,prostheticSaveInfo,musculoDataFig,[],subplotStart,'both',false);
+    [plotProstheticMusc,axesProstheticMusc] = plotMusculoData(amputeeData.musculoData,plotInfo,amputeeGaitInfo,amputeeSaveInfo,musculoDataFig,[],subplotStart,'both',false);
     
-    if ~isempty(prostheticCMGNotActiveData)
+    if ~isempty(amputeeCMGNotActiveData)
         subplotStart(3) = subplotStart(3)+subplotStart(2);
-        [plotCMGNotActiveMusc, axesCMGNotActiveMusc] = plotMusculoData(prostheticCMGNotActiveData.musculoData,plotInfo,prostheticCMGNotActiveGaitInfo,prostheticSaveInfo,musculoDataFig,[],subplotStart,'both',false);
+        [plotCMGNotActiveMusc, axesCMGNotActiveMusc] = plotMusculoData(amputeeCMGNotActiveData.musculoData,plotInfo,amputeeCMGNotActiveGaitInfo,amputeeSaveInfo,musculoDataFig,[],subplotStart,'both',false);
     end
-    if ~isempty(prostheticCMGActiveData)
+    if ~isempty(amputeeCMGActiveData)
         subplotStart(3) = subplotStart(3)+subplotStart(2);
-        [plotCMGActiveMusc, axesCMGActiveMusc] = plotMusculoData(prostheticCMGActiveData.musculoData,plotInfo,prostheticCMGActiveGaitInfo,prostheticSaveInfo,musculoDataFig,[],subplotStart,'both',false);
+        [plotCMGActiveMusc, axesCMGActiveMusc] = plotMusculoData(amputeeCMGActiveData.musculoData,plotInfo,amputeeCMGActiveGaitInfo,amputeeSaveInfo,musculoDataFig,[],subplotStart,'both',false);
     end
     
+    % Set line and fill properties
     for ii = 1:size(plotProstheticMusc,1)
         set(plotProstheticMusc(ii,1),plotInfo.plotProp,plotInfo.plotProp_entries(3,:));
         set(plotProstheticMusc(ii,3),plotInfo.plotProp,plotInfo.plotProp_entries(4,:));
@@ -589,7 +612,7 @@ if b_plotMuscle
             set(plotProstheticMusc(ii,4),plotInfo.fillProp,plotInfo.fillProp_entries(4,:));
         end
         
-        if ~isempty(prostheticCMGNotActiveData)
+        if ~isempty(amputeeCMGNotActiveData)
             set(plotCMGNotActiveMusc(ii,1),plotInfo.plotProp,plotInfo.plotProp_entries(5,:));
             set(plotCMGNotActiveMusc(ii,3),plotInfo.plotProp,plotInfo.plotProp_entries(6,:));
             if isgraphics(plotCMGNotActiveMusc(ii,2))
@@ -599,7 +622,7 @@ if b_plotMuscle
                 set(plotCMGNotActiveMusc(ii,4),plotInfo.fillProp,plotInfo.fillProp_entries(6,:));
             end
         end
-        if ~isempty(prostheticCMGActiveData)
+        if ~isempty(amputeeCMGActiveData)
             set(plotCMGActiveMusc(ii,1),plotInfo.plotProp,plotInfo.plotProp_entries(7,:));
             set(plotCMGActiveMusc(ii,3),plotInfo.plotProp,plotInfo.plotProp_entries(8,:));
             if isgraphics(plotCMGActiveMusc(ii,2))
@@ -629,19 +652,38 @@ if b_plotMuscle
     addInfoTextFigure('Healthy model',24,'(a)',20,axesHealthyMusc(1),ylabelPosMusc);
     addInfoTextFigure('Amputee model',24,'(b)',20,axesProstheticMusc(1),ylabelPosMusc);
     
-    if ~isempty(prostheticCMGNotActiveData)
+    if ~isempty(amputeeCMGNotActiveData)
         setLegend(plotCMGNotActiveMusc(end,[1,3]),axesPosMusc(end,:),{'$\mathrm{I}_{\mathrm{CI}}$','$\mathrm{P}_{\mathrm{CI}}$'},18);
         addInfoTextFigure('CMG not Active',24,'(c)',20,axesMusc(23),ylabelPosMusc);
     end
-    if ~isempty(prostheticCMGActiveData)
+    if ~isempty(amputeeCMGActiveData)
         addInfoTextFigure('CMG Active',24,'(d)',20,axesMusc(34),ylabelPosMusc);
         setLegend(plotCMGActiveMusc(end,[1,3]),axesPosMusc(end,:),{'$\mathrm{I}_{\mathrm{CA}}$','$\mathrm{P}_{\mathrm{CA}}$'},18);
     end
     
 end
 
-%% Save
+%% Tables
+if plotInfo.showTables 
+    fprintf('\n<strong>Healthy gait tables</strong> \n');
+    getAndDisplayTables(healthyData,healthyGaitInfo,healthySaveInfo);
+    
+    fprintf('\n<strong>Amputee gait tables</strong> \n');
+    getAndDisplayTables(amputeeData,amputeeGaitInfo,amputeeSaveInfo);
+    
+    if ~isempty(amputeeCMGNotActiveData)
+        fprintf('\n<strong>Amputee with inactive CMG gait tables</strong> \n');
+        getAndDisplayTables(amputeeCMGNotActiveData,amputeeCMGNotActiveGaitInfo,amputeeSaveInfo);
+    end
+    if ~isempty(amputeeCMGActiveData)
+        fprintf('\n<strong>Amputee with active CMG gait tables</strong> \n');
+        getAndDisplayTables(amputeeCMGActiveData,amputeeCMGActiveGaitInfo,amputeeSaveInfo);
+    end
+end
 
+
+
+%% Save
 if b_saveTotalFig
     saveFigure(legStateFig,     'legState',saveInfo.type,saveInfo.info,b_withDate,savePath)
     saveFigure(angularDataFig,  'angularData',saveInfo.type,saveInfo.info,b_withDate,savePath)
@@ -651,6 +693,10 @@ if b_saveTotalFig
     saveFigure(GRFDataFig,      'GRFData',saveInfo.type,saveInfo.info,b_withDate,savePath)
 end
 
-startup;
+% Reset all the plotting settings to default
+try
+    startup;
+catch
+end
 
 

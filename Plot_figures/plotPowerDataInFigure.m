@@ -1,20 +1,33 @@
-function [plotHandles,axesHandles] = plotPowerDataInFigure(powerDataFig,axesHandles,t,hipPower_avg,hipPower_sd,hipRollPower_avg,hipRollPower_sd,kneePower_avg,kneePower_sd,anklePower_avg,anklePower_sd,subplotStart,b_oneGaitPhase,b_addTitle)
+function [plotHandles,axesHandles] = plotPowerDataInFigure(powerDataFig,axesHandles,t,hipPower_avg,hipPower_sd,hipRollPower_avg,hipRollPower_sd,...
+                                                           kneePower_avg,kneePower_sd,anklePower_avg,anklePower_sd,subplotStart,b_addTitle)
+% PLOTPOWERDATAINFIGURE       Function that plots the joint angles
+% INPUTS:
+%   - powerDataFig              Pre-created figure in which the joint power data is to be plotted.
+%   - axesHandles               Pre-created, or empty, axes in which the  joint power data is to be plotted.
+%   - angularData               Structure with time of the joint angle data from the simulation.
+% 
+%   - All the data
+% 
+%   - subplotStart              This says in which subfigure to start.
+%   - b_addTitle                Optional, boolean which selects if title of axis has to be put in the figure.
+%
+% OUTPUTS:
+%   - plotHandles               Handles of all the plots, which can be used for later changes in line style etc, or for
+%                               adding a legend.
+%   - axesHandles               Handles of all the axes, which can be used for later changes in axes size, axes title
+%                               locations etc.
+%%
 plotHandles = nan(4,2);
 if isempty(axesHandles)
-    for i = 1:size(plotHandles,1)
-        axesHandles(i) = axes(powerDataFig);
+    for ii = 1:size(plotHandles,1)
+        axesHandles(ii) = axes(powerDataFig);
     end
 end
-if  nargin < 13
-    b_oneGaitPhase = true;
-end
-if nargin < 14
+if nargin < 13
     b_addTitle = true;
 end
 
-% subplotStart = dec2base(subplotStart,10) - '0';
-
-%%
+%% Plot hip 'abduction' power
 axidx = 1;
 axesHandles(axidx) = subplot(subplotStart(1),subplotStart(2),subplotStart(3),axesHandles(axidx));
 if ~isempty(hipRollPower_sd)
@@ -25,17 +38,13 @@ if ~isempty(hipRollPower_avg)
     plotHandles(axidx,1) = plot(axesHandles(axidx),t,hipRollPower_avg);
 end
 
-
-% h = get(axesHandles(axidx),'Children');
-% set(axesHandles(axidx),'Children',h) % 
 if b_addTitle
     title(axesHandles(axidx),{'Hip'; 'abduction'});
-    %     title(axesHandles(axidx),'Hip abduction');
     ylabel(axesHandles(axidx),'Power (W/kg)');
 end
 
 
-%%
+%% Plot hip 'flexion' power
 subplotStart(3) = subplotStart(3) +1;
 axidx = 2;
 axesHandles(axidx) = subplot(subplotStart(1),subplotStart(2),subplotStart(3),axesHandles(axidx));
@@ -45,17 +54,12 @@ end
 hold(axesHandles(axidx),'on');
 plotHandles(axidx,1) = plot(axesHandles(axidx),t,hipPower_avg);
 
-
-% h = get(axesHandles(1),'Children');
-% set(axesHandles(1),'Children',h) % 
 if b_addTitle
     title(axesHandles(axidx),{'Hip';'flexion'});
-    %     title(axesHandles(axidx),'Hip flexion');
 end
-% ylabel(axesHandles(axidx),'W/kg');
 
 
-%%
+%% Plot knee power
 subplotStart(3) = subplotStart(3) +1;
 axidx = 3;
 axesHandles(axidx) = subplot(subplotStart(1),subplotStart(2),subplotStart(3),axesHandles(axidx));
@@ -65,15 +69,11 @@ end
 hold(axesHandles(axidx),'on');
 plotHandles(axidx,1) = plot(axesHandles(axidx),t,kneePower_avg);
 
-% h = get(axesHandles(axidx),'Children');
-% set(axesHandles(axidx),'Children',flipud(h))
 if b_addTitle
     title(axesHandles(axidx),{'Knee';'flexion'});
-%     title(axesHandles(axidx),'Knee flexion');
 end
-% ylabel(axesHandles(axidx),'W/kg');
 
-%%
+%% Plot ankle power
 subplotStart(3) = subplotStart(3) +1;
 axidx = 4;
 axesHandles(axidx) = subplot(subplotStart(1),subplotStart(2),subplotStart(3),axesHandles(axidx));
@@ -83,12 +83,6 @@ end
 hold(axesHandles(axidx),'on');
 plotHandles(axidx,1) = plot(axesHandles(axidx),t,anklePower_avg);
 
-% h = get(axesHandles(axidx),'Children');
-% set(axesHandles(axidx),'Children',flipud(h))
 if b_addTitle
     title(axesHandles(axidx),{'Ankle';'dorsiflexion'});
-%     title(axesHandles(axidx),'Ankle dorsiflexion');
 end
-% ylabel(axesHandles(axidx),'W/kg');
-
-

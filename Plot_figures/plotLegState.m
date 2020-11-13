@@ -1,4 +1,23 @@
 function [plotHandles, axesHandles] = plotLegState(GaitPhaseData,plotInfo,GaitInfo,saveInfo,legStateFigure,axesHandles,subplotStart,legToPlot,b_addTitle)
+% PLOTLEGSTATE                  Function that plots the state of the legs
+% INPUTS:
+%   - GaitPhaseData             Structure with time of the gait phase data from the simulation.
+%   - plotInfo                  Structure containing linestyle, -width, -color etc.
+%   - GaitInfo                  Structure containing information on where a stride begins and ends, whether to show average
+%                               for stride, or just all the data.
+%   - saveInfo                  Structure with info on how and if to save the figure
+%   - legStateFigure          Optional, pre-created figure in which the leg state data can be plotted.
+%   - axesHandles               Optional, pre-created axes in which the leg state data can be plotted.
+%   - subplotStart              Optional, in case of multiple subfigures, this says in which subfigure to start.
+%   - legToPlot                 Optional, select if you want to plot 'both' legs, or 'left', or 'right' leg.
+%   - b_addTitle                Optional, boolean which selects if title of axis has to be put in the figure.
+%
+% OUTPUTS:
+%   - plotHandles               Handles of all the plots, which can be used for later changes in line style etc, or for
+%                               adding a legend.
+%   - axesHandles               Handles of all the axes, which can be used for later changes in axes size, axes title
+%                               locations etc.
+%%
 if nargin < 5
     legStateFigure = [];
 end
@@ -6,11 +25,8 @@ if nargin < 6
     axesHandles = [];
 end
 if nargin < 7 || isempty(subplotStart)
-    %     subplotStart = 151;
     subplotStart = [1 1 1];
-    
     setLegend = true;
-    
 else
     setLegend = false;
 end
@@ -23,48 +39,19 @@ end
 
 t = GaitPhaseData.time;
 %%
-
-
 leftLegState    = GaitPhaseData.signals.values(:,1);
 rightLegState   = GaitPhaseData.signals.values(:,2);
-
 
 
 [leftLegState_avg,leftLegState_sd] = interpData2perc(t,GaitInfo.tp,leftLegState,GaitInfo.start.leftV,GaitInfo.end.leftV,GaitInfo.b_oneGaitPhase,'previous');
 [rightLegState_avg,rightLegState_sd] = interpData2perc(t,GaitInfo.tp,rightLegState,GaitInfo.start.rightV,GaitInfo.end.rightV,GaitInfo.b_oneGaitPhase,'previous');
 
-if plotInfo.showTables && ~isempty(GaitInfo.gaitstate)
-    rowNames = {'Stance','Double Stance (leg to other leg)','Swing'};
-    if contains(saveInfo.info,'prosthetic')
-        varNames = {'Left (%)','Right (%)', 'ASI_% (%)', 'Left (s)','Right (s)', 'ASI_s (%)'};%,'L mean propel impulse (N%/kg)','R mean propel impulse (N%/kg)'};
-        vars = {GaitInfo.gaitstate.left.stanceMeanstdtxt_perc, GaitInfo.gaitstate.right.stanceMeanstdtxt_perc, GaitInfo.gaitstate.stanceASItxt_perc, ...
-                GaitInfo.gaitstate.left.stanceMeanstdtxt, GaitInfo.gaitstate.right.stanceMeanstdtxt, GaitInfo.gaitstate.stanceASItxt; ...
-                GaitInfo.gaitstate.left.doubleStanceMeanstdtxt_perc, GaitInfo.gaitstate.right.doubleStanceMeanstdtxt_perc, GaitInfo.gaitstate.doubleStanceASItxt_perc, ...
-                GaitInfo.gaitstate.left.doubleStanceMeanstdtxt, GaitInfo.gaitstate.right.doubleStanceMeanstdtxt, GaitInfo.gaitstate.doubleStanceASItxt; ...
-                GaitInfo.gaitstate.left.swingMeanstdtxt_perc, GaitInfo.gaitstate.right.swingMeanstdtxt_perc, GaitInfo.gaitstate.swingASItxt_perc, ...
-                GaitInfo.gaitstate.left.swingMeanstdtxt, GaitInfo.gaitstate.right.swingMeanstdtxt, GaitInfo.gaitstate.swingASItxt};
-        disp(table(vars(:,1),vars(:,2),vars(:,3),vars(:,4),vars(:,5),vars(:,6),'VariableNames',varNames,'RowNames',rowNames));
-    else
-        varNames = {'Total (%)', 'ASI_% (%)', 'Total (s)', 'ASI_s (%)'};%,'L mean propel impulse (N%/kg)','R mean propel impulse (N%/kg)'};
-        vars = {GaitInfo.gaitstate.stanceMeanstdtxt_perc, GaitInfo.gaitstate.stanceASItxt_perc, ...
-                GaitInfo.gaitstate.stanceMeanstdtxt, GaitInfo.gaitstate.stanceASItxt;...
-                GaitInfo.gaitstate.doubleStanceMeanstdtxt_perc, GaitInfo.gaitstate.doubleStanceASItxt_perc, ...
-                GaitInfo.gaitstate.doubleStanceMeanstdtxt, GaitInfo.gaitstate.doubleStanceASItxt;
-                GaitInfo.gaitstate.swingMeanstdtxt_perc, GaitInfo.gaitstate.swingASItxt_perc, ...
-                GaitInfo.gaitstate.swingMeanstdtxt, GaitInfo.gaitstate.swingASItxt};
-        disp(table(vars(:,1),vars(:,2),vars(:,3),vars(:,4),'VariableNames',varNames,'RowNames',rowNames));
-    end
-end
 if ~plotInfo.showSD
     leftLegState_sd = [];
     rightLegState_sd = [];
 end
 
 %%
-plotHandlesLeft = [];
-plotHandlesRight = [];
-
-
 if isempty(legStateFigure)
     legStateDataFig = figure();
     fullScreen = get(0,'screensize');
@@ -72,9 +59,10 @@ if isempty(legStateFigure)
 else
     legStateDataFig = legStateFigure;
 end
-% set(0, 'DefaultAxesFontSize',12);
 
-%     stairs(legStatePlot,t_right_perc,rightLegState);
+%% Plot the data
+plotHandlesLeft = [];
+plotHandlesRight = [];
 if contains(legToPlot,'left') || contains(legToPlot,'both')
     [plotHandlesLeft,axesHandles] = plotLegStateInFigure(legStateDataFig,axesHandles,GaitInfo.tp,leftLegState_avg,leftLegState_sd,subplotStart,b_addTitle);
 end
@@ -92,39 +80,41 @@ end
 
 plotHandles = [plotHandlesLeft, plotHandlesRight];
 
-%%
-for ii = 1:size(plotHandles,1)
-    set(plotHandles(ii,1),plotInfo.plotProp,plotInfo.plotProp_entries(ii,:));
+%% Set the properties of the plotted lines
+for ii= 1:max(size(plotHandlesLeft,1),size(plotHandlesRight,1))
+    % Set line properties
+    set(plotHandles(ii,1),plotInfo.plotProp,plotInfo.plotProp_entries(1,:));
     if size(plotHandles,2)>2
         set(plotHandles(ii,3),plotInfo.plotProp,plotInfo.plotProp_entries(2,:));
     end
+    
+    % Set fill properties
     if plotInfo.showSD && GaitInfo.b_oneGaitPhase
-        set(plotHandles(ii,2),plotInfo.fillProp,plotInfo.fillProp_entries(ii,:));
+        set(plotHandles(ii,2),plotInfo.fillProp,plotInfo.fillProp_entries(1,:));
         if size(plotHandles,2)>2
             set(plotHandles(ii,4),plotInfo.fillProp,plotInfo.fillProp_entries(2,:));
         end
     end
 end
 
-
-
-if setLegend && contains(saveInfo.info,'prosthetic') && contains(legToPlot,'both')
-    leg = legend(plotHandles([1,3]),'Intact leg','Prosthetic leg');
-    %     leg = legend('Intact leg','Prosthetic leg');
+%% Set legend
+if setLegend && (contains(saveInfo.info,'prosthetic') || contains(saveInfo.info,'amputee')) && contains(legToPlot,'both')
+    % Amputee gait
+    leg = legend([plotHandlesLeft(2,1),plotHandlesRight(2,1)],'Intact leg','Prosthetic leg');
+elseif setLegend && contains(legToPlot,'both')
+    % Healthy gait
+    leg = legend([plotHandlesLeft(2,1),plotHandlesRight(2,1)],'Left leg','Right leg');
 elseif setLegend && ~contains(legToPlot,'both')
     leg = [];
-elseif setLegend && contains(legToPlot,'both')
-    leg = legend(plotHandles([1,3]),'Left leg','Right leg');
 else
     leg = [];
 end
-
-% set(leg,'Location','north');
 if ~isempty(leg)
     set(leg,'FontSize',14);
     set(leg,'Location','best');
 end
 
+%% Save figure if requested
 if saveInfo.b_saveFigure
     saveFigure(legStateFig,'legState',saveInfo.type,saveInfo.info)
 end

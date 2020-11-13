@@ -1,5 +1,19 @@
-function [GaitInfo] = getPartOfGaitData(t,GaitPhaseData,stepTimes,saveInfo,b_oneGaitPhase,timeInterval)
-if nargin < 6 || isempty(timeInterval)
+function [GaitInfo] = getPartOfGaitData(t,GaitPhaseData,stepTimes,b_oneGaitPhase,timeInterval)
+% GETPARTOFGAITDATA                 Function that plots the data of healthy and prosthetic simulation together, with optional 
+%                                   amputee with CMG simulation
+% INPUTS:
+%   - t                             Simulation time vector.
+%   - GaitPhaseData                 Structure with the gait phase data from the simulation
+%   - stepTimes                     Structure with the step time data from simulation.
+%   - b_oneGaitPhase                Optional, indicates whether the data should be presented as average over stride or just all.
+%   - timeInterval                  Optional, select a time interval for which you want to see the data
+%
+% OUTPUTS:
+%   - GaitInfo                      Structure that contains time vector, percentage vector with points on the data has to 
+%                                   be interpolated, stance time, swing  time, double stance time, indices of when a stride 
+%                                   starts and ends
+%%
+if nargin < 5 || isempty(timeInterval)
     idxstart = 1;
     idxend = length(t);
 else
@@ -183,18 +197,3 @@ GaitInfo.t = t;
 GaitInfo.gaitstate = gaitstate;
 GaitInfo.initiation_steps = initiation_steps;
 
-%%
-tWinter = [1.45,1.2,0.96];
-speedsWinter = {'slow','normal','fast'};
-try
-    leftLegSteptimes = stepTimes(stepTimes(:,1)~=0,1);
-    rightLegSteptimes = stepTimes(stepTimes(:,2)~=0,2);
-    meanStepTime = mean([mean(leftLegSteptimes),mean(rightLegSteptimes)]);
-    if isnan(meanStepTime)
-        meanStepTime = 1.2;
-    end
-catch
-    meanStepTime = 1.2;
-end
-% speed2select = find(abs(tWinter - meanStepTime) == min(abs(tWinter - meanStepTime)));
-GaitInfo.WinterDataSpeed = speedsWinter{abs(tWinter - meanStepTime) == min(abs(tWinter - meanStepTime))};

@@ -1,4 +1,24 @@
 function [plotHandles,axesHandles] = plotJointPowerData(angularData,jointTorquesData,plotInfo,GaitInfo,saveInfo,powerDataFigure,axesHandles,subplotStart,legToPlot,b_addTitle)
+% PLOTJOINTPOWERDATA            Function that plots the joint powers
+% INPUTS:
+%   - angularData               Structure with time of the joint angle and angular velocity data from the simulation.
+%   - jointTorquesData          Structure with time of the joint torque data from the simulation.
+%   - plotInfo                  Structure containing linestyle, -width, -color etc.
+%   - GaitInfo                  Structure containing information on where a stride begins and ends, whether to show average
+%                               for stride, or just all the data.
+%   - saveInfo                  Structure with info on how and if to save the figure
+%   - powerDataFigure           Optional, pre-created figure in which the  joint angle data can be plotted.
+%   - axesHandles               Optional, pre-created axes in which the  joint angle data can be plotted.
+%   - subplotStart              Optional, in case of multiple subfigures, this says in which subfigure to start.
+%   - legToPlot                 Optional, select if you want to plot 'both' legs, or 'left', or 'right' leg.
+%   - b_addTitle                Optional, boolean which selects if title of axis has to be put in the figure.
+%
+% OUTPUTS:
+%   - plotHandles               Handles of all the plots, which can be used for later changes in line style etc, or for
+%                               adding a legend.
+%   - axesHandles               Handles of all the axes, which can be used for later changes in axes size, axes title
+%                               locations etc.
+%%
 if nargin < 6
     powerDataFigure = [];
 end
@@ -7,7 +27,6 @@ if nargin < 7
 end
 plotInfo.plotWinterData = false;
 if nargin < 8 || isempty(subplotStart)
-%     subplotStart = 141;
     subplotStart = [1 4 1];
     setLegend = true;
 else
@@ -34,39 +53,39 @@ RankleTorque    =  jointTorquesData.signals.values(:,6);
 LhipRollTorque    =  jointTorquesData.signals.values(:,7);
 RhipRollTorque    =  jointTorquesData.signals.values(:,8);
 
-LhipPowerVel   = angularData.signals.values(:,4);
-RhipPowerVel   = angularData.signals.values(:,6);
+LhipVel   = angularData.signals.values(:,4);
+RhipVel   = angularData.signals.values(:,6);
 
-LkneePowerVel  = angularData.signals.values(:,8);
-RkneePowerVel  = angularData.signals.values(:,10);
+LkneeVel  = angularData.signals.values(:,8);
+RkneeVel  = angularData.signals.values(:,10);
 
-LanklePowerVel = angularData.signals.values(:,12);
-RanklePowerVel = angularData.signals.values(:,14);
+LankleVel = angularData.signals.values(:,12);
+RankleVel = angularData.signals.values(:,14);
 
-LhipRollPowerVel    = angularData.signals.values(:,16);
-RhipRollPowerVel    = angularData.signals.values(:,18);
+LhipRollVel    = angularData.signals.values(:,16);
+RhipRollVel    = angularData.signals.values(:,18);
 
 %%
-LhipPower      =  LhipTorque.*LhipPowerVel;
-RhipPower      =  RhipTorque.*RhipPowerVel;
+LhipPower      =  LhipTorque.*LhipVel;
+RhipPower      =  RhipTorque.*RhipVel;
 
-LkneePower     =  LkneeTorque.*LkneePowerVel;
-RkneePower     =  RkneeTorque.*RkneePowerVel;
+LkneePower     =  LkneeTorque.*LkneeVel;
+RkneePower     =  RkneeTorque.*RkneeVel;
 
-LanklePower    =  LankleTorque.*LanklePowerVel;
-RanklePower    =  RankleTorque.*RanklePowerVel;
+LanklePower    =  LankleTorque.*LankleVel;
+RanklePower    =  RankleTorque.*RankleVel;
 
-LhipRollPower    =  LhipRollTorque.*LhipRollPowerVel;
-RhipRollPower    =  RhipRollTorque.*RhipRollPowerVel;
+LhipRollPower    =  LhipRollTorque.*LhipRollVel;
+RhipRollPower    =  RhipRollTorque.*RhipRollVel;
 
-[LhipPower_avg,LhipPower_sd] = interpData2perc(t,GaitInfo.tp,LhipPower,GaitInfo.start.leftV,GaitInfo.end.leftV,GaitInfo.b_oneGaitPhase);
-[LhipRollPower_avg,LhipRollPower_sd] = interpData2perc(t,GaitInfo.tp,LhipRollPower,GaitInfo.start.leftV,GaitInfo.end.leftV,GaitInfo.b_oneGaitPhase);
-[LkneePower_avg,LkneePower_sd] = interpData2perc(t,GaitInfo.tp,LkneePower,GaitInfo.start.leftV,GaitInfo.end.leftV,GaitInfo.b_oneGaitPhase);
-[LanklePower_avg,LanklePower_sd] = interpData2perc(t,GaitInfo.tp,LanklePower,GaitInfo.start.leftV,GaitInfo.end.leftV,GaitInfo.b_oneGaitPhase);
-[RhipPower_avg,RhipPower_sd] = interpData2perc(t,GaitInfo.tp,RhipPower,GaitInfo.start.rightV,GaitInfo.end.rightV,GaitInfo.b_oneGaitPhase);
-[RhipRollPower_avg,RhipRollPower_sd] = interpData2perc(t,GaitInfo.tp,RhipRollPower,GaitInfo.start.rightV,GaitInfo.end.rightV,GaitInfo.b_oneGaitPhase);
-[RkneePower_avg,RkneePower_sd] = interpData2perc(t,GaitInfo.tp,RkneePower,GaitInfo.start.rightV,GaitInfo.end.rightV,GaitInfo.b_oneGaitPhase);
-[RanklePower_avg,RanklePower_sd] = interpData2perc(t,GaitInfo.tp,RanklePower,GaitInfo.start.rightV,GaitInfo.end.rightV,GaitInfo.b_oneGaitPhase);
+[LhipPower_avg,     LhipPower_sd]       = interpData2perc(t,GaitInfo.tp,LhipPower,GaitInfo.start.leftV,GaitInfo.end.leftV,GaitInfo.b_oneGaitPhase);
+[LhipRollPower_avg, LhipRollPower_sd]   = interpData2perc(t,GaitInfo.tp,LhipRollPower,GaitInfo.start.leftV,GaitInfo.end.leftV,GaitInfo.b_oneGaitPhase);
+[LkneePower_avg,    LkneePower_sd]      = interpData2perc(t,GaitInfo.tp,LkneePower,GaitInfo.start.leftV,GaitInfo.end.leftV,GaitInfo.b_oneGaitPhase);
+[LanklePower_avg,   LanklePower_sd]     = interpData2perc(t,GaitInfo.tp,LanklePower,GaitInfo.start.leftV,GaitInfo.end.leftV,GaitInfo.b_oneGaitPhase);
+[RhipPower_avg,     RhipPower_sd]       = interpData2perc(t,GaitInfo.tp,RhipPower,GaitInfo.start.rightV,GaitInfo.end.rightV,GaitInfo.b_oneGaitPhase);
+[RhipRollPower_avg, RhipRollPower_sd]   = interpData2perc(t,GaitInfo.tp,RhipRollPower,GaitInfo.start.rightV,GaitInfo.end.rightV,GaitInfo.b_oneGaitPhase);
+[RkneePower_avg,    RkneePower_sd]      = interpData2perc(t,GaitInfo.tp,RkneePower,GaitInfo.start.rightV,GaitInfo.end.rightV,GaitInfo.b_oneGaitPhase);
+[RanklePower_avg,   RanklePower_sd]     = interpData2perc(t,GaitInfo.tp,RanklePower,GaitInfo.start.rightV,GaitInfo.end.rightV,GaitInfo.b_oneGaitPhase);
 
 if ~plotInfo.showSD
     LhipPower_sd = [];
@@ -77,63 +96,11 @@ if ~plotInfo.showSD
     RhipRollPower_sd = [];
     RkneePower_sd = [];
     RanklePower_sd = [];
-    
-end
-if plotInfo.showTables
-     varNames = {'LHipAbduction (W/kg)','RHipAbduction (W/kg)','LHipFlexion (W/kg)','RHipFlexion (W/kg)',...
-                'LKneeFlexion (W/kg)','RKneeFlexion (W/kg)','LAnkleDorsiflexion (W/kg)','RAnkleDorsiflexion (W/kg)'};
-    rangeTable = createRangeTable(GaitInfo,varNames,LhipRollPower_avg,RhipRollPower_avg,LhipPower_avg,RhipPower_avg,LkneePower_avg,RkneePower_avg,LanklePower_avg,RanklePower_avg);
-    if ~isempty(rangeTable)
-%         fprintf('Joint power range (W/kg):\n');
-        disp(rangeTable);
-    end
-    
-    LkneePowerStance    =  LkneePower.* GaitInfo.gaitstate.left.StanceV;
-    RkneePowerStance    =  RkneePower.* GaitInfo.gaitstate.right.StanceV;
-    LanklePowerStance   =  LanklePower.* GaitInfo.gaitstate.left.StanceV;
-    RanklePowerStance   =  RanklePower.* GaitInfo.gaitstate.right.StanceV;
-    
-    rowNames = {'knee max Power';'ankle max Power'};
-    
-    for ii = 1:length(GaitInfo.start.leftV)
-        startIdx = GaitInfo.start.leftV(ii);
-        endIdx = GaitInfo.end.leftV(ii);
-        maxLkneePowerStance(ii)   = max(LkneePowerStance(startIdx:endIdx));
-        maxLanklePowerStance(ii)   = max(LanklePowerStance(startIdx:endIdx));
-    end
-    maxLkneePowerStance = reshape(maxLkneePowerStance,1,length(maxLkneePowerStance));
-    maxLanklePowerStance = reshape(maxLanklePowerStance,1,length(maxLanklePowerStance));
-    
-    for ii = 1:length(GaitInfo.start.rightV)
-        startIdx = GaitInfo.start.rightV(ii);
-        endIdx = GaitInfo.end.rightV(ii);
-        maxRkneePowerStance(ii)   = max(RkneePowerStance(startIdx:endIdx));
-        maxRanklePowerStance(ii)   = max(RanklePowerStance(startIdx:endIdx));
-    end
-    maxRkneePowerStance = reshape(maxRkneePowerStance,1,length(maxRkneePowerStance));
-    maxRanklePowerStance = reshape(maxRanklePowerStance,1,length(maxRanklePowerStance));
-        
-    powerKneeASI = getFilterdMean_and_ASI(maxLkneePowerStance,maxRkneePowerStance);
-    powerAnkleASI = getFilterdMean_and_ASI(maxLanklePowerStance,maxRanklePowerStance);
-    
-    if contains(saveInfo.info,'prosthetic')
-        varNames = {'Intact (W/kg)','Prosthetic (W/kg)', 'ASI (%)'};%,'L mean propel impulse (N%/kg)','R mean propel impulse (N%/kg)'};
-        vars = {powerKneeASI.leftTxt, powerKneeASI.rightTxt, powerKneeASI.ASItxt; ...
-                powerAnkleASI.leftTxt, powerAnkleASI.rightTxt, powerAnkleASI.ASItxt};
-        anklePowerTab = (table(vars(:,1),vars(:,2),vars(:,3),'VariableNames',varNames,'RowNames',rowNames));
-        
-    else
-        varNames = {'Total (W/kg)', 'ASI (%)'};%,'L mean propel impulse (N%/kg)','R mean propel impulse (N%/kg)'};
-        vars = {powerKneeASI.totalTxt, powerKneeASI.ASItxt; ...
-                powerAnkleASI.totalTxt, powerAnkleASI.ASItxt};
-        anklePowerTab = (table(vars(:,1),vars(:,2),'VariableNames',varNames,'RowNames',rowNames));
-        
-    end
-    disp(anklePowerTab);
-
 end
 
-%%
+
+
+%% Plot data
 if isempty(powerDataFigure) && isempty(axesHandles)
     PowerDataFig = figure();
     fullScreen = get(0,'screensize');
@@ -141,28 +108,23 @@ if isempty(powerDataFigure) && isempty(axesHandles)
 else
     PowerDataFig = powerDataFigure;
 end
-% if GaitInfo.b_oneGaitPhase && plotInfo.plotWinterData 
-%     [timeWinter, ~,~,~,~,~,~, ~,~,~,~, ...
-%       hipPowerWinter_avg,hipPowerWinter_sd,kneePowerWinter_avg,kneePowerWinter_sd,anklePowerWinter_avg,anklePowerWinter_sd] = getWinterData(GaitInfo.WinterDataSpeed);
-% end
-%%
- plotHandlesLeft = [];
- plotHandlesRight = [];
 
+%%
+plotHandlesLeft     = [];
+plotHandlesRight 	= [];
 
 if contains(legToPlot,'left') || contains(legToPlot,'both')
-    [plotHandlesLeft,axesHandles] = plotPowerDataInFigure(PowerDataFig,axesHandles,GaitInfo.tp,LhipPower_avg,LhipPower_sd,LhipRollPower_avg,LhipRollPower_sd,LkneePower_avg,LkneePower_sd,LanklePower_avg,LanklePower_sd,subplotStart,GaitInfo.b_oneGaitPhase,b_addTitle);
+    [plotHandlesLeft,axesHandles] = plotPowerDataInFigure(PowerDataFig,axesHandles,GaitInfo.tp,LhipPower_avg,LhipPower_sd,LhipRollPower_avg,LhipRollPower_sd,...
+                                                          LkneePower_avg,LkneePower_sd,LanklePower_avg,LanklePower_sd,subplotStart,b_addTitle);
 end
 if  contains(legToPlot,'right') || contains(legToPlot,'both')
     if ~isempty(axesHandles)
         b_addTitle = false;
     end
-    [plotHandlesRight,axesHandles] = plotPowerDataInFigure(PowerDataFig,axesHandles,GaitInfo.tp,RhipPower_avg,RhipPower_sd,RhipRollPower_avg,RhipRollPower_sd,RkneePower_avg,RkneePower_sd,RanklePower_avg,RanklePower_sd,subplotStart,GaitInfo.b_oneGaitPhase,b_addTitle);
+    [plotHandlesRight,axesHandles] = plotPowerDataInFigure(PowerDataFig,axesHandles,GaitInfo.tp,RhipPower_avg,RhipPower_sd,RhipRollPower_avg,RhipRollPower_sd,...
+                                                           RkneePower_avg,RkneePower_sd,RanklePower_avg,RanklePower_sd,subplotStart,b_addTitle);
 end
-% if GaitInfo.b_oneGaitPhase && plotInfo.plotWinterData
-%     [plotHandlesWinter,axesHandles] = plotPowerDataInFigure(PowerDataFig,axesHandles,timeWinter,hipPowerWinter_avg,hipPowerWinter_sd,[],[],kneePowerWinter_avg,kneePowerWinter_sd, ...
-%         anklePowerWinter_avg,anklePowerWinter_sd,subplotStart);
-% end
+
 if setLegend
     if GaitInfo.b_oneGaitPhase
         xlabel(axesHandles(end),'gait cycle ($\%$)');
@@ -171,55 +133,43 @@ if setLegend
     end
 end
 
- plotHandles = [plotHandlesLeft, plotHandlesRight];
- 
-%%
+plotHandles = [plotHandlesLeft, plotHandlesRight];
+
+%% Set the properties of the plotted lines
 for ii= 1:max(size(plotHandlesLeft,1),size(plotHandlesRight,1))
-    
+    % Set line properties
     set(plotHandles(ii,1),plotInfo.plotProp,plotInfo.plotProp_entries(1,:));
-    
     if size(plotHandles,2)>2
         set(plotHandles(ii,3),plotInfo.plotProp,plotInfo.plotProp_entries(2,:));
     end
     
+    % Set fill properties
     if plotInfo.showSD && GaitInfo.b_oneGaitPhase
         set(plotHandles(ii,2),plotInfo.fillProp,plotInfo.fillProp_entries(1,:));
         if size(plotHandles,2)>2
             set(plotHandles(ii,4),plotInfo.fillProp,plotInfo.fillProp_entries(2,:));
         end
     end
-    if GaitInfo.b_oneGaitPhase && plotInfo.plotWinterData && ~isnan(plotHandlesWinter(ii,1))
-        set(plotHandlesWinter(ii,1),plotInfo.plotProp,plotInfo.plotProp_entries(3,:));
-        set(plotHandlesWinter(ii,2),plotInfo.fillProp,plotInfo.fillProp_entries(3,:));
-    end
 end
 
-
-% set(angularDataFig, 'Position',[10,40,1000,930]);
-
-if setLegend && GaitInfo.b_oneGaitPhase && contains(saveInfo.info,'prosthetic') && plotInfo.plotWinterData && contains(legToPlot,'both')
-    leg = legend([plotHandlesLeft(2,1),plotHandlesRight(2,1),plotHandlesWinter(2,1)],'Intact leg','Prosthetic leg', 'Winter data');
-%     leg = legend('Intact leg','Prosthetic leg',char(strcat(string(GaitInfo.WinterDataSpeed), ' gait Winter')) );
-elseif setLegend && GaitInfo.b_oneGaitPhase && plotInfo.plotWinterData && ~contains(legToPlot,'both')
-    leg = legend([plotHandlesLeft(2,1),plotHandlesRight(2,1),plotHandlesWinter(2,1)],'Model', 'Winter data');
-elseif setLegend && GaitInfo.b_oneGaitPhase && plotInfo.plotWinterData  &&contains(legToPlot,'both')
-    leg = legend([plotHandlesLeft(2,1),plotHandlesRight(2,1),plotHandlesWinter(2,1)],'Left leg','Right leg', 'Winter data');
-elseif setLegend && contains(saveInfo.info,'prosthetic') && contains(legToPlot,'both')
+%% Set legend
+if setLegend && (contains(saveInfo.info,'prosthetic') || contains(saveInfo.info,'amputee')) && contains(legToPlot,'both')
+    % Amputee gait
     leg = legend([plotHandlesLeft(2,1),plotHandlesRight(2,1)],'Intact leg','Prosthetic leg');
-%     leg = legend('Intact leg','Prosthetic leg');
+elseif setLegend && contains(legToPlot,'both')
+    % Healthy gait
+    leg = legend([plotHandlesLeft(2,1),plotHandlesRight(2,1)],'Left leg','Right leg');
 elseif setLegend && ~contains(legToPlot,'both')
     leg = [];
-elseif setLegend  && contains(legToPlot,'both')
-    leg = legend([plotHandlesLeft(2,1),plotHandlesRight(2,1)],'Left leg','Right leg');
 else
     leg = [];
 end
-
-% set(leg,'Location','north');
 if ~isempty(leg)
     set(leg,'FontSize',14);
     set(leg,'Location','best');
 end
+
+%% Save figure if requested
 if saveInfo.b_saveFigure
     saveFigure(PowerDataFig,'powerData',saveInfo.type,saveInfo.info)
 end
