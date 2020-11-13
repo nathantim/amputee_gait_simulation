@@ -133,6 +133,7 @@ hatInertia_x = 4.0;
 hatInertia = [hatInertia_x hatInertia_y hatInertia_z];
 
 totalMass = 2*(footMass+shankMass+thighMass)+hatMass;
+totalMassAmputee = (footMass+footProsthMass+shankMass+shankProsthMass+thighMass+thighAmpMass)+hatMass;
 % --------------------------------
 % 1.5 Thigh Segment Pressure Sheet
 % --------------------------------

@@ -2,12 +2,6 @@
 obstacle_height = 0.08;
 obstacle_width = 0.15;
 obstacle_depth = 0.05;
-% obstacle_x = 1.7; %no fall?
-% obstacle_x = 1.8; % fall
-% obstacle_x = 8.65; %fall for Prosthetic_2D 1.2 m/s
-% obstacle_x = 8.10; %fall for Prosthetic_2D 0.9 m/s
-% obstacle_x = 8.4; % fall
-% obstacle_x = 9.070;  %8.75 %fall for Prosthetic_3D 1.2 m/s
 obstacle_x = 9.080;
 obstacle_y = -1.6; %fall for Prosthetic_2D 1.2 m/s
 obstacle_damping = 8E1;
@@ -27,12 +21,7 @@ maxGMTorque = 15; % Nm
 angleOffset = -70 *pi/180; % rad
 maxGammadot = 20; % rad/s
 
-% tripDetectThreshold = -100; % m/s^2   0.9 m/s
-% tripDetectThreshold = -60; % m/s^2   1.2 m/s
-
-% tripDetectThreshold = 1E9*-1500; % m/s^2 2D
 tripDetectThreshold = 2000; % m/s^2
-% tripDetectThreshold = -650; % m/s^2
 
 
 % Modeled Cylinder shell with only rim + solid cylinder, both half the mass
@@ -47,8 +36,7 @@ TargetLegAngleTripFlex = 2/3*pi; % rad
 KpGamma = 20; % Nm/(rad/s)
 KiGamma = 1; % Nm/rad
 
-% KpGammaReset = 10; % Nm/(rad)
-% KdGammaReset = 2; % Nm/(rad/s)
+
 KpGammaReset = 150; % Nm/(rad)
 KdGammaReset = 40; % Nm/(rad/s)
 
@@ -66,8 +54,3 @@ omegaRef = 2100; % rad/s
 zeroOrderHoldTs = 1/1000; % s
 lowpassbandFreq = 80; % Hz
 highpassbandFreq = 10;%3; % Hz
-% CMGmass = 0.0000001;
-
-% idx1 = (find(time==5):(find(GRFData.signals.values(:,1)>470,1,'first')))-13;
-% idx2 = (find(GRFData.signals.values(:,1)>470,1,'first'):(find(GRFData.signals.values(:,1)>470,1,'first')+100))-13;
-% figure(); plot(angularData.signals.values(idx1,7),angularData.signals.values(idx1,8)); hold on; plot(angularData.signals.values(idx2,7),angularData.signals.values(idx2,8)); plot(angularData.signals.values(idx1(end),7),angularData.signals.values(idx1(end),8),'g*');
