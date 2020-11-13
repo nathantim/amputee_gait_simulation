@@ -37,8 +37,8 @@ saveInfo.b_saveFigure   = 0;
 b_oneGaitPhase          = true;
 
 if 1
-    savePath = '../../Thesis Document/fig/';
-%     savePath = '../Thesis Document/fig/';
+%     savePath = '../../Thesis Document/fig/';
+    savePath = '../Thesis Document/fig/';
     saveInfo.type = {'eps'};
     b_withDate = false;
 else
@@ -60,16 +60,19 @@ healthySaveInfo.info = [healthySaveInfo.info, 'healthy'];
 amputeeSaveInfo = saveInfo;
 amputeeSaveInfo.info = [amputeeSaveInfo.info, 'amputee'];
 
-healthyGaitInfo         = getPartOfGaitData(healthyData.angularData.time,       healthyData.GaitPhaseData,       healthyData.stepTimes, b_oneGaitPhase);
-amputeeGaitInfo         = getPartOfGaitData(amputeeData.angularData.time,       amputeeData.GaitPhaseData,       amputeeData.stepTimes, b_oneGaitPhase);
-realHealthyDataGaitInfo = getPartOfGaitData(realHealthyData.angularData.time,   [],                              [],                    false);
+amputeeCMGSaveInfo = saveInfo;
+amputeeCMGSaveInfo.info = [amputeeCMGSaveInfo.info, 'CMG'];
+
+healthyGaitInfo         = getGaitInfo(healthyData.angularData.time,       healthyData.GaitPhaseData,       healthyData.stepTimes, b_oneGaitPhase);
+amputeeGaitInfo         = getGaitInfo(amputeeData.angularData.time,       amputeeData.GaitPhaseData,       amputeeData.stepTimes, b_oneGaitPhase);
+realHealthyDataGaitInfo = getGaitInfo(realHealthyData.angularData.time,   [],                              [],                    false);
 
 if ~isempty(amputeeCMGNotActiveData)
-    amputeeCMGNotActiveGaitInfo   = getPartOfGaitData(amputeeCMGNotActiveData.angularData.time, amputeeCMGNotActiveData.GaitPhaseData, ...
+    amputeeCMGNotActiveGaitInfo   = getGaitInfo(amputeeCMGNotActiveData.angularData.time, amputeeCMGNotActiveData.GaitPhaseData, ...
                                                       amputeeCMGNotActiveData.stepTimes, b_oneGaitPhase);
 end
 if ~isempty(amputeeCMGActiveData)
-    amputeeCMGActiveGaitInfo   = getPartOfGaitData(amputeeCMGActiveData.angularData.time, amputeeCMGActiveData.GaitPhaseData, ...
+    amputeeCMGActiveGaitInfo   = getGaitInfo(amputeeCMGActiveData.angularData.time, amputeeCMGActiveData.GaitPhaseData, ...
                                                    amputeeCMGActiveData.stepTimes, b_oneGaitPhase);
 end
 
@@ -188,11 +191,11 @@ if b_plotAngles
     
     if ~isempty(amputeeCMGNotActiveData)
         subplotStart(3) = subplotStart(3)+subplotStart(2);
-        [plotCMGNotActiveAngle, axesCMGNotActiveAngle] = plotAngularData(amputeeCMGNotActiveData.angularData,plotInfo,amputeeCMGNotActiveGaitInfo,amputeeSaveInfo,angularDataFig,[],subplotStart,'both',false);
+        [plotCMGNotActiveAngle, axesCMGNotActiveAngle] = plotAngularData(amputeeCMGNotActiveData.angularData,plotInfo,amputeeCMGNotActiveGaitInfo,amputeeCMGSaveInfo,angularDataFig,[],subplotStart,'both',false);
     end
     if ~isempty(amputeeCMGActiveData)
         subplotStart(3) = subplotStart(3)+subplotStart(2);
-        [plotCMGActiveAngle, axesCMGActiveAngle] = plotAngularData(amputeeCMGActiveData.angularData,plotInfo,amputeeCMGActiveGaitInfo,amputeeSaveInfo,angularDataFig,[],subplotStart,'both',false);
+        [plotCMGActiveAngle, axesCMGActiveAngle] = plotAngularData(amputeeCMGActiveData.angularData,plotInfo,amputeeCMGActiveGaitInfo,amputeeCMGSaveInfo,angularDataFig,[],subplotStart,'both',false);
     end
     
     % Set line and fill properties
@@ -295,11 +298,11 @@ if b_plotTorques
     
     if ~isempty(amputeeCMGNotActiveData)
         subplotStart(3) = subplotStart(3)+subplotStart(2);
-        [plotCMGNotActiveTorque, axesCMGNotActiveTorque] = plotJointTorqueData(amputeeCMGNotActiveData.jointTorquesData,plotInfo,amputeeCMGNotActiveGaitInfo,amputeeSaveInfo,torqueDataFig,[],subplotStart,'both',false);
+        [plotCMGNotActiveTorque, axesCMGNotActiveTorque] = plotJointTorqueData(amputeeCMGNotActiveData.jointTorquesData,plotInfo,amputeeCMGNotActiveGaitInfo,amputeeCMGSaveInfo,torqueDataFig,[],subplotStart,'both',false);
     end
     if ~isempty(amputeeCMGActiveData)
         subplotStart(3) = subplotStart(3)+subplotStart(2);
-        [plotCMGActiveTorque, axesCMGActiveTorque] = plotJointTorqueData(amputeeCMGActiveData.jointTorquesData,plotInfo,amputeeCMGActiveGaitInfo,amputeeSaveInfo,torqueDataFig,[],subplotStart,'both',false);
+        [plotCMGActiveTorque, axesCMGActiveTorque] = plotJointTorqueData(amputeeCMGActiveData.jointTorquesData,plotInfo,amputeeCMGActiveGaitInfo,amputeeCMGSaveInfo,torqueDataFig,[],subplotStart,'both',false);
     end
     
     % Set line and fill properties
@@ -394,12 +397,12 @@ if b_plotPowers
     
     if ~isempty(amputeeCMGNotActiveData)
         subplotStart(3) = subplotStart(3)+subplotStart(2);
-        [plotCMGNotActivePower, axesCMGNotActivePower] = plotJointPowerData(amputeeCMGNotActiveData.angularData,amputeeCMGNotActiveData.jointTorquesData,plotInfo,amputeeCMGNotActiveGaitInfo,amputeeSaveInfo,powerDataFig,[],subplotStart,'both',false);
+        [plotCMGNotActivePower, axesCMGNotActivePower] = plotJointPowerData(amputeeCMGNotActiveData.angularData,amputeeCMGNotActiveData.jointTorquesData,plotInfo,amputeeCMGNotActiveGaitInfo,amputeeCMGSaveInfo,powerDataFig,[],subplotStart,'both',false);
         
     end
     if ~isempty(amputeeCMGActiveData)
         subplotStart(3) = subplotStart(3)+subplotStart(2);
-        [plotCMGActivePower, axesCMGActivePower] = plotJointPowerData(amputeeCMGActiveData.angularData,amputeeCMGActiveData.jointTorquesData,plotInfo,amputeeCMGActiveGaitInfo,amputeeSaveInfo,powerDataFig,[],subplotStart,'both',false);
+        [plotCMGActivePower, axesCMGActivePower] = plotJointPowerData(amputeeCMGActiveData.angularData,amputeeCMGActiveData.jointTorquesData,plotInfo,amputeeCMGActiveGaitInfo,amputeeCMGSaveInfo,powerDataFig,[],subplotStart,'both',false);
     end
     
     % Set line and fill properties
@@ -494,11 +497,11 @@ if b_plotGRF
     
     if ~isempty(amputeeCMGNotActiveData)
         subplotStart(3) = subplotStart(3)+subplotStart(2);
-        [plotCMGNotActiveGRF, axesCMGNotActiveGRF] = plotGRFData(amputeeCMGNotActiveData.GRFData,plotInfo,amputeeCMGNotActiveGaitInfo,amputeeSaveInfo,GRFDataFig,[],subplotStart,'both',false);
+        [plotCMGNotActiveGRF, axesCMGNotActiveGRF] = plotGRFData(amputeeCMGNotActiveData.GRFData,plotInfo,amputeeCMGNotActiveGaitInfo,amputeeCMGSaveInfo,GRFDataFig,[],subplotStart,'both',false);
     end
     if ~isempty(amputeeCMGActiveData)
         subplotStart(3) = subplotStart(3)+subplotStart(2);
-        [plotCMGActiveGRF, axesCMGActiveGRF] = plotGRFData(amputeeCMGActiveData.GRFData,plotInfo,amputeeCMGActiveGaitInfo,amputeeSaveInfo,GRFDataFig,[],subplotStart,'both',false);
+        [plotCMGActiveGRF, axesCMGActiveGRF] = plotGRFData(amputeeCMGActiveData.GRFData,plotInfo,amputeeCMGActiveGaitInfo,amputeeCMGSaveInfo,GRFDataFig,[],subplotStart,'both',false);
     end
     
     % Set line and fill properties
@@ -593,11 +596,11 @@ if b_plotMuscle
     
     if ~isempty(amputeeCMGNotActiveData)
         subplotStart(3) = subplotStart(3)+subplotStart(2);
-        [plotCMGNotActiveMusc, axesCMGNotActiveMusc] = plotMusculoData(amputeeCMGNotActiveData.musculoData,plotInfo,amputeeCMGNotActiveGaitInfo,amputeeSaveInfo,musculoDataFig,[],subplotStart,'both',false);
+        [plotCMGNotActiveMusc, axesCMGNotActiveMusc] = plotMusculoData(amputeeCMGNotActiveData.musculoData,plotInfo,amputeeCMGNotActiveGaitInfo,amputeeCMGSaveInfo,musculoDataFig,[],subplotStart,'both',false);
     end
     if ~isempty(amputeeCMGActiveData)
         subplotStart(3) = subplotStart(3)+subplotStart(2);
-        [plotCMGActiveMusc, axesCMGActiveMusc] = plotMusculoData(amputeeCMGActiveData.musculoData,plotInfo,amputeeCMGActiveGaitInfo,amputeeSaveInfo,musculoDataFig,[],subplotStart,'both',false);
+        [plotCMGActiveMusc, axesCMGActiveMusc] = plotMusculoData(amputeeCMGActiveData.musculoData,plotInfo,amputeeCMGActiveGaitInfo,amputeeCMGSaveInfo,musculoDataFig,[],subplotStart,'both',false);
     end
     
     % Set line and fill properties
@@ -673,11 +676,11 @@ if plotInfo.showTables
     
     if ~isempty(amputeeCMGNotActiveData)
         fprintf('\n<strong>Amputee with inactive CMG gait tables</strong> \n');
-        getAndDisplayTables(amputeeCMGNotActiveData,amputeeCMGNotActiveGaitInfo,amputeeSaveInfo);
+        getAndDisplayTables(amputeeCMGNotActiveData,amputeeCMGNotActiveGaitInfo,amputeeCMGSaveInfo);
     end
     if ~isempty(amputeeCMGActiveData)
         fprintf('\n<strong>Amputee with active CMG gait tables</strong> \n');
-        getAndDisplayTables(amputeeCMGActiveData,amputeeCMGActiveGaitInfo,amputeeSaveInfo);
+        getAndDisplayTables(amputeeCMGActiveData,amputeeCMGActiveGaitInfo,amputeeCMGSaveInfo);
     end
 end
 

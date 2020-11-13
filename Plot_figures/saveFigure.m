@@ -12,7 +12,10 @@ if nargin < 6 || isempty(path)
         mkdir(path);
     end
 end
-
+if ~isempty(info)
+   info = strrep(info,'0.9m/s','0_9ms'); 
+   info = strrep(info,'1.2m/s','1_2ms'); 
+end
 if ~isempty(fig)
     set(fig,'PaperOrientation','landscape')
     set(fig,'PaperType','a2')

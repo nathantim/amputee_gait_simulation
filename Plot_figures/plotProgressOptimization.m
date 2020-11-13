@@ -106,7 +106,7 @@ try
             saveInfo.b_saveFigure = 0;
             saveInfo.info = dataStruct.modelType;
             
-            GaitInfo = getPartOfGaitData(t,dataStruct.kinematics.GaitPhaseData,dataStruct.kinematics.stepTimes,b_oneGaitPhase);
+            GaitInfo = getGaitInfo(t,dataStruct.kinematics.GaitPhaseData,dataStruct.kinematics.stepTimes,b_oneGaitPhase);
             
             
             dataStruct.kinematics.jointTorquesData.signals.values    = dataStruct.kinematics.jointTorquesData.signals.values./getBodyMass();
@@ -159,7 +159,7 @@ try
                 end
                 plotInfoTemp = plotInfo;
                 plotInfoTemp.plotProp_entries = plotInfoTemp.plotProp_entries(end,:);
-                GaitInfoFukuchi = getPartOfGaitData(FukuchiData2Plot.angularData.time,[],[],saveInfo,false);
+                GaitInfoFukuchi = getGaitInfo(FukuchiData2Plot.angularData.time,[],[],saveInfo,false);
                 if ~isempty(axesAngle)
                     [plotAngleFukuchi,~] = plotAngularData(FukuchiData2Plot.angularData,plotInfoTemp,GaitInfoFukuchi,saveInfo,[],axesAngle,[1 4 1],'right');
                     set(plotAngleFukuchi(2,1),'DisplayName','Fukuchi');

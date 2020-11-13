@@ -1,5 +1,5 @@
-function [GaitInfo] = getPartOfGaitData(t,GaitPhaseData,stepTimes,b_oneGaitPhase,timeInterval)
-% GETPARTOFGAITDATA                 Function that plots the data of healthy and prosthetic simulation together, with optional 
+function [GaitInfo] = getGaitInfo(t,GaitPhaseData,stepTimes,b_oneGaitPhase,timeInterval)
+% GETGAITINFO                       Function that plots the data of healthy and prosthetic simulation together, with optional 
 %                                   amputee with CMG simulation
 % INPUTS:
 %   - t                             Simulation time vector.

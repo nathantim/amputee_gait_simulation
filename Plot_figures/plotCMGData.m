@@ -1,4 +1,25 @@
-function [axesHandles] = plotCMGData(CMGData,plotInfo,GaitInfo,saveInfoInput,CMGDataFigure,axesHandles,subplotStart,b_addTitle,b_addAxesTitle,b_addLegend,showCollision)
+function [axesHandles] = plotCMGData(CMGData,plotInfo,GaitInfo,saveInfo,CMGDataFigure,axesHandles,subplotStart,b_addTitle,b_addAxesTitle,b_addLegend,tCollision)
+% PLOTCMGDATA                       Function that plots the data of healthy and prosthetic simulation together, with optional 
+%                                   amputee with CMG simulation
+% INPUTS:
+%   - angularData               Structure with time of the joint angle and angular velocity data from the simulation.
+%   - plotInfo                  Structure containing linestyle, -width, -color etc.
+%   - GaitInfo                  Structure containing information on where a stride begins and ends, whether to show average
+%                               for stride, or just all the data.
+%   - saveInfo                  Structure with info on how and if to save the figure
+%   - CMGDataFigure             Optional, pre-created figure in which the CMG data can be plotted.
+%   - axesHandles               Optional, pre-created axes in which the CMG data can be plotted.
+%   - subplotStart              Optional, in case of multiple subfigures, this says in which subfigure to start.
+%   - legToPlot                 Optional, select if you want to plot 'both' legs, or 'left', or 'right' leg.
+%   - b_addTitle                Optional, boolean which selects if title of figure has to be put in the figure.
+%   - b_addAxesTitle            Optional, boolean which selects if title of axis has to be put in the figure.
+%   - b_addLegend               Optional, boolean which selects if legend is shown in the figure.
+%   - b_showCollision           Optional, boolean which selects if moment of collision and active trip prevention is shown.
+%
+% OUTPUTS:
+%   - axesHandles               Handles of all the axes, which can be used for later changes in axes size, axes title
+%    
+%%
 if nargin <5
    CMGDataFigure = []; 
 end
@@ -17,18 +38,14 @@ end
 if nargin < 10
     b_addLegend = true;
 end
-if nargin < 11
-   showCollision = false; 
+if nargin < 11 || isempty(tCollision)
+   b_showCollision = false; 
+else
+    % time of trip and time trip prevention active
+    b_showCollision = true;
+    t_CMGPreventActive = [CMGData.time( find(CMGData.signals.values(:,14)~=0,1,'first')) CMGData.time( find(CMGData.signals.values(:,14)~=0,1,'last'))];
 end
 idxSkip = subplotStart(2);
-
-if ~isstruct(saveInfoInput)
-   saveInfo.info = saveInfoInput;
-   saveInfo.b_saveFigure = b_saveFigure;
-   saveInfo.type = {'jpeg','eps','emf'};
-else
-    saveInfo = saveInfoInput;
-end
 
 t = CMGData.time;
 
@@ -49,17 +66,17 @@ deltaHmag           = CMGData.signals.values(:,13);
 % gyroscopicTorqueL   = CMGData.signals.values(:,17);
 
 %%
-[gamma_avg,gamma_sd] = interpData2perc(t,GaitInfo.tp,gamma,GaitInfo.start.rightV,GaitInfo.end.rightV,GaitInfo.b_oneGaitPhase);
-[gammadot_avg,gammadot_sd] = interpData2perc(t,GaitInfo.tp,gammadot,GaitInfo.start.rightV,GaitInfo.end.rightV,GaitInfo.b_oneGaitPhase);
-[gammadotref_avg,gammadotref_sd] = interpData2perc(t,GaitInfo.tp,gammadotref,GaitInfo.start.rightV,GaitInfo.end.rightV,GaitInfo.b_oneGaitPhase);
-[torqueTotal_avg,torqueTotal_sd] = interpData2perc(t,GaitInfo.tp,torqueTotal,GaitInfo.start.rightV,GaitInfo.end.rightV,GaitInfo.b_oneGaitPhase);
-[torqueReset_avg,torqueReset_sd] = interpData2perc(t,GaitInfo.tp,torqueReset,GaitInfo.start.rightV,GaitInfo.end.rightV,GaitInfo.b_oneGaitPhase);
-[torqueLowLevel_avg,torqueLowLevel_sd] = interpData2perc(t,GaitInfo.tp,torqueLowLevel,GaitInfo.start.rightV,GaitInfo.end.rightV,GaitInfo.b_oneGaitPhase);
-[torqueFeedForward_avg,torqueFeedForward_sd] = interpData2perc(t,GaitInfo.tp,torqueFeedForward,GaitInfo.start.rightV,GaitInfo.end.rightV,GaitInfo.b_oneGaitPhase);
-[Hmag_avg,Hmag_sd] = interpData2perc(t,GaitInfo.tp,Hmag,GaitInfo.start.rightV,GaitInfo.end.rightV,GaitInfo.b_oneGaitPhase);
-[deltaH_ML_avg,deltaH_ML_sd] = interpData2perc(t,GaitInfo.tp,deltaH_ML,GaitInfo.start.rightV,GaitInfo.end.rightV,GaitInfo.b_oneGaitPhase);
-[deltaH_AP_avg,deltaH_AP_sd] = interpData2perc(t,GaitInfo.tp,deltaH_AP,GaitInfo.start.rightV,GaitInfo.end.rightV,GaitInfo.b_oneGaitPhase);
-[deltaHmag_avg,deltaHmag_sd] = interpData2perc(t,GaitInfo.tp,deltaHmag,GaitInfo.start.rightV,GaitInfo.end.rightV,GaitInfo.b_oneGaitPhase);
+[gamma_avg,             gamma_sd]               = interpData2perc(t,GaitInfo.tp,gamma,GaitInfo.start.rightV,GaitInfo.end.rightV,GaitInfo.b_oneGaitPhase);
+[gammadot_avg,          gammadot_sd]            = interpData2perc(t,GaitInfo.tp,gammadot,GaitInfo.start.rightV,GaitInfo.end.rightV,GaitInfo.b_oneGaitPhase);
+[gammadotref_avg,       gammadotref_sd]         = interpData2perc(t,GaitInfo.tp,gammadotref,GaitInfo.start.rightV,GaitInfo.end.rightV,GaitInfo.b_oneGaitPhase);
+[torqueTotal_avg,       torqueTotal_sd]         = interpData2perc(t,GaitInfo.tp,torqueTotal,GaitInfo.start.rightV,GaitInfo.end.rightV,GaitInfo.b_oneGaitPhase);
+[torqueReset_avg,       torqueReset_sd]         = interpData2perc(t,GaitInfo.tp,torqueReset,GaitInfo.start.rightV,GaitInfo.end.rightV,GaitInfo.b_oneGaitPhase);
+[torqueLowLevel_avg,    torqueLowLevel_sd]      = interpData2perc(t,GaitInfo.tp,torqueLowLevel,GaitInfo.start.rightV,GaitInfo.end.rightV,GaitInfo.b_oneGaitPhase);
+[torqueFeedForward_avg, torqueFeedForward_sd]   = interpData2perc(t,GaitInfo.tp,torqueFeedForward,GaitInfo.start.rightV,GaitInfo.end.rightV,GaitInfo.b_oneGaitPhase);
+[Hmag_avg,              Hmag_sd]                = interpData2perc(t,GaitInfo.tp,Hmag,GaitInfo.start.rightV,GaitInfo.end.rightV,GaitInfo.b_oneGaitPhase);
+[deltaH_ML_avg,         deltaH_ML_sd]           = interpData2perc(t,GaitInfo.tp,deltaH_ML,GaitInfo.start.rightV,GaitInfo.end.rightV,GaitInfo.b_oneGaitPhase);
+[deltaH_AP_avg,         deltaH_AP_sd]           = interpData2perc(t,GaitInfo.tp,deltaH_AP,GaitInfo.start.rightV,GaitInfo.end.rightV,GaitInfo.b_oneGaitPhase);
+[deltaHmag_avg,         deltaHmag_sd]           = interpData2perc(t,GaitInfo.tp,deltaHmag,GaitInfo.start.rightV,GaitInfo.end.rightV,GaitInfo.b_oneGaitPhase);
 % [gyroscopicTorqueML_avg,gyroscopicTorqueML_sd] = interpData2perc(t,GaitInfo.tp,gyroscopicTorqueML,GaitInfo.start.rightV,GaitInfo.end.rightV,GaitInfo.b_oneGaitPhase);
 % [gyroscopicTorqueAP_avg,gyroscopicTorqueAP_sd] = interpData2perc(t,GaitInfo.tp,gyroscopicTorqueAP,GaitInfo.start.rightV,GaitInfo.end.rightV,GaitInfo.b_oneGaitPhase);
 % [gyroscopicTorqueL_avg,gyroscopicTorqueL_sd] = interpData2perc(t,GaitInfo.tp,gyroscopicTorqueL,GaitInfo.start.rightV,GaitInfo.end.rightV,GaitInfo.b_oneGaitPhase);
@@ -98,13 +115,11 @@ if isempty(axesHandles)
 end
 fontSizeLeg = 16;
 
-%% Angle
+%% Plot GM Angle
 axidx = 1;
 axesHandles(axidx) = subplot(subplotStart(1),subplotStart(2),subplotStart(3),axesHandles(axidx)); 
 subplotStart(3) = subplotStart(3) + idxSkip;
 
-t_trip = 7.2190;
-t_CMGPreventActive = [7.4450 7.8830];
 
 if ~isempty(gamma_sd)
     plotHandles1(1,2) = fill(axesHandles(axidx),[GaitInfo.tp;flipud(GaitInfo.tp)],[gamma_avg-gamma_sd;flipud(gamma_avg+gamma_sd)],[0.8 0.8 0.8]);
@@ -114,8 +129,8 @@ end
 hold(axesHandles(axidx),'on');   
 plotHandles1(1,1) = plot(axesHandles(axidx), GaitInfo.tp,gamma_avg); 
 
-if showCollision
-    plotHandles1(2,1) = plot(axesHandles(axidx), [t_trip, t_trip], get(axesHandles(axidx)).YLim,'--o','Color','#454545');
+if b_showCollision
+    plotHandles1(2,1) = plot(axesHandles(axidx), [tCollision, tCollision], get(axesHandles(axidx)).YLim,'--o','Color','#454545');
     plotHandles1(3,1) = plot(axesHandles(axidx), t_CMGPreventActive, ones(1,2)*get(axesHandles(axidx)).YLim(2)-0.001,'-*','color','#9F9F9F');
     h = get(axesHandles(axidx),'children');
     set(axesHandles(axidx),'children',[h(3:end); h(1:2)] );
@@ -140,7 +155,7 @@ for ii = 1:1
     end
 end
     
-%% Angular velocity
+%% Plot GM Angular velocity and reference
 axidx = 2;
 axesHandles(axidx) = subplot(subplotStart(1),subplotStart(2),subplotStart(3),axesHandles(axidx)); 
 subplotStart(3) = subplotStart(3) + idxSkip;
@@ -182,7 +197,7 @@ for ii = 1:size(plotHandles2,1)
 end
 
 
-%% torque
+%% Plot GM torque
 taumax = 15;
 axidx = 3;
 axesHandles(axidx) = subplot(subplotStart(1),subplotStart(2),subplotStart(3),axesHandles(axidx)); 
@@ -227,7 +242,7 @@ for ii = 1:size(plotHandles3,1) - 2
     end
 end
 
-%% Angular momentum
+%% Plot exchanged Angular momentum
 axidx = 4;
 axesHandles(axidx) = subplot(subplotStart(1),subplotStart(2),subplotStart(3),axesHandles(axidx)); 
 subplotStart(3) = subplotStart(3) + idxSkip;
@@ -279,10 +294,10 @@ for ii = 1:size(plotHandles4,1)
 end
 
 %% Plot moment of collision and trip prevention active
-if showCollision
+if b_showCollision
     for jj = 2:length(axesHandles)
         axidx = jj;
-        plot(axesHandles(axidx), [t_trip, t_trip], get(axesHandles(axidx)).YLim,'--o','Color','#454545','HandleVisibility','off');
+        plot(axesHandles(axidx), [tCollision, tCollision], get(axesHandles(axidx)).YLim,'--o','Color','#454545','HandleVisibility','off');
         plot(axesHandles(axidx), t_CMGPreventActive, ones(1,2)*get(axesHandles(axidx)).YLim(2)-0.001,'-*','color','#9F9F9F','HandleVisibility','off');
         h = get(axesHandles(axidx),'children');
         set(axesHandles(axidx),'children',[h(3:end); h(1:2)] );
