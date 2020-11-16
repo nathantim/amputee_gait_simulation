@@ -1,6 +1,6 @@
 %% set initial conditions
 % conditions from Song
-vxInit             = (target_velocity); %[m/s]
+vxInit             = (innerOptSettings.targetVelocity); %[m/s]
 vzInit = 0; % not optimize
 xInit      = .2; % not optimize
 yInit      = -hatLeftHipToCenterDistWidth;% not optimize
@@ -14,7 +14,7 @@ RphiAnkle0      = 0.95  	*90*pi/180 - pi/2; %[rad]
 RphiKnee0       = pi - 1.09  	*165*pi/180; %[rad]
 RphiHip0        = -2.8*(0.97   	*200*pi/180 - pi); %[rad]
 
-vyInit = 0.2*(target_velocity/1.3); %.2
+vyInit = 0.2*(innerOptSettings.targetVelocity/1.3); %.2
 yawInit    = pi/180; % not optimize
 rollInit   = -(-1)*pi/180;
 LphiHipR0       = (1)*pi/180; %[rad]

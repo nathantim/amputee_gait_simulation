@@ -27,7 +27,8 @@ end
 
 %% Initialize parameters
 [innerOptSettings,opts] = setInnerOptSettings(model,'initialGainsFilename',initialGainsFilename,'resume',b_resumeOptimization,...
-                                                    'optimizationInfo',optimizationInfo, 'targetVelocity', 1.2,'timeOut', 20*60);
+                                                    'optimizationInfo',optimizationInfo, 'targetVelocity', 1.2,'timeOut', 20*60,...
+                                                    'CMGdeltaHFactor', 0);
 
 InitialGuessFile = load([innerOptSettings.optimizationDir filesep 'initialGains.mat']);
 InitialGuess = [InitialGuessFile.GainsSagittal;InitialGuessFile.initConditionsSagittal;...

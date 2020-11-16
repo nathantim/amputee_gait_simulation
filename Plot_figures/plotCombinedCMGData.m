@@ -1,4 +1,4 @@
-function plotCombinedCMGData(amputeeCMGactive,amputeeTripPrevent,b_saveTotalFig)
+function plotCombinedCMGData(amputeeCMGactive,amputeeTripPrevent,initiationSteps,b_saveTotalFig)
 % PLOTCOMBINEDCMGDATA Function plots the averaged CMG data during a stride and the CMG data during trip prevention
 % INPUTS:
 %   - amputeeCMGactive       is the simout struct that contains the CMGData of the amputee model walking with active CMG
@@ -9,6 +9,9 @@ function plotCombinedCMGData(amputeeCMGactive,amputeeTripPrevent,b_saveTotalFig)
 
 %%
 if nargin < 3
+    initiationSteps = 0;
+end
+if nargin < 4
     b_saveTotalFig = false;
 end
 saveInfo = struct;
@@ -41,8 +44,8 @@ plotInfo.edgeVec = {'none';'none';'none';'none'};% {[0.8 0.8 0.8],0.5,'none'};
 plotInfo.fillProp_entries = [plotInfo.fillVal,faceAlpha,plotInfo.fillVal,plotInfo.edgeVec];
 plotInfo.showTables = b_oneGaitPhase;
 
-GaitInfoWalk = getGaitInfo(amputeeCMGactive.angularData.time,amputeeCMGactive.GaitPhaseData,amputeeCMGactive.stepTimes,true,[]);
-GaitInfoTrip = getGaitInfo(amputeeTripPrevent.angularData.time,amputeeTripPrevent.GaitPhaseData,amputeeTripPrevent.stepTimes,false,[7 8]);
+GaitInfoWalk = getGaitInfo(amputeeCMGactive.angularData.time,amputeeCMGactive.GaitPhaseData,amputeeCMGactive.stepTimes,true,initiationSteps,[]);
+GaitInfoTrip = getGaitInfo(amputeeTripPrevent.angularData.time,amputeeTripPrevent.GaitPhaseData,amputeeTripPrevent.stepTimes,false,initiationSteps,[7 8]);
 
 amputeeTripPrevent.GRFData.signals.values = amputeeTripPrevent.GRFData.signals.values/getBodyMass('CMG');
 

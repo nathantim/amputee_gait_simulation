@@ -1,6 +1,7 @@
 bdclose('all'); clearvars; close all; clc
-%%
 setup_paths;
+
+%%
 if input(['\nDo you want to \n' '(1) simulate, or \n' '(0) load datafiles? \n' '(Note: simulation can takes some time, (30-60 min)   '])
     %% Simulating the models
     modelsSelected = [str2num(input(['\nWhich simulations do you want to run? \n '...
@@ -36,7 +37,7 @@ if input(['\nDo you want to \n' '(1) simulate, or \n' '(0) load datafiles? \n' '
             outPut = evalc('demorun');
         catch ME
             cd ..
-            error(ME.message);
+            error([ME.message, '\n   File: %s Line: %d \n   Location: %s'], (ME.stack(1).name) ,ME.stack(1).line, ME.stack(1).file);
         end
         
         % Save output from the script
@@ -55,7 +56,7 @@ if input(['\nDo you want to \n' '(1) simulate, or \n' '(0) load datafiles? \n' '
     toc;
     close(hwb);
     
-    %% Setting the results
+    %% Setting the results to variables
     realHealthy3D                       = load('Plot_figures/Data/FukuchiData.mat','gaitData');
     realHealthy3D09                     = realHealthy3D.gaitData.v0_9;
     realHealthy3D12                     = realHealthy3D.gaitData.v1_2;
@@ -86,22 +87,24 @@ else
 end
 
 %% Plotting and animating the results
+initiationSteps = '5';
+
 plotSelected = [str2num(input(['\nWhich results do you want to plot? \n '...
     '  (1) Gait at 0.9 m/s \n '...
     '  (2) Gait at 1.2 m/s \n '...
     '  (3) CMG data during walking and trip prevention \n '...
     ' You can select multiple animations or leave it empty           '],'s'))];
-b_saveFigures = (input('\nDo you want to save the figure(s)?  (1/0)   '));
-if b_saveFigures
+
+if (input('\nDo you want to save the figure(s)?  (1/0)   '))
     b_saveFigures = 'true';
 else
     b_saveFigures = 'false';
 end
 
 plotCommands = { ...
-    ['plotHealthyProstheticData(realHealthy3D09,healthy3D09.simout,prosthetic3D09.simout,[],[],''0.9m/s'',' b_saveFigures ')'];...
-    ['plotHealthyProstheticData(realHealthy3D12,healthy3D12.simout,prosthetic3D12.simout,prosthetic3DCMGNOTActive.simout,prosthetic3DCMGActive.simout,''1.2m/s'',' b_saveFigures ');'];...
-    ['plotCombinedCMGData(prosthetic3DCMGActive.simout,prosthetic3DCMGTripPrevent.simout, ' b_saveFigures ');']};
+    ['plotHealthyProstheticData(realHealthy3D09,healthy3D09.simout,prosthetic3D09.simout,[],[],' initiationSteps ',''0.9m/s'',' b_saveFigures ')'];...
+    ['plotHealthyProstheticData(realHealthy3D12,healthy3D12.simout,prosthetic3D12.simout,prosthetic3DCMGNOTActive.simout,prosthetic3DCMGActive.simout,' initiationSteps ',''1.2m/s'',' b_saveFigures ');'];...
+    ['plotCombinedCMGData(prosthetic3DCMGActive.simout,prosthetic3DCMGTripPrevent.simout,' initiationSteps ', ' b_saveFigures ');']};
 
 animSelected = [str2num(input(['\nWhich gaits do you want to animate? \n '...
     '  (1) Healthy model gait at 0.9 m/s \n '...
@@ -113,8 +116,8 @@ animSelected = [str2num(input(['\nWhich gaits do you want to animate? \n '...
     '  (7) Amputee model tripping and falling over obstacle \n '...
     '  (8) Amputee model trip prevented \n '...
     ' You can select multiple animations or leave it empty           '],'s'))];
-b_createVideo = (input('\nDo you want to create a video of the animation?  (1/0)   '));
-if b_createVideo
+
+if (input('\nDo you want to create a video of the animation?  (1/0)   '))
     b_createVideo = 'true';
 else
     b_createVideo = 'false';

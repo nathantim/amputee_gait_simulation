@@ -11,8 +11,7 @@ load(['Results' filesep gainfiles{1}]);
 BodyMechParams;
 ControlParams;
 Prosthesis3R60Params;
-OptimParams;
-innerOptSettings = setInnerOptSettings('eval');
+innerOptSettings = setInnerOptSettings(model,'resume','eval');
 
 load_system(model);
 
@@ -46,9 +45,9 @@ simout = parsim(in, 'ShowProgress', true);
 
 %%
 for idxSim = 1:length(simout)
-    innerOptSettings.target_velocity    = targetVel(idxSim);
-    innerOptSettings.min_velocity       = targetVel(idxSim);
-    innerOptSettings.max_velocity       = targetVel(idxSim);
+    innerOptSettings.targetVelocity    = targetVel(idxSim);
+    innerOptSettings.minVelocity       = targetVel(idxSim);
+    innerOptSettings.maxVelocity       = targetVel(idxSim);
     mData=simout(idxSim).getSimulationMetadata();
     
     if strcmp(mData.ExecutionInfo.StopEvent,'DiagnosticError')

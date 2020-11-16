@@ -35,7 +35,7 @@ try
     else
          modelType = [modelType, '2D'];
     end
-    modelType = [modelType, char(num2str(innerOptSettings.target_velocity)) 'ms'];
+    modelType = [modelType, char(num2str(innerOptSettings.targetVelocity)) 'ms'];
     
     dataStruct = struct('modelType',[],'timeCost',struct('data',[],'minimize',1,'info',''),'cost',struct('data',nan,'minimize',1,'info',''),'CoT',struct('data',[],'minimize',1,'info',[]),...
         'E',struct('data',[],'minimize',1,'info',[]),'sumTstop',struct('data',[],'minimize',1,'info',''),...
@@ -95,8 +95,8 @@ try
     
     %% 
     % Check if sufficient steps are made
-    if max(stepNumbers.signals.values(:,1)) < innerOptSettings.initiation_steps && max(stepNumbers.signals.values(:,1)) < innerOptSettings.initiation_steps
-        velCost = 9999999*( innerOptSettings.initiation_steps/min([max(stepNumbers.signals.values(:,1)),max(stepNumbers.signals.values(:,2))]) );
+    if max(stepNumbers.signals.values(:,1)) < innerOptSettings.initiationSteps && max(stepNumbers.signals.values(:,1)) < innerOptSettings.initiationSteps
+        velCost = 9999999*( innerOptSettings.initiationSteps/min([max(stepNumbers.signals.values(:,1)),max(stepNumbers.signals.values(:,2))]) );
         fprintf('-- Insufficient steps -- \n')
         meanVel = nan;
         ASIVel.ASImean = nan;
@@ -104,11 +104,11 @@ try
         stepTimeASIstruct.ASImean = nan;
     else
         %% Calculate velocity cost
-        [velCost,meanVel, ASIVel] = getVelMeasure(HATPosVel,stepNumbers,innerOptSettings.min_velocity,innerOptSettings.max_velocity,innerOptSettings.initiation_steps);
+        [velCost,meanVel, ASIVel] = getVelMeasure(HATPosVel,stepNumbers,innerOptSettings.minVelocity,innerOptSettings.maxVelocity,innerOptSettings.initiationSteps);
         
         %% Calculate step info
-        stepLengthASIstruct = getFilterdMean_and_ASI(findpeaks(stepLengths.signals.values(:,1)),findpeaks(stepLengths.signals.values(:,2)),innerOptSettings.initiation_steps);
-        stepTimeASIstruct = getFilterdMean_and_ASI(findpeaks(stepTimes.signals.values(:,1)),findpeaks(stepTimes.signals.values(:,2)),innerOptSettings.initiation_steps);
+        stepLengthASIstruct = getFilterdMean_and_ASI(findpeaks(stepLengths.signals.values(:,1)),findpeaks(stepLengths.signals.values(:,2)),innerOptSettings.initiationSteps);
+        stepTimeASIstruct = getFilterdMean_and_ASI(findpeaks(stepTimes.signals.values(:,1)),findpeaks(stepTimes.signals.values(:,2)),innerOptSettings.initiationSteps);
         
     end
     
@@ -125,9 +125,7 @@ try
         controlRMSE = 0;
         tripWasActive = 0;
     end
-    
-    %%
-    numberOfCollisions = sum(findpeaks(selfCollision.signals.values(:,end)));
+   
     
     %%
     timeFactor  = innerOptSettings.timeFactor;
@@ -135,11 +133,9 @@ try
     CoTFactor   = innerOptSettings.CoTFactor;
     stopTFactor = innerOptSettings.sumStopTorqueFactor;
     CMGdeltaHFactor = innerOptSettings.CMGdeltaHFactor;
-    selfCollisionFactor = innerOptSettings.selfCollisionFactor;
     
     cost = timeFactor*timeCost  + velFactor*(velCost) + CoTFactor*costOfTransportForOpt ...
-                                + stopTFactor*sumOfStopTorques + CMGdeltaHFactor*maxCMGdeltaH ...
-                                + selfCollisionFactor*numberOfCollisions;
+                                + stopTFactor*sumOfStopTorques + CMGdeltaHFactor*maxCMGdeltaH;
 
     if length(cost) ~= 1
         disp(cost);
@@ -154,7 +150,6 @@ try
         'stepLengthASIstruct',struct('data',stepLengthASIstruct,'minimize',2,'info',''),...
         'stepTimeASIstruct',struct('data',stepTimeASIstruct,'minimize',2,'info',''),'velCost',struct('data',velCost,'minimize',1,'info',''),'timeVector',struct('data',time,'minimize',1,'info',''),...
         'maxCMGTorque',struct('data',maxCMGTorque,'minimize',1,'info',''),'maxCMGdeltaH',struct('data',maxCMGdeltaH,'minimize',1,'info',''),'controlRMSE',struct('data',controlRMSE,'minimize',1,'info',''),...
-        'numberOfCollisions',struct('data',numberOfCollisions,'minimize',1,'info',''), ...
         'tripWasActive',struct('data',tripWasActive,'minimize',1,'info',''),...
         'innerOptSettings',innerOptSettings,'Gains',Gains);
 
@@ -184,17 +179,17 @@ try
             timeCostSave            = [exist_vars.timeCostSave;timeCost];
             maxCMGTorqueSave        = [exist_vars.maxCMGTorqueSave;maxCMGTorque];
             maxCMGdeltaHSave        = [exist_vars.maxCMGdeltaHSave;maxCMGdeltaH];
-            dateSave = [exist_vars.dateSave(:); {char(datestr(now,'yyyy-mm-dd_HH-MM'))}];
+            dateSave                = [exist_vars.dateSave(:); {char(datestr(now,'yyyy-mm-dd_HH-MM'))}];
         else
             costT = cost;
-            metabolicEnergySave = metabolicEnergy;
-            costOfTransportSave = [effort_costs.costOfTransport];
-            timeCostSave            = [timeCost];
-            maxCMGTorqueSave    = [maxCMGTorque];
-            maxCMGdeltaHSave        = [maxCMGdeltaH];
-             stepLengthASImean       = [stepLengthASIstruct.ASImean];
-            stepTimeASImean         = [stepTimeASIstruct.ASImean];
-            dateSave = {char(datestr(now,'yyyy-mm-dd_HH-MM'))};
+            metabolicEnergySave     = metabolicEnergy;
+            costOfTransportSave     = effort_costs.costOfTransport;
+            timeCostSave            = timeCost;
+            maxCMGTorqueSave        = maxCMGTorque;
+            maxCMGdeltaHSave        = maxCMGdeltaH;
+            stepLengthASImean       = stepLengthASIstruct.ASImean;
+            stepTimeASImean         = stepTimeASIstruct.ASImean;
+            dateSave                = {char(datestr(now,'yyyy-mm-dd_HH-MM'))};
 
         end
         

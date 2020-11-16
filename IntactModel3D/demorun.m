@@ -10,8 +10,7 @@ animFrameRate = 30;
 load(['Results' filesep gainfiles{1}]);
 BodyMechParams;
 ControlParams;
-OptimParams;
-innerOptSettings = setInnerOptSettings('eval');
+innerOptSettings = setInnerOptSettings(model,'resume','eval');
 
 assignGainsSagittal;
 assignGainsCoronal;
@@ -43,9 +42,9 @@ simout = parsim(in, 'ShowProgress', true);
 
 %%
 for idxSim = 1:length(simout)
-    innerOptSettings.target_velocity    = targetVel(idxSim);
-    innerOptSettings.min_velocity       = targetVel(idxSim);
-    innerOptSettings.max_velocity       = targetVel(idxSim);
+    innerOptSettings.targetVelocity    = targetVel(idxSim);
+    innerOptSettings.minVelocity       = targetVel(idxSim);
+    innerOptSettings.maxVelocity       = targetVel(idxSim);
     mData=simout(idxSim).getSimulationMetadata();
     
     if strcmp(mData.ExecutionInfo.StopEvent,'DiagnosticError')

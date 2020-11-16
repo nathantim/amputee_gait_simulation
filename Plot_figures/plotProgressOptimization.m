@@ -106,7 +106,7 @@ try
             saveInfo.b_saveFigure = 0;
             saveInfo.info = dataStruct.modelType;
             
-            GaitInfo = getGaitInfo(t,dataStruct.kinematics.GaitPhaseData,dataStruct.kinematics.stepTimes,b_oneGaitPhase);
+            GaitInfo = getGaitInfo(t,dataStruct.kinematics.GaitPhaseData,dataStruct.kinematics.stepTimes,b_oneGaitPhase,dataStruct.innerOptSettings.initiationSteps);
             
             
             dataStruct.kinematics.jointTorquesData.signals.values    = dataStruct.kinematics.jointTorquesData.signals.values./getBodyMass();

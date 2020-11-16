@@ -47,7 +47,7 @@ if isempty(p)
     p = inputParser;
     p.FunctionName = 'setInnerOptSettings';
         
-    validFileFcn = @(ii) exist(ii,'file') ==2;
+    validFileFcn = @(ii) isempty(ii) || exist(ii,'file') ==2;
     addParameter(p,'initialGainsFilename','',validFileFcn);
     addParameter(p,'initialCMGGainsFilename','',validFileFcn);
     
@@ -129,7 +129,7 @@ innerOptSettings.minLimbDistance        = p.Results.minLimbDistance;
 innerOptSettings.timeOut                = p.Results.timeOut; 
 innerOptSettings.createVideo            = p.Results.createVideo;
 
-if ~isempty(initialGainsFilename)
+if ~isempty(innerOptSettings.initialGainsFilename)
     opts                                = cmaes;    
     opts.MaxIter                        = p.Results.maxIter;
     opts.StopFitness                    = 0;
