@@ -10,15 +10,14 @@ if input("Load from optimization folder? (1/0)   " )
     
     
     load([innerOptSettings.optimizationDir filesep 'variablescmaes.mat'],'bestever');
-    InitialGuess = load([innerOptSettings.optimizationDir filesep 'initial_gains.mat']);
+    InitialGuess = load([innerOptSettings.optimizationDir filesep 'initialGains.mat']);
     idx1 = length(InitialGuess.GainsSagittal);
     idx2 = idx1 + length(InitialGuess.initConditionsSagittal);
     idx3 = idx2 + length(InitialGuess.GainsCoronal);
     idx4 = idx3 + length(InitialGuess.initConditionsCoronal);
     
     
-    
-    InitialGuessCMG = load([innerOptSettings.optimizationDir filesep 'initial_gainsCMG.mat']);
+    InitialGuessCMG = load([innerOptSettings.optimizationDir filesep 'initialGainsCMG.mat']);
     
     if idx4 == length(bestever.x)
         GainsSagittal           = InitialGuess.GainsSagittal.*exp(bestever.x(1:idx1));
@@ -38,17 +37,15 @@ if input("Load from optimization folder? (1/0)   " )
     run([innerOptSettings.optimizationDir, filesep, 'ControlParamsCapture']);
     run([innerOptSettings.optimizationDir, filesep, 'Prosthesis3R60ParamsCapture']);
     run([innerOptSettings.optimizationDir, filesep, 'CMGParamsCapture']);
-    run([innerOptSettings.optimizationDir, filesep, 'OptimParamsCapture']);
 else
     BodyMechParams;
     ControlParams;
     Prosthesis3R60Params;
-    OptimParams;
     CMGParams;
     setInitVar;
-    innerOptSettings = setInnerOptSettings('eval');
+    innerOptSettings = setInnerOptSettings('resume','eval','targetVelocity', 1.2);
     
-    load(['Results'  filesep 'v1.2ms_wCMG.mat'])
+    load(['Results'  filesep 'v1.2ms.mat'])
     load(['Results' filesep 'CMGGains_tripprevent.mat']);
 end
 
@@ -105,18 +102,18 @@ for idx = 1:length(simout)
                                                 simout(idx).selfCollision,innerOptSettings,0);
         printOptInfo(dataStructLocal,true);
         
-        kinematics.angularData = simout(idx).angularData;
-        kinematics.GaitPhaseData = simout(idx).GaitPhaseData;
-        kinematics.time = simout(idx).time;
-        kinematics.stepTimes = simout(idx).stepTimes;
-        kinematics.musculoData = simout(idx).musculoData;
-        kinematics.GRFData = simout(idx).GRFData;
-        kinematics.CMGData = simout(idx).CMGData;
+        kinematics.angularData      = simout(idx).angularData;
+        kinematics.GaitPhaseData    = simout(idx).GaitPhaseData;
+        kinematics.time             = simout(idx).time;
+        kinematics.stepTimes        = simout(idx).stepTimes;
+        kinematics.musculoData      = simout(idx).musculoData;
+        kinematics.GRFData          = simout(idx).GRFData;
+        kinematics.CMGData          = simout(idx).CMGData;
         kinematics.jointTorquesData = simout(idx).jointTorquesData;
         
-        dataStructLocal.kinematics = kinematics;
-        dataStructLocal.animData3D = simout((idx)).animData3D;
-        dataStructLocal.optimCost = cost(idx);
+        dataStructLocal.kinematics  = kinematics;
+        dataStructLocal.animData3D  = simout((idx)).animData3D;
+        dataStructLocal.optimCost   = cost(idx);
         
         try
             dataStruct(idx) = dataStructLocal;
@@ -127,7 +124,7 @@ end
 
 %% Animate and plot data
 animPost3D(simout(1).animData3D,'intact',false,'speed',1,'obstacle',true,'view','perspective','CMG',true,...
-            'createVideo',false,'info',[num2str(innerOptSettings.target_velocity) 'ms'],...
+            'createVideo',false,'info',[num2str(innerOptSettings.targetVelocity) 'ms'],...
             'saveLocation',innerOptSettings.optimizationDir);
 
 plotData(   simout(1).angularData,simout(1).musculoData,simout(1).GRFData,simout(1).jointTorquesData,...

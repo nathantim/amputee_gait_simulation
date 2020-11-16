@@ -9,22 +9,17 @@ end
 bdclose('all');
 clear all; close all; clc;
 
-%%
-b_resumeOptimization = char(input("Do you want to resume a previous optimization? (yes/no)   ",'s'));
-optimizationInfo = '';
-
-%%
-
-initial_gains_filename = ['Results' filesep 'v1.2ms_wCMG.mat'];
-initial_gains_filenameCMG = ['Results' filesep 'CMGGains_tripprevent.mat'];
-
-
-%%
+%% Specifiy model and initial gain files
 global model rtp InitialGuess innerOptSettings
 
-%% specifiy model and intial parameters
 model = 'NeuromuscularModel_3R60CMG_3D';
 optfunc = 'cmaesParallelSplitCMG';
+
+initialGainsFilename = ['Results' filesep 'v1.2ms.mat'];
+initialCMGGainsFilename = ['Results' filesep 'CMGGains_tripprevent.mat'];
+
+b_resumeOptimization = char(input("Do you want to resume a previous optimization? (yes/no)   ",'s'));
+optimizationInfo = '';
 
 load_system(model);
 try
@@ -33,12 +28,13 @@ catch ME
     warning(ME.message);
 end
 
+%% Initialize parameters
+[innerOptSettings,opts] = setInnerOptSettings(model,'initialGainsFilename',initialGainsFilename,'initialCMGGainsFilename',initialCMGGainsFilename,...
+                                                    'resume',b_resumeOptimization ,'optimizationInfo',optimizationInfo ,'numTerrains',1, ...
+                                                    'targetVelocity', 1.2,'timeOut', 25*60 );
 
-%% initialze parameters
-[innerOptSettings,opts] = setInnerOptSettings(b_resumeOptimization,initial_gains_filename,optimizationInfo,initial_gains_filenameCMG);
-
-load([innerOptSettings.optimizationDir filesep 'initial_gains.mat']);
-InitialGuessFile = load([innerOptSettings.optimizationDir filesep 'initial_gainsCMG.mat']);
+load([innerOptSettings.optimizationDir filesep 'initialGains.mat']);
+InitialGuessFile = load([innerOptSettings.optimizationDir filesep 'initialGainsCMG.mat']);
 
 InitialGuess = InitialGuessFile.CMGGains;
 
@@ -46,7 +42,6 @@ run([innerOptSettings.optimizationDir, filesep, 'BodyMechParamsCapture']);
 run([innerOptSettings.optimizationDir, filesep, 'ControlParamsCapture']);
 run([innerOptSettings.optimizationDir, filesep, 'Prosthesis3R60ParamsCapture']);
 run([innerOptSettings.optimizationDir, filesep, 'CMGParamsCapture']);
-run([innerOptSettings.optimizationDir, filesep, 'OptimParamsCapture']);
 
 assignGainsSagittal;
 assignGainsCoronal;
@@ -54,32 +49,30 @@ assignInit;
 
 dt_visual = 1/1000;
 animFrameRate = 30;
-
 [groundX, groundZ, groundTheta] = generateGround('flat');
+
+numvars = length(InitialGuess);
+x0 = zeros(numvars,1);
+sigma0 = 1/8;
 
 save_system(model)
 
 %% Build the Rapid Accelerator target once
-warning('off')
 rtp = Simulink.BlockDiagram.buildRapidAcceleratorTarget(model);
-warning('on')
-
-%% setup rest of cmaes
-numvars = length(InitialGuess);
-x0 = zeros(numvars,1);
-sigma0 = 1/8;
 
 %% Show settings
 clc;
 disp(opts);
 disp(innerOptSettings);
-disp(initial_gains_filename);
-disp(obstacle_x);
-fprintf('Target velocity: %1.1f m/s \n',target_velocity);
+disp(initialGainsFilename);
+fprintf('Target velocity: %1.1f m/s \n',innerOptSettings.targetVelocity);
 fprintf('Amputated hip flexor diminish factor:   %1.2f \n',ampHipFlexFactor);
 fprintf('Amputated hip extensor diminish factor: %1.2f \n',ampHipExtFactor);
 fprintf('Amputated hip abductor diminish factor: %1.2f \n',ampHipAbdFactor);
 fprintf('Amputated hip adductor diminish factor: %1.2f \n',ampHipAddFactor);
+
+delete(gcp('nocreate'));
+parpool('local',innerOptSettings.numParWorkers);
 
 %% run cmaes
 [xmin, fmin, counteval, stopflag, out, bestever] = cmaes(optfunc, x0, sigma0, opts)

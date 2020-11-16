@@ -9,7 +9,7 @@ if input("Load from optimization folder? (1/0)   " )
     disp(innerOptSettings.optimizationDir);
     
     load([innerOptSettings.optimizationDir filesep 'variablescmaes.mat']);
-    InitialGuess = load([innerOptSettings.optimizationDir filesep 'initial_gains.mat']);
+    InitialGuess = load([innerOptSettings.optimizationDir filesep 'initialGains.mat']);
     
     idx1 = length(InitialGuess.GainsSagittal);
     idx2 = idx1 + length(InitialGuess.initConditionsSagittal);
@@ -24,14 +24,12 @@ if input("Load from optimization folder? (1/0)   " )
     
     run([innerOptSettings.optimizationDir, filesep, 'BodyMechParamsCapture']);
     run([innerOptSettings.optimizationDir, filesep, 'ControlParamsCapture']);
-    run([innerOptSettings.optimizationDir, filesep, 'OptimParamsCapture']);
     
 else
     BodyMechParams;
     ControlParams;
-    OptimParams;
-    innerOptSettings = setInnerOptSettings('eval');
-    
+    innerOptSettings = setInnerOptSettings('resume','eval','targetVelocity', 0.9);
+                                                     
     load(['Results' filesep 'v0.9ms.mat']);
 
 end

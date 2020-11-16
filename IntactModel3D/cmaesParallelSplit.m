@@ -18,7 +18,7 @@ end
 popSize = size(gainsPop,2);
 
 numTerrains = inner_opt_settings.numTerrains;
-terrain_height = inner_opt_settings.terrain_height;
+terrainHeight = inner_opt_settings.terrainHeight;
 
 
 costs = nan(popSize*numTerrains,1);
@@ -37,7 +37,7 @@ for ii = 1:numTerrains:(numTerrains*popSize)
         if j == 0
             [~, groundZ, groundTheta] = generateGround('flat',[],4*j,false);
         else
-            [~, groundZ, groundTheta] = generateGround('const', terrain_height, 4*j,false);
+            [~, groundZ, groundTheta] = generateGround('const', terrainHeight, 4*j,false);
         end
         paramSets{ii+j} = ...
             Simulink.BlockDiagram.modifyTunableParameters(paramSets{ii}, ...

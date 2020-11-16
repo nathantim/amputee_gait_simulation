@@ -134,14 +134,12 @@ try
     velFactor   = innerOptSettings.velocityFactor;
     CoTFactor   = innerOptSettings.CoTFactor;
     stopTFactor = innerOptSettings.sumStopTorqueFactor;
-    CMGTorqueFactor = innerOptSettings.CMGTorqueFactor;
     CMGdeltaHFactor = innerOptSettings.CMGdeltaHFactor;
-    ControlRMSEFactor = innerOptSettings.ControlRMSEFactor;
     selfCollisionFactor = innerOptSettings.selfCollisionFactor;
     
     cost = timeFactor*timeCost  + velFactor*(velCost) + CoTFactor*costOfTransportForOpt ...
-                + stopTFactor*sumOfStopTorques + CMGTorqueFactor*maxCMGTorque + CMGdeltaHFactor*maxCMGdeltaH ...
-                + ControlRMSEFactor*controlRMSE + selfCollisionFactor*numberOfCollisions;
+                                + stopTFactor*sumOfStopTorques + CMGdeltaHFactor*maxCMGdeltaH ...
+                                + selfCollisionFactor*numberOfCollisions;
 
     if length(cost) ~= 1
         disp(cost);

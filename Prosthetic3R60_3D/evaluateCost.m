@@ -9,7 +9,7 @@ if input("Load from optimization folder? (1/0)   " )
     disp(innerOptSettings.optimizationDir);
     
     load([innerOptSettings.optimizationDir filesep 'variablescmaes.mat']);
-    InitialGuess = load([innerOptSettings.optimizationDir filesep 'initial_gains.mat']);
+    InitialGuess = load([innerOptSettings.optimizationDir filesep 'initialGains.mat']);
     
     idx1 = length(InitialGuess.GainsSagittal);
     idx2 = idx1 + length(InitialGuess.initConditionsSagittal);
@@ -24,15 +24,12 @@ if input("Load from optimization folder? (1/0)   " )
     
     run([innerOptSettings.optimizationDir, filesep, 'BodyMechParamsCapture']);
     run([innerOptSettings.optimizationDir, filesep, 'ControlParamsCapture']);
-    run([innerOptSettings.optimizationDir, filesep, 'Prosthesis3R60ParamsCapture']);
-    run([innerOptSettings.optimizationDir, filesep, 'OptimParamsCapture']);
-    
+    run([innerOptSettings.optimizationDir, filesep, 'Prosthesis3R60ParamsCapture']);    
 else
     BodyMechParams;
     ControlParams;
     Prosthesis3R60Params;
-    OptimParams;
-    innerOptSettings = setInnerOptSettings('eval');
+    innerOptSettings = setInnerOptSettings('resume','eval','targetVelocity', 1.2);
     load(['Results' filesep 'v1.2ms.mat'])
     
 end
@@ -43,7 +40,6 @@ terrains2Test = input("Number of terrains to test:   ");
 model = 'NeuromuscularModel_3R60_3D';
 
 load_system(model);
-
 
 %%
 [groundX, groundZ, groundTheta] = generateGround('flat');
@@ -119,6 +115,7 @@ end
 
 %%
 animPost3D(simout(1).animData3D,'intact',false,'speed',1,'view','perspective',...
-                'showFigure',true,'createVideo',false,'info',[num2str(innerOptSettings.target_velocity) 'ms'],'saveLocation',innerOptSettings.optimizationDir);
+                'showFigure',true,'createVideo',false,'info',[num2str(innerOptSettings.targetVelocity) 'ms'],...
+                'saveLocation',innerOptSettings.optimizationDir);
             
 plotData(simout(1).angularData,simout(1).musculoData,simout(1).GRFData,simout(1).jointTorquesData,simout(1).GaitPhaseData,simout(1).stepTimes,[],'prosthetic3D',[],0,1,1)
