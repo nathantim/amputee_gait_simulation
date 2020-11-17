@@ -73,7 +73,9 @@ for idx = 1:length(in)
     
     mData=simout(idx).getSimulationMetadata();
     
-    if strcmp(mData.ExecutionInfo.StopEvent,'DiagnosticError') || strcmp(mData.ExecutionInfo.StopEvent,'TimeOut')
+    if strcmp(mData.ExecutionInfo.StopEvent,'DiagnosticError') 
+        
+    elseif strcmp(mData.ExecutionInfo.StopEvent,'Timeout')
         disp('Sim was stopped due to error');
         fprintf('Simulation %d was stopped due to error: \n',idx);
         disp(simout(idx).ErrorMessage);
@@ -112,9 +114,9 @@ for idx = 1:length(in)
         
         try
             % obtain cost value
-            [costs(idx), dataStructlocal] = getCost(model,Gains,time,metabolicEnergy,sumOfStopTorques, ...
-                                HATPosVel,stepVelocities,stepTimes,stepLengths,...
-                                 stepNumbers, CMGData, selfCollision, innerOptSettings,true);
+            [costs(idx), dataStructlocal] = getCost(model,Gains,time,metabolicEnergy,sumOfStopTorques,HATPosVel,...
+                                                stepTimes,stepLengths,stepNumbers,CMGData,mData.ExecutionInfo.StopEvent,...
+                                                innerOptSettings,0);
             dataStructlocal.kinematics = kinematics;
             dataStructlocal.animData3D = animData3D;
         catch ME

@@ -90,8 +90,10 @@ for idx = 1:length(simout)
         disp(simout(idx).ErrorMessage);
         cost(idx) = nan;
     else
-        [cost(idx), dataStructLocal] = getCost(model,[],simout(idx).time,simout(idx).metabolicEnergy,simout(idx).sumOfStopTorques,simout(idx).HATPosVel,simout(idx).stepVelocities,simout(idx).stepTimes,simout(idx).stepLengths,simout(idx).stepNumbers,[],simout(idx).selfCollision,innerOptSettings,0);
-        printOptInfo(dataStructLocal,true);
+        [cost(idx), dataStructLocal] = getCost(model,[],simout(idxSim).time,simout(idxSim).metabolicEnergy,simout(idxSim).sumOfStopTorques,simout(idxSim).HATPosVel,...
+                                                simout(idxSim).stepTimes,simout(idxSim).stepLengths,simout(idxSim).stepNumbers,simout(idxSim).CMGData,mData.ExecutionInfo.StopEvent,...
+                                                innerOptSettings,0);
+       printOptInfo(dataStructLocal,true);
         
         kinematics.angularData = simout(idx).angularData;
         kinematics.GaitPhaseData = simout(idx).GaitPhaseData;
