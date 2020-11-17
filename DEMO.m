@@ -2,7 +2,7 @@ bdclose('all'); clearvars; close all; clc
 setup_paths;
 
 %%
-if input(['\nDo you want to \n' '(1) simulate, or \n' '(0) load datafiles? \n' '(Note: simulation can takes some time, (30-60 min)   '])
+if input(['\nDo you want to \n' '(1) simulate, or \n' '(0) load datafiles? \n' '(Note: compilation and simulation can takes some time, (60-75 min)   '])
     %% Simulating the models
     modelsSelected = [str2num(input(['\nWhich simulations do you want to run? \n '...
         '   (1) Healthy model gait \n '...
