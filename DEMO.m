@@ -57,7 +57,7 @@ if input(['\nDo you want to \n' '(1) simulate, or \n' '(0) load datafiles? \n' '
     close(hwb);
     
     %% Setting the results to variables
-    realHealthy3D                       = load('Plot_figures/Data/FukuchiData.mat','gaitData');
+    realHealthy3D                       = load(['Plot_figures' filesep 'Data' filesep 'FukuchiData.mat'],'gaitData');
     realHealthy3D09                     = realHealthy3D.gaitData.v0_9;
     realHealthy3D12                     = realHealthy3D.gaitData.v1_2;
     healthy3D09.simout                  = simouts(1,1);
@@ -72,22 +72,22 @@ if input(['\nDo you want to \n' '(1) simulate, or \n' '(0) load datafiles? \n' '
     
 else
     %% Get the saved results
-    healthy3D09                 = load('IntactModel3D/Results/resultData_healthy_0.9ms.mat');
-    healthy3D12                 = load('IntactModel3D/Results/resultData_healthy_1.2ms.mat');
-    realHealthy3D               = load('Plot_figures/Data/FukuchiData.mat','gaitData');
+    healthy3D09                 = load(['IntactModel3D' filesep 'Results' filesep 'resultData_healthy_0.9ms.mat']);
+    healthy3D12                 = load(['IntactModel3D' filesep 'Results' filesep 'resultData_healthy_1.2ms.mat']);
+    realHealthy3D               = load(['Plot_figures' filesep 'Data' filesep 'FukuchiData.mat','gaitData']);
     realHealthy3D09             = realHealthy3D.gaitData.v0_9;
     realHealthy3D12             = realHealthy3D.gaitData.v1_2;
-    prosthetic3D09              = load('Prosthetic3R60_3D/Results/resultData_prosthetic_0.9ms.mat');
-    prosthetic3D12              = load('Prosthetic3R60_3D/Results/resultData_prosthetic_1.2ms.mat');
-    prosthetic3DCMGNOTActive    = load('Prosthetic3R60CMG_3D/Results/resultData_prostheticNOTActiveCMG_1.2ms.mat');
-    prosthetic3DCMGActive       = load('Prosthetic3R60CMG_3D/Results/resultData_prostheticActiveCMG_1.2ms.mat');
-    prosthetic3DCMGTripFall     = load('Prosthetic3R60CMG_3D/Results/resultData_prostheticTripFall.mat');
-    prosthetic3DCMGTripPrevent  = load('Prosthetic3R60CMG_3D/Results/resultData_prostheticTripPrevent.mat');
+    prosthetic3D09              = load(['Prosthetic3R60_3D' filesep 'Results' filesep 'resultData_prosthetic_0.9ms.mat']);
+    prosthetic3D12              = load(['Prosthetic3R60_3D' filesep 'Results' filesep 'resultData_prosthetic_1.2ms.mat']);
+    prosthetic3DCMGNOTActive    = load(['Prosthetic3R60CMG_3D' filesep 'Results' filesep 'resultData_prostheticNOTActiveCMG_1.2ms.mat']);
+    prosthetic3DCMGActive       = load(['Prosthetic3R60CMG_3D' filesep 'Results' filesep 'resultData_prostheticActiveCMG_1.2ms.mat']);
+    prosthetic3DCMGTripFall     = load(['Prosthetic3R60CMG_3D' filesep 'Results' filesep 'resultData_prostheticTripFall.mat']);
+    prosthetic3DCMGTripPrevent  = load(['Prosthetic3R60CMG_3D' filesep 'Results' filesep 'resultData_prostheticTripPrevent.mat']);
     
 end
 
 %% Plotting and animating the results
-initiationSteps = '5';
+initiationSteps = '4';
 
 plotSelected = [str2num(input(['\nWhich results do you want to plot? \n '...
     '  (1) Gait at 0.9 m/s \n '...

@@ -27,6 +27,10 @@ end
 
 %%
 if (b_oneGaitPhase) && min(sum(stepTimes.signals.values(:,1)),sum(stepTimes.signals.values(:,2))) > 1
+    % percentage vector for interpolation and plotting
+    tp = (0:0.5:100)';
+    
+    %% Obtain strides
     leftLegState        = GaitPhaseData.signals.values(:,1);
     rightLegState       = GaitPhaseData.signals.values(:,2);
     leftLegStateChange  = diff(leftLegState);
@@ -35,15 +39,6 @@ if (b_oneGaitPhase) && min(sum(stepTimes.signals.values(:,1)),sum(stepTimes.sign
     % Find moments when state change is from Landing to Early stance
     [L_changeSwing2StanceIdx] = find(leftLegStateChange == -4);
     [R_changeSwing2StanceIdx] = find(rightLegStateChange == -4);
-    
-%     minSwing2StanceChange = min(length(L_changeSwing2StanceIdx),length(R_changeSwing2StanceIdx));
-%     if minSwing2StanceChange >= 8
-%         selectStart = max([1, ceil(1.75*(minSwing2StanceChange/2)),min(1,minSwing2StanceChange-1)]);
-%     elseif  minSwing2StanceChange >= 5
-%         selectStart = minSwing2StanceChange - 3;
-%     elseif  minSwing2StanceChange > 1
-%         selectStart = minSwing2StanceChange - 1;
-%     end
     
     % Leave out first initiation steps
     leftLegStepsIdx     = L_changeSwing2StanceIdx((initiationSteps+1):end);
@@ -63,8 +58,6 @@ if (b_oneGaitPhase) && min(sum(stepTimes.signals.values(:,1)),sum(stepTimes.sign
         rightGaitPhaseEndV(jj)      = rightLegStepsIdx(jj+1);
         rightGaitPhaseStartV(jj)    = rightLegStepsIdx(jj)+1;
     end
-    
-    tp = (0:0.5:100)';
     
     %% Calculate stance, double stance, swing time and symmetry
     leftLegState        = GaitPhaseData.signals.values(:,1);
@@ -101,12 +94,12 @@ if (b_oneGaitPhase) && min(sum(stepTimes.signals.values(:,1)),sum(stepTimes.sign
         RDoubleStance_perc(rightIdx)    = 100*sum(rightDoubleStance(startIdx:endIdx))/length(rightDoubleStance(startIdx:endIdx));
         RDoubleStance(rightIdx)         = tpart(find(rightDoubleStance(startIdx:endIdx)==1,1,'last')) - tpart(find(rightDoubleStance(startIdx:endIdx)==1,1,'first'));
     end
-    [stanceASI]                     = getFilterdMean_and_ASI(Lstance,Rstance);
-    [stanceASI_perc]                = getFilterdMean_and_ASI(Lstance_perc,Rstance_perc);
-    [swingASI]                      = getFilterdMean_and_ASI(Lswing,Rswing);
-    [swingASI_perc]                 = getFilterdMean_and_ASI(Lswing_perc,Rswing_perc);
-    [doubleStanceASI]               = getFilterdMean_and_ASI(LDoubleStance,RDoubleStance);
-    [doubleStanceASI_perc]          = getFilterdMean_and_ASI(LDoubleStance_perc,RDoubleStance_perc);
+    [stanceASI]                     = getMEANandASI(Lstance,Rstance);
+    [stanceASI_perc]                = getMEANandASI(Lstance_perc,Rstance_perc);
+    [swingASI]                      = getMEANandASI(Lswing,Rswing);
+    [swingASI_perc]                 = getMEANandASI(Lswing_perc,Rswing_perc);
+    [doubleStanceASI]               = getMEANandASI(LDoubleStance,RDoubleStance);
+    [doubleStanceASI_perc]          = getMEANandASI(LDoubleStance_perc,RDoubleStance_perc);
 
     gaitstate.left.StanceV                  = (leftLegState <= GaitState.LiftOff);
     gaitstate.left.stanceMeanstdtxt         = stanceASI.leftTxt;
@@ -180,5 +173,5 @@ GaitInfo.end.rightV         = rightGaitPhaseEndV;
 GaitInfo.tp                 = tp;
 GaitInfo.t                  = t;
 GaitInfo.gaitstate          = gaitstate;
-GaitInfo.initiation_steps   = initiationSteps;
+GaitInfo.initiationSteps    = initiationSteps;
 

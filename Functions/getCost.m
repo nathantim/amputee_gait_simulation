@@ -1,4 +1,4 @@
-function [cost, dataStruct] = getCost(model,Gains,time,metabolicEnergy,sumOfStopTorques,HATPosVel,stepVelocities,stepTimes,stepLengths,stepNumbers,CMGData,selfCollision,innerOptSettings, b_isParallel)
+function [cost, dataStruct] = getCost(model,Gains,time,metabolicEnergy,sumOfStopTorques,HATPosVel,stepTimes,stepLengths,stepNumbers,CMGData,StopEvent,innerOptSettings, b_isParallel)
 % GETCOST                           Function calculates the cost function value for the given simulation data
 % INPUTS:
 %   - model                         Model which is simulated
@@ -6,7 +6,6 @@ function [cost, dataStruct] = getCost(model,Gains,time,metabolicEnergy,sumOfStop
 %   - time                          Time reached of the simulation
 %   - metabolicEnergy               Metabolic energy obtained from the simulation
 %   - sumOfStopTorques              Sum of stop torques obtained from the simulation
-%   - stepVelocities                unused
 %   - stepTimes                     Structure with the step time data from simulation.
 %   - stepLengths                   Structure with the step length data from simulation
 %   - stepNumbers                   Structure with the number of steps taken in simulation
@@ -87,9 +86,9 @@ try
     end
     
     %% Calculate time cost
-    timeSetToRun = str2double(get_param(model,'StopTime'));
-    timeCost = round(timeSetToRun/time(end),3)-1;
-    if timeCost < 0
+    if ~contains(StopEvent,'ReachedStopTime')
+        timeCost = round(innerOptSettings.modelStopTime/time(end),3)-1;
+    else
         timeCost = 0;
     end
     

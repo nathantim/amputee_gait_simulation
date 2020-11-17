@@ -76,9 +76,9 @@ if isempty(p)
     
     addParameter(p,'minLimbDistance',       0.02,               validValueFcn); % m, minimal distance betweeen limbs
     
-    validIntegerFcn = @(ii) isinteger(ii);
+    validIntegerFcn = @(ii) mod(ii,1)==0;
     addParameter(p,'numTerrains',       4,                  validIntegerFcn);
-    addParameter(p,'initiationSteps',   5,                  validIntegerFcn);
+    addParameter(p,'initiationSteps',   4,                  validIntegerFcn);
     addParameter(p,'numParWorkers',     maxNumCompThreads,  validIntegerFcn);
     addParameter(p,'timeOut',           10*60,              validIntegerFcn); % Time out for simulation
     addParameter(p,'maxIter',           300,              validIntegerFcn);
@@ -91,6 +91,8 @@ end
 parse(p,varargin{:});
 
 %%
+innerOptSettings.modelStopTime              = str2double(get_param(model,'StopTime'));
+
 opts.Resume                                 = p.Results.resume;
 innerOptSettings.initialGainsFilename       = p.Results.initialGainsFilename;
 innerOptSettings.initialCMGGainsFilename    = p.Results.initialCMGGainsFilename;

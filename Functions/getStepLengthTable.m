@@ -1,5 +1,5 @@
-function stepLengthTable = getStepLengthTable(stepLengths,saveInfo,initiation_steps)
-stepLengthASIstruct = getFilterdMean_and_ASI(findpeaks(stepLengths.signals.values(:,1)),findpeaks(stepLengths.signals.values(:,2)),initiation_steps);
+function stepLengthTable = getStepLengthTable(stepLengths,saveInfo,initiationSteps)
+stepLengthASIstruct = getMEANandASI(findpeaks(stepLengths.signals.values(:,1)),findpeaks(stepLengths.signals.values(:,2)),initiationSteps);
 
 rowNames = {'Step Length'};
 
