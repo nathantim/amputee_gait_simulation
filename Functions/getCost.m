@@ -106,8 +106,8 @@ try
         [velCost,meanVel, ASIVel] = getVelMeasure(HATPosVel,stepNumbers,innerOptSettings.minVelocity,innerOptSettings.maxVelocity,innerOptSettings.initiationSteps);
         
         %% Calculate step info
-        stepLengthASIstruct = getFilterdMean_and_ASI(findpeaks(stepLengths.signals.values(:,1)),findpeaks(stepLengths.signals.values(:,2)),innerOptSettings.initiationSteps);
-        stepTimeASIstruct = getFilterdMean_and_ASI(findpeaks(stepTimes.signals.values(:,1)),findpeaks(stepTimes.signals.values(:,2)),innerOptSettings.initiationSteps);
+        stepLengthASIstruct = getMEANandASI(findpeaks(stepLengths.signals.values(:,1)),findpeaks(stepLengths.signals.values(:,2)),innerOptSettings.initiationSteps);
+        stepTimeASIstruct = getMEANandASI(findpeaks(stepTimes.signals.values(:,1)),findpeaks(stepTimes.signals.values(:,2)),innerOptSettings.initiationSteps);
         
     end
     
