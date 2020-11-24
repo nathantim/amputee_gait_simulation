@@ -12,7 +12,7 @@ function animPost(varargin) %animData, speed, snapShotFlag, intactFlag)
 persistent p
 if isempty(p)
     p = inputParser;
-    p.FunctionName = 'animPost3D';
+    p.FunctionName = 'animPost';
     addRequired(p,'animData');
     
     validFrameSkipFcn = @(ii) isnumeric(ii) && isscalar(ii) && ~mod(ii,1) && (ii > 0);
@@ -140,7 +140,7 @@ if CMGFlag
 else
     rCMG = [];
 end
-amputeeFactor = 0.6;
+amputeeFactor = 0.7;
 % y-shift (arbitrary, since sagittal model displayed with 3D objects)
 yShift = 0;%0*rHJ; %[m]
 
@@ -158,13 +158,10 @@ rFoot           = [rCP rCP]*2/3; %[m]
 rShank          = [rAJ*0.5 rAJ*0.5 rAJ*0.5 rAJ*0.5 rAJ*0.75 rAJ]; %[m]
 rThigh          = [rKJ*0.8 rKJ*0.6 rKJ*0.6 rKJ*0.8 rKJ rKJ*1.2]; %[m]
 rHAT_Cone       = [rHJ*11/15 rHJ*11/15 rHJ*0.8 rHJ*14/15 rHJ*13/15 rHJ*13/15 0]; %[m] male
-rAmputeeThigh = [rKJ*0.8 rKJ*0.6 rKJ*0.6 rKJ*0.8 rKJ rKJ*1.2]*amputeeFactor; %[m]
+rAmputeeThigh   = [rKJ*0.3  rKJ*0.5 rKJ*0.5 rKJ*0.8 rKJ*0.8 rKJ rKJ*1.2]; %[m]
 
 % create cone objects (bones)
 ConeObjects = createConeObjects(ConeRes, yShift, rFoot, rShank, rThigh, rHAT_Cone, rAmputeeThigh, intactFlag);
-
-
-
 
 
 
@@ -220,6 +217,11 @@ if videoFlag
     end
     if ~isempty(animInfo)
         fileInfo = ['_',animInfo];
+        fileInfo(fileInfo==' ') = '_';
+        fileInfo = strrep(fileInfo,'0.9m/s','0_9ms');
+        fileInfo = strrep(fileInfo,'1.2m/s','1_2ms');
+        fileInfo = strrep(fileInfo,'0.9ms','0_9ms');
+        fileInfo = strrep(fileInfo,'1.2ms','1_2ms');
     end
     writerObj = VideoWriter([saveLocation,filesep,dateNow,'-',intactInfo,fileInfo,'_',viewOpt],'MPEG-4');
     writerObj.FrameRate = 1/frameRate;

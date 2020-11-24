@@ -6,6 +6,8 @@ function updateProstheticObjects(prosthSphereObjects, prosthLinkObjects, u, x, t
 if ~isempty(rCMG)
     CMG_obj  = prosthSphereObjects(end-3);
     CMGlink_obj = prosthLinkObjects(end-3);
+else
+    CMG_obj = [];
 end
 update3R60Objects( prosthSphereObjects, prosthLinkObjects, u, x, t);
     
