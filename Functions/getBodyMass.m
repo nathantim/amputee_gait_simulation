@@ -12,11 +12,11 @@ if nargin < 1 || isempty(modeltype)
 end
 BodyMechParams;
 
-if contains(modeltype,'CMG')
+if contains(upper(modeltype),'CMG')
     CMGParams;
     Prosthesis3R60Params;
     bodyMass = totalMassAmputee + m3R60 + CMGmass;
-elseif contains(modeltype,'amputee') || contains(modeltype,'prosthetic') 
+elseif contains(lower(modeltype),'amputee') || contains(lower(modeltype),'prosthetic') 
     Prosthesis3R60Params;
     bodyMass = totalMassAmputee + m3R60;
 else

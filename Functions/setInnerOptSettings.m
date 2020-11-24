@@ -91,9 +91,10 @@ end
 parse(p,varargin{:});
 
 %%
+innerOptSettings.optimizationDir            = ' ';
+optimizationInfo                            = p.Results.optimizationInfo;
 innerOptSettings.modelStopTime              = str2double(get_param(model,'StopTime'));
 
-opts.Resume                                 = p.Results.resume;
 innerOptSettings.initialGainsFilename       = p.Results.initialGainsFilename;
 innerOptSettings.initialCMGGainsFilename    = p.Results.initialCMGGainsFilename;
 
@@ -132,7 +133,8 @@ innerOptSettings.timeOut                = p.Results.timeOut;
 innerOptSettings.createVideo            = p.Results.createVideo;
 
 if ~isempty(innerOptSettings.initialGainsFilename)
-    opts                                = cmaes;    
+    opts                                = cmaes; 
+    opts.Resume                         = lower(p.Results.resume);
     opts.MaxIter                        = p.Results.maxIter;
     opts.StopFitness                    = 0;
     opts.DispModulo                     = 1;

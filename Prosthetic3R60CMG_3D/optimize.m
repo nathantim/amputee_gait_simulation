@@ -14,20 +14,20 @@ global model rtp InitialGuess innerOptSettings
 model = 'NeuromuscularModel_3R60CMG_3D';
 optfunc = 'cmaesParallelSplit';
 
-initialGainsFilename = ['Results' filesep 'v1.2ms.mat'];
+initialGainsFilename = ['Results' filesep 'v1.2ms_wCMG.mat'];
 b_resumeOptimization = char(input("Do you want to resume a previous optimization? (yes/no)   ",'s'));
-optimizationInfo = '';
 
 load_system(model);
 try
     set_param(strcat(model,'/Body Mechanics Layer/Obstacle'),'Commented','on');
+    set_param(model,'StopTime','30');
 catch ME
     warning(ME.message);
 end
 
 %% Initialize parameters
 [innerOptSettings,opts] = setInnerOptSettings(model,'initialGainsFilename',initialGainsFilename,'resume',b_resumeOptimization,...
-                                                    'optimizationInfo',optimizationInfo, 'targetVelocity', 1.2,'timeOut', 20*60,...
+                                                    'optimizationInfo','Test' , 'targetVelocity', 1.2,'timeOut', 30*60,...
                                                     'CMGdeltaHFactor', 0);
 
 InitialGuessFile = load([innerOptSettings.optimizationDir filesep 'initialGains.mat']);
@@ -39,6 +39,15 @@ run([innerOptSettings.optimizationDir, filesep, 'ControlParamsCapture']);
 run([innerOptSettings.optimizationDir, filesep, 'Prosthesis3R60ParamsCapture']);
 run([innerOptSettings.optimizationDir, filesep, 'CMGParamsCapture']);
 
+% For no trip prevention,
+tripDetectThreshold = tripDetectThreshold*1E9;
+% % For inactive CMG
+KpGamma = 0;
+KiGamma = 0;
+KpGammaReset = 0;
+KdGammaReset = 0;
+omegaRef = 0;
+                    
 setInitVar;
 dt_visual = 1/30;
 animFrameRate = 30;

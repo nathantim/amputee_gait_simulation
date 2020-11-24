@@ -8,7 +8,7 @@ function costs = cmaesParallelSplit(gainsPop)
 %%
 global rtp InitialGuess innerOptSettings model
 %% Data plotting during optimization
-if inner_opt_settings.visual
+if innerOptSettings.visual
     dataQueueD = parallel.pool.DataQueue;
     dataQueueD.afterEach(@plotProgressOptimization);
 end
@@ -65,11 +65,10 @@ dataStruct(1:length(in)) = struct('modelType',[],'timeCost',struct('data',[],'mi
         'stepLengthASIstruct',struct('data',[],'minimize',2,'info',''),...
         'stepTimeASIstruct',struct('data',[],'minimize',2,'info',''),'velCost',struct('data',[],'minimize',1,'info',''),'timeVector',struct('data',[],'minimize',1,'info',''),...
         'maxCMGTorque',struct('data',[],'minimize',1,'info',''),'maxCMGdeltaH',struct('data',[],'minimize',1,'info',''),'controlRMSE',struct('data',[],'minimize',1,'info',''),...
-        'numberOfCollisions',struct('data',[],'minimize',1,'info',''), ...
         'tripWasActive',struct('data',[],'minimize',1,'info',''),...
         'innerOptSettings',innerOptSettings,'Gains',[],'kinematics',[],'animData3D',[]);
     
-for idx = 1:length(in)
+for idx = 1:length(simout)
     
     mData=simout(idx).getSimulationMetadata();
     
@@ -117,7 +116,7 @@ for idx = 1:length(in)
             % obtain cost value
             [costs(idx), dataStructlocal] = getCost(model,Gains,time,metabolicEnergy,sumOfStopTorques,HATPosVel,...
                                                 stepTimes,stepLengths,stepNumbers,CMGData,mData.ExecutionInfo.StopEvent,...
-                                                innerOptSettings,0);
+                                                innerOptSettings,true);
             dataStructlocal.kinematics = kinematics;
             dataStructlocal.animData3D = animData3D;
         catch ME

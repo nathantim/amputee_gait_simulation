@@ -15,15 +15,14 @@ global model rtp InitialGuess innerOptSettings
 model = 'NeuromuscularModel_3R60_3D';
 optfunc = 'cmaesParallelSplit';
 
-initialGainsFilename = ['Results'  filesep 'v1.2ms.mat'];
+initialGainsFilename = ['Results'  filesep 'v0.9ms.mat'];
 b_resumeOptimization = char(input("Do you want to resume a previous optimization? (yes/no)   ",'s'));
-optimizationInfo = '';
 
 load_system(model);
 
 %% Initialize parameters
 [innerOptSettings,opts] = setInnerOptSettings(model,'initialGainsFilename',initialGainsFilename,'resume',b_resumeOptimization,...
-    'optimizationInfo',optimizationInfo, 'targetVelocity', 1.2);
+    'optimizationInfo','Test', 'targetVelocity', 0.9);
 
 InitialGuessFile = load([innerOptSettings.optimizationDir filesep 'initialGains.mat']);
 InitialGuess = [InitialGuessFile.GainsSagittal;InitialGuessFile.initConditionsSagittal;...

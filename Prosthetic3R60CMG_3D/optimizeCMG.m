@@ -15,23 +15,23 @@ global model rtp InitialGuess innerOptSettings
 model = 'NeuromuscularModel_3R60CMG_3D';
 optfunc = 'cmaesParallelSplitCMG';
 
-initialGainsFilename = ['Results' filesep 'v1.2ms.mat'];
+initialGainsFilename = ['Results' filesep 'v1.2ms_wCMG.mat'];
 initialCMGGainsFilename = ['Results' filesep 'CMGGains_tripprevent.mat'];
 
 b_resumeOptimization = char(input("Do you want to resume a previous optimization? (yes/no)   ",'s'));
-optimizationInfo = '';
 
 load_system(model);
 try
     set_param(strcat(model,'/Body Mechanics Layer/Obstacle'),'Commented','off');
+    set_param(model,'StopTime','20');
 catch ME
     warning(ME.message);
 end
 
 %% Initialize parameters
 [innerOptSettings,opts] = setInnerOptSettings(model,'initialGainsFilename',initialGainsFilename,'initialCMGGainsFilename',initialCMGGainsFilename,...
-                                                    'resume',b_resumeOptimization ,'optimizationInfo',optimizationInfo ,'numTerrains',1, ...
-                                                    'targetVelocity', 1.2,'timeOut', 25*60 );
+                                                    'resume',b_resumeOptimization ,'optimizationInfo','Test' ,'numTerrains',1, ...
+                                                    'targetVelocity', 1.2,'timeOut', 35*60 );
 
 load([innerOptSettings.optimizationDir filesep 'initialGains.mat']);
 InitialGuessFile = load([innerOptSettings.optimizationDir filesep 'initialGainsCMG.mat']);

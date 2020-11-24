@@ -182,7 +182,7 @@ try
         else
             costT = cost;
             metabolicEnergySave     = metabolicEnergy;
-            costOfTransportSave     = effort_costs.costOfTransport;
+            costOfTransportSave     = [effort_costs.costOfTransport];
             timeCostSave            = timeCost;
             maxCMGTorqueSave        = maxCMGTorque;
             maxCMGdeltaHSave        = maxCMGdeltaH;
