@@ -15,6 +15,8 @@ end
 if ~isempty(info)
    info = strrep(info,'0.9m/s','0_9ms'); 
    info = strrep(info,'1.2m/s','1_2ms'); 
+   info = strrep(info,'0.9ms','0_9ms'); 
+   info = strrep(info,'1.2ms','1_2ms'); 
 end
 if ~isempty(fig)
     set(fig,'PaperOrientation','landscape')

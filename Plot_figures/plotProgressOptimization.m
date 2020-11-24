@@ -180,7 +180,7 @@ try
                 plotCMGData(dataStruct.kinematics.CMGData,saveInfo,CMGData,false);
             end
             
-            if contains(dataStruct.modelType,'prosthetic') || contains(dataStruct.modelType,'amputee')
+            if contains(lower(dataStruct.modelType),'prosthetic') || contains(lower(dataStruct.modelType),'amputee')
                 intactFlag = false;
             else
                 intactFlag = true;

@@ -64,6 +64,8 @@ if isempty(p)
 end
 
 parse(p,varargin{:});
+GaitPhaseData           = p.Results.GaitPhaseData;
+stepTimes               = p.Results.stepTimes;
 angularData             = p.Results.angularData;
 musculoData             = p.Results.musculoData;
 GRFData                 = p.Results.GRFData;
