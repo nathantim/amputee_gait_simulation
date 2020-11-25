@@ -104,22 +104,22 @@ axis off
 %                              3. actual shift distance
 ViewShiftParamsX = [0 0 0];
 ViewShiftParamsY = [0 0 0];
-
-set(gca, 'YColor', [1 1 1], 'ZColor', [1 1 1])% switch off the y- and z-axis
-set(gca, 'XTick', -10:1:100)% set x-axis labels
+figAxes = findobj('Type', 'axes','parent',FigHndl);
+set(figAxes, 'YColor', [1 1 1], 'ZColor', [1 1 1])% switch off the y- and z-axis
+set(figAxes, 'XTick', -10:1:100)% set x-axis labels
 
 % view(25,25)
 if contains(viewOpt,'front')
-    view(90,0);
+    view(figAxes, 90,0);
     followModel = true;
 elseif contains(viewOpt,'side')
-    view(0,0);
+    view(figAxes, 0,0);
 elseif contains(viewOpt,'perspective')
-    view(25,25);
+    view(figAxes, 25,25);
 else
     fprintf('Default view.\n');
     viewOpt = 'default';
-    view(0,0);
+    view(figAxes, 0,0);
 end
 
 % Generate 3D Objects
@@ -140,18 +140,18 @@ if CMGFlag
 else
     rCMG = [];
 end
-amputeeFactor = 0.7;
+amputeeFactor = 0.4;
 % y-shift (arbitrary, since sagittal model displayed with 3D objects)
 yShift = 0;%0*rHJ; %[m]
 
 % create sphere objects (contact points and joints and HAT top)
-SphereObjects = createSphereObjects(SphereRes, yShift, rCP, rAJ, rKJ, rHJ,amputeeFactor,rCMG, intactFlag, CMGFlag);
-
+SphereObjects = createSphereObjects(figAxes, SphereRes, yShift, rCP, rAJ, rKJ, rHJ,amputeeFactor, intactFlag, CMGFlag);
+amputeeFactor = 0.7;
 % 3D Cone Objects
 % ---------------
 
 % cone resolution
-ConeRes = 10;
+ConeRes = 20;
 
 % cone radii (bottom and top)
 rFoot           = [rCP rCP]*2/3; %[m]
@@ -161,14 +161,14 @@ rHAT_Cone       = [rHJ*11/15 rHJ*11/15 rHJ*0.8 rHJ*14/15 rHJ*13/15 rHJ*13/15 0];
 rAmputeeThigh   = [rKJ*0.3  rKJ*0.5 rKJ*0.5 rKJ*0.8 rKJ*0.8 rKJ rKJ*1.2]; %[m]
 
 % create cone objects (bones)
-ConeObjects = createConeObjects(ConeRes, yShift, rFoot, rShank, rThigh, rHAT_Cone, rAmputeeThigh, intactFlag);
+ConeObjects = createConeObjects(figAxes, ConeRes, yShift, rFoot, rShank, rThigh, rHAT_Cone, rAmputeeThigh, intactFlag);
 
 
 
 % 3D Prosthetic Objects
 % ---------------
 if (~intactFlag)
-    [prosthSphereObjects, prosthLinkObjects] = createProstheticObjects(yShift,SphereRes,ConeRes,rKJ,rAJ,rCP,amputeeFactor,rCMG);
+    [prosthSphereObjects, prosthLinkObjects] = createProstheticObjects(figAxes, yShift,SphereRes,ConeRes,rKJ,rAJ,rCP,amputeeFactor,rCMG);
 else
     prosthSphereObjects = [];
     prosthLinkObjects   = [];
@@ -177,7 +177,7 @@ end
 % 3D Walk Way
 % -----------
 WayCol = [0.95 0.95 1];% walkway color
-createWalkwayObject(WayCol, rCP,5);
+createWalkwayObject(figAxes, WayCol, rCP,5);
 
 % Obstacle
 if obstacleFlag
@@ -186,8 +186,8 @@ end
 
 % Set Scene Lighting
 % ------------------
-lighting gouraud % lighting goraud (much faster than lghting phong)
-camh = camlight; % camlights on
+lighting(figAxes,'gouraud')% lighting goraud (much faster than lghting phong)
+camh = camlight(figAxes,'RIGHT'); % camlights on
 
 % Create Text Labels
 % ------------------
@@ -245,11 +245,11 @@ for ii = 1:frameSkip:length(animData.time)
             
             % Check if view window is out of sight. If so, shift it
             if followModel
-                viewFollowModel(u, ViewWin);
+                viewFollowModel(figAxes, u, ViewWin);
             elseif followProsthesis
-                viewProsthesis(u, ViewWin);
+                viewProsthesis(figAxes, u, ViewWin);
             else
-                [ViewShiftParamsX,ViewShiftParamsY] = checkViewWin( u, t, ViewWin, TolFrac, ...
+                [ViewShiftParamsX,ViewShiftParamsY] = checkViewWin(figAxes, u, t, ViewWin, TolFrac, ...
                     ViewShiftParamsX, ViewShiftParamsY, tShiftTot);
             end
             camlight(camh);

@@ -9,7 +9,7 @@ if ~isempty(rCMG)
 else
     CMG_obj = [];
 end
-update3R60Objects( prosthSphereObjects, prosthLinkObjects, u, x, t);
+
     
 P_ShankCone  = prosthLinkObjects(end-2);
 P_BallCone = prosthLinkObjects(end-1);
@@ -100,4 +100,7 @@ else
     rotTransObj( P_HeelCone, u(heelIdx),   u(ankleIdx),         x(heelIdx),   x(ankleIdx));
     
 end
+
+update3R60Objects( prosthSphereObjects, prosthLinkObjects, u, x, t);
+
 end

@@ -110,10 +110,10 @@ if t==0
     rotTransObj( link5Obj, u(joint4Idx),   u(shankConnectIdx),   zeros(1,3),   [0;0;link5Length]);
     rotTransObj( link6Obj, u(joint1Idx),   u(joint2Idx),         zeros(1,3),   [0;0;link6Length]);
     rotTransObj( link8Obj, u(joint7Idx),   u(joint6Idx),         zeros(1,3),   [0;0;link8Length]);
-    rotTransObj( link9Obj, u(joint4Idx),   u(joint5Idx),         zeros(1,3),   [0;0;link9Length]);
+    rotTransObj( link9Obj, u(joint5Idx),   u(joint4Idx),         zeros(1,3),   [0;0;link9Length]);
     rotTransObj( link11Obj, u(joint3Idx),   u(joint4Idx),        zeros(1,3),   [0;0;link11Length]);
-    rotTransObj( link13Obj, u(joint1Idx),   u(joint3Idx),        zeros(1,3),   [0;0;link13Length]);
-    rotTransObj( link14Obj, u(joint1Idx),   u(joint7Idx),        zeros(1,3),   [0;0;link14Length]);
+    rotTransObj( link13Obj, u(joint3Idx),   u(joint1Idx),        zeros(1,3),   [0;0;link13Length]);
+    rotTransObj( link14Obj, u(joint7Idx),   u(joint1Idx),        zeros(1,3),   [0;0;link14Length]);
     rotTransObj( link16Obj, u(thighConnectIdx),  u(joint1Idx),   zeros(1,3),   [0;0;link16Length]);
 
     
@@ -127,15 +127,34 @@ else
     rotTransObj( link5Obj, u(joint4Idx),   u(shankConnectIdx),   x(joint4Idx),   x(shankConnectIdx));
     rotTransObj( link6Obj, u(joint1Idx),   u(joint2Idx),         x(joint1Idx),   x(joint2Idx));
     rotTransObj( link8Obj, u(joint7Idx),   u(joint6Idx),         x(joint7Idx),   x(joint6Idx));
-    rotTransObj( link9Obj, u(joint4Idx),   u(joint5Idx),         x(joint4Idx),   x(joint5Idx));
+    rotTransObj( link9Obj, u(joint5Idx),   u(joint4Idx),         x(joint5Idx),   x(joint4Idx));
     rotTransObj( link11Obj, u(joint3Idx),   u(joint4Idx),        x(joint3Idx),   x(joint4Idx));
-    rotTransObj( link13Obj, u(joint1Idx),   u(joint3Idx),        x(joint1Idx),   x(joint3Idx));
-    rotTransObj( link14Obj, u(joint1Idx),   u(joint7Idx),        x(joint1Idx),   x(joint7Idx));
+    rotTransObj( link13Obj, u(joint3Idx),   u(joint1Idx),        x(joint3Idx),   x(joint1Idx));
+    rotTransObj( link14Obj, u(joint7Idx),   u(joint1Idx),        x(joint7Idx),   x(joint1Idx));
     rotTransObj( link16Obj, u(thighConnectIdx),  u(joint1Idx),   x(thighConnectIdx),  x(joint1Idx));
-    
-
+   
     % Scale hydraulic elements
     scaleObj(link5Obj, u(joint4Idx),   u(shankConnectIdx),   x(joint4Idx),   x(shankConnectIdx))
     scaleObj(link8Obj, u(joint7Idx),   u(joint6Idx),         x(joint7Idx),   x(joint6Idx))    
+
+     %
+    ankleIdx = 25:27;
+    ballIdx = ankleIdx + 3;
+    heelIdx = ballIdx + 3;
+    nHeelBall = (u(ballIdx)-u(heelIdx))/norm(u(ballIdx)-u(heelIdx));    
+    nShank = (u(ankleIdx)-u(shankConnectIdx))/norm(u(shankConnectIdx)-u(ankleIdx));
+
+    alignCylinder( link1Obj,nHeelBall,nShank, u(joint2Idx),   u(shankConnectIdx));
+    alignCylinder( link3Obj,nHeelBall,nShank, u(joint5Idx),   u(joint2Idx));
+    alignCylinder( link4Obj,nHeelBall,nShank, u(joint6Idx),   u(joint2Idx));
+    alignCylinder( link17Obj,nHeelBall,nShank, u(joint5Idx),   u(shankConnectIdx));
+    alignCylinder( link6Obj,nHeelBall,nShank, u(joint1Idx),   u(joint2Idx));
+    alignCylinder( link9Obj, nHeelBall,nShank, u(joint5Idx),   u(joint4Idx));
+    alignCylinder( link11Obj,nHeelBall,nShank, u(joint3Idx),   u(joint4Idx));
+    alignCylinder( link13Obj,nHeelBall,nShank, u(joint3Idx),   u(joint1Idx));
+    alignCylinder( link14Obj,nHeelBall,nShank, u(joint7Idx),   u(joint1Idx));
+    alignCylinder( link16Obj,nHeelBall,nShank, u(thighConnectIdx),  u(joint1Idx));
+    
+
 
 end
