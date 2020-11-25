@@ -2,7 +2,7 @@
 % Create Walkway
 % --------------
 
-function createWalkwayObject(WayCol, rCP, width)
+function createWalkwayObject(figAxes, WayCol, rCP, width)
     %set nPlates <= 0 to load walkway from file. Else, Walkway will be flat and of length specified in meters
     if nargin ==2
         width = 1;
@@ -46,7 +46,7 @@ function createWalkwayObject(WayCol, rCP, width)
     end
 
     % create walkway patch
-    patch('Vertices', floorVertices, 'Faces', floorFaces, 'FaceColor', WayCol, ...
+    patch(figAxes, 'Vertices', floorVertices, 'Faces', floorFaces, 'FaceColor', WayCol, ...
         'EdgeColor', [0.5 0.5 0.5], 'LineWidth', 1);
     %{
     patch('Vertices', sideVertices, 'Faces', sideFaces, 'FaceColor', WayCol, ...

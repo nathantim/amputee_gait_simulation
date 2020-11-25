@@ -2,14 +2,14 @@
 % and the light sources if model is out
 % of view
 % ----------------------------------------
-function [ViewShiftParamsX, ViewShiftParamsY] = checkViewWin( u, t, ViewWin, TolFrac, ViewShiftParamsX, ViewShiftParamsY, tShiftTot)
+function [ViewShiftParamsX, ViewShiftParamsY] = checkViewWin(figAxes, u, t, ViewWin, TolFrac, ViewShiftParamsX, ViewShiftParamsY, tShiftTot)
 %% x
 % Check For Shift Initiation
 % --------------------------
 
 if ViewShiftParamsX(1)==0
     % get axis limits
-    XLimits = get(gca, 'XLim');
+    XLimits = get(figAxes, 'XLim');
     
     % get min and max xpos of object
     minX = mean(u(4),u(19));
@@ -22,14 +22,14 @@ if ViewShiftParamsX(1)==0
         dShiftTotX = (minX - ViewWin*TolFrac)  - StartPosX;
         ViewShiftParamsX = [1 t StartPosX dShiftTotX];
         
-        set(gca, 'XLim', [minX - ViewWin*TolFrac  minX + ViewWin*(1-TolFrac)]);
+        set(figAxes, 'XLim', [minX - ViewWin*TolFrac  minX + ViewWin*(1-TolFrac)]);
         % check left border
     elseif XLimits(1) > ( minX - ViewWin*TolFrac )
         % initiate shift to the left
         StartPosX  = XLimits(1);
         dShiftTotX = StartPosX - (minX + ViewWin*TolFrac - ViewWin);
         ViewShiftParamsX = [-1 t StartPosX dShiftTotX];
-        set(gca, 'XLim', [maxX - ViewWin*(1-TolFrac)  maxX + ViewWin*TolFrac]);
+        set(figAxes, 'XLim', [maxX - ViewWin*(1-TolFrac)  maxX + ViewWin*TolFrac]);
     end
 end
 
@@ -62,22 +62,22 @@ if ViewShiftParamsX(1)~=0
         end
         
         % shift axis limits
-        set(gca, 'XLim', StartPosX + ShiftDirX*xLimShift+[0 ViewWin]);
+        set(figAxes, 'XLim', StartPosX + ShiftDirX*xLimShift+[0 ViewWin]);
     end
 end
 
 %% y
-% YLimits = get(gca, 'YLim');
-% set(gca, 'YLim', StartPosY + ShiftDirY*yLimShift+[0 ViewWin]);
+% YLimits = get(figAxes, 'YLim');
+% set(figAxes, 'YLim', StartPosY + ShiftDirY*yLimShift+[0 ViewWin]);
 minY = u(2);
-set(gca, 'YLim', [minY - ViewWin  minY + ViewWin]);
+set(figAxes, 'YLim', [minY - ViewWin  minY + ViewWin]);
 %         maxY = u(2);
   % Check For Shift Initiation
     % --------------------------
 
 %     if ViewShiftParamsY(1)==0
 %         % get axis limits
-%         YLimits = get(gca, 'YLim');
+%         YLimits = get(figAxes, 'YLim');
 % 
 %         % get min and max xpos of object
 %         minY = u(2);
@@ -90,14 +90,14 @@ set(gca, 'YLim', [minY - ViewWin  minY + ViewWin]);
 %             dShiftTotY = (minY - ViewWin*TolFrac)  - StartPosY; 
 %             ViewShiftParamsY = [1 t StartPosY dShiftTotY];
 % 
-%             set(gca, 'YLim', [minY - ViewWin*TolFrac  minY + ViewWin*(1-TolFrac)]);
+%             set(figAxes, 'YLim', [minY - ViewWin*TolFrac  minY + ViewWin*(1-TolFrac)]);
 %         % check left border
 %         elseif YLimits(1) > ( minY - ViewWin*TolFrac )
 %             % initiate shift to the left
 %             StartPosY  = YLimits(1);
 %             dShiftTotY = StartPosY - (minY + ViewWin*TolFrac - ViewWin); 
 %             ViewShiftParamsY = [-1 t StartPosY dShiftTotY];
-%             set(gca, 'YLim', [maxY - ViewWin*(1-TolFrac)  maxY + ViewWin*TolFrac]);
+%             set(figAxes, 'YLim', [maxY - ViewWin*(1-TolFrac)  maxY + ViewWin*TolFrac]);
 %         end
 %     end
 % 
@@ -130,7 +130,7 @@ set(gca, 'YLim', [minY - ViewWin  minY + ViewWin]);
 %             end
 % 
 %             % shift axis limits
-%             set(gca, 'YLim', StartPosY + ShiftDirY*yLimShift+[0 ViewWin]);
+%             set(figAxes, 'YLim', StartPosY + ShiftDirY*yLimShift+[0 ViewWin]);
 %         end
 %     end
 end

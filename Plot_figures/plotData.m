@@ -58,9 +58,14 @@ if isempty(p)
     
     validVector2Fcn = @(ii) max(size(ii))==2 && min(size(ii))==1;
     addParameter(p,'timeInterval',[],validVector2Fcn);
+    
+    validIntegerFcn = @(ii) isinteger(ii);
+    addParameter(p,'initiationSteps',   5,                  validIntegerFcn);
 end
 
 parse(p,varargin{:});
+GaitPhaseData           = p.Results.GaitPhaseData;
+stepTimes               = p.Results.stepTimes;
 angularData             = p.Results.angularData;
 musculoData             = p.Results.musculoData;
 GRFData                 = p.Results.GRFData;
@@ -72,6 +77,7 @@ saveInfo.b_saveFigure   = p.Results.saveFigure;
 plotFukuchiData         = p.Results.showFukuchi;
 showSD                  = p.Results.showSD;
 b_oneGaitPhase          = p.Results.showAverageStride;
+initiationSteps         = p.Results.initiationSteps;
 
 %%
 set(0, 'DefaultAxesFontSize',16);
@@ -90,7 +96,7 @@ end
 saveInfo.info = info;
 t = GaitPhaseData.time;
 
-GaitInfo = getGaitInfo(t,GaitPhaseData,stepTimes,b_oneGaitPhase,timeInterval);
+GaitInfo = getGaitInfo(t,GaitPhaseData,stepTimes,b_oneGaitPhase,initiationSteps,timeInterval);
 
 axesState = [];
 axesAngle = [];

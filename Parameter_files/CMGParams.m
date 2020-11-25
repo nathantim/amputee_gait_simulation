@@ -4,6 +4,7 @@ obstacle_width = 0.15;
 obstacle_depth = 0.05;
 obstacle_x = 9.080;
 obstacle_y = -1.6; %fall for Prosthetic_2D 1.2 m/s
+obstacle_z = 0;
 obstacle_damping = 8E1;
 obstacle_stiffness = 5E1;
 

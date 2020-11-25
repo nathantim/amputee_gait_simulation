@@ -9,7 +9,7 @@ function costs = cmaesParallelSplitCMG(gainsPop)
 %%
 global rtp InitialGuess innerOptSettings model
 %% Data plotting during optimization
-if inner_opt_settings.visual
+if innerOptSettings.visual
     dataQueueD = parallel.pool.DataQueue;
     dataQueueD.afterEach(@plotProgressOptimization);
 end
@@ -64,7 +64,6 @@ dataStruct(1:length(in)) = struct('modelType',[],'timeCost',struct('data',[],'mi
     'stepLengthASIstruct',struct('data',[],'minimize',2,'info',''),...
     'stepTimeASIstruct',struct('data',[],'minimize',2,'info',''),'velCost',struct('data',[],'minimize',1,'info',''),'timeVector',struct('data',[],'minimize',1,'info',''),...
     'maxCMGTorque',struct('data',[],'minimize',1,'info',''),'maxCMGdeltaH',struct('data',[],'minimize',1,'info',''),'controlRMSE',struct('data',[],'minimize',1,'info',''),...
-    'numberOfCollisions',struct('data',[],'minimize',1,'info',''), ...
     'tripWasActive',struct('data',[],'minimize',1,'info',''),...
     'innerOptSettings',innerOptSettings,'Gains',[],'kinematics',[],'animData3D',[]);
 
@@ -85,7 +84,6 @@ for idx = 1:length(in)
         metabolicEnergy     = simout(idx).metabolicEnergy;
         sumOfStopTorques    = simout(idx).sumOfStopTorques;
         HATPosVel           = simout(idx).HATPosVel;
-        stepVelocities      = simout(idx).stepVelocities;
         stepTimes           = simout(idx).stepTimes;
         stepLengths         = simout(idx).stepLengths;
         stepNumbers         = simout(idx).stepNumbers;
@@ -94,7 +92,6 @@ for idx = 1:length(in)
         GaitPhaseData       = simout(idx).GaitPhaseData;
         musculoData         = simout(idx).musculoData;
         GRFData             = simout(idx).GRFData;
-        selfCollision       = simout(idx).selfCollision;
         animData3D          = simout(idx).animData3D;
         
         try
@@ -114,9 +111,9 @@ for idx = 1:length(in)
         
         try
             % obtain cost value
-            [costs(idx), dataStructlocal] = getCost(model,Gains,time,metabolicEnergy,sumOfStopTorques, ...
-                HATPosVel,stepVelocities,stepTimes,stepLengths,...
-                stepNumbers, CMGData, selfCollision, innerOptSettings,true);
+            [costs(idx), dataStructlocal] = getCost(model,Gains,time,metabolicEnergy,sumOfStopTorques,HATPosVel,...
+                                                stepTimes,stepLengths,stepNumbers,CMGData,mData.ExecutionInfo.StopEvent,...
+                                                innerOptSettings,true);
             dataStructlocal.kinematics = kinematics;
             dataStructlocal.animData3D = animData3D;
         catch ME

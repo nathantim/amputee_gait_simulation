@@ -24,7 +24,7 @@ for ii = 1:length(GaitInfo.start.rightV)
 end
 maxRanklePowerStance = reshape(maxRanklePowerStance,1,length(maxRanklePowerStance));
 
-powerAnkleASI = getFilterdMean_and_ASI(maxLanklePowerStance,maxRanklePowerStance);
+powerAnkleASI = getMEANandASI(maxLanklePowerStance,maxRanklePowerStance);
 
 if contains(saveInfo.info,'prosthetic') || contains(saveInfo.info,'amputee')
     varNames = {'Intact (W/kg)','Prosthetic (W/kg)', 'ASI (%)'};

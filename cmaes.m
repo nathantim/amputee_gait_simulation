@@ -358,7 +358,9 @@ ii = strfind(opts.SaveFilename, '%'); % remove everything after comment
 if ~isempty(ii)
   opts.SaveFilename = [opts.BaseDirectory filesep opts.SaveFilename(1:ii(1)-1)];
 end
-
+if ~exist(opts.SaveFilename,'file')
+    opts.Resume = 'no';
+end
 opts.SaveFilename = deblank(opts.SaveFilename); % remove trailing white spaces
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  
@@ -2895,7 +2897,7 @@ function f=frand(x)
   f=1./(1-rand(1, size(x,2))) - 1;
 
 % CHANGES
-% 
+% 20/11/20: If no variablecmaes.mat file exists yet, set Resume to no, to create file
 % 20/10/15: Make it possible to use a designated map for all cmaes files
 % 12/04/28: (3.61) stopIter is relative to countiter after resume (thanks to Tom Holden)
 % 12/04/28: (3.61) some syncing from 3.32.integer branch (cmean introduced, ...)

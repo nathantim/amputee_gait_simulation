@@ -1,4 +1,4 @@
-function plotHealthyProstheticData(realHealthyData,healthyData,amputeeData,amputeeCMGNotActiveData,amputeeCMGActiveData,info,b_saveTotalFig)
+function plotHealthyProstheticData(realHealthyData,healthyData,amputeeData,amputeeCMGNotActiveData,amputeeCMGActiveData,initiationSteps,info,b_saveTotalFig)
 % PLOTHEALTHYPROSTHETICDATA         Function that plots the data of healthy and prosthetic simulation together, with optional 
 %                                   amputee with CMG simulation
 % INPUTS:
@@ -13,8 +13,8 @@ function plotHealthyProstheticData(realHealthyData,healthyData,amputeeData,amput
 % OUTPUTS:
 %   - 
 %%
-showSD      = true;
-showTables  = true;
+showSD          = true;
+showTables      = true;
 
 % Select which figures to show
 b_plotLegState    = 0;
@@ -61,10 +61,10 @@ amputeeSaveInfo = saveInfo;
 amputeeSaveInfo.info = [amputeeSaveInfo.info, 'amputee'];
 
 amputeeCMGSaveInfo = saveInfo;
-amputeeCMGSaveInfo.info = [amputeeCMGSaveInfo.info, 'CMG'];
+amputeeCMGSaveInfo.info = [amputeeCMGSaveInfo.info, 'amputeeCMG'];
 
-healthyGaitInfo         = getGaitInfo(healthyData.angularData.time,       healthyData.GaitPhaseData,       healthyData.stepTimes, b_oneGaitPhase);
-amputeeGaitInfo         = getGaitInfo(amputeeData.angularData.time,       amputeeData.GaitPhaseData,       amputeeData.stepTimes, b_oneGaitPhase);
+healthyGaitInfo         = getGaitInfo(healthyData.angularData.time,       healthyData.GaitPhaseData,       healthyData.stepTimes, b_oneGaitPhase, initiationSteps);
+amputeeGaitInfo         = getGaitInfo(amputeeData.angularData.time,       amputeeData.GaitPhaseData,       amputeeData.stepTimes, b_oneGaitPhase, initiationSteps);
 realHealthyDataGaitInfo = getGaitInfo(realHealthyData.angularData.time,   [],                              [],                    false);
 
 if ~isempty(amputeeCMGNotActiveData)

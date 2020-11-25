@@ -1,4 +1,4 @@
-function [setInnerOptSettings, opts] = createOptDirectory(modelDir,setInnerOptSettings,opts,optimizationInfo)
+function [innerOptSettings, opts] = createOptDirectory(modelDir,innerOptSettings,opts,optimizationInfo)
 %CREATEOPTDIRECTORY             Function creates a directory in the Results folder located in the directory
 %                               of the NeuroMuscular model file. This directory contains the vcmaes file
 %                               which contains saved intermediate steps of the optimization, and it
@@ -20,23 +20,22 @@ end
 if contains(num2str(opts.Resume),'no') || min(opts.Resume) == 0
     dateNow = strcat(char(datestr(now,'yyyy-mm-dd_HH-MM')),'_');
     
-    folderName = [dateNow, num2str(setInnerOptSettings.target_velocity) 'ms_' optimizationInfo];
+    folderName = [dateNow, num2str(innerOptSettings.targetVelocity) 'ms_' optimizationInfo];
     optDirectory = [modelDir, filesep, 'Results', filesep, folderName];
     mkdir(optDirectory);
-    setInnerOptSettings.optimizationDir = optDirectory;
+    innerOptSettings.optimizationDir = optDirectory;
     
     moveAndRenameFile([modelDir filesep innerOptSettings.initialGainsFilename], [optDirectory, filesep 'initialGains.mat']);
-    if ~isempty(init_gainsCMG)
+    if ~isempty(innerOptSettings.initialCMGGainsFilename)
         moveAndRenameFile([modelDir filesep innerOptSettings.initialCMGGainsFilename], [optDirectory, filesep 'initialGainsCMG.mat']);
-        moveAndRenameFile([baseDir filesep 'CMGParams.m'], [optDirectory, filesep,'CMGParamsCapture.m']);
     end
-    
-    moveAndRenameFile([baseDir filesep 'BodyMechParams.m'], [optDirectory, filesep,'BodyMechParamsCapture.m']);
+    moveAndRenameFile([baseDir filesep 'Parameter_files' filesep 'CMGParams.m'], [optDirectory, filesep,'CMGParamsCapture.m']);
+    moveAndRenameFile([baseDir filesep 'Parameter_files' filesep 'BodyMechParams.m'], [optDirectory, filesep,'BodyMechParamsCapture.m']);
     moveAndRenameFile([modelDir filesep 'ControlParams.m'], [optDirectory, filesep,'ControlParamsCapture.m']);
-    moveAndRenameFile([baseDir filesep 'Prosthesis3R60Params.m'], [optDirectory, filesep,'Prosthesis3R60ParamsCapture.m']);
+    moveAndRenameFile([baseDir filesep 'Parameter_files' filesep 'Prosthesis3R60Params.m'], [optDirectory, filesep,'Prosthesis3R60ParamsCapture.m']);
     
     opts.BaseDirectory = optDirectory;
-    save([optDirectory filesep 'settings.mat'],'setInnerOptSettings','opts');  
+    save([optDirectory filesep 'settings.mat'],'innerOptSettings','opts');  
     
     
 elseif contains(num2str(opts.Resume),'yes') || min(opts.Resume) == 1
@@ -45,10 +44,10 @@ elseif contains(num2str(opts.Resume),'yes') || min(opts.Resume) == 1
     prevSettings = load([optDirectory filesep 'settings.mat']);
     opts = prevSettings.opts;
     opts.Resume = 'yes';
-    setInnerOptSettings = prevSettings.setInnerOptSettings;
+    innerOptSettings = prevSettings.innerOptSettings;
     
 elseif contains(num2str(opts.Resume),'eval')
-    setInnerOptSettings.optimizationDir = ' ';
+    innerOptSettings.optimizationDir = ' ';
 else
     error('Unknown resume value');
 end

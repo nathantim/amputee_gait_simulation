@@ -1,5 +1,5 @@
-function stepTimeTable = getStepTimeTable(stepTimes,saveInfo,initiation_steps)
-stepTimeASIstruct = getFilterdMean_and_ASI(findpeaks(stepTimes.signals.values(:,1)),findpeaks(stepTimes.signals.values(:,2)),initiation_steps);
+function stepTimeTable = getStepTimeTable(stepTimes,saveInfo,initiationSteps)
+stepTimeASIstruct = getMEANandASI(findpeaks(stepTimes.signals.values(:,1)),findpeaks(stepTimes.signals.values(:,2)),initiationSteps);
 
 rowNames = {'Step Time'};
 

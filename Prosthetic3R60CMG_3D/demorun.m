@@ -9,18 +9,18 @@ model = 'NeuromuscularModel_3R60CMG_3D';
 load(['Results' filesep 'v1.2ms_wCMG.mat'])
 load(['Results' filesep 'CMGGains_tripprevent.mat'])
 
-innerOptSettings = setInnerOptSettings('eval');
-
+innerOptSettings = setInnerOptSettings(model,'resume','eval','targetVelocity',1.2);
 BodyMechParams;
 ControlParams;
 Prosthesis3R60Params;
 CMGParams;
-OptimParams;
-
 
 load_system(model);
-set_param(strcat(model,'/Body Mechanics Layer/Obstacle'),'Commented','off');
 
+if ~contains(get_param(strcat(model,'/Body Mechanics Layer/Obstacle'),'Commented'),'off')
+    warning('Uncommenting obstacle');
+    set_param(strcat(model,'/Body Mechanics Layer/Obstacle'),'Commented','off');
+end
 [groundX, groundZ, groundTheta] = generateGround('flat');
 dt_visual = 1/1000;
 animFrameRate = 30;
@@ -30,8 +30,8 @@ assignGainsSagittal;
 assignGainsCoronal;
 assignInit;
 
-targetVel = [1.2,1.2,1.2,1.2];
 CMGcostFactor = [innerOptSettings.CMGdeltaHFactor,innerOptSettings.CMGdeltaHFactor,0,0];
+modelStopTime = [20,20,30,30];
 save_system(model);
 
 %%
@@ -41,6 +41,7 @@ warning('on');
 
 %%
 clearvars in paramSets
+paramSets{1} = {};
 paramSets{2} = Simulink.BlockDiagram.modifyTunableParameters(rtp, ...
                         'RkneeFlexSpeedGain', 0, ...
                         'RkneeFlexPosGain', 0, ...
@@ -59,7 +60,7 @@ end
 
 
 %%
-simout(1:2) = parsim(in, 'ShowProgress', true);
+simout(1:length(paramSets)) = parsim(in, 'ShowProgress', true);
 
 %%
 load_system(model);
@@ -90,14 +91,13 @@ for idxGains = 1:length(paramSets)
 end
 
 %%
-simout(3:4) = parsim(in, 'ShowProgress', true);
+simout((length(simout)+1):(length(simout)+length(paramSets))) = parsim(in, 'ShowProgress', true);
 
 %%
 for idxSim = 1:length(simout)
-    innerOptSettings.target_velocity    = targetVel(idxSim);
-    innerOptSettings.min_velocity       = targetVel(idxSim);
-    innerOptSettings.max_velocity       = targetVel(idxSim);
-    innerOptSettings.CMGdeltaHFactor    = CMGcostFactor(idxSim);
+    innerOptSettings.CMGdeltaHFactor   = CMGcostFactor(idxSim);
+    
+    innerOptSettings.modelStopTime     = modelStopTime(idxSim);
     mData=simout(idxSim).getSimulationMetadata();
     
     if strcmp(mData.ExecutionInfo.StopEvent,'DiagnosticError')
@@ -107,7 +107,12 @@ for idxSim = 1:length(simout)
     elseif strcmp(mData.ExecutionInfo.StopEvent,'Timeout')
         fprintf('Simulation %d was stopped due to Timeout: \n',idxSim);
     else
-        [~, dataStructLocal] = getCost(model,[],simout(idxSim).time,simout(idxSim).metabolicEnergy,simout(idxSim).sumOfStopTorques,simout(idxSim).HATPosVel,simout(idxSim).stepVelocities,simout(idxSim).stepTimes,simout(idxSim).stepLengths,simout(idxSim).stepNumbers,simout(idxSim).CMGData,simout(idxSim).selfCollision,innerOptSettings,0);
+        [~, dataStructLocal] = getCost(model,[],simout(idxSim).time,simout(idxSim).metabolicEnergy,simout(idxSim).sumOfStopTorques,simout(idxSim).HATPosVel,...
+                                                simout(idxSim).stepTimes,simout(idxSim).stepLengths,simout(idxSim).stepNumbers,simout(idxSim).CMGData,mData.ExecutionInfo.StopEvent,...
+                                                innerOptSettings,0);
         printOptInfo(dataStructLocal,true);
     end
 end
+
+%%
+close_system(model);

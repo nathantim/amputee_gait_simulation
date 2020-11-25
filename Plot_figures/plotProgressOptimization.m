@@ -106,7 +106,7 @@ try
             saveInfo.b_saveFigure = 0;
             saveInfo.info = dataStruct.modelType;
             
-            GaitInfo = getGaitInfo(t,dataStruct.kinematics.GaitPhaseData,dataStruct.kinematics.stepTimes,b_oneGaitPhase);
+            GaitInfo = getGaitInfo(t,dataStruct.kinematics.GaitPhaseData,dataStruct.kinematics.stepTimes,b_oneGaitPhase,dataStruct.innerOptSettings.initiationSteps);
             
             
             dataStruct.kinematics.jointTorquesData.signals.values    = dataStruct.kinematics.jointTorquesData.signals.values./getBodyMass();
@@ -180,7 +180,7 @@ try
                 plotCMGData(dataStruct.kinematics.CMGData,saveInfo,CMGData,false);
             end
             
-            if contains(dataStruct.modelType,'prosthetic') || contains(dataStruct.modelType,'amputee')
+            if contains(lower(dataStruct.modelType),'prosthetic') || contains(lower(dataStruct.modelType),'amputee')
                 intactFlag = false;
             else
                 intactFlag = true;

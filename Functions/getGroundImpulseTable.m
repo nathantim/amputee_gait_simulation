@@ -12,9 +12,9 @@ RGRFz = GRFData.signals.values(:,6);
 [RGRimpxBrake,RGRimpxProp]  = getImpulse(GRFData.time,GaitInfo.start.rightV,GaitInfo.end.rightV,RGRFx);
 [~,RGRimpzProp]             = getImpulse(GRFData.time,GaitInfo.start.rightV,GaitInfo.end.rightV,RGRFz);
 
-[impxBrakestruct]   = getFilterdMean_and_ASI(LGRimpxBrake,RGRimpxBrake);
-[impxPropstruct]    = getFilterdMean_and_ASI(LGRimpxProp,RGRimpxProp);
-[impzPropstruct]    = getFilterdMean_and_ASI(LGRimpzProp,RGRimpzProp);
+[impxBrakestruct]   = getMEANandASI(LGRimpxBrake,RGRimpxBrake);
+[impxPropstruct]    = getMEANandASI(LGRimpxProp,RGRimpxProp);
+[impzPropstruct]    = getMEANandASI(LGRimpzProp,RGRimpzProp);
 
 rowNames = {'Ant-post','Vert'};
 if contains(saveInfo.info,'prosthetic') || contains(saveInfo.info,'amputee')

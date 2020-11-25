@@ -1,11 +1,12 @@
 if  (input("Do you want to clear the data? (1/0)   "))
-%     close all;  
     clearvars;  clc;
 end
 
-%%
+%% Load settings
+model = 'NeuromuscularModel3D';
+
 if input("Load from optimization folder? (1/0)   " )
-    innerOptSettings = setInnerOptSettings('yes');
+    innerOptSettings = setInnerOptSettings(model,'resume','yes');
     disp(innerOptSettings.optimizationDir);
     
     load([innerOptSettings.optimizationDir filesep 'variablescmaes.mat']);
@@ -26,23 +27,17 @@ if input("Load from optimization folder? (1/0)   " )
     run([innerOptSettings.optimizationDir, filesep, 'ControlParamsCapture']);
     
 else
+    innerOptSettings = setInnerOptSettings(model,'resume','eval','targetVelocity', 0.9);
     BodyMechParams;
-    ControlParams;
-    innerOptSettings = setInnerOptSettings('resume','eval','targetVelocity', 0.9);
-                                                     
+    ControlParams;                                                
     load(['Results' filesep 'v0.9ms.mat']);
 
 end
 
 terrains2Test = input("Number of terrains to test:   ");
 
-%%
-model = 'NeuromuscularModel3D';
-
+%% Load model, create ground, set gains
 load_system(model);
-
-
-%%
 [groundX, groundZ, groundTheta] = generateGround('flat');
 
 dt_visual = 1/1000;
@@ -52,71 +47,80 @@ assignGainsSagittal;
 assignGainsCoronal;
 assignInit;
 
+%% Building rapid accelerator target
+warning('off')
+rtp = Simulink.BlockDiagram.buildRapidAcceleratorTarget(model);
+warning('on');
 
-%%
-if contains(get_param(model,'SimulationMode'),'rapid')
-    warning('off')
-    rtp = Simulink.BlockDiagram.buildRapidAcceleratorTarget(model);
-    warning('on');
-    
-    for jj = 1:(terrains2Test)
-            if jj == 1
-                [groundX(jj,:), groundZ(jj,:), groundTheta(jj,:)] = generateGround('flat',[],4*(jj-1),false);
-            else
-                [groundX(jj,:), groundZ(jj,:), groundTheta(jj,:)] = generateGround('const', innerOptSettings.terrain_height, 4*(jj-1),false);
-            end
-            paramSets{jj} = ...
-                Simulink.BlockDiagram.modifyTunableParameters(rtp, ...
-                'groundZ',     groundZ(jj,:), ...
-                'groundTheta', groundTheta(jj,:));
-            in(jj) = Simulink.SimulationInput(model);
-            in(jj) = in(jj).setModelParameter('TimeOut', 10*60);
-            in(jj) = in(jj).setModelParameter('SimulationMode', 'rapid', ...
-                'RapidAcceleratorUpToDateCheck', 'off');
-            in(jj) = in(jj).setModelParameter('RapidAcceleratorParameterSets', paramSets{jj});
-    end   
-else
-    paramStruct = [];
+for jj = 1:(terrains2Test)
+    if jj == 1
+        [groundX(jj,:), groundZ(jj,:), groundTheta(jj,:)] = generateGround('flat',[],4*(jj-1),false);
+    else
+        [groundX(jj,:), groundZ(jj,:), groundTheta(jj,:)] = generateGround('const', innerOptSettings.terrainHeight, 4*(jj-1),false);
+    end
+    paramSets{jj} = ...
+        Simulink.BlockDiagram.modifyTunableParameters(rtp, ...
+        'groundZ',     groundZ(jj,:), ...
+        'groundTheta', groundTheta(jj,:));
+    in(jj) = Simulink.SimulationInput(model);
+    in(jj) = in(jj).setModelParameter('TimeOut', 10*60);
+    in(jj) = in(jj).setModelParameter('SimulationMode', 'rapid', ...
+        'RapidAcceleratorUpToDateCheck', 'off');
+    in(jj) = in(jj).setModelParameter('RapidAcceleratorParameterSets', paramSets{jj});
 end
 
-%%
+
+%% Simulate model
 simout = parsim(in, 'ShowProgress', true);
 
-%%
-for idx = 1:length(simout)
-    mData=simout(idx).getSimulationMetadata();
+%% Obtain cost function values
+dataStruct(1:length(simout)) = struct('modelType',[],'timeCost',struct('data',[],'minimize',1,'info',''),'cost',struct('data',nan,'minimize',1,'info',''),'CoT',struct('data',[],'minimize',1,'info',[]),...
+        'E',struct('data',[],'minimize',1,'info',[]),'sumTstop',struct('data',[],'minimize',1,'info',''),...
+        'HATPos',struct('data',[],'minimize',0,'info',''),'vMean',struct('data',[],'minimize',0,'info',''),...
+        'stepLengthASIstruct',struct('data',[],'minimize',2,'info',''),...
+        'stepTimeASIstruct',struct('data',[],'minimize',2,'info',''),'velCost',struct('data',[],'minimize',1,'info',''),'timeVector',struct('data',[],'minimize',1,'info',''),...
+        'maxCMGTorque',struct('data',[],'minimize',1,'info',''),'maxCMGdeltaH',struct('data',[],'minimize',1,'info',''),'controlRMSE',struct('data',[],'minimize',1,'info',''),...
+        'tripWasActive',struct('data',[],'minimize',1,'info',''),...
+        'innerOptSettings',innerOptSettings,'Gains',[],'kinematics',[],'animData3D',[]);
+cost = nan(length(simout),1);
+    
+for idxSim = 1:length(simout)
+    mData=simout(idxSim).getSimulationMetadata();
     
     if strcmp(mData.ExecutionInfo.StopEvent,'DiagnosticError') || strcmp(mData.ExecutionInfo.StopEvent,'TimeOut')
         disp('Sim was stopped due to error');
-        fprintf('Simulation %d was stopped due to error: \n',idx);
-        disp(simout(idx).ErrorMessage);
-        cost(idx) = nan;
+        fprintf('Simulation %d was stopped due to error: \n',idxSim);
+        disp(simout(idxSim).ErrorMessage);
+        cost(idxSim) = nan;
     else
-        [cost(idx), dataStructLocal] = getCost(model,[],simout(idx).time,simout(idx).metabolicEnergy,simout(idx).sumOfStopTorques,simout(idx).HATPosVel,simout(idx).stepVelocities,simout(idx).stepTimes,simout(idx).stepLengths,simout(idx).stepNumbers,[],simout(idx).selfCollision,innerOptSettings,0);
+        [cost(idxSim), dataStructLocal] = getCost(model,[],simout(idxSim).time,simout(idxSim).metabolicEnergy,simout(idxSim).sumOfStopTorques,simout(idxSim).HATPosVel,...
+                                                simout(idxSim).stepTimes,simout(idxSim).stepLengths,simout(idxSim).stepNumbers,simout(idxSim).CMGData,mData.ExecutionInfo.StopEvent,...
+                                                innerOptSettings,0);
         printOptInfo(dataStructLocal,true);
         
-        kinematics.angularData = simout(idx).angularData;
-        kinematics.GaitPhaseData = simout(idx).GaitPhaseData;
-        kinematics.time = simout(idx).time;
-        kinematics.stepTimes = simout(idx).stepTimes;
-        kinematics.musculoData = simout(idx).musculoData;
-        kinematics.GRFData = simout(idx).GRFData;
-        kinematics.CMGData = simout(idx).CMGData;
-        kinematics.jointTorquesData = simout(idx).jointTorquesData;
-        
+        kinematics.angularData = simout(idxSim).angularData;
+        kinematics.GaitPhaseData = simout(idxSim).GaitPhaseData;
+        kinematics.time = simout(idxSim).time;
+        kinematics.stepTimes = simout(idxSim).stepTimes;
+        kinematics.musculoData = simout(idxSim).musculoData;
+        kinematics.GRFData = simout(idxSim).GRFData;
+        kinematics.CMGData = simout(idxSim).CMGData;
+        kinematics.jointTorquesData = simout(idxSim).jointTorquesData;
         
         dataStructLocal.kinematics = kinematics;
-        dataStructLocal.animData3D = simout((idx)).animData3D;
-        dataStructLocal.optimCost = cost(idx);
+        dataStructLocal.animData3D = simout((idxSim)).animData3D;
+        dataStructLocal.optimCost = cost(idxSim);
         try
-            dataStruct(idx) = dataStructLocal;
+            dataStruct(idxSim) = dataStructLocal;
         catch
         end
     end
 end
 
-%%
+%% Animate and plot data
  animPost3D(simout(1).animData3D,'intact',true,'speed',1,'view','perspective',...
-                'showFigure',true,'createVideo',false,'info',[num2str(innerOptSettings.target_velocity) 'ms'],'saveLocation',innerOptSettings.optimizationDir);
+                'showFigure',true,'createVideo',false,'info',[num2str(innerOptSettings.targetVelocity) 'ms'],'saveLocation',innerOptSettings.optimizationDir);
             
-plotData(simout(1).angularData,simout(1).musculoData,simout(1).GRFData,simout(1).jointTorquesData,simout(1).GaitPhaseData,simout(1).stepTimes,[],['healthy3D', num2str(innerOptSettings.target_velocity), 'ms'],[],0,1,1);
+plotData(simout(1).GaitPhaseData, simout(1).stepTimes,...
+    'angularData',simout(1).angularData, 'musculoData',simout(1).musculoData, ...
+    'GRFData',simout(1).GRFData, 'jointTorquesData',simout(1).jointTorquesData, 'info',' ', 'saveFigure', false);

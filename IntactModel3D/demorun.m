@@ -10,8 +10,7 @@ animFrameRate = 30;
 load(['Results' filesep gainfiles{1}]);
 BodyMechParams;
 ControlParams;
-OptimParams;
-innerOptSettings = setInnerOptSettings('eval');
+innerOptSettings = setInnerOptSettings(model,'resume','eval');
 
 assignGainsSagittal;
 assignGainsCoronal;
@@ -43,9 +42,9 @@ simout = parsim(in, 'ShowProgress', true);
 
 %%
 for idxSim = 1:length(simout)
-    innerOptSettings.target_velocity    = targetVel(idxSim);
-    innerOptSettings.min_velocity       = targetVel(idxSim);
-    innerOptSettings.max_velocity       = targetVel(idxSim);
+    innerOptSettings.targetVelocity    = targetVel(idxSim);
+    innerOptSettings.minVelocity       = targetVel(idxSim);
+    innerOptSettings.maxVelocity       = targetVel(idxSim);
     mData=simout(idxSim).getSimulationMetadata();
     
     if strcmp(mData.ExecutionInfo.StopEvent,'DiagnosticError')
@@ -55,7 +54,12 @@ for idxSim = 1:length(simout)
     elseif strcmp(mData.ExecutionInfo.StopEvent,'Timeout')
         fprintf('Simulation %d was stopped due to Timeout: \n',idxSim);
     else
-        [~, dataStructLocal] = getCost(model,[],simout(idxSim).time,simout(idxSim).metabolicEnergy,simout(idxSim).sumOfStopTorques,simout(idxSim).HATPosVel,simout(idxSim).stepVelocities,simout(idxSim).stepTimes,simout(idxSim).stepLengths,simout(idxSim).stepNumbers,[],simout(idxSim).selfCollision,innerOptSettings,0);
-        printOptInfo(dataStructLocal,true);
+        [~, dataStructLocal] = getCost(model,[],simout(idxSim).time,simout(idxSim).metabolicEnergy,simout(idxSim).sumOfStopTorques,simout(idxSim).HATPosVel,...
+                                                simout(idxSim).stepTimes,simout(idxSim).stepLengths,simout(idxSim).stepNumbers,simout(idxSim).CMGData,mData.ExecutionInfo.StopEvent,...
+                                                innerOptSettings,0);
+       printOptInfo(dataStructLocal,true);
     end
 end
+
+%%
+close_system(model);
