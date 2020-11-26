@@ -22,21 +22,13 @@ if size(TopXYZold,1) == 1
     TopXYZold = TopXYZold';
 end
 
-
-
 % get actual x and z data and shift it back to zero
 xAct = get(Object, 'XData')-LowXYZold(1);
 yAct = get(Object, 'YData')-LowXYZold(2);
 zAct = get(Object, 'ZData')-LowXYZold(3);
 
-
-
 magOld = norm(TopXYZold-LowXYZold);
 magNew = norm(TopXYZ-LowXYZ);
-if abs(magOld-magNew) > 1E-2
-    warning('Dissimilar magnitudes, error of: %d',abs(magOld-magNew));
-end
-
 
 oldUnit = (TopXYZold-LowXYZold)./magOld;
 newUnit = (TopXYZ-LowXYZ)./magNew;
@@ -50,9 +42,6 @@ yNew = RotMat(2,1)*xAct + RotMat(2,2)*yAct + RotMat(2,3)*zAct + LowXYZ(2);
 zNew = RotMat(3,1)*xAct + RotMat(3,2)*yAct + RotMat(3,3)*zAct + LowXYZ(3);
 
 % update cone object
-if max(abs(RotMat*(TopXYZold-LowXYZold) + (LowXYZ) - (TopXYZ))) > 1E-2
-    warning('Wrong rotation matrix, max error of: %d',max(abs(RotMat*(TopXYZold-LowXYZold) + (LowXYZ) - (TopXYZ))));
-end
 set(Object, 'XData', xNew, 'yData', yNew, 'ZData', zNew);
 
 if ~isempty(yaw)
