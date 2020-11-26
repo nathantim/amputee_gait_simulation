@@ -26,16 +26,16 @@ end
 if nargin < 6
     axesHandles = [];
 end
-if nargin < 7
+if nargin < 7 || isempty(subplotStart)
     subplotStart = [1,4,1];
 end
-if nargin < 8
+if nargin < 8 || isempty(b_addTitle)
     b_addTitle = true;
 end
-if nargin < 9
+if nargin < 9 || isempty(b_addAxesTitle)
     b_addAxesTitle = true;
 end
-if nargin < 10
+if nargin < 10 || isempty(b_addLegend)
     b_addLegend = true;
 end
 if nargin < 11 || isempty(tCollision)
