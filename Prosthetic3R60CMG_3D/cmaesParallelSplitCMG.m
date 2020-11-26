@@ -20,7 +20,6 @@ popSize = size(gainsPop,2);
 numTerrains = innerOptSettings.numTerrains;
 terrainHeight = innerOptSettings.terrainHeight;
 
-
 costs = nan(popSize*numTerrains,1);
 paramSets = cell(popSize*numTerrains,1);
 
@@ -130,8 +129,7 @@ for idx = 1:length(in)
         if innerOptSettings.visual
             printOptInfo(dataStruct(idx),true);
         end
-        
-        
+       
     end
     
 end
@@ -149,11 +147,9 @@ try
     if isempty(mingainidx)
         mingainidx = 1;
     end
-    %         distfrommean = costsall(:,mingainidx) - costs(mingainidx);
-    meanterrainidx = 1;%find(abs(distfrommean) == min(abs(distfrommean)));
+    meanterrainidx = 1;
     
     idx2send = ((mingainidx-1)*numTerrains) + meanterrainidx;
-    %     costall = reshape(costsall,1,popSize*numTerrains);
     if innerOptSettings.visual
         if ~isempty(fieldnames(dataStruct(idx2send)))
             dataStruct(idx2send).optimCost = costs(mingainidx);
