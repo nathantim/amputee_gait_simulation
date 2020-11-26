@@ -110,17 +110,18 @@ if ~b_showColors
     set(prosthLinkObjects(1),'FaceColor','texturemap')
     CDataLink1 = get(prosthLinkObjects(1),'CData');
     CDataLink1(:,:,1:3) =col134(1);
-    CDataLink1(:,ConeRes/2+1,1) =  colStanceHydElem(1);
-    CDataLink1(:,ConeRes/2+1,2) =  colStanceHydElem(2);
-    CDataLink1(:,ConeRes/2+1,3) =  colStanceHydElem(3);
+    selectIdx = (ConeRes/2):(ConeRes/2+2);
+    CDataLink1(:,selectIdx,1) =  colStanceHydElem(1);
+    CDataLink1(:,selectIdx,2) =  colStanceHydElem(2);
+    CDataLink1(:,selectIdx,3) =  colStanceHydElem(3);
     set(prosthLinkObjects(1),'CData',CDataLink1)
     
     set(prosthLinkObjects(6),'FaceColor','texturemap')
     CDataLink6 = get(prosthLinkObjects(6),'CData');
     CDataLink6(:,:,1:3) =col134(1);
-    CDataLink6(:,ConeRes/2+1,1) =  colStanceHydElem(1);
-    CDataLink6(:,ConeRes/2+1,2) =  colStanceHydElem(2);
-    CDataLink6(:,ConeRes/2+1,3) =  colStanceHydElem(3);
+    CDataLink6(:,selectIdx,1) =  colStanceHydElem(1);
+    CDataLink6(:,selectIdx,2) =  colStanceHydElem(2);
+    CDataLink6(:,selectIdx,3) =  colStanceHydElem(3);
     set(prosthLinkObjects(6),'CData',CDataLink6)
 end
 
