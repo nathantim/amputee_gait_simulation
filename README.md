@@ -18,10 +18,10 @@ Note: the simulation will take some time (45-90 min). Also the model is numerica
 1. Run the `setup_paths.m` script.
 2. Go to the folder for the model you wish to run.
 3. Open the model
-4. Load one of the optimizedGains.mat files in the Results folder
-5. Select 'normal' or 'rapid-accelerator' mode in Simulink
+4. Load one of the optimized gains .mat files in the Results folder
+5. Select 'rapid-accelerator' mode in Simulink ('normal' mode can work as well, however, nicer visualization with 'rapid-accelerator' mode in combination with `animPost()`
 6. Run `evaluateCost.m`
-7. If 'normal' simulation mode is selected, the simulation is visualized. If 'rapid-accelerator' mode is selected, the simulation can be animated using `animPost3D()`.
+7. If 'normal' simulation mode is selected, the simulation is visualized. If 'rapid-accelerator' mode is selected, the simulation can be animated using `animPost()`.
 8. Simulation data can be plotted using the `plotData()` function.
 
 
@@ -36,11 +36,11 @@ Note: the simulation will take some time (45-90 min). Also the model is numerica
 7. Run `optimize.m`
 
 ## Animating the data
-* `animPost3D` function. See the `animPost3D` function for all the options and specifics.
-* Example of running animPost3D: 
-  * `animPost3D(simout(1).animData3D,'intact',false)`
+* `animPost` function. See the `animPost3D` function for all the options and specifics.
+* Example of running animPost: 
+  * `animPost(simout(1).animData3D,'intact',false)`
     * Shows an animation of the simulated amputee model
-  * `animPost3D(simout(1).animData3D,'intact',false,'speed',1,'obstacle',true,'view','side','CMG',true,'showFigure',true,'createVideo',true,'info','prosthetic1.2ms','saveLocation','Videos');`
+  * `animPost(simout(1).animData,'intact',false,'speed',1,'obstacle',true,'view','side','CMG',true,'showFigure',true,'createVideo',true,'info','prosthetic1.2ms','saveLocation','Videos');`
     * Shows an animation of the simulated amputee model walking with CMG and tripping over obstacle. A mp4 file is created and saved. The filename contains prosthetic1.2ms and it is saved in a subfolder called Videos located in the current directory	
 
 ## Plotting the data:
