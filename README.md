@@ -11,7 +11,7 @@ The model is based on the work of:
 
 ## Demo
 You can run `DEMO.m`. This demo script allows you to plot and/or animate results. The results can be obtained through simulation, or by just loading the data included in the repository.
-Note: the simulation will take some time (30-60 min). Also the model is numerically sensitive, especially the trip prevention simulation. This means that when simulating the model on your computer it can obtain a different, maybe even unsuccessful, result.
+Note: the simulation will take some time (45-90 min). Also the model is numerically sensitive, especially the trip prevention simulation. This means that when simulating the model on your computer it can obtain a different, maybe even unsuccessful, result.
 
 ## Running a model
 
