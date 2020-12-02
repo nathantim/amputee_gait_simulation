@@ -39,7 +39,7 @@ b_oneGaitPhase          = true;
 if 1
 %     savePath = '../../Thesis Document/fig/';
     savePath = '../Thesis Document/fig/';
-    saveInfo.type = {'eps'};
+    saveInfo.type = {'pdf'};
     b_withDate = false;
 else
     savePath = [];
@@ -99,8 +99,8 @@ end
 %% Line and fill style/color/width etc settings
 plotInfo.showSD             = showSD;
 plotInfo.plotProp           = {'LineStyle','Color','LineWidth'};
-plotInfo.lineVec            = {'-';':'; '-';':';'-';':';'-';':'};
-plotInfo.colorProp          = {	'#0072BD';	'#D95319';'#7E2F8E';'#618D27';'#372D31';'#E74B47';'#504579';'#D27918'};
+plotInfo.lineVec            = {'-';'--'; '-';'--';'-';'--';'-';'--'};
+plotInfo.colorProp          = {	'#004D82';	'#EB7F4F';'#5F236B';'#74A82E';'#372D31';'#EC716E';'#443B67';'#E89438'};
 plotInfo.lineWidthProp      = {3;3;3;3;3;3;3;3};
 plotInfo.plotProp_entries   = [plotInfo.lineVec(:),plotInfo.colorProp(:), plotInfo.lineWidthProp(:)];
 plotInfo.showTables         = showTables;
@@ -184,6 +184,7 @@ if b_plotAngles
     [plotRealHealthyAngle, axesHealthyAngle]    = plotAngularData(realHealthyData.angularData,plotInfo,realHealthyDataGaitInfo,healthySaveInfo,angularDataFig,axesHealthyAngle,subplotStart,'right',true);
     for ii = 1:length(plotRealHealthyAngle)
         set(plotRealHealthyAngle(ii,1),plotInfo.plotProp,plotInfo.plotProp_entries(2,:));
+        set(plotRealHealthyAngle(ii,2),'FaceColor','none','LineStyle','none');
     end
     
     subplotStart(3) = subplotStart(3)+subplotStart(2);
@@ -291,6 +292,7 @@ if b_plotTorques
     [plotRealHealthyTorque,axesHealthyTorque]   = plotJointTorqueData(realHealthyData.jointTorquesData,plotInfo,realHealthyDataGaitInfo,healthySaveInfo,torqueDataFig,axesHealthyTorque,subplotStart,'right',true);
     for ii = 1:length(plotRealHealthyTorque)
         set(plotRealHealthyTorque(ii,1),plotInfo.plotProp,plotInfo.plotProp_entries(2,:));
+        set(plotRealHealthyTorque(ii,2),'FaceColor','none','LineStyle','none');
     end
     
     subplotStart(3) = subplotStart(3)+subplotStart(2);
@@ -490,6 +492,7 @@ if b_plotGRF
     [plotRealHealthyGRF,axesHealthyGRF] = plotGRFData(realHealthyData.GRFData,plotInfo,realHealthyDataGaitInfo,healthySaveInfo,GRFDataFig,axesHealthyGRF,subplotStart,'right',true);
     for ii = 1:length(plotRealHealthyGRF)
         set(plotRealHealthyGRF(ii,1),plotInfo.plotProp,plotInfo.plotProp_entries(2,:));
+        set(plotRealHealthyGRF(ii,2),'FaceColor','none','LineStyle','none');
     end
     
     subplotStart(3) = subplotStart(3)+subplotStart(2);

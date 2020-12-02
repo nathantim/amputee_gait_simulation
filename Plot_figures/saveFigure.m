@@ -19,8 +19,10 @@ if ~isempty(info)
    info = strrep(info,'1.2ms','1_2ms'); 
 end
 if ~isempty(fig)
-    set(fig,'PaperOrientation','landscape')
-    set(fig,'PaperType','a2')
+    oldunits = get(fig,'Units');
+    set(fig, 'PaperUnits', 'centimeters', 'Units', 'centimeters');
+    figpos = get(fig, 'Position');
+    set(fig, 'PaperSize', figpos(3:4), 'Units', oldunits);
     
     if b_withDate
         dateNow = strcat(char(datestr(now,'yyyy-mm-dd_HH-MM')),'_');

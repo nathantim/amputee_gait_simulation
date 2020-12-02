@@ -132,7 +132,7 @@ set(axesHandles(axidx),'YLim',[  (min(gamma_avg-gamma_sd)-abs(max(gamma_avg+gamm
 
 if b_showCollision
     plotHandles1(2,1) = plot(axesHandles(axidx), [tCollision, tCollision], get(axesHandles(axidx)).YLim,'--o','Color','#454545');
-    plotHandles1(3,1) = plot(axesHandles(axidx), t_CMGPreventActive, ones(1,2)*get(axesHandles(axidx)).YLim(2)-0.001,'-*','color','#9F9F9F');
+    plotHandles1(3,1) = plot(axesHandles(axidx), t_CMGPreventActive, ones(1,2)*get(axesHandles(axidx)).YLim(2)-0.001,'-*','color','#9F9F9F','MarkerSize',12);
     h = get(axesHandles(axidx),'children');
     set(axesHandles(axidx),'children',[h(3:end); h(1:2)] );
 end
@@ -303,7 +303,7 @@ if b_showCollision
     for jj = 2:length(axesHandles)
         axidx = jj;
         plot(axesHandles(axidx), [tCollision, tCollision], get(axesHandles(axidx)).YLim,'--o','Color','#454545','HandleVisibility','off');
-        plot(axesHandles(axidx), t_CMGPreventActive, ones(1,2)*get(axesHandles(axidx)).YLim(2)-0.001,'-*','color','#9F9F9F','HandleVisibility','off');
+        plot(axesHandles(axidx), t_CMGPreventActive, ones(1,2)*get(axesHandles(axidx)).YLim(2)-0.001,'-*','color','#9F9F9F','HandleVisibility','off','MarkerSize',12);
         h = get(axesHandles(axidx),'children');
         set(axesHandles(axidx),'children',[h(3:end); h(1:2)] );
     end
