@@ -30,7 +30,7 @@ Note: the simulation will take some time (30-60 min). Also the model is numerica
 1. Run the `setup_paths.m` script.
 2. Go to the folder for the model you wish to optimize.
 3. Open `optimize.m`
-4. Select the disired initial gains 
+4. Select the desired initial gains 
 5. Check if the settings are as you wish in `setInnerOptSettings`
 6. Select which data you want to have plotted during optimization in `plotProgressOptimization`
 7. Run `optimize.m`
@@ -54,23 +54,29 @@ Note: the simulation will take some time (30-60 min). Also the model is numerica
 
 
 ## Notes:
-* Compilers used: 
-  * MEX configured to use 'Microsoft Visual C++ 2015 (C)' for C language compilation.
-  * CompilerConfiguration with properties:
-    * Name: 'Microsoft Visual C++ 2015 (C)'
-    * Manufacturer: 'Microsoft'
-    * Language: 'C'
-    * Version: '14.0'
-  * MEX configured to use 'Microsoft Visual C++ 2017' for C++ language compilation.
-  * CompilerConfiguration with properties: 
-    * Name: 'Microsoft Visual C++ 2017'
-    * Manufacturer: 'Microsoft'
-    * Language: 'C++'
-    * Version: '15.0'
+* Model developed in Matlab 2019b. When running in Matlab 2020a a problem arose for `parsim`. The option `TransferWorkspaceVariables` should be added and set to `on`.
+* A compiler needs to be installed
+  * https://www.mathworks.com/help/matlab/matlab_external/choose-c-or-c-compilers.html
+  * MinGW compiler should work, however,
+  * Compilers used: 
+    * MEX configured to use 'Microsoft Visual C++ 2015 (C)' for C language compilation.
+    * CompilerConfiguration with properties:
+      * Name: 'Microsoft Visual C++ 2015 (C)'
+      * Manufacturer: 'Microsoft'
+      * Language: 'C'
+      * Version: '14.0'
+    * MEX configured to use 'Microsoft Visual C++ 2017' for C++ language compilation.
+    * CompilerConfiguration with properties: 
+      * Name: 'Microsoft Visual C++ 2017'
+      * Manufacturer: 'Microsoft'
+      * Language: 'C++'
+      * Version: '15.0'
 * Model is numerically sensitive. 
   * Gains were obtained while sampling the data at 30 Hz. Changing this will change the evaluations. 
   * On flat terrain this does not differ too much, however, on rougher terrain it might result in an unsuccesful gait.
   * Adding integrator blocks will also affect the outcome, since the solver variable step takes different amount of steps.
+* If certain parameters need to be changed in between runs during optimization, don't forget: https://www.mathworks.com/help/physmod/simscape/ug/set-the-run-time-parameters-visibility-preference.html
+
 	
 
 This model is available for Academic or Non-Profit Organization Noncommercial research use only.
