@@ -55,7 +55,7 @@ Note: the simulation will take some time (30-60 min). Also the model is numerica
 
 ## Notes:
 * Model was developed in Matlab 2019b
-  * One issue that arose when running the model in Matlab 2020a, is that the option `'TransferWorkspaceVariables'` should be set to `'on'` in the parsim command
+  * One issue that arose when running the model in Matlab 2020a, is that the option `'TransferWorkspaceVariables'` should be set to `'on'` in the `parsim` command
 * Compiler needs to be installed:
     * https://www.mathworks.com/help/matlab/matlab_external/choose-c-or-c-compilers.html
     * Mex should work, however, I used:
