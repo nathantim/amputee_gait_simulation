@@ -30,7 +30,7 @@ Note: the simulation will take some time (30-60 min). Also the model is numerica
 1. Run the `setup_paths.m` script.
 2. Go to the folder for the model you wish to optimize.
 3. Open `optimize.m`
-4. Select the desired initial gains 
+4. Select the disired initial gains 
 5. Check if the settings are as you wish in `setInnerOptSettings`
 6. Select which data you want to have plotted during optimization in `plotProgressOptimization`
 7. Run `optimize.m`
@@ -43,35 +43,30 @@ Note: the simulation will take some time (30-60 min). Also the model is numerica
   * `animPost3D(simout(1).animData3D,'intact',false,'speed',1,'obstacle',true,'view','side','CMG',true,'showFigure',true,'createVideo',true,'info','prosthetic1.2ms','saveLocation','Videos');`
     * Shows an animation of the simulated amputee model walking with CMG and tripping over obstacle. A mp4 file is created and saved. The filename contains prosthetic1.2ms and it is saved in a subfolder called Videos located in the current directory	
 
-
 ## Plotting the data:
 * `plotData` function. Check the function for all the options and specifics
+* GaitPhaseData and stepTimes are required. Other data sets are optional for plotting
 * Example of running plotData: 
-  * `plotData(simout(1).angularData,simout(1).musculoData,simout(1).GRFData,simout(1).jointTorquesData,simout(1).GaitPhaseData,simout(1).stepTimes,simout(1).CMGData,'prosthetic3D_1.2ms_yaw',[7 10],0,1,1,0);`
+  * `plotData(simout(1).GaitPhaseData,simout(1).stepTimes,simout, 'angularData',simout(1).angularData, 'musculoData',simout(1).musculoData, 'GRFData',simout(1).GRFData, 'jointTorquesData',simout(1).jointTorquesData, 'CMGData',simout(1).CMGData,'prosthetic3D_1.2ms_yaw',[7 10],0,1,1,0);`
     * Shows the data between 7 and 10 seconds
-  * `plotData(simout(1).angularData,simout(1).musculoData,simout(1).GRFData,simout(1).jointTorquesData,simout(1).GaitPhaseData,simout(1).stepTimes,simout(1).CMGData,'prosthetic3D_1.2ms_yaw',[],1,1,1);`
+  * `plotData(simout(1).GaitPhaseData,simout(1).stepTimes,simout, 'angularData',simout(1).angularData, 'musculoData',simout(1).musculoData, 'GRFData',simout(1).GRFData, 'jointTorquesData',simout(1).jointTorquesData, 'CMGData',simout(1).CMGData,'prosthetic3D_1.2ms_yaw',[],1,1,1);`
     * Shows and saves the data. Presented as average data and standard deviation per stride. Saved filename contains prosthetic3D_1.2ms_yaw
 
 
 ## Notes:
-* Model was developed in Matlab 2019b
-  * One issue that arose when running the model in Matlab 2020a, is that the option `'TransferWorkspaceVariables'` should be set to `'on'` in the `parsim` command
-* Compiler needs to be installed:
-    * https://www.mathworks.com/help/matlab/matlab_external/choose-c-or-c-compilers.html
-    * Mex should work, however, I used:
-      * Compilers used: 
-        * MEX configured to use 'Microsoft Visual C++ 2015 (C)' for C language compilation.
-        * CompilerConfiguration with properties:
-          * Name: 'Microsoft Visual C++ 2015 (C)'
-          * Manufacturer: 'Microsoft'
-          * Language: 'C'
-          * Version: '14.0'
-        * MEX configured to use 'Microsoft Visual C++ 2017' for C++ language compilation.
-        * CompilerConfiguration with properties: 
-          * Name: 'Microsoft Visual C++ 2017'
-          * Manufacturer: 'Microsoft'
-          * Language: 'C++'
-          * Version: '15.0'
+* Compilers used: 
+  * MEX configured to use 'Microsoft Visual C++ 2015 (C)' for C language compilation.
+  * CompilerConfiguration with properties:
+    * Name: 'Microsoft Visual C++ 2015 (C)'
+    * Manufacturer: 'Microsoft'
+    * Language: 'C'
+    * Version: '14.0'
+  * MEX configured to use 'Microsoft Visual C++ 2017' for C++ language compilation.
+  * CompilerConfiguration with properties: 
+    * Name: 'Microsoft Visual C++ 2017'
+    * Manufacturer: 'Microsoft'
+    * Language: 'C++'
+    * Version: '15.0'
 * Model is numerically sensitive. 
   * Gains were obtained while sampling the data at 30 Hz. Changing this will change the evaluations. 
   * On flat terrain this does not differ too much, however, on rougher terrain it might result in an unsuccesful gait.
