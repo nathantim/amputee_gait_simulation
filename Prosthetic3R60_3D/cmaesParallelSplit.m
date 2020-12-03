@@ -18,8 +18,6 @@ popSize = size(gainsPop,2);
 
 numTerrains = innerOptSettings.numTerrains;
 terrainHeight = innerOptSettings.terrainHeight;
-%     rampSlope = 0.0025;
-%     [groundX, groundZ, groundTheta] = generateGround('flat');
 
 costs = nan(popSize*numTerrains,1);
 paramSets = cell(popSize*numTerrains,1);
@@ -149,13 +147,10 @@ try
     if isempty(mingainidx)
         mingainidx = 1;
     end
-    %         distfrommean = costsall(:,mingainidx) - costs(mingainidx);
-    meanterrainidx = 1;%find(abs(distfrommean) == min(abs(distfrommean)));
-    
+    meanterrainidx = 1;
     idx2send = ((mingainidx-1)*numTerrains) + meanterrainidx;
-    %     costall = reshape(costsall,1,popSize*numTerrains);
     if innerOptSettings.visual
-        if ~isempty(fieldnames(dataStruct(idx2send)))
+        if ~isempty(fieldnames(dataStruct(idx2send))) && dataStruct(idx2send).timeCost.data == 0
             dataStruct(idx2send).optimCost = costs(mingainidx);
             send(dataQueueD,dataStruct(idx2send));
         end

@@ -20,7 +20,7 @@ saveInfo.b_saveFigure = 0;
 if 1 && b_saveTotalFig
 %     savePath = '../../Thesis Document/fig/';
     savePath = '../Thesis Document/fig/';
-    saveInfo.type = {'eps'};
+    saveInfo.type = {'pdf'};
     b_withDate = false;
 else
     savePath = [];
@@ -31,8 +31,8 @@ saveInfo.info = 'amputeeCMG1.2ms';
 b_oneGaitPhase = true;
 plotInfo.showSD = true;
 plotInfo.plotProp = {'LineStyle','Color','LineWidth'};
-plotInfo.lineVec = {'-';':'; '-.';':'};
-plotInfo.colorProp = {	'#0072BD';	'#D95319';'#7E2F8E';'#618D27'};
+plotInfo.lineVec = {'-';':'; '--';':'};
+plotInfo.colorProp = {	'#004D82';	'#EB7F4F';'#7E2F8E';'#74A82E'};
 
 plotInfo.lineWidthProp = {3;3;3;3};
 plotInfo.plotProp_entries = [plotInfo.lineVec(:),plotInfo.colorProp(:), plotInfo.lineWidthProp(:)];
@@ -113,6 +113,20 @@ for jj = 1:length(axesTripPrevent)
     set(leg,'Position',[legPos(jj,1),min(legPos(:,2)),legPos(jj,3:4)]);
 end
 %% Plot GRF data during trip prevention
+plotInfo.showSD = false;
+plotInfo.plotProp = {'LineStyle','Color','LineWidth'};
+plotInfo.lineVec = {'-';'--'};
+plotInfo.colorProp = {	'#004D82';	'#EB7F4F'};
+
+plotInfo.lineWidthProp = {3;3};
+plotInfo.plotProp_entries = [plotInfo.lineVec(:),plotInfo.colorProp(:), plotInfo.lineWidthProp(:)];
+
+plotInfo.fillProp = {'FaceColor','FaceAlpha','EdgeColor','LineStyle'};
+faceAlpha = {0.0;0.0};
+plotInfo.fillVal = plotInfo.colorProp;
+plotInfo.edgeVec = {'none';'none'};% {[0.8 0.8 0.8],0.5,'none'};
+plotInfo.fillProp_entries = [plotInfo.edgeVec,faceAlpha,plotInfo.edgeVec,plotInfo.edgeVec];
+plotInfo.showTables = false;
 
 GRFDataFig = figure();
 GRFDataFig.Name = ['Ground reaction forces data during trip'];
@@ -136,7 +150,7 @@ if ~isempty(collisIdx)
     for jj = 1:length(axesTripPreventGRF)
         axidx = jj;
         plotTripPreventGRF(jj,5) = plot(axesTripPreventGRF(axidx), [tCollision, tCollision], get(axesTripPreventGRF(axidx)).YLim,'--o','Color','#454545');
-        plotTripPreventGRF(jj,6) = plot(axesTripPreventGRF(axidx), t_CMGPreventActive, ones(1,2)*get(axesTripPreventGRF(axidx)).YLim(2)-0.001,'-*','color','#9F9F9F');
+        plotTripPreventGRF(jj,6) = plot(axesTripPreventGRF(axidx), t_CMGPreventActive, ones(1,2)*get(axesTripPreventGRF(axidx)).YLim(2)-0.001,'-*','color','#9F9F9F','MarkerSize',12);
         h = get(axesTripPreventGRF(axidx),'children');
         set(axesTripPreventGRF(axidx),'children',[h(3:end); h(1:2)] );
     end

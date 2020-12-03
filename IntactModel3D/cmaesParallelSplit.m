@@ -18,8 +18,6 @@ popSize = size(gainsPop,2);
 
 numTerrains = innerOptSettings.numTerrains;
 terrainHeight = innerOptSettings.terrainHeight;
-%     rampSlope = 0.0025;
-%     [groundX, groundZ, groundTheta] = generateGround('flat');
 
 costs = nan(popSize*numTerrains,1);
 paramSets = cell(popSize*numTerrains,1);
@@ -84,7 +82,6 @@ for idx = 1:length(in)
         metabolicEnergy     = simout(idx).metabolicEnergy;
         sumOfStopTorques    = simout(idx).sumOfStopTorques;
         HATPosVel           = simout(idx).HATPosVel;
-        stepVelocities      = simout(idx).stepVelocities;
         stepTimes           = simout(idx).stepTimes;
         stepLengths         = simout(idx).stepLengths;
         stepNumbers         = simout(idx).stepNumbers;
@@ -93,7 +90,6 @@ for idx = 1:length(in)
         GaitPhaseData       = simout(idx).GaitPhaseData;
         musculoData         = simout(idx).musculoData;
         GRFData             = simout(idx).GRFData;
-        selfCollision       = simout(idx).selfCollision;
         animData3D          = simout(idx).animData3D;
         
         try
@@ -151,11 +147,9 @@ try
     if isempty(mingainidx)
         mingainidx = 1;
     end
-    %         distfrommean = costsall(:,mingainidx) - costs(mingainidx);
-    meanterrainidx = 1;%find(abs(distfrommean) == min(abs(distfrommean)));
+    meanterrainidx = 1;
     
     idx2send = ((mingainidx-1)*numTerrains) + meanterrainidx;
-    %     costall = reshape(costsall,1,popSize*numTerrains);
     if innerOptSettings.visual
         if ~isempty(fieldnames(dataStruct(idx2send)))
             dataStruct(idx2send).optimCost = costs(mingainidx);

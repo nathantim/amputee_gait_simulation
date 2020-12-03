@@ -17,7 +17,7 @@ b_plotTorques     = 1;
 b_plotPowers      = 1;
 b_plotGRF         = 1;
 b_plotMuscle      = 0;
-b_plotCMG         = 0;
+b_plotCMG         = 1;
 %%
 global minCost;
 
@@ -67,7 +67,7 @@ try
             GRFData = figure();
             GRFData.Name = 'Ground reaction forces';
         end
-        if b_plotCMG && ((isempty(CMGData) || ~isvalid(CMGData) ) && size(dataStruct.kinematics.CMGData.signals.values,1)>1)
+        if b_plotCMG && (isempty(CMGData) || ~isvalid(CMGData)) && ~isempty(dataStruct.kinematics.CMGData)  && size(dataStruct.kinematics.CMGData.signals.values,1)>1
             CMGData = figure();
             CMGData.Name = 'CMG data';
         else
@@ -85,7 +85,17 @@ try
         
         %%
         if b_minCost
-            b_oneGaitPhase = true;
+            b_tripActive = logical(dataStruct.tripWasActive.data);
+            if b_tripActive && ~isempty(dataStruct.kinematics.CMGData)
+                tStart = floor(dataStruct.kinematics.CMGData.time(find(dataStruct.kinematics.CMGData.signals.values(:,14) == 1,1,'first')));
+                tEnd = ceil(dataStruct.kinematics.CMGData.time(find(dataStruct.kinematics.CMGData.signals.values(:,14) == 1,1,'last')));
+                timeInterval = [tStart tEnd];
+                b_oneGaitPhase = false;
+            else
+                timeInterval = [];
+                b_oneGaitPhase = true;
+            end
+            
             plotInfo.showSD = true;
             plotInfo.plotProp = {'LineStyle','Color','LineWidth'};
             plotInfo.lineVec = {'-'; '--';':'};
@@ -106,13 +116,11 @@ try
             saveInfo.b_saveFigure = 0;
             saveInfo.info = dataStruct.modelType;
             
-            GaitInfo = getGaitInfo(t,dataStruct.kinematics.GaitPhaseData,dataStruct.kinematics.stepTimes,b_oneGaitPhase,dataStruct.innerOptSettings.initiationSteps);
+            GaitInfo = getGaitInfo(t,dataStruct.kinematics.GaitPhaseData,dataStruct.kinematics.stepTimes,b_oneGaitPhase,dataStruct.innerOptSettings.initiationSteps,timeInterval);
             
+            dataStruct.kinematics.jointTorquesData.signals.values    = dataStruct.kinematics.jointTorquesData.signals.values./getBodyMass(dataStruct.modelType);
+            dataStruct.kinematics.GRFData.signals.values             = dataStruct.kinematics.GRFData.signals.values./getBodyMass(dataStruct.modelType);
             
-            dataStruct.kinematics.jointTorquesData.signals.values    = dataStruct.kinematics.jointTorquesData.signals.values./getBodyMass();
-            dataStruct.kinematics.GRFData.signals.values             = dataStruct.kinematics.GRFData.signals.values./getBodyMass();
-            
-            warning('off');
             if  b_plotAngles
                 clf(gaitKinematics);
                 sgtitle(gaitKinematics,['Gait kinematics for cost of ',num2str(round(dataStruct.optimCost,1)),', with $v_{mean}$ = ', num2str(round(dataStruct.vMean.data,1)),'m/s','. $\tau_{stop}$ = ', num2str(dataStruct.sumTstop.data)]);
@@ -130,7 +138,7 @@ try
             end
             if  b_plotPowers
                 clf(jointPowers);
-                sgtitle(jointPowers,['Gait kinematics for cost of ',num2str(round(dataStruct.optimCost,1)),', with $v_{mean}$ = ', num2str(round(dataStruct.vMean.data,1)),'m/s','. $\tau_{stop}$ = ', num2str(dataStruct.sumTstop.data)]);
+                sgtitle(jointPowers,['Joint powers for cost of ',num2str(round(dataStruct.optimCost,1)),', with $v_{mean}$ = ', num2str(round(dataStruct.vMean.data,1)),'m/s','. $\tau_{stop}$ = ', num2str(dataStruct.sumTstop.data)]);
                 plotJointPowerData(dataStruct.kinematics.angularData,dataStruct.kinematics.jointTorquesData,plotInfo,GaitInfo,saveInfo,jointPowers);
             end
             if  b_plotMuscle
@@ -143,7 +151,13 @@ try
                 sgtitle(GRFData,['Ground reaction forces for cost of ',num2str(round(dataStruct.optimCost,1)),', with $v_{mean}$ = ', num2str(round(dataStruct.vMean.data,1)),'m/s','. $\tau_{stop}$ = ', num2str(dataStruct.sumTstop.data)]);
                 [~,axesGRF] = plotGRFData(dataStruct.kinematics.GRFData,plotInfo,GaitInfo,saveInfo,GRFData);
             end
+            if ~isempty(dataStruct.kinematics.CMGData) && b_plotCMG
+                clf(CMGData);
+                sgtitle(CMGData,['CMG data for cost of ',num2str(round(dataStruct.optimCost,1)),', with $v_{mean}$ = ', num2str(round(dataStruct.vMean.data,1)),'m/s','. $\tau_{stop}$ = ', num2str(dataStruct.sumTstop.data)]);
+                plotCMGData(dataStruct.kinematics.CMGData,plotInfo,GaitInfo,saveInfo,CMGData);
+            end
             
+            % Plot Fukuchi Data
             if plotInfo.plotFukuchiData && b_oneGaitPhase
                 FukuchiData = load('../Plot_figures/Data/FukuchiData.mat','gaitData');
                 fieldNames = fieldnames(FukuchiData.gaitData);
@@ -158,8 +172,9 @@ try
                     warning('Unknown velocity')
                 end
                 plotInfoTemp = plotInfo;
+                plotInfoTemp.showSD = false;
                 plotInfoTemp.plotProp_entries = plotInfoTemp.plotProp_entries(end,:);
-                GaitInfoFukuchi = getGaitInfo(FukuchiData2Plot.angularData.time,[],[],saveInfo,false);
+                GaitInfoFukuchi = getGaitInfo(FukuchiData2Plot.angularData.time,[],[],false,0);
                 if ~isempty(axesAngle)
                     [plotAngleFukuchi,~] = plotAngularData(FukuchiData2Plot.angularData,plotInfoTemp,GaitInfoFukuchi,saveInfo,[],axesAngle,[1 4 1],'right');
                     set(plotAngleFukuchi(2,1),'DisplayName','Fukuchi');
@@ -173,24 +188,20 @@ try
                     set(plotGRFFukuchi(2,1),'DisplayName','Fukuchi');
                 end
             end
-
-            if ~isempty(CMGData) && b_plotCMG
-                clf(CMGData);
-                sgtitle(CMGData,['CMG data for cost of ',num2str(round(dataStruct.optimCost,1)),', with $v_{mean}$ = ', num2str(round(dataStruct.vMean.data,1)),'m/s','. $\tau_{stop}$ = ', num2str(dataStruct.sumTstop.data)]);
-                plotCMGData(dataStruct.kinematics.CMGData,saveInfo,CMGData,false);
-            end
             
+            % Create video
             if contains(lower(dataStruct.modelType),'prosthetic') || contains(lower(dataStruct.modelType),'amputee')
                 intactFlag = false;
             else
                 intactFlag = true;
             end
-            warning('on');
+            
             if dataStruct.innerOptSettings.createVideo
-                animPost3D(dataStruct.animData3D,'intact',intactFlag,'obstacle',logical(dataStruct.tripWasActive.data),'view','perspective',...
-                    'CMG',(~isempty(CMGData)),'showFigure',false,'createVideo',true,'info',['cost_' num2str(round(dataStruct.optimCost,1))],...
+                animPost(dataStruct.animData3D,'intact',intactFlag,'obstacle',b_tripActive,'view','perspective',...
+                    'CMG',(~isempty(dataStruct.kinematics.CMGData)),'showFigure',false,'createVideo',true,'info',['cost_' num2str(round(dataStruct.optimCost,1))],...
                     'saveLocation',dataStruct.innerOptSettings.optimizationDir);
             end
+            % Save data
             if ~isempty(strtrim(dataStruct.innerOptSettings.optimizationDir))
                 save([dataStruct.innerOptSettings.optimizationDir filesep 'cost_' num2str(round(dataStruct.optimCost,1)) '.mat'],'dataStruct');
             end

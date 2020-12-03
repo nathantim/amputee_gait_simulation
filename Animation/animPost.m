@@ -29,8 +29,7 @@ if isempty(p)
     addParamValue(p,'createVideo',false,validBoolFcn);
     addParamValue(p,'showFrameNum',false,validBoolFcn);
     addParamValue(p,'showTime',true,validBoolFcn);
-    addParamValue(p,'followModel',true,validBoolFcn);
-    addParamValue(p,'followProsthesis',false,validBoolFcn);
+
     addParamValue(p,'showFigure',true,validBoolFcn);
     
     validTimeRangeFcn = @(ii) isnumeric(ii) && length(ii) == 2 && i(1) <= i(2);
@@ -41,6 +40,7 @@ if isempty(p)
     addParamValue(p,'view','',validLabelFcn);
     addParamValue(p,'info','',validLabelFcn);
     addParamValue(p,'saveLocation','',validLabelFcn);
+    addParamValue(p,'follow','model',validLabelFcn);
     
 end
 parse(p,varargin{:});
@@ -60,8 +60,7 @@ if isempty(strtrim(saveLocation))
 end
 showFrameNum = p.Results.showFrameNum;
 showTime = p.Results.showTime;
-followModel = p.Results.followModel;
-followProsthesis = p.Results.followProsthesis;
+followSelect = lower(p.Results.follow);
 viewOpt = p.Results.view;
 
 videoFlag = p.Results.createVideo;
@@ -111,7 +110,6 @@ set(figAxes, 'XTick', -10:1:100)% set x-axis labels
 % view(25,25)
 if contains(viewOpt,'front')
     view(figAxes, 90,0);
-    followModel = true;
 elseif contains(viewOpt,'side')
     view(figAxes, 0,0);
 elseif contains(viewOpt,'perspective')
@@ -215,6 +213,11 @@ if videoFlag
     else
         intactInfo = 'prosthetic';
     end
+    if contains(followSelect,'prosthesis')
+        closeUpInfo = '_closeup';
+    else
+        closeUpInfo = '';
+    end
     if ~isempty(animInfo)
         fileInfo = ['_',animInfo];
         fileInfo(fileInfo==' ') = '_';
@@ -222,8 +225,10 @@ if videoFlag
         fileInfo = strrep(fileInfo,'1.2m/s','1_2ms');
         fileInfo = strrep(fileInfo,'0.9ms','0_9ms');
         fileInfo = strrep(fileInfo,'1.2ms','1_2ms');
+    else
+        fileInfo = '';
     end
-    writerObj = VideoWriter([saveLocation,filesep,dateNow,'-',intactInfo,fileInfo,'_',viewOpt],'MPEG-4');
+    writerObj = VideoWriter([saveLocation,filesep,dateNow,'-',intactInfo,closeUpInfo,fileInfo,'_',viewOpt],'MPEG-4');
     writerObj.FrameRate = 1/frameRate;
     open(writerObj);
 end
@@ -244,9 +249,9 @@ for ii = 1:frameSkip:length(animData.time)
             set(0, 'CurrentFigure', FigHndl); % set actual figure to handle
             
             % Check if view window is out of sight. If so, shift it
-            if followModel
+            if contains(followSelect,'model')
                 viewFollowModel(figAxes, u, ViewWin);
-            elseif followProsthesis
+            elseif contains(followSelect,'prosthesis')
                 viewProsthesis(figAxes, u, ViewWin);
             else
                 [ViewShiftParamsX,ViewShiftParamsY] = checkViewWin(figAxes, u, t, ViewWin, TolFrac, ...
