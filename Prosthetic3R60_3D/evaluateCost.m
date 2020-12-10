@@ -68,6 +68,7 @@ for jj = 1:(terrains2Test)
     in(jj) = in(jj).setModelParameter('TimeOut', 10*60);
     in(jj) = in(jj).setModelParameter('SimulationMode', 'rapid', ...
         'RapidAcceleratorUpToDateCheck', 'off');
+    in(jj) = in(jj).setModelParameter('StopTime', '30');
     in(jj) = in(jj).setModelParameter('RapidAcceleratorParameterSets', paramSets{jj});
 end
 
@@ -119,7 +120,7 @@ for idxSim = 1:length(simout)
 end
 
 %% Animate and plot data
-animPost3D(simout(1).animData3D,'intact',false,'speed',1,'view','perspective',...
+animPost(simout(1).animData3D,'intact',false,'speed',1,'view','perspective',...
                 'showFigure',true,'createVideo',false,'info',[num2str(innerOptSettings.targetVelocity) 'ms'],...
                 'saveLocation',innerOptSettings.optimizationDir);
 
