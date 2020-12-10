@@ -45,7 +45,11 @@ if isempty(p)
 end
 parse(p,varargin{:});
 animData = p.Results.animData;
+try
 frameRate = animData.time(2) - animData.time(1);
+catch
+    frameRate = 30;
+end
 frameSkip = p.Results.frameSkip;
 speed = p.Results.speed;
 intactFlag = p.Results.intact;
