@@ -6,6 +6,7 @@ The repository contains a 3D neuromuscular model of
 3. a trans-femoral amputee wearing the Otto Bock 3R60 knee prosthesis with CMG embedded in the prosthetic shank
 
 Details can be found in the thesis on the [TU Delft repository](https://repository.tudelft.nl//islandora/object/uuid:956af656-3fa4-46bc-abba-b6a4afad23c2).
+
 The model is based on the work of:
 - Song, S., & Geyer, H. (2015). A neural circuitry that emphasizes spinal feedback generates diverse behaviours of human locomotion. The Journal of physiology, 593(16), 3493-3511.
 - Thatte, Nitish, and Hartmut Geyer. "Toward balance recovery with leg prostheses using neuromuscular model control." IEEE Transactions on Biomedical Engineering 63.5 (2016): 904-913.
